@@ -1,5 +1,5 @@
 {
-  "name": "onlinejudge2-fe",
+  "name": "onlinejudge3-fe",
   "version": "0.1.0",
   "description": "",
   "scripts": {
@@ -9,13 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sdutacm/onlinejudge2-fe.git"
+    "url": "git+https://github.com/sdutacm/onlinejudge3-fe.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sdutacm/onlinejudge2-fe/issues"
+    "url": "https://github.com/sdutacm/onlinejudge3-fe/issues"
   },
-  "homepage": "https://github.com/sdutacm/onlinejudge2-fe#readme",
+  "homepage": "https://github.com/sdutacm/onlinejudge3-fe#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "csshake": "^1.5.3",

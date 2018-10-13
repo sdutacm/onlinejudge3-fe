@@ -5,7 +5,6 @@ module.exports = {
   globals: {
   },
   rules: {
-    // @fixable 一个缩进必须用两个空格替代
     'indent': [
         'off',
     ],

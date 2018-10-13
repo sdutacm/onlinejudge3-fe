@@ -1,0 +1,49 @@
+.buttonMt {
+  margin-top: 8px;
+}
+
+.infoBoard {
+  :global(.ant-skeleton .ant-skeleton-content) {
+    :global(.ant-skeleton-title) {
+      display: none;
+    }
+
+    :global(.ant-skeleton-paragraph) {
+      margin: 0;
+
+      :global(li) {
+        height: 14px;
+
+        & + :global(li) {
+          margin-top: 8px;
+        }
+      }
+    }
+  }
+
+  :global(table) {
+    table-layout: fixed;
+    vertical-align: top;
+    font-size: 12px;
+
+    :global(tr) {
+      td {
+        vertical-align: top;
+      }
+
+      td:first-of-type {
+        font-weight: bold;
+        min-width: 84px;
+        text-align: right;
+        padding-right: 10px;
+      }
+
+      td:not(:first-of-type) {
+        //white-space: nowrap;
+        word-wrap: break-word;
+        word-break: break-all;
+        //width: calc(100% - 90px);
+      }
+    }
+  }
+}

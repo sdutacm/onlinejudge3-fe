@@ -1,0 +1,8 @@
+.DS_Store
+.idea
+node_modules
+package-lock.json
+yarn.lock
+/dist
+.umi
+.umi-production

@@ -1,0 +1,178 @@
+import React from 'react';
+import { connect } from 'dva';
+import { Table, Pagination, Input, Icon, Row, Col, Card } from 'antd';
+import router from 'umi/router';
+import Link from 'umi/link';
+import limits from '@/configs/limits';
+import pages from '@/configs/pages';
+import styles from './index.less';
+import { ReduxProps, RouteProps } from '@/@types/props';
+import urlf from '@/utils/urlf';
+import FilterCard from '@/components/FilterCard';
+import ToOneCard from '@/components/ToOneCard';
+import api from '@/configs/apis';
+
+interface Props extends ReduxProps, RouteProps {
+  data: List<Problem>;
+}
+
+interface State {
+  filterDropdownVisible: boolean;
+  searchTitle: string;
+  filtered: boolean;
+}
+
+class ProblemList extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterDropdownVisible: false,
+      searchTitle: props.title,
+      filtered: !!props.title,
+    };
+  }
+
+  componentDidMount() {
+    this.setStateFromQuery(this.props.location.query);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      window.scrollTo(0, 0);
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.location.query.title !== this.props.location.query.title) {
+      this.setStateFromQuery(nextProps.location.query);
+    }
+  }
+
+  setStateFromQuery(query) {
+    this.setState({
+      searchTitle: query.title,
+      filtered: !!query.title,
+    });
+  }
+
+  handleChangePage = page => {
+    const { title } = this.props.location.query;
+    router.push({
+      pathname: pages.problems.index,
+      query: { page, title },
+    });
+  };
+
+  onInputChange = (e) => {
+    this.setState({ searchTitle: e.target.value });
+  };
+
+  handleChangeTable = (e) => {
+    console.log(e);
+  };
+
+  onSearch = () => {
+    const { searchTitle } = this.state;
+    this.setState({
+      filterDropdownVisible: false,
+      filtered: !!searchTitle,
+    });
+    router.push({
+      pathname: pages.problems.index,
+      query: { page: 1, title: searchTitle },
+    });
+  };
+
+  render() {
+    const { loading, data: { page, total, rows } } = this.props;
+    let searchInput;
+    return (
+      <Row gutter={16}>
+        <Col xs={24} md={18} xxl={20}>
+          <Card bordered={false} className="list-card">
+            <Table dataSource={rows}
+                   rowKey="problemId"
+                   loading={loading}
+                   onChange={this.handleChangeTable}
+                   pagination={false}
+                   className="responsive-table"
+            >
+              <Table.Column
+                title="Title"
+                key="Title"
+                filterDropdown={(
+                  <div className={styles.customFilterDropdown}>
+                    <Input.Search
+                      ref={ele => {
+                        searchInput = ele;
+                      }}
+                      placeholder=""
+                      enterButton="Search"
+                      value={this.state.searchTitle}
+                      onChange={this.onInputChange}
+                      onPressEnter={this.onSearch}
+                      onSearch={this.onSearch}
+                    />
+                  </div>
+                )}
+                filterIcon={(<Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />)}
+                filterDropdownVisible={this.state.filterDropdownVisible}
+                onFilterDropdownVisibleChange={(visible) => {
+                  this.setState({
+                    filterDropdownVisible: visible,
+                  }, () => searchInput && searchInput.focus());
+                }}
+                render={(text, record: Problem) => (
+                  <Link
+                    to={urlf(pages.problems.one, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
+                )}
+              />
+              <Table.Column
+                title="AC / Total"
+                key="AC / Total"
+                render={(text, record: Problem) => (
+                  <span>{record.accepted} / {record.submitted}</span>
+                )}
+              />
+              <Table.Column
+                title="Source"
+                key="Source"
+                render={(text, record: Problem) => (
+                  <span>{record.source}</span>
+                )}
+              />
+            </Table>
+            <Pagination
+              className="ant-table-pagination"
+              total={total}
+              current={page}
+              pageSize={limits.problems.list}
+              onChange={this.handleChangePage}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} md={6} xxl={4}>
+          <Card bordered={false}>
+            <ToOneCard label="Go to Problem" placeholder="Problem ID"
+                       toOneLink={id => urlf(api.problems.one, { param: { id } })} />
+          </Card>
+          <Card bordered={false}>
+            <FilterCard fields={[
+              { displayName: 'Title', fieldName: 'title' },
+              { displayName: 'Source', fieldName: 'source' },
+            ]} />
+          </Card>
+        </Col>
+      </Row>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    loading: !!state.loading.effects['problems/getList'],
+    data: state.problems.list,
+  };
+}
+
+export default connect(mapStateToProps)(ProblemList);

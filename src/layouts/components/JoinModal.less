@@ -1,0 +1,14 @@
+@import "../../../node_modules/antd/lib/style/themes/default";
+
+.modalTransition {
+  :global(.ant-modal-header), :global(.ant-modal-body) {
+    transition: .6s @ease-in-out;
+    opacity: 1;
+  }
+}
+
+.modalTransitionHide {
+  :global(.ant-modal-header), :global(.ant-modal-body) {
+    opacity: 0;
+  }
+}

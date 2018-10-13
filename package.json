@@ -1,0 +1,43 @@
+{
+  "name": "onlinejudge2-fe",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "umi dev",
+    "build": "umi build && mv ./dist/static/assets ./dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdutacm/onlinejudge2-fe.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sdutacm/onlinejudge2-fe/issues"
+  },
+  "homepage": "https://github.com/sdutacm/onlinejudge2-fe#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "csshake": "^1.5.3",
+    "js-cookie": "^2.2.0",
+    "lodash.throttle": "^4.1.1",
+    "react-copy-to-clipboard": "^5.0.1",
+    "react-markdown": "^3.6.0",
+    "react-syntax-highlighter": "^9.0.0",
+    "umi": "^2.1.1",
+    "url-assembler": "^1.2.10",
+    "xss": "^1.0.3"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^3.1.0",
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.5.0",
+    "eslint-config-alloy": "^1.4.2",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-typescript": "^0.12.0",
+    "roadhog-api-doc": "^1.1.2",
+    "typescript": "^3.0.3",
+    "typescript-eslint-parser": "^18.0.0",
+    "umi-plugin-react": "^1.1.1"
+  }
+}

@@ -1,0 +1,40 @@
+@import "../variables";
+
+.iconHamburger {
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 25px 24px 23px;
+  z-index: 1;
+  width: @header-height;
+  height: @header-height;
+  cursor: pointer;
+
+  &::before {
+    background: #777;
+    border-radius: 2px;
+    box-shadow: 0 6px 0 0 #777, 0 12px 0 0 #777;
+    content: "";
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 2px;
+  }
+}
+
+.nav {
+  line-height: @header-height;
+  border-bottom: none;
+
+  @media only screen and (max-width: 767px) {
+    border-right: none;
+  }
+}
+
+.avatarDefault {
+  :global(.anticon) {
+    font-size: 18px !important;
+    margin-right: 0 !important;
+  }
+}

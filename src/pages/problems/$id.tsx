@@ -50,10 +50,10 @@ class ProblemDetail extends React.Component<Props, State> {
                 <Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>
               </Link>
               <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
-                <Button htmlType="reset" className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                <Button disabled={loading} className="text-ellipsis" style={{ width: '50%' }} title="Star">
                   <Icon type="star" theme="outlined" />
                 </Button>
-                <Button htmlType="submit" className="text-ellipsis" style={{ width: '50%' }} title="Share">
+                <Button disabled={loading} className="text-ellipsis" style={{ width: '50%' }} title="Share">
                   <Icon type="share-alt" theme="outlined" />
                 </Button>
               </Button.Group>
@@ -83,7 +83,7 @@ class ProblemDetail extends React.Component<Props, State> {
                 </table>
               </Skeleton>
             </Card>
-            {data.tags.length && <Card bordered={false}>
+            {!loading && data.tags && data.tags.length && <Card bordered={false}>
               <h4 style={{ lineHeight: 1, marginBottom: '12px' }}>Tags</h4>
               {data.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}
             </Card>}

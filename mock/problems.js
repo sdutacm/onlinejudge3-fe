@@ -104,4 +104,4 @@ a<b`,
   'GET /api2/problems/302': failure(402),
 };
 
-export default delay(proxy, 250);
+export default delay(proxy, 1000);

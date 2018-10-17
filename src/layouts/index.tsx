@@ -56,7 +56,7 @@ class Index extends React.Component<Props, State> {
             <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />}
         </Content>
         <Footer className={styles.footer}>
-          <p>© 2010-{moment().format('YYYY')} SDUTACM Team. All Rights Reserved.</p>
+          <p>© 2008-{moment().format('YYYY')} SDUTACM Team. All Rights Reserved.</p>
           <div>
             <a>API</a>
             <Divider type="vertical" />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin, Avatar, Badge, Popover } from 'antd';
+import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
@@ -10,6 +10,7 @@ import gStyles from '../../general.less';
 import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import NoteSvg from '@/assets/svg/note.svg';
+import moment from 'moment';
 
 // Powered by https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -33,6 +34,55 @@ class NavMenu extends React.Component<Props, any> {
       sessionLoaded: false,
     };
   }
+
+  notificationsList = [
+    { notificationId: 1, title: 'lxh mentioned you at a discussion', time: 1539733234 },
+    { notificationId: 2, title: 'bLue answered your question', time: 1539733234 },
+    { notificationId: 3, title: 'Your contest register has been accepted', time: 1539733234 },
+  ];
+
+  notifications = (
+    <List
+      itemLayout="horizontal"
+      size="small"
+      // loadMore={() => console.log('more')}
+      dataSource={this.notificationsList.slice(0, 3)}
+      renderItem={item => (
+        <List.Item actions={[<a key={item.notificationId}>View</a>]}>
+            <List.Item.Meta
+              title={<a>{item.title}</a>}
+              description={moment(item.time * 1000).fromNow()}
+            />
+        </List.Item>
+      )}
+      footer={(<a><div className="text-center" style={{ paddingBottom: 0 }}>View All</div></a>)}
+    />
+  );
+
+  ideaNotesList = [
+    { content: '这货可能是个 dp', tmpTag: (<Tag><a>cyk的游戏</a></Tag>), time: 1539733234 },
+    { content: '赛时漏了 12 点的情况，回头补一下', tmpTag: (<Tag><a>2018 年寒假集训选拔 / A - 时间格式转换</a></Tag>), time: 1539733234 },
+  ];
+
+  ideaNotes = (
+    <div>
+      <Input.TextArea rows={2} placeholder="Type new idea..." />
+      <List
+        itemLayout="horizontal"
+        size="small"
+        // loadMore={() => console.log('more')}
+        dataSource={this.ideaNotesList}
+        renderItem={item => (
+          <List.Item>
+            <List.Item.Meta
+              title={<a>{item.content}</a>}
+              description={item.tmpTag}
+            />
+          </List.Item>
+        )}
+      />
+    </div>
+  );
 
   logOut = () => {
     const { dispatch } = this.props;
@@ -133,12 +183,12 @@ class NavMenu extends React.Component<Props, any> {
         }
 
         {!mobileVersion && session.loggedIn && <Menu.Item key="/notifications" style={{ float: 'right' }}>
-          <Popover content="" title="Notifications" trigger="click">
+          <Popover content={this.notifications} title="Notifications" placement="bottom" trigger="click" overlayClassName="menu-popover no-inner-vertical">
             <a><Badge count={3}><Icon type="bell" theme="outlined" /></Badge></a>
           </Popover>
         </Menu.Item>}
         {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>
-          <Popover content="" title="Idea Notes" trigger="click">
+          <Popover content={this.ideaNotes} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">
             <a><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>
         </Menu.Item>}

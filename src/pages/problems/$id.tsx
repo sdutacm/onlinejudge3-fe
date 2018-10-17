@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Skeleton, Button } from 'antd';
+import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon } from 'antd';
 import Link from 'umi/link';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
@@ -8,6 +8,12 @@ import urlf from '@/utils/urlf';
 import ProblemContent from '@/components/ProblemContent';
 import styles from './$id.less';
 import SubmissionModal from '@/components/SubmitSolutionModal';
+
+const tmpTagMap = {
+  1: 'Greedy',
+  2: 'Math',
+  3: 'DP',
+};
 
 interface Props extends ReduxProps, RouteProps {
   data: Problem;
@@ -32,42 +38,56 @@ class ProblemDetail extends React.Component<Props, State> {
           </Card>
         </Col>
         <Col xs={24} md={6} xxl={6}>
-          <Card bordered={false} className={styles.buttonSeries}>
-            <SubmissionModal problemId={data.problemId} title={data.title}>
-              <Button type="primary" block disabled={loading}>Submit</Button>
-            </SubmissionModal>
-            <Link to={urlf(pages.problems.index)}>
-              <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
-            </Link>
-            <Link to={urlf(pages.problems.index)}>
-              <Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>
-            </Link>
-          </Card>
-          <Card bordered={false} className={styles.infoBoard}>
-            <Skeleton active loading={loading} paragraph={{ rows: 4, width: '100%' }}>
-              <table>
-                <tbody>
-                <tr>
-                  <td>Time Limit</td>
-                  <td>{data.timeLimit || 0} ms</td>
-                </tr>
-                <tr>
-                  <td>Mem. Limit</td>
-                  <td>{data.memoryLimit || 0} KiB</td>
-                </tr>
-                <tr>
-                  <td>Author</td>
-                  <td>{data.author}</td>
-                </tr>
-                <tr>
-                  <td>Source</td>
-                  <td><Link to={urlf(pages.problems.index, { query: { source: data.source } })}>{data.source}</Link>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </Skeleton>
-          </Card>
+          <Affix offsetTop={84}>
+            <Card bordered={false} className={styles.buttonSeries}>
+              <SubmissionModal problemId={data.problemId} title={data.title}>
+                <Button type="primary" block disabled={loading}>Submit</Button>
+              </SubmissionModal>
+              <Link to={urlf(pages.problems.index)}>
+                <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
+              </Link>
+              <Link to={urlf(pages.problems.index)}>
+                <Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>
+              </Link>
+              <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
+                <Button htmlType="reset" className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                  <Icon type="star" theme="outlined" />
+                </Button>
+                <Button htmlType="submit" className="text-ellipsis" style={{ width: '50%' }} title="Share">
+                  <Icon type="share-alt" theme="outlined" />
+                </Button>
+              </Button.Group>
+            </Card>
+            <Card bordered={false} className={styles.infoBoard}>
+              <Skeleton active loading={loading} paragraph={{ rows: 4, width: '100%' }}>
+                <table>
+                  <tbody>
+                  <tr>
+                    <td>Time Limit</td>
+                    <td>{data.timeLimit || 0} ms</td>
+                  </tr>
+                  <tr>
+                    <td>Mem. Limit</td>
+                    <td>{data.memoryLimit || 0} KiB</td>
+                  </tr>
+                  <tr>
+                    <td>Author</td>
+                    <td>{data.author}</td>
+                  </tr>
+                  <tr>
+                    <td>Source</td>
+                    <td><Link to={urlf(pages.problems.index, { query: { source: data.source } })}>{data.source}</Link>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </Skeleton>
+            </Card>
+            {data.tags.length && <Card bordered={false}>
+              <h4 style={{ lineHeight: 1, marginBottom: '12px' }}>Tags</h4>
+              {data.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}
+            </Card>}
+          </Affix>
         </Col>
       </Row>
     );

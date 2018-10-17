@@ -36,6 +36,7 @@ declare interface Problem {
   hint?: string,
   source: string;
   author: string;
+  tags: number[];
   timeLimit?: number,
   memoryLimit?: number,
   createdAt: number;

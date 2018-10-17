@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Input, Icon, Row, Col, Card } from 'antd';
+import { Table, Pagination, Input, Icon, Row, Col, Card, Tag } from 'antd';
 import router from 'umi/router';
 import Link from 'umi/link';
 import limits from '@/configs/limits';
@@ -11,6 +11,12 @@ import urlf from '@/utils/urlf';
 import FilterCard from '@/components/FilterCard';
 import ToOneCard from '@/components/ToOneCard';
 import api from '@/configs/apis';
+
+const tmpTagMap = {
+  1: 'Greedy',
+  2: 'Math',
+  3: 'DP',
+};
 
 interface Props extends ReduxProps, RouteProps {
   data: List<Problem>;
@@ -100,31 +106,35 @@ class ProblemList extends React.Component<Props, State> {
               <Table.Column
                 title="Title"
                 key="Title"
-                filterDropdown={(
-                  <div className={styles.customFilterDropdown}>
-                    <Input.Search
-                      ref={ele => {
-                        searchInput = ele;
-                      }}
-                      placeholder=""
-                      enterButton="Search"
-                      value={this.state.searchTitle}
-                      onChange={this.onInputChange}
-                      onPressEnter={this.onSearch}
-                      onSearch={this.onSearch}
-                    />
-                  </div>
-                )}
-                filterIcon={(<Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />)}
-                filterDropdownVisible={this.state.filterDropdownVisible}
-                onFilterDropdownVisibleChange={(visible) => {
-                  this.setState({
-                    filterDropdownVisible: visible,
-                  }, () => searchInput && searchInput.focus());
-                }}
+                // filterDropdown={(
+                //   <div className={styles.customFilterDropdown}>
+                //     <Input.Search
+                //       ref={ele => {
+                //         searchInput = ele;
+                //       }}
+                //       placeholder=""
+                //       enterButton="Search"
+                //       value={this.state.searchTitle}
+                //       onChange={this.onInputChange}
+                //       onPressEnter={this.onSearch}
+                //       onSearch={this.onSearch}
+                //     />
+                //   </div>
+                // )}
+                // filterIcon={(<Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />)}
+                // filterDropdownVisible={this.state.filterDropdownVisible}
+                // onFilterDropdownVisibleChange={(visible) => {
+                //   this.setState({
+                //     filterDropdownVisible: visible,
+                //   }, () => searchInput && searchInput.focus());
+                // }}
                 render={(text, record: Problem) => (
-                  <Link
-                    to={urlf(pages.problems.one, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
+                  <div>
+                    <Link to={urlf(pages.problems.one, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
+                    {record.tags.length ? <div className="float-right">{record.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}</div> :
+                      <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
+                    }
+                  </div>
                 )}
               />
               <Table.Column
@@ -160,6 +170,7 @@ class ProblemList extends React.Component<Props, State> {
             <FilterCard fields={[
               { displayName: 'Title', fieldName: 'title' },
               { displayName: 'Source', fieldName: 'source' },
+              { displayName: 'Tags', fieldName: 'tags' },
             ]} />
           </Card>
         </Col>

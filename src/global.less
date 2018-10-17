@@ -77,7 +77,7 @@ pre {
   background-color: @bg-color;
   flex: 1 0 auto; /* 2 */
   width: 100%;
-  margin-top: @header-height + 4px;
+  margin-top: @header-height + 20px;
   margin-bottom: 20px;
   padding: 0 50px;
 
@@ -137,7 +137,9 @@ pre {
 }
 
 .ant-card {
-  margin-top: 16px;
+  &:not(:first-of-type) {
+    margin-top: 16px;
+  }
 
   .ant-card-body {
     padding: 16px;

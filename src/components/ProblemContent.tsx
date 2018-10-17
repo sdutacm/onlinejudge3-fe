@@ -35,9 +35,9 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data }) => {
       <div dangerouslySetInnerHTML={{ __html: xss(data.output) }} />
 
       {(data.sampleInput || data.sampleOutput) && <h3>Sample</h3>}
-      {data.sampleInput && <h4>Input&nbsp;<CopyToClipboardButton text={data.sampleInput} addNewLine /></h4>}
+      {data.sampleInput && <h4 className={styles.problemSubSectionHeader}>Input&nbsp;<CopyToClipboardButton text={data.sampleInput} addNewLine /></h4>}
       {data.sampleInput && <pre>{data.sampleInput}</pre>}
-      {data.sampleOutput && <h4>Output&nbsp;<CopyToClipboardButton text={data.sampleOutput} addNewLine /></h4>}
+      {data.sampleOutput && <h4 className={styles.problemSubSectionHeader}>Output&nbsp;<CopyToClipboardButton text={data.sampleOutput} addNewLine /></h4>}
       {data.sampleOutput && <pre>{data.sampleOutput}</pre>}
 
       {data.hint && <h3>Hint</h3>}

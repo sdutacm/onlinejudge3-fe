@@ -13,6 +13,7 @@ export default {
     }],
   ],
   theme: {
+    // 'primary-color': '#1e66d5', // dark
     'btn-border-radius-base': '100px',
     'btn-border-radius-sm': '100px',
     'icon-url': '"/assets/fonts/iconfont"'

@@ -184,7 +184,8 @@ class NavMenu extends React.Component<Props, any> {
 
         {!mobileVersion && session.loggedIn && <Menu.Item key="/notifications" style={{ float: 'right' }}>
           <Popover content={this.notifications} title="Notifications" placement="bottom" trigger="click" overlayClassName="menu-popover no-inner-vertical">
-            <a><Badge count={3}><Icon type="bell" theme="outlined" /></Badge></a>
+            {/*<a><Badge count={3}><Icon type="bell" theme="outlined" /></Badge></a>*/}
+            <a><Icon type="bell" theme="outlined" /></a>
           </Popover>
         </Menu.Item>}
         {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>

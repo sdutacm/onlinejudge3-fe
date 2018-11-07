@@ -24,11 +24,10 @@ class FilterCard extends React.Component<Props, any> {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const { pathname, query } = this.props.location;
+        const { pathname } = this.props.location;
         router.replace({
           pathname,
           query: {
-            page: query.page || 1,
             ...values,
           },
         });

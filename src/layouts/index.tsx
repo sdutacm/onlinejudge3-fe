@@ -37,10 +37,11 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, location } = this.props;
     const { Header, Content, Footer } = Layout;
+    const inUserDetailPage = location.pathname.startsWith(pages.users.index);
     return (
-      <Layout>
+      <Layout className={inUserDetailPage ? 'user-page' : ''}>
         <Header>
           <Row>
             <Col>

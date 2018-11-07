@@ -2,14 +2,14 @@ const codes = {
   // Session 1XX
   100: 'You are not logged in',
   101: 'You have already logged in',
-  102: 'Incorrect username or password',
+  102: 'Incorrect login name or password',
   103: 'You have been banned',
 
   // Verifications 2XX
   200: 'You do not have permission to operate',
   201: 'Request frequency limit exceeded',
 
-  // User 3XX
+  // Users 3XX
   300: 'You do not have permission to operate',
   301: 'The user does not exist',
   302: 'The user already exists',
@@ -24,12 +24,12 @@ const codes = {
   311: 'The class length limit exceeded',
   312: 'The old password is incorrect',
 
-  // Problem 4XX
+  // Problems 4XX
   400: 'You do not have permission to operate',
   401: 'The problem does not exist',
   402: 'You do not have permission to view this problem',
 
-  // Solution 5XX
+  // Solutions 5XX
   500: 'You do not have permission to operate',
   501: 'The solution does not exist',
   502: 'You do not have permission to view this solution',
@@ -44,7 +44,7 @@ const codes = {
   511: 'You have been banned',
   512: 'Submission frequency limit exceeded',
 
-  // Contest 6XX
+  // Contests 6XX
   600: 'You do not have permission to operate',
   601: 'The contest does not exist',
   602: 'You do not have permission to view this contest',

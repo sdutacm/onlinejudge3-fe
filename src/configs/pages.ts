@@ -10,5 +10,9 @@ export default {
   },
   contest: {
     index: '/contest/acm',
-  }
+  },
+  users: {
+    index: '/users',
+    one: '/users/:id',
+  },
 };

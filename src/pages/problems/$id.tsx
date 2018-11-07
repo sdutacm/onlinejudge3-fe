@@ -83,7 +83,7 @@ class ProblemDetail extends React.Component<Props, State> {
                 </table>
               </Skeleton>
             </Card>
-            {!loading && data.tags && data.tags.length && <Card bordered={false}>
+            {!loading && data.tags && !!data.tags.length && <Card bordered={false}>
               <h4 style={{ lineHeight: 1, marginBottom: '12px' }}>Tags</h4>
               {data.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}
             </Card>}

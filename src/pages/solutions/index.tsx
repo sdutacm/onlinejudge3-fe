@@ -30,6 +30,10 @@ class SolutionList extends React.Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    setInterval(() => this.props.dispatch({ type: 'solutions/getList' }), 500);
+  }
+
   render() {
     const { loading, data } = this.props;
     return (

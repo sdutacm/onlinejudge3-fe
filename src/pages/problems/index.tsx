@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Input, Icon, Row, Col, Card, Tag } from 'antd';
+import { Table, Pagination, Input, Icon, Row, Col, Card, Tag, Progress, Popover } from 'antd';
 import router from 'umi/router';
-import Link from 'umi/link';
+import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import styles from './index.less';
@@ -11,6 +11,7 @@ import urlf from '@/utils/urlf';
 import FilterCard from '@/components/FilterCard';
 import ToOneCard from '@/components/ToOneCard';
 import api from '@/configs/apis';
+import { formatPercentage } from '@/utils/format';
 
 const tmpTagMap = {
   1: 'Greedy',
@@ -138,10 +139,22 @@ class ProblemList extends React.Component<Props, State> {
                 )}
               />
               <Table.Column
-                title="AC / Total"
-                key="AC / Total"
+                title="AC"
+                key="AC"
+                className="no-wrap"
                 render={(text, record: Problem) => (
-                  <span>{record.accepted} / {record.submitted}</span>
+                  <Popover title="AC / Total" content={`${record.accepted} / ${record.submitted} (${formatPercentage(record.accepted, record.submitted)})`}>
+                    <Link to={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
+                          onClick={e => e.stopPropagation()}
+                    >
+                      <Progress className={styles.miniRatioProgress} type="circle"
+                                percent={record.accepted / record.submitted * 100 || 0} width={12}
+                                strokeWidth={12}
+                                showInfo={false}
+                      />
+                      <span className="ml-sm-md">{record.accepted}</span>
+                    </Link>
+                  </Popover>
                 )}
               />
               <Table.Column

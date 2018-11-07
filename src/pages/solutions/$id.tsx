@@ -47,8 +47,8 @@ class SolutionDetail extends React.Component<Props, State> {
           {dataReady ?
             <>
               <div style={{ marginBottom: '12px' }}>
-                Share Code <Switch defaultChecked={data.shared} disabled={loading} onChange={this.onShareChange}
-                                   className="ml-md" />
+                <span>Share Code <Switch defaultChecked={data.shared} disabled={loading} onChange={this.onShareChange}
+                                         className="ml-md" /></span>
                 <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
               </div>
               {data.code && <SyntaxHighlighter language={langsMap4Hljs[data.language]}

@@ -4,7 +4,7 @@ import { success, failure, randomSuccessOrFailure, randomResponse } from './util
 const proxy = {
   'GET /api2/solutions': success({
     page: 1,
-    total: 100,
+    total: 30,
     limit: 10,
     rows: [
       {
@@ -18,7 +18,7 @@ const proxy = {
         problem: {
           problemId: 1002,
           title: 'Problem Title',
-          timeLimit: 17000,
+          timeLimit: 12000,
         },
         contest: {
           contestId: 1005,
@@ -30,7 +30,7 @@ const proxy = {
         language: 'g++',
         codeLength: 2333,
         shared: true,
-        createdAt: 1539782540,
+        createdAt: 1539812748,
       },
       {
         solutionId: 10001,
@@ -43,7 +43,7 @@ const proxy = {
         problem: {
           problemId: 1002,
           title: 'Problem Title 1001',
-          timeLimit: 8000,
+          timeLimit: 6000,
         },
         result: 0,
         time: 0,
@@ -51,7 +51,7 @@ const proxy = {
         language: 'java',
         codeLength: 506,
         shared: false,
-        createdAt: 1539782530,
+        createdAt: 1539812748,
       },
       {
         solutionId: 10003,
@@ -67,12 +67,12 @@ const proxy = {
           timeLimit: 1000,
         },
         result: 4,
-        time: 612,
-        memory: 7552,
+        time: 3230,
+        memory: 8532,
         language: 'java',
         codeLength: 506,
         shared: false,
-        createdAt: 1539782093,
+        createdAt: 1539812598,
       },
       {
         solutionId: 10002,
@@ -223,31 +223,31 @@ const proxy = {
       },
     ],
   }),
-  'GET /api2/solutions/10000': success({
+  'GET /api2/solutions/10009': success({
     solutionId: 10000,
     user: {
-      userId: 1,
-      username: 'Username',
-      nickname: 'Nickname',
-      avatar: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+      userId: 2,
+      username: '',
+      nickname: 'raincloud',
+      avatar: 'https://jk1507.cn/download/tavatar/lxh.jpg',
     },
     problem: {
       problemId: 1000,
-      title: 'Problem Title',
-      timeLimit: 5000,
+      title: 'Problem Title 1002',
+      timeLimit: 1000,
     },
     contest: {
       contestId: 1005,
       title: 'Contest Title',
     },
-    result: 0,
+    result: 1,
     time: 0,
-    memory: 0,
-    language: 'g++',
-    codeLength: 123,
-    shared: true,
-    createdAt: 1539334414,
-    code: '#include <stdio.h>\n\nint main() {\n    print("Hello World!");\n    return 0;\n}',
+    memory: 220,
+    language: 'gcc',
+    codeLength: 180,
+    shared: false,
+    createdAt: 1223872396,
+    code: '#include <stdio.h>\n\nint main() {\n    printf("Hello World!");\n    return 0;\n}',
   }),
   'GET /api2/solutions/10001': success({
     solutionId: 10001,
@@ -291,4 +291,4 @@ const proxy = {
   },
 };
 
-export default delay(proxy, 1000);
+export default delay(proxy, 100);

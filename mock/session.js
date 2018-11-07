@@ -7,6 +7,7 @@ const proxy = {
       userId: 1,
       username: 'mocked username',
       nickname: 'mocked nickname',
+      avatar: '',
       permission: 2,
     }, 100));
   },
@@ -16,6 +17,7 @@ const proxy = {
         userId: 1,
         username: 'mocked username',
         nickname: 'mocked nickname',
+        avatar: '',
         permission: 2,
       }),
       failure(101),

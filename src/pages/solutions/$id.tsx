@@ -36,12 +36,13 @@ class SolutionDetail extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data } = this.props;
+    const { loading, data, dispatch } = this.props;
     const dataReady = !loading && data;
     return (
       <div>
         <Card bordered={false} className="list-card">
-          <SolutionTable loading={loading} data={{ rows: dataReady ? [data] : [] }} showPagination={false} isDetail />
+          <SolutionTable loading={loading} data={{ rows: dataReady ? [data] : [] }} dispatch={dispatch}
+                         showPagination={false} isDetail />
         </Card>
         <Card bordered={false}>
           {dataReady ?

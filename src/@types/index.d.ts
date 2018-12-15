@@ -11,3 +11,11 @@ declare interface List<T> {
   limit: number;
   rows: T[];
 }
+
+declare interface ListQuery {
+  page?: number;
+  orderBy?: string;
+  orderDirection?: 'ASC' | 'DESC';
+  limit?: number;
+  [key: string]: any;
+}

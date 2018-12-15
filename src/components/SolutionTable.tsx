@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import pages from '@/configs/pages';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
-import { RouteProps } from '@/@types/props';
+import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import UserBar from '@/components/UserBar';
 import ResultBar from '@/components/ResultBar';
@@ -12,19 +12,54 @@ import TimeBar from '@/components/TimeBar';
 import limits from '@/configs/limits';
 import { Table, Popover, Pagination, Icon } from 'antd';
 import classNames from 'classnames';
+import results from '@/configs/results';
 
-interface Props extends RouteProps {
+interface Props extends ReduxProps, RouteProps {
   loading: boolean;
   data: List<Solution>;
   showPagination: boolean;
   isDetail: boolean;
 }
 
-class SolutionTable extends React.Component<Props, any> {
+interface State {
+  timer: number;
+  updateItv: number;
+}
+
+class SolutionTable extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      timer: 0,
+      updateItv: 2000,
+    };
   }
+
+  componentDidMount() {
+    const timer: any = setInterval(this.updatePendingSolutions, this.state.updateItv);
+    this.setState({ timer });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.timer);
+  }
+
+  updatePendingSolutions = () => {
+    const { rows } = this.props.data;
+    const solutionIds: number[] = [];
+    for (const row of rows) {
+      if (results[row.result].shortName === 'WT' || results[row.result].shortName === 'JG') {
+        solutionIds.push(row.solutionId);
+      }
+    }
+    this.props.dispatch({
+      type: 'solutions/getListByIds',
+      payload: {
+        type: this.props.isDetail ? 'one' : 'list',
+        solutionIds,
+      },
+    });
+  };
 
   handleChangePage = page => {
     router.push({

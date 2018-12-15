@@ -30,18 +30,13 @@ class SolutionList extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    // setInterval(() => this.props.dispatch({ type: 'solutions/getList' }), 2000);
-  }
-
   render() {
-    const { loading, data } = this.props;
+    const { loading, data, dispatch } = this.props;
     return (
       <Row gutter={16}>
         <Col xs={24} lg={18} xxl={20}>
-          {/*<button onClick={() => this.props.dispatch({ type: 'solutions/getList' })}>getList</button>*/}
           <Card bordered={false} className="list-card">
-            <SolutionTable loading={loading} data={data} showPagination />
+            <SolutionTable loading={loading} data={data} dispatch={dispatch} showPagination />
           </Card>
         </Col>
         <Col xs={24} lg={6} xxl={4}>
@@ -68,7 +63,7 @@ class SolutionList extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    loading: !!state.loading.effects['solutions/getList1'],
+    loading: !!state.loading.effects['solutions/getList'],
     data: state.solutions.list,
   };
 }

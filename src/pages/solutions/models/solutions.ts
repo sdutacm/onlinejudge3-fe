@@ -32,6 +32,41 @@ export default {
       }
       return ret;
     },
+    * getListByIds({ payload }, { call, put, select }) {
+      const { type, solutionIds } = payload;
+      const ret: ApiResponse<List<Solution> > = yield call(service.getListByIds, { solutionIds });
+      if (ret.success) {
+        const state = yield select();
+        if (type === 'list') {
+          let hasChange = false;
+          const list: List<Solution> = state.solutions.list;
+          const rows = list.rows.map(row => {
+            if (ret.data[row.solutionId]) {
+              hasChange = true;
+              return ret.data[row.solutionId];
+            }
+            return row
+          });
+          hasChange && (yield put({
+            type: 'setList',
+            payload: {
+              data: {
+                ...list,
+                rows: rows,
+              },
+            },
+          }));
+        }
+        else if(type === 'one') {
+          const one: Solution = state.solutions.one;
+          ret.data[one.solutionId] && (yield put({
+            type: 'setOne',
+            payload: { data: ret.data[one.solutionId] },
+          }));
+        }
+      }
+      return ret;
+    },
     * getOne({ payload: id }, { call, put }) {
       const ret: ApiResponse<Solution> = yield call(service.getOne, id);
       if (ret.success) {

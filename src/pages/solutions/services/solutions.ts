@@ -9,7 +9,15 @@ export function getList(query) {
       ...query,
       page: query.page || 1,
       limit: limits.solutions.list,
-    },
+      orderDirection: 'DESC',
+    } as ListQuery,
+  });
+  return get(url);
+}
+
+export function getListByIds(query) {
+  const url = urlf(api.solutions.base, {
+    query,
   });
   return get(url);
 }

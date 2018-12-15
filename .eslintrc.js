@@ -21,6 +21,4 @@ module.exports = {
     'no-return-await': 'off',
     'react/jsx-closing-bracket-location': 'off',
   },
-  parser: 'babel-eslint',
-  plugins: ['typescript'],
 };

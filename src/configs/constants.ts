@@ -1,7 +1,7 @@
 const consts = {
   siteName: 'SDUT OJ',
   accessTokenCookieName: 'access_token_openoj',
-  requestTimeout: 5000,
+  requestTimeout: 30000,
   msgDuration: {
     success: 3,
     error: 5,

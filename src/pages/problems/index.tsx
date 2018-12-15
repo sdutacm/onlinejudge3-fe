@@ -7,7 +7,7 @@ import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToOneCard from '@/components/ToOneCard';
 import api from '@/configs/apis';
@@ -91,7 +91,7 @@ class ProblemList extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data: { page, total, rows } } = this.props;
+    const { loading, data: { page, count, rows } } = this.props;
     let searchInput;
     return (
       <Row gutter={16}>
@@ -167,7 +167,7 @@ class ProblemList extends React.Component<Props, State> {
             </Table>
             <Pagination
               className="ant-table-pagination"
-              total={total}
+              total={count}
               current={page}
               pageSize={limits.problems.list}
               onChange={this.handleChangePage}

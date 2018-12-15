@@ -25,7 +25,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-markdown": "^3.6.0",
     "react-syntax-highlighter": "^9.0.0",
-    "umi": "^2.2.4",
+    "umi": "^2.2.8",
     "url-assembler": "^1.2.10",
     "xss": "^1.0.3"
   },
@@ -39,6 +39,6 @@
     "roadhog-api-doc": "^1.1.2",
     "typescript": "^3.0.3",
     "typescript-eslint-parser": "^18.0.0",
-    "umi-plugin-react": "^1.2.2"
+    "umi-plugin-react": "^1.2.3"
   }
 }

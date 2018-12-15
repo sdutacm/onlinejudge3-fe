@@ -4,7 +4,7 @@ import { Row, Col, Card } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToOneCard from '@/components/ToOneCard';
 import api from '@/configs/apis';
@@ -31,7 +31,7 @@ class SolutionList extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    setInterval(() => this.props.dispatch({ type: 'solutions/getList' }), 500);
+    // setInterval(() => this.props.dispatch({ type: 'solutions/getList' }), 2000);
   }
 
   render() {

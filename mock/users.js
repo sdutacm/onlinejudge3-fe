@@ -20,7 +20,7 @@ const proxy = {
   },
   'GET /api2/users': success({
     page: 1,
-    total: 1,
+    count: 1,
     limit: 10,
     rows: [
       {

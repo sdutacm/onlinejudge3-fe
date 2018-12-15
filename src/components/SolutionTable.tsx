@@ -4,7 +4,7 @@ import pages from '@/configs/pages';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import { RouteProps } from '@/@types/props';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 import UserBar from '@/components/UserBar';
 import ResultBar from '@/components/ResultBar';
 import { langsMap } from '@/configs/solutionLanguages';
@@ -34,7 +34,7 @@ class SolutionTable extends React.Component<Props, any> {
   };
 
   render() {
-    const { loading, data: { page, total, rows }, showPagination, isDetail } = this.props;
+    const { loading, data: { page, count, rows }, showPagination, isDetail } = this.props;
     return (
       <>
         <Table dataSource={rows}
@@ -137,7 +137,7 @@ class SolutionTable extends React.Component<Props, any> {
         </Table>
         {showPagination ? <Pagination
           className="ant-table-pagination"
-          total={total}
+          total={count}
           current={page}
           pageSize={limits.solutions.list}
           onChange={this.handleChangePage}

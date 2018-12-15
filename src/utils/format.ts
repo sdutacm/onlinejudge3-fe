@@ -1,4 +1,25 @@
+import UrlAssembler from 'url-assembler';
 import { floor } from 'math-precision';
+
+interface UrlArg {
+  param?: object;
+  query?: object;
+}
+
+/**
+ * Format url
+ * @param {string} url
+ * @param {UrlArg} arg
+ * @returns {string}
+ */
+export function urlf(url: string, arg?: UrlArg): string {
+  let ret = new UrlAssembler(url);
+  if (arg) {
+    const { param, query } = arg;
+    ret = ret.param(param).query(query);
+  }
+  return ret.toString();
+}
 
 /**
  * Format a/b to percentage string

@@ -1,7 +1,7 @@
 import { get } from '@/utils/request';
 import api from '@/configs/apis';
 import limits from '@/configs/limits';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 
 export function getList(query) {
   const url = urlf(api.problems.base, {

@@ -5,7 +5,7 @@ export default {
   reducers: {
   },
   effects: {
-    * getEmailCode({ payload: data }, { call }) {
+    * getCode({ payload: data }, { call }) {
       return yield call(service.fetchEmailCode, data);
     },
   },

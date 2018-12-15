@@ -1,5 +1,5 @@
 const api = {
-  base: '/api2',
+  base: '/api',
   general: {
     csrf: '/csrf',
   },
@@ -13,11 +13,13 @@ const api = {
     logout: '/session',
   },
   verifications: {
-    emailCode: '/verifications/email_code',
+    code: '/verifications/code',
   },
   users: {
     base: '/users',
     one: '/users/:id',
+    password: '/users/:id/password',
+    email: '/users/:id/email',
   },
   problems: {
     base: '/problems',

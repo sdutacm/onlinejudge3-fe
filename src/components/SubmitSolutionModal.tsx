@@ -8,7 +8,7 @@ import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import router from 'umi/router';
 import pages from '@/configs/pages';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 
 interface Props extends ReduxProps, RouteProps, FormProps {
   problemId: number;

@@ -1,11 +1,12 @@
 import * as service from '../services/problems';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
+import { genTimeFlag, isNeedRefetch } from '@/utils/misc';
 
 const initialState = {
   list: {
     page: 1,
-    total: 0,
+    count: 0,
     rows: [],
   },
   one: {},
@@ -17,8 +18,8 @@ export default {
     setList(state, { payload: { data } }) {
       state.list = data;
     },
-    setOne(state, { payload: { data } }) {
-      state.one = data;
+    setOne(state, { payload: { id, data } }) {
+      state.one[id] = { ...data, ...genTimeFlag(20000) };
     },
   },
   effects: {
@@ -32,12 +33,17 @@ export default {
       }
       return ret;
     },
-    * getOne({ payload: id }, { call, put }) {
+    * getOne({ payload: id }, { call, put, select }) {
+      const state = yield select();
+      const savedState = state.problems.one[id];
+      if (!isNeedRefetch(savedState)) {
+        return;
+      }
       const ret: ApiResponse<Problem> = yield call(service.getOne, id);
       if (ret.success) {
         yield put({
           type: 'setOne',
-          payload: { data: ret.data },
+          payload: { id, data: ret.data },
         });
       }
       return ret;

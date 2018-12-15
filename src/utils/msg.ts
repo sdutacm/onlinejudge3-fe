@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import constants from '@/configs/constants';
-import codes from '@/configs/codes';
+import { codeMsgs } from '@/configs/codes/codes';
 
 function success(msg: string) {
   msg && message.success(msg, constants.msgDuration.success);
@@ -11,7 +11,13 @@ function error(msg: string) {
 }
 
 function auto(data) {
-  const msg = data.msg || codes[data.code];
+  let msg = '';
+  try {
+    msg = data.msg || codeMsgs[data.code];
+  }
+  catch (e) {
+    console.error(e);
+  }
   if (data.success) {
     success(msg);
   }

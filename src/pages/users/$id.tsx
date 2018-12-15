@@ -2,7 +2,7 @@ import React from 'react';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { Row, Col, Card, Avatar, Tabs, List, Icon } from 'antd';
 import styles from '../problems/$id.less';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 import pages from '@/configs/pages';
 import moment from 'moment';
 

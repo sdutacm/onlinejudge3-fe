@@ -5,7 +5,7 @@ import { matchPath } from 'react-router';
 const initialState = {
   list: {
     page: 1,
-    total: 0,
+    count: 0,
     rows: [],
   },
   one: null,

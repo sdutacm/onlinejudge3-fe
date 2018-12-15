@@ -20,7 +20,7 @@ export default {
   },
   proxy: {
     '/api/': {
-      target: 'http://localhost:8901/api/',
+      target: 'http://localhost:8848/index.php/API_ng/',
       changeOrigin: true,
       pathRewrite: { '^/api/' : '' }
     }

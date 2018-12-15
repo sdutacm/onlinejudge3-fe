@@ -19,5 +19,9 @@ export default {
     * register({ payload: data }, { call, put }) {
       return yield call(service.register, data);
     },
+
+    * forgotPassword({ payload: data }, { call, put }) {
+      return yield call(service.forgotPassword, data);
+    },
   },
 };

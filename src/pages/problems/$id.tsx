@@ -4,7 +4,7 @@ import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon } from 'antd';
 import Link from 'umi/link';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import urlf from '@/utils/urlf';
+import { urlf } from '@/utils/format';
 import ProblemContent from '@/components/ProblemContent';
 import styles from './$id.less';
 import SubmissionModal from '@/components/SubmitSolutionModal';
@@ -29,7 +29,10 @@ class ProblemDetail extends React.Component<Props, State> {
   }
 
   render() {
-    const { loading, data } = this.props;
+    const { loading, data: allData, match } = this.props;
+    const id = ~~match.params.id;
+    const data = allData[id] || {};
+    console.log(loading, id, data, allData);
     return (
       <Row gutter={16} className="content-view">
         <Col xs={24} md={18} xxl={18}>
@@ -40,9 +43,12 @@ class ProblemDetail extends React.Component<Props, State> {
         <Col xs={24} md={6} xxl={6}>
           <Affix offsetTop={84}>
             <Card bordered={false} className={styles.buttonSeries}>
-              <SubmissionModal problemId={data.problemId} title={data.title}>
-                <Button type="primary" block disabled={loading}>Submit</Button>
-              </SubmissionModal>
+              {loading
+                ? <Button type="primary" block disabled>Submit</Button>
+                : <SubmissionModal problemId={data.problemId} title={data.title}>
+                  <Button type="primary" block>Submit</Button>
+                </SubmissionModal>
+              }
               <Link to={urlf(pages.problems.index)}>
                 <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
               </Link>

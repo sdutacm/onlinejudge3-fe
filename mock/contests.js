@@ -4,7 +4,7 @@ import { success, failure, randomSuccessOrFailure, randomResponse } from './util
 const proxy = {
   'GET /api2/contests': success({
     page: 1,
-    total: 2,
+    count: 2,
     limit: 10,
     rows: [
       {

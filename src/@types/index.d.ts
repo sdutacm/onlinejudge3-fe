@@ -7,7 +7,7 @@ declare interface ApiResponse<T> {
 
 declare interface List<T> {
   page: number;
-  total: number;
+  count: number;
   limit: number;
   rows: T[];
 }

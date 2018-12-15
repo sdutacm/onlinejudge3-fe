@@ -9,6 +9,7 @@ import constants from '@/configs/constants';
 import styles from './JoinModal.less';
 import gStyles from '../../general.less';
 import 'csshake';
+import { Codes } from '@/configs/codes/codes';
 
 class JoinModal extends React.Component<any, any> {
   setStatePromise = setStatePromise.bind(this);
@@ -80,13 +81,13 @@ class JoinModal extends React.Component<any, any> {
             </Form.Item>
 
             <Form.Item label="Verification Code">
-              {getFieldDecorator('verification_code', {
+              {getFieldDecorator('code', {
                 rules: [{ required: true, message: 'Please input verification code' }],
               })(
                 <Input.Search
                   enterButton={verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'}
-                  className={verificationCodeRetry || loading.emailCode ? 'input-button-disabled' : 'input-button'}
-                  onSearch={() => !(verificationCodeRetry || loading.emailCode) && this.getRegisterVerificationCode()}
+                  className={verificationCodeRetry || loading.verificationCode ? 'input-button-disabled' : 'input-button'}
+                  onSearch={() => !(verificationCodeRetry || loading.verificationCode) && this.getVerificationCode()}
                 />
               )}
             </Form.Item>
@@ -125,6 +126,16 @@ class JoinModal extends React.Component<any, any> {
               )}
             </Form.Item>
 
+            <Form.Item label="Nickname">
+              {getFieldDecorator('nickname', {
+                rules: [{
+                  required: true, message: 'Please input nickname',
+                }],
+              })(
+                <Input />
+              )}
+            </Form.Item>
+
             <Form.Item>
               Already have an account? <a onClick={e => this.switchTab(e, 'login')}>Login</a>
             </Form.Item>
@@ -139,6 +150,7 @@ class JoinModal extends React.Component<any, any> {
     forgotPassword: {
       title: 'Forgot Password',
       body: () => {
+        const loading = this.props.loading;
         const { getFieldDecorator } = this.props.form;
         const verificationCodeRetry = this.state.verificationCodeRetry;
         return (
@@ -154,12 +166,13 @@ class JoinModal extends React.Component<any, any> {
             </Form.Item>
 
             <Form.Item label="Verification Code">
-              {getFieldDecorator('verification_code', {
+              {getFieldDecorator('code', {
                 rules: [{ required: true, message: 'Please input verification code' }],
               })(
                 <Input.Search
                   enterButton={verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'}
-                  className={verificationCodeRetry ? 'input-button-disabled' : 'input-button'}
+                  className={verificationCodeRetry || loading.verificationCode ? 'input-button-disabled' : 'input-button'}
+                  onSearch={() => !(verificationCodeRetry || loading.verificationCode) && this.getVerificationCode()}
                 />
               )}
             </Form.Item>
@@ -226,7 +239,7 @@ class JoinModal extends React.Component<any, any> {
   }
 
   switchTab = async (e, selectedTab) => {
-    e.preventDefault();
+    e && e.preventDefault();
     const form = this.props.form;
     const modalHeader = document.querySelector(`.${styles.modalTransition} .ant-modal-header`);
     const modalBody = document.querySelector(`.${styles.modalTransition} .ant-modal-body`);
@@ -265,16 +278,15 @@ class JoinModal extends React.Component<any, any> {
     callback();
   };
 
-  getRegisterVerificationCode = () => {
+  getVerificationCode = () => {
     const { dispatch, form } = this.props;
     form.validateFields(['email']);
     if (!form.getFieldError('email')) {
       dispatch({
-        type: 'verifications/getEmailCode',
+        type: 'verifications/getCode',
         payload: form.getFieldsValue(['email']),
       }).then(ret => {
-        msg.auto(ret);
-        if (ret.success) {
+        if (ret.success || ret.code === Codes.R_VERIFICATIONS_FLE) {
           msg.success('The verifications code has been sent to your email');
           const { retryAfter } = ret.data;
           this.setState({ verificationCodeRetry: Math.ceil(retryAfter) });
@@ -288,6 +300,8 @@ class JoinModal extends React.Component<any, any> {
             });
           }.bind(this), 1000);
           this.setState({ verificationCodeRetryTimer: timer });
+        } else {
+          msg.auto(ret);
         }
         setFormErrors(form, ret.errors);
       });
@@ -296,6 +310,7 @@ class JoinModal extends React.Component<any, any> {
 
   register = data => {
     const { dispatch, form } = this.props;
+    data.code = +data.code;
     dispatch({
       type: 'users/register',
       payload: data,
@@ -339,6 +354,24 @@ class JoinModal extends React.Component<any, any> {
     });
   };
 
+  forgotPassword = data => {
+    const { dispatch, form } = this.props;
+    data.code = +data.code;
+    dispatch({
+      type: 'users/forgotPassword',
+      payload: data,
+    }).then(ret => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Your password has been reset successfully');
+        this.switchTab(null, 'login')
+      }
+      else if (ret.result === 'error') {
+        setFormErrors(form, ret.errors);
+      }
+    });
+  };
+
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -348,6 +381,9 @@ class JoinModal extends React.Component<any, any> {
             break;
           case 'register':
             this.register(values);
+            break;
+          case 'forgotPassword':
+            this.forgotPassword(values);
             break;
           default:
         }
@@ -415,7 +451,7 @@ function mapStateToProps(state) {
     loading: {
       login: !!state.loading.effects['session/login'],
       register: !!state.loading.effects['users/register'],
-      emailCode: !!state.loading.effects['verifications/getEmailCode'],
+      verificationCode: !!state.loading.effects['verifications/getCode'],
     },
   };
 }

@@ -1,11 +1,11 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import consts from '@/configs/constants';
+import constants from '@/configs/constants';
 import api from '@/configs/apis';
 
 function initAxios(): AxiosInstance {
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: api.base,
-    timeout: consts.requestTimeout,
+    timeout: constants.requestTimeout,
   });
   axiosInstance.interceptors.request.use(function(config) {
     config.params = Object.assign({}, config.params, {
@@ -43,8 +43,18 @@ async function request(url: string, options: AxiosRequestConfig = {}): Promise<A
   return response.data;
 }
 
-export function get(url: string): Promise<ApiResponse<any> > {
-  return request(url);
+export async function get(url: string, minDuration?: number): Promise<ApiResponse<any> > {
+  const startTime = Date.now();
+  const res = await request(url);
+  if (minDuration > 0) {
+      const duration = Date.now() - startTime;
+      if (duration < minDuration) {
+        return new Promise<ApiResponse<any> >((resolve, reject) => {
+          setTimeout(() => resolve(res), minDuration - duration);
+        });
+      }
+  }
+  return res;
 }
 
 export function post(url: string, data?: any): Promise<ApiResponse<any> > {

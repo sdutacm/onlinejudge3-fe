@@ -32,5 +32,5 @@ export function getDetail(id) {
       id,
     },
   });
-  return get(url);
+  return get(url, 1000);
 }

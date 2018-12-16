@@ -1,12 +1,18 @@
 import React from 'react';
+import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Avatar, Tabs, List, Icon } from 'antd';
-import styles from '../problems/$id.less';
+import { Row, Col, Card, Avatar, Tabs, List, Icon, Skeleton } from 'antd';
+import { Link } from 'react-router-dom';
+import styles from './$id.less';
 import { urlf } from '@/utils/format';
 import pages from '@/configs/pages';
 import moment from 'moment';
+import xss from 'xss';
+import { Results } from '@/configs/results';
 
 interface Props extends RouteProps, ReduxProps {
+  data: User;
+  session: Session;
 }
 
 interface State {
@@ -44,31 +50,35 @@ class UserDetail extends React.Component<Props, State> {
   );
 
   render() {
+    const { loading, data: allData, match } = this.props;
+    const id = ~~match.params.id;
+    const data: User = allData[id] || {};
+    console.log(loading, id, data, allData);
     return (
       <div>
         <div className="u-bbg"></div>
         <div className="content-view" style={{ position: 'relative' }}>
-          <div className="u-header">
+          <div className="u-header" style={{ height: '60px' }}>
             <span className="u-avatar">
-              <Avatar size={120} icon="user" src="http://127.0.0.1/oj3_bgs/lxh.jpg" />
+              <Avatar size={120} icon="user" src={data.avatar} />
             </span>
             <span className="u-info">
-              <h1>raincloud</h1>
+              <h1>{data.nickname}</h1>
             </span>
           </div>
 
           <div className="u-content">
             <Row gutter={16}>
               <Col xs={24} md={18} xxl={20}>
-                <Card bordered={false}>
-                  <h3>Rating</h3>
-                  <img src="http://127.0.0.1/oj3_bgs/rating3.png" style={{ maxWidth: '100%' }} />
-                </Card>
+                {/*<Card bordered={false}>*/}
+                  {/*<h3>Rating</h3>*/}
+                  {/*<img src="http://127.0.0.1/oj3_bgs/rating3.png" style={{ maxWidth: '100%' }} />*/}
+                {/*</Card>*/}
 
-                <Card bordered={false}>
-                  <h3>AC Calendar</h3>
-                  <img src="http://127.0.0.1/oj3_bgs/ac-cal.png" style={{ maxWidth: '100%' }} />
-                </Card>
+                {/*<Card bordered={false}>*/}
+                  {/*<h3>AC Calendar</h3>*/}
+                  {/*<img src="http://127.0.0.1/oj3_bgs/ac-cal.png" style={{ maxWidth: '100%' }} />*/}
+                {/*</Card>*/}
 
                 <Card bordered={false}>
                   <h3>Activities</h3>
@@ -82,46 +92,53 @@ class UserDetail extends React.Component<Props, State> {
               <Col xs={24} md={6} xxl={4}>
                 <Card bordered={false}>
                   <div style={{ width: '100%' }}>
-                    <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }}>
-                      <p style={{ marginBottom: '4px', fontSize: '16px' }}><strong>237</strong></p>
-                      <p style={{ fontSize: '12px' }}>AC</p>
-                    </div>
-                    <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center', borderLeft: '1px solid #ddd' }}>
-                      <p style={{ marginBottom: '4px', fontSize: '16px' }}><strong>1024</strong></p>
-                      <p style={{ fontSize: '12px' }}>Total</p>
-                    </div>
+                    <Link to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })} className="normal-text-link">
+                      <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }}>
+                        <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.accepted}</strong></p>
+                        <p style={{ fontSize: '12px' }}>AC</p>
+                      </div>
+                    </Link>
+                    <Link to={urlf(pages.solutions.index, { query: { userId: data.userId } })} className="normal-text-link">
+                      <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center', borderLeft: '1px solid #ddd' }}>
+                        <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
+                        <p style={{ fontSize: '12px' }}>Total</p>
+                      </div>
+                    </Link>
                   </div>
                 </Card>
                 <Card bordered={false} className={styles.infoBoard}>
-                  <table>
-                    <tbody>
-                    <tr>
-                      <td>School</td>
-                      <td>SDUT</td>
-                    </tr>
-                    <tr>
-                      <td>College</td>
-                      <td>计算机学院</td>
-                    </tr>
-                    <tr>
-                      <td>Major</td>
-                      <td>计算机科学与技术</td>
-                    </tr>
-                    <tr>
-                      <td>Class</td>
-                      <td>计科 0000</td>
-                    </tr>
-                    <tr>
-                      <td>Site</td>
-                      <td><a>acm.sdut.edu.cn</a></td>
-                    </tr>
-                    </tbody>
-                  </table>
+                  <Skeleton active loading={loading} paragraph={{ rows: 5, width: '100%' }}>
+                    <table>
+                      <tbody>
+                      <tr>
+                        <td>School</td>
+                        <td>{xss(data.school)}</td>
+                      </tr>
+                      <tr>
+                        <td>College</td>
+                        <td>{xss(data.college)}</td>
+                      </tr>
+                      <tr>
+                        <td>Major</td>
+                        <td>{xss(data.major)}</td>
+                      </tr>
+                      <tr>
+                        <td>Class</td>
+                        <td>{xss(data.class)}</td>
+                      </tr>
+                      {data.site ?
+                      <tr>
+                        <td>Site</td>
+                        <td><a href={xss(data.site)} target="_blank">{xss(data.site)}</a></td>
+                      </tr> : null}
+                      </tbody>
+                    </table>
+                  </Skeleton>
                 </Card>
 
-                <Card bordered={false}>
-                  <Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes
-                </Card>
+                {/*<Card bordered={false}>*/}
+                  {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}
+                {/*</Card>*/}
               </Col>
             </Row>
           </div>
@@ -131,4 +148,13 @@ class UserDetail extends React.Component<Props, State> {
   }
 }
 
-export default UserDetail;
+function mapStateToProps(state) {
+  return {
+    loading: !!state.loading.effects['users/getOne'],
+    data: state.users.one,
+    session: state.session,
+  };
+}
+
+export default connect(mapStateToProps)(UserDetail);
+

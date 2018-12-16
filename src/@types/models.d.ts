@@ -23,6 +23,7 @@ declare interface User {
   accepted?: number;
   submitted?: number;
   email?: string;
+  site?: string;
 }
 
 declare interface Problem {

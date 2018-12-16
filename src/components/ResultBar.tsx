@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popover } from 'antd';
-import { resultsMap } from '@/configs/results';
+import { Results, resultsMap } from '@/configs/results';
 
 interface Props {
   percent: number;
@@ -17,7 +17,7 @@ interface State {
 }
 
 function isFinished(result) {
-  return resultsMap[result].shortName !== 'WT' && resultsMap[result].shortName !== 'JG';
+  return result !== Results.WT && result !== Results.JG;
 }
 
 class ResultBar extends React.Component<Props, State> {

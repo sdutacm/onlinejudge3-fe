@@ -1,4 +1,7 @@
 const limits = {
+  users: {
+    list: 50,
+  },
   problems: {
     list: 50,
   },

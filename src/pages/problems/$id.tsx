@@ -31,7 +31,7 @@ class ProblemDetail extends React.Component<Props, State> {
   render() {
     const { loading, data: allData, match } = this.props;
     const id = ~~match.params.id;
-    const data = allData[id] || {};
+    const data: Problem = allData[id] || {};
     console.log(loading, id, data, allData);
     return (
       <Row gutter={16} className="content-view">

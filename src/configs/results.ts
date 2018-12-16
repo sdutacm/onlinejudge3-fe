@@ -1,72 +1,86 @@
-const resultsMap = {
-  0: {
+export enum Results {
+  WT = 0,
+  AC = 1,
+  TLE = 2,
+  MLE = 3,
+  WA = 4,
+  RTE = 5,
+  OLE = 6,
+  CE = 7,
+  PE = 8,
+  SE = 11,
+  JG = 12,
+}
+
+export const resultsMap = {
+  [Results.WT]: {
     shortName: 'WT',
     fullName: 'Waiting',
   },
-  1: {
+  [Results.AC]: {
     shortName: 'AC',
     fullName: 'Accepted',
     normalColor: 'green',
     colorfulColor: 'green',
     description: 'The solution passed all test cases',
   },
-  2: {
+  [Results.TLE]: {
     shortName: 'TLE',
     fullName: 'Time Limit Exceeded',
     normalColor: 'red',
     colorfulColor: 'skyblue',
     description: 'The solution\'s time usage exceeded the limit of some test cases',
   },
-  3: {
+  [Results.MLE]: {
     shortName: 'MLE',
     fullName: 'Memory Limit Exceeded',
     normalColor: 'red',
     colorfulColor: 'skyblue',
     description: 'The solution\'s memory usage exceeded the limit of some test cases',
   },
-  4: {
+  [Results.WA]: {
     shortName: 'WA',
     fullName: 'Wrong Answer',
     normalColor: 'red',
     colorfulColor: 'red',
     description: 'The solution failed some test cases',
   },
-  5: {
+  [Results.RTE]: {
     shortName: 'RTE',
     fullName: 'Runtime Error',
     normalColor: 'red',
     colorfulColor: 'purple',
     description: 'Error occurred at runtime',
   },
-  6: {
+  [Results.OLE]: {
     shortName: 'OLE',
     fullName: 'Output Limit Exceeded',
     normalColor: 'red',
     colorfulColor: 'skyblue',
     description: 'The solution\'s output exceeded the limit of some test cases',
   },
-  7: {
+  [Results.CE]: {
     shortName: 'CE',
     fullName: 'Compile Error',
     normalColor: 'red',
     colorfulColor: 'yellow',
     description: 'Compile error occurred before running on test cases',
   },
-  8: {
+  [Results.PE]: {
     shortName: 'PE',
     fullName: 'Presentation Error',
     normalColor: 'red',
     colorfulColor: 'red',
     description: 'The solution is almost right. Check the output format carefully',
   },
-  11: {
+  [Results.SE]: {
     shortName: 'SE',
     fullName: 'System Error',
     normalColor: 'red',
     colorfulColor: 'gray',
     description: 'Judger error occurred. Please report the issue to us',
   },
-  12: {
+  [Results.JG]: {
     shortName: 'JG',
     fullName: 'Judging',
   },
@@ -75,7 +89,8 @@ const resultsMap = {
 const results = [];
 for (const id in resultsMap) {
   const result = resultsMap[id];
-  if (result.shortName === 'WT' || result.shortName === 'JG') {
+  // @ts-ignore
+  if (id === Results.WT || id === Results.JG) {
     continue;
   }
   results.push({
@@ -85,5 +100,3 @@ for (const id in resultsMap) {
 }
 
 export default results;
-export { resultsMap };
-

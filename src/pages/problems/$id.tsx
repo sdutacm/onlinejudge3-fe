@@ -8,6 +8,7 @@ import { urlf } from '@/utils/format';
 import ProblemContent from '@/components/ProblemContent';
 import styles from './$id.less';
 import SubmissionModal from '@/components/SubmitSolutionModal';
+import NotFound from '@/pages/404';
 
 const tmpTagMap = {
   1: 'Greedy',
@@ -31,8 +32,11 @@ class ProblemDetail extends React.Component<Props, State> {
   render() {
     const { loading, data: allData, match } = this.props;
     const id = ~~match.params.id;
+    const notFound = !loading && !allData[id];
+    if (notFound) {
+      return <NotFound />;
+    }
     const data: Problem = allData[id] || {};
-    console.log(loading, id, data, allData);
     return (
       <Row gutter={16} className="content-view">
         <Col xs={24} md={18} xxl={18}>

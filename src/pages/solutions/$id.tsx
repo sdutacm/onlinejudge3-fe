@@ -7,6 +7,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { hasPermission } from '@/utils/permission';
+import NotFound from '../404';
 
 interface Props extends RouteProps, ReduxProps {
   session: Session;
@@ -40,17 +41,19 @@ class SolutionDetail extends React.Component<Props, State> {
   render() {
     const { loading, data: allData, session, match, dispatch } = this.props;
     const id = ~~match.params.id;
+    const notFound = !loading && !allData[id];
+    if (notFound) {
+      return <NotFound />;
+    }
     const data: Solution = allData[id] || {};
-    console.log(loading, id, data, allData);
-    const dataReady = !loading && data;
     return (
       <div>
         <Card bordered={false} className="list-card">
-          <SolutionTable loading={loading} data={{ rows: dataReady ? [data] : [] }} dispatch={dispatch}
+          <SolutionTable loading={loading} data={{ rows: loading ? [] : [data] }} dispatch={dispatch}
                          showPagination={false} isDetail />
         </Card>
         <Card bordered={false}>
-          {dataReady ?
+          {!loading ?
             <>
               {data.code ?
                 <div>

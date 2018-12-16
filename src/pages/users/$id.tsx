@@ -9,6 +9,7 @@ import pages from '@/configs/pages';
 import moment from 'moment';
 import xss from 'xss';
 import { Results } from '@/configs/results';
+import NotFound from '@/pages/404';
 
 interface Props extends RouteProps, ReduxProps {
   data: User;
@@ -52,8 +53,11 @@ class UserDetail extends React.Component<Props, State> {
   render() {
     const { loading, data: allData, match } = this.props;
     const id = ~~match.params.id;
+    const notFound = !loading && !allData[id];
+    if (notFound) {
+      return <NotFound />;
+    }
     const data: User = allData[id] || {};
-    console.log(loading, id, data, allData);
     return (
       <div>
         <div className="u-bbg"></div>

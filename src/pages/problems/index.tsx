@@ -139,8 +139,8 @@ class ProblemList extends React.Component<Props, State> {
                 )}
               />
               <Table.Column
-                title="AC"
-                key="AC"
+                title="Stat."
+                key="Statistics"
                 className="no-wrap"
                 render={(text, record: Problem) => (
                   <Popover title="AC / Total" content={`${record.accepted} / ${record.submitted} (${formatPercentage(record.accepted, record.submitted)})`}>

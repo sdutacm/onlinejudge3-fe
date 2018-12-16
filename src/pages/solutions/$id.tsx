@@ -6,8 +6,10 @@ import { Card, Switch, Skeleton } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
+import { hasPermission } from '@/utils/permission';
 
 interface Props extends RouteProps, ReduxProps {
+  session: Session;
   data: Solution;
 }
 
@@ -36,7 +38,7 @@ class SolutionDetail extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, dispatch } = this.props;
+    const { loading, data, session, dispatch } = this.props;
     const dataReady = !loading && data;
     return (
       <div>
@@ -47,14 +49,25 @@ class SolutionDetail extends React.Component<Props, State> {
         <Card bordered={false}>
           {dataReady ?
             <>
-              <div style={{ marginBottom: '12px' }}>
-                <span>Share Code <Switch defaultChecked={data.shared} disabled={loading} onChange={this.onShareChange}
-                                         className="ml-md" /></span>
-                <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
-              </div>
-              {data.code && <SyntaxHighlighter language={langsMap4Hljs[data.language]}
-                                               showLineNumbers
-                                               style={atomOneLight}>{data.code}</SyntaxHighlighter>}
+              {data.code ?
+                <div>
+                  <div style={{ height: '32px' }}>
+                    {hasPermission(session, data.user.userId) &&
+                    <div className="float-left">
+                      <span>Share Code</span>
+                      <Switch defaultChecked={data.shared} disabled={loading} onChange={this.onShareChange}
+                            className="ml-md" />
+                    </div>}
+                    <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
+                  </div>
+                  <SyntaxHighlighter language={langsMap4Hljs[data.language]}
+                                     showLineNumbers
+                                     style={atomOneLight}>{data.code}</SyntaxHighlighter>
+                </div> :
+                <div>
+                  <h3 className="warning-text">You do not have permission to view code</h3>
+                </div>
+              }
             </> :
             <Skeleton active title={false} paragraph={{ rows: 6, width: ['26%', '0%', '19%', '50%', '20%', '5%'] }} />
           }
@@ -68,6 +81,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['solutions/getOne'],
     data: state.solutions.one,
+    session: state.session,
   };
 }
 

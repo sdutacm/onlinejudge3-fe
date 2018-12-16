@@ -41,6 +41,9 @@ export default {
     * reload(action, { put }) {
       yield put({ type: 'reset' });
     },
+    * getSession(action, { select }) {
+      return yield select(state => state.session);
+    },
     * login({ payload: data }, { call, put }) {
       return yield call(service.login, data);
     },

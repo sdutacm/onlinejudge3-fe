@@ -49,10 +49,10 @@ class SolutionTable extends React.Component<Props, State> {
     const solutionIds: number[] = [];
     for (const row of rows) {
       if (results[row.result].shortName === 'WT' || results[row.result].shortName === 'JG') {
-        solutionIds.push(row.solutionId);
+        solutionIds.unshift(row.solutionId);
       }
     }
-    this.props.dispatch({
+    solutionIds.length && this.props.dispatch({
       type: 'solutions/getListByIds',
       payload: {
         type: this.props.isDetail ? 'one' : 'list',
@@ -104,7 +104,7 @@ class SolutionTable extends React.Component<Props, State> {
             )}
           />
           <Table.Column
-            title={isDetail ? 'Problem' : 'Prob.'}
+            title={'Prob.'}
             key="Problem"
             render={(text, record: Solution) => (
               <Popover content={record.problem.title}>
@@ -131,21 +131,21 @@ class SolutionTable extends React.Component<Props, State> {
             )}
           />
           <Table.Column
-            title={isDetail ? 'Memory' : 'Mem.'}
+            title={'Mem.'}
             key="Memory"
             render={(text, record: Solution) => (
               <span>{record.memory}</span>
             )}
           />
           <Table.Column
-            title={isDetail ? 'Length' : 'Len.'}
+            title={'Len.'}
             key="Length"
             render={(text, record: Solution) => (
               <span>{record.codeLength}</span>
             )}
           />
           <Table.Column
-            title={isDetail ? 'Language' : 'Lang.'}
+            title={'Lang.'}
             key="Language"
             render={(text, record: Solution) => (
               <span>{langsMap[record.language].displayShortName}</span>

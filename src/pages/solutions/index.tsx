@@ -46,7 +46,7 @@ class SolutionList extends React.Component<Props, State> {
           </Card>
           <Card bordered={false}>
             <FilterCard fields={[
-              { displayName: 'Owner Nickname', fieldName: 'nickname' },
+              { displayName: 'Owner', fieldName: 'nickname' },
               { displayName: 'Problem ID', fieldName: 'problemId' },
               {
                 displayName: 'Language', fieldName: 'language', options: langs.map(lang => {

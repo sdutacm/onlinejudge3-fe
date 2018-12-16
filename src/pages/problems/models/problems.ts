@@ -34,8 +34,7 @@ export default {
       return ret;
     },
     * getOne({ payload: id }, { call, put, select }) {
-      const state = yield select();
-      const savedState = state.problems.one[id];
+      const savedState = yield select(state => state.problems.one[id]);
       if (!isNeedRefetch(savedState)) {
         return;
       }

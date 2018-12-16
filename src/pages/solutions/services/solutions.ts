@@ -22,8 +22,8 @@ export function getListByIds(query) {
   return get(url);
 }
 
-export function getOne(id) {
-  const url = urlf(api.solutions.one, {
+export function getDetail(id) {
+  const url = urlf(api.solutions.detail, {
     param: {
       id,
     },

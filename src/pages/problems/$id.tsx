@@ -102,8 +102,8 @@ class ProblemDetail extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    loading: !!state.loading.effects['problems/getOne'],
-    data: state.problems.one,
+    loading: !!state.loading.effects['problems/getDetail'],
+    data: state.problems.detail,
   };
 }
 

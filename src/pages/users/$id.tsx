@@ -150,8 +150,8 @@ class UserDetail extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    loading: !!state.loading.effects['users/getOne'],
-    data: state.users.one,
+    loading: !!state.loading.effects['users/getDetail'],
+    data: state.users.detail,
     session: state.session,
   };
 }

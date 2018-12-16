@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
-import ToOneCard from '@/components/ToOneCard';
+import ToDetailCard from '@/components/ToDetailCard';
 import api from '@/configs/apis';
 import langs from '@/configs/solutionLanguages';
 import SolutionTable from '@/components/SolutionTable';
@@ -42,8 +42,8 @@ class SolutionList extends React.Component<Props, State> {
         </Col>
         <Col xs={24} lg={6} xxl={4}>
           <Card bordered={false}>
-            <ToOneCard label="Go to Solution" placeholder="Solution ID"
-                       toOneLink={id => urlf(api.solutions.one, { param: { id } })} />
+            <ToDetailCard label="Go to Solution" placeholder="Solution ID"
+                          toDetailLink={id => urlf(api.solutions.detail, { param: { id } })} />
           </Card>
           <Card bordered={false}>
             <FilterCard fields={[

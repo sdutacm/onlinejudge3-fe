@@ -17,17 +17,17 @@ const api = {
   },
   users: {
     base: '/users',
-    one: '/users/:id',
+    detail: '/users/:id',
     password: '/users/:id/password',
     email: '/users/:id/email',
   },
   problems: {
     base: '/problems',
-    one: '/problems/:id',
+    detail: '/problems/:id',
   },
   solutions: {
     base: '/solutions',
-    one: '/solutions/:id',
+    detail: '/solutions/:id',
   },
   contest: {
     acm: {

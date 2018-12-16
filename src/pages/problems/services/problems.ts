@@ -14,8 +14,8 @@ export function getList(query) {
   return get(url);
 }
 
-export function getOne(id) {
-  const url = urlf(api.problems.one, {
+export function getDetail(id) {
+  const url = urlf(api.problems.detail, {
     param: {
       id,
     },

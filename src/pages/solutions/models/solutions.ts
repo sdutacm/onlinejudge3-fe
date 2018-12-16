@@ -8,7 +8,7 @@ const initialState = {
     count: 0,
     rows: [],
   },
-  one: null,
+  detail: null,
 };
 
 export default {
@@ -17,8 +17,8 @@ export default {
     setList(state, { payload: { data } }) {
       state.list = data;
     },
-    setOne(state, { payload: { data } }) {
-      state.one = data;
+    setDetail(state, { payload: { data } }) {
+      state.detail = data;
     },
   },
   effects: {
@@ -57,21 +57,21 @@ export default {
             },
           }));
         }
-        else if(type === 'one') {
-          const one: Solution = state.solutions.one;
-          ret.data[one.solutionId] && (yield put({
-            type: 'setOne',
-            payload: { data: ret.data[one.solutionId] },
+        else if(type === 'detail') {
+          const detail: Solution = state.solutions.detail;
+          ret.data[detail.solutionId] && (yield put({
+            type: 'setDetail',
+            payload: { data: ret.data[detail.solutionId] },
           }));
         }
       }
       return ret;
     },
-    * getOne({ payload: id }, { call, put }) {
-      const ret: ApiResponse<Solution> = yield call(service.getOne, id);
+    * getDetail({ payload: id }, { call, put }) {
+      const ret: ApiResponse<Solution> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
-          type: 'setOne',
+          type: 'setDetail',
           payload: { data: ret.data },
         });
       }
@@ -87,12 +87,12 @@ export default {
         if (pathname === pages.solutions.index) {
           dispatch({ type: 'getList', payload: query });
         }
-        const matchOne = matchPath(pathname, {
-          path: pages.solutions.one,
+        const matchDetail = matchPath(pathname, {
+          path: pages.solutions.detail,
           exact: true,
         });
-        if (matchOne) {
-          dispatch({ type: 'getOne', payload: matchOne.params['id'] });
+        if (matchDetail) {
+          dispatch({ type: 'getDetail', payload: matchDetail.params['id'] });
         }
       });
     },

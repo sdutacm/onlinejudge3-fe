@@ -147,7 +147,7 @@ class NavMenu extends React.Component<Props, any> {
                                                    src={session.user.avatar}
                                                    className={styles.avatarDefault} /><span style={{ marginLeft: '8px' }}>{session.user.nickname}</span></span>}>
                 <Menu.Item key="profile">
-                  <Link to={urlf(pages.users.one, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
+                  <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
@@ -173,7 +173,7 @@ class NavMenu extends React.Component<Props, any> {
                   <span>{session.user.nickname}</span>
                 </Menu.Item>
                 <Menu.Item key="profile">
-                  <Link  to={urlf(pages.users.one, { param: { id: session.user.userId } })}>Profile</Link>
+                  <Link  to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={this.logOut}>Logout</Menu.Item>
               </Menu.SubMenu>

@@ -55,7 +55,7 @@ class SolutionTable extends React.Component<Props, State> {
     solutionIds.length && this.props.dispatch({
       type: 'solutions/getListByIds',
       payload: {
-        type: this.props.isDetail ? 'one' : 'list',
+        type: this.props.isDetail ? 'detail' : 'list',
         solutionIds,
       },
     });
@@ -85,7 +85,7 @@ class SolutionTable extends React.Component<Props, State> {
                )}
                onRow={(record) => {
                  return {
-                   onClick: () => !this.props.isDetail && router.push(urlf(pages.solutions.one, { param: { id: record.solutionId } }))
+                   onClick: () => !this.props.isDetail && router.push(urlf(pages.solutions.detail, { param: { id: record.solutionId } }))
                  };
                }}
         >
@@ -108,7 +108,7 @@ class SolutionTable extends React.Component<Props, State> {
             key="Problem"
             render={(text, record: Solution) => (
               <Popover content={record.problem.title}>
-                <Link to={urlf(pages.problems.one, { param: { id: record.problem.problemId } })}
+                <Link to={urlf(pages.problems.detail, { param: { id: record.problem.problemId } })}
                       onClick={e => e.stopPropagation()}>{record.problem.problemId}</Link>
               </Popover>
             )}
@@ -163,7 +163,7 @@ class SolutionTable extends React.Component<Props, State> {
             key=""
             className="float-btn"
             render={(text, record: Solution) => (
-              <Link to={urlf(pages.solutions.one, { param: { id: record.solutionId } })}
+              <Link to={urlf(pages.solutions.detail, { param: { id: record.solutionId } })}
                     onClick={e => e.stopPropagation()}>
                 <Icon type="ellipsis" theme="outlined" />
               </Link>

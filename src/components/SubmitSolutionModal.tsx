@@ -44,7 +44,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
           if (ret.success) {
             msg.success('Submit successfully');
             this.handleHideModel();
-            setTimeout(() => router.push(urlf(pages.solutions.one, { param: { id: ret.data.solutionId } })),
+            setTimeout(() => router.push(urlf(pages.solutions.detail, { param: { id: ret.data.solutionId } })),
               constants.modalAnimationDurationFade
             );
           }

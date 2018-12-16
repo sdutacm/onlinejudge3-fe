@@ -6,18 +6,18 @@ import gStyles from '@/general.less';
 interface Props {
   label: string;
   placeholder: string;
-  toOneLink: (string) => string;
+  toDetailLink: (string) => string;
 }
 
 interface State {
   value: string;
 }
 
-class ToOneCard extends React.Component<Props, State> {
+class ToDetailCard extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     label: '',
     placeholder: '',
-    toOneLink: () => '',
+    toDetailLink: () => '',
   };
 
   constructor(props) {
@@ -28,9 +28,9 @@ class ToOneCard extends React.Component<Props, State> {
   }
 
   handleSubmit = () => {
-    const { toOneLink } = this.props;
+    const { toDetailLink } = this.props;
     if (this.state.value) {
-      router.push(toOneLink(this.state.value));
+      router.push(toDetailLink(this.state.value));
     }
   };
 
@@ -52,4 +52,4 @@ class ToOneCard extends React.Component<Props, State> {
   }
 }
 
-export default ToOneCard;
+export default ToDetailCard;

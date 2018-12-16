@@ -16,10 +16,10 @@ export function genTimeFlag(expires: number): TimeFlag {
 }
 
 /**
- * Return whether the state need re-fetch when executing an effect action
+ * Return whether the state expired when executing an effect action
  * @param savedState
  * @returns {boolean}
  */
-export function isNeedRefetch(savedState): boolean {
+export function isStateExpired(savedState): boolean {
   return !savedState || (savedState && savedState._et < Date.now());
 }

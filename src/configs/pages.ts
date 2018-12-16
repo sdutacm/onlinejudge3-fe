@@ -2,17 +2,17 @@ export default {
   index: '/',
   problems: {
     index: '/problems',
-    one: '/problems/:id',
+    detail: '/problems/:id',
   },
   solutions: {
     index: '/solutions',
-    one: '/solutions/:id',
+    detail: '/solutions/:id',
   },
   contest: {
     index: '/contest/acm',
   },
   users: {
     index: '/users',
-    one: '/users/:id',
+    detail: '/users/:id',
   },
 };

@@ -1,7 +1,7 @@
 import * as service from '../services/problems';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
-import { genTimeFlag, isNeedRefetch } from '@/utils/misc';
+import { genTimeFlag, isStateExpired } from '@/utils/misc';
 
 const initialState = {
   list: {
@@ -9,7 +9,7 @@ const initialState = {
     count: 0,
     rows: [],
   },
-  one: {},
+  detail: {},
 };
 
 export default {
@@ -18,8 +18,8 @@ export default {
     setList(state, { payload: { data } }) {
       state.list = data;
     },
-    setOne(state, { payload: { id, data } }) {
-      state.one[id] = { ...data, ...genTimeFlag(20000) };
+    setDetail(state, { payload: { id, data } }) {
+      state.detail[id] = { ...data, ...genTimeFlag(20000) };
     },
   },
   effects: {
@@ -33,15 +33,15 @@ export default {
       }
       return ret;
     },
-    * getOne({ payload: id }, { call, put, select }) {
-      const savedState = yield select(state => state.problems.one[id]);
-      if (!isNeedRefetch(savedState)) {
+    * getDetail({ payload: id }, { call, put, select }) {
+      const savedState = yield select(state => state.problems.detail[id]);
+      if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: ApiResponse<Problem> = yield call(service.getOne, id);
+      const ret: ApiResponse<Problem> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
-          type: 'setOne',
+          type: 'setDetail',
           payload: { id, data: ret.data },
         });
       }
@@ -59,12 +59,12 @@ export default {
         if (pathname === pages.problems.index) {
           dispatch({ type: 'getList', payload: query });
         }
-        const matchOne = matchPath(pathname, {
-          path: pages.problems.one,
+        const matchDetail = matchPath(pathname, {
+          path: pages.problems.detail,
           exact: true,
         });
-        if (matchOne) {
-          dispatch({ type: 'getOne', payload: matchOne.params['id'] });
+        if (matchDetail) {
+          dispatch({ type: 'getDetail', payload: matchDetail.params['id'] });
         }
       });
     },

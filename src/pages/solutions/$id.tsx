@@ -79,8 +79,8 @@ class SolutionDetail extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    loading: !!state.loading.effects['solutions/getOne'],
-    data: state.solutions.one,
+    loading: !!state.loading.effects['solutions/getDetail'],
+    data: state.solutions.detail,
     session: state.session,
   };
 }

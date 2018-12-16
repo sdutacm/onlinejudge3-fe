@@ -9,7 +9,7 @@ import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
-import ToOneCard from '@/components/ToOneCard';
+import ToDetailCard from '@/components/ToDetailCard';
 import api from '@/configs/apis';
 import { formatPercentage } from '@/utils/format';
 
@@ -131,7 +131,7 @@ class ProblemList extends React.Component<Props, State> {
                 // }}
                 render={(text, record: Problem) => (
                   <div>
-                    <Link to={urlf(pages.problems.one, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
+                    <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
                     {record.tags.length ? <div className="float-right">{record.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}</div> :
                       <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
                     }
@@ -176,8 +176,8 @@ class ProblemList extends React.Component<Props, State> {
         </Col>
         <Col xs={24} md={6} xxl={4}>
           <Card bordered={false}>
-            <ToOneCard label="Go to Problem" placeholder="Problem ID"
-                       toOneLink={id => urlf(api.problems.one, { param: { id } })} />
+            <ToDetailCard label="Go to Problem" placeholder="Problem ID"
+                          toDetailLink={id => urlf(api.problems.detail, { param: { id } })} />
           </Card>
           <Card bordered={false}>
             <FilterCard fields={[

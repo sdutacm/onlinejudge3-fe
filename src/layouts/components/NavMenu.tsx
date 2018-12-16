@@ -11,6 +11,7 @@ import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import NoteSvg from '@/assets/svg/note.svg';
 import moment from 'moment';
+import { urlf } from '@/utils/format';
 
 // Powered by https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -145,8 +146,8 @@ class NavMenu extends React.Component<Props, any> {
               <Menu.ItemGroup title={<span><Avatar icon="user"
                                                    src={session.user.avatar}
                                                    className={styles.avatarDefault} /><span style={{ marginLeft: '8px' }}>{session.user.nickname}</span></span>}>
-                <Menu.Item key="/user">
-                  <Link to="/user" onClick={onLinkClick}>Profile</Link>
+                <Menu.Item key="profile">
+                  <Link to={urlf(pages.users.one, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
@@ -171,8 +172,8 @@ class NavMenu extends React.Component<Props, any> {
                 <Menu.Item key="nickname" disabled>
                   <span>{session.user.nickname}</span>
                 </Menu.Item>
-                <Menu.Item key="/user">
-                  <Link to="/user">Profile</Link>
+                <Menu.Item key="profile">
+                  <Link  to={urlf(pages.users.one, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={this.logOut}>Logout</Menu.Item>
               </Menu.SubMenu>

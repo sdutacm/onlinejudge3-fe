@@ -1,4 +1,4 @@
-const results = {
+const resultsMap = {
   0: {
     shortName: 'WT',
     fullName: 'Waiting',
@@ -72,4 +72,18 @@ const results = {
   },
 };
 
+const results = [];
+for (const id in resultsMap) {
+  const result = resultsMap[id];
+  if (result.shortName === 'WT' || result.shortName === 'JG') {
+    continue;
+  }
+  results.push({
+    ...result,
+    id,
+  });
+}
+
 export default results;
+export { resultsMap };
+

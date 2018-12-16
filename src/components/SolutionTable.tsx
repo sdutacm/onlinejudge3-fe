@@ -12,7 +12,7 @@ import TimeBar from '@/components/TimeBar';
 import limits from '@/configs/limits';
 import { Table, Popover, Pagination, Icon } from 'antd';
 import classNames from 'classnames';
-import results from '@/configs/results';
+import { resultsMap } from '@/configs/results';
 
 interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -48,7 +48,7 @@ class SolutionTable extends React.Component<Props, State> {
     const { rows } = this.props.data;
     const solutionIds: number[] = [];
     for (const row of rows) {
-      if (results[row.result].shortName === 'WT' || results[row.result].shortName === 'JG') {
+      if (resultsMap[row.result].shortName === 'WT' || resultsMap[row.result].shortName === 'JG') {
         solutionIds.unshift(row.solutionId);
       }
     }

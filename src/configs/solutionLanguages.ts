@@ -32,7 +32,7 @@ const langs = [
 ];
 
 const langsMap = {};
-for (let lang of langs) {
+for (const lang of langs) {
   langsMap[lang.fieldName] = lang;
 }
 

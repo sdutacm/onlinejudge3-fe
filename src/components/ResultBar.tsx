@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popover } from 'antd';
-import results from '@/configs/results';
+import { resultsMap } from '@/configs/results';
 
 interface Props {
   percent: number;
@@ -17,7 +17,7 @@ interface State {
 }
 
 function isFinished(result) {
-  return results[result].shortName !== 'WT' && results[result].shortName !== 'JG';
+  return resultsMap[result].shortName !== 'WT' && resultsMap[result].shortName !== 'JG';
 }
 
 class ResultBar extends React.Component<Props, State> {
@@ -73,7 +73,7 @@ class ResultBar extends React.Component<Props, State> {
     if (this.props.result !== nextProps.result && isFinished(nextProps.result)) {
       console.log('judged!');
       clearInterval(this.state.timer);
-      if (results[nextProps.result].shortName === 'AC') {
+      if (resultsMap[nextProps.result].shortName === 'AC') {
         this.setState({ percent: 100, lockAnim: true });
         setTimeout(() => this.setState({ lockAnim: false }), 400);
       }
@@ -89,8 +89,8 @@ class ResultBar extends React.Component<Props, State> {
       return <div className="progress" style={{ width: this.state.percent + '%' }}>&nbsp;</div>;
     }
     return (
-      <Popover title={results[result].fullName} content={results[result].description}>
-        <div className={`result bg-${results[result].normalColor}`}><span>{results[result].shortName}</span></div>
+      <Popover title={resultsMap[result].fullName} content={resultsMap[result].description}>
+        <div className={`result bg-${resultsMap[result].normalColor}`}><span>{resultsMap[result].shortName}</span></div>
       </Popover>
     );
   }

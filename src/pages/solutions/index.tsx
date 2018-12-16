@@ -10,6 +10,7 @@ import ToOneCard from '@/components/ToOneCard';
 import api from '@/configs/apis';
 import langs from '@/configs/solutionLanguages';
 import SolutionTable from '@/components/SolutionTable';
+import results from '@/configs/results';
 
 interface Props extends ReduxProps, RouteProps {
   data: List<Solution>;
@@ -51,6 +52,11 @@ class SolutionList extends React.Component<Props, State> {
               {
                 displayName: 'Language', fieldName: 'language', options: langs.map(lang => {
                   return { fieldName: lang.fieldName, displayName: lang.displayShortName };
+                })
+              },
+              {
+                displayName: 'Result', fieldName: 'result', options: results.map(res => {
+                  return { fieldName: res.id, displayName: res.fullName };
                 })
               },
             ]} />

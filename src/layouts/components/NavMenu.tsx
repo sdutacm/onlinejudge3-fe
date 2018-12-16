@@ -121,8 +121,8 @@ class NavMenu extends React.Component<Props, any> {
           <Link to={pages.index} onClick={onLinkClick}>Experiments</Link>
         </Menu.Item>
 
-        <Menu.Item key="/Standings">
-          <Link to={pages.index} onClick={onLinkClick}>Standings</Link>
+        <Menu.Item key={pages.users.index}>
+          <Link to={pages.users.index} onClick={onLinkClick}>Standings</Link>
         </Menu.Item>
 
         <Menu.Item key="/Forum">

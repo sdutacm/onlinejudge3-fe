@@ -9,6 +9,7 @@ import gStyles from '../general.less';
 import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import moment from 'moment';
+import { matchPath } from 'react-router';
 
 interface Props extends ReduxProps, RouteProps {
 }
@@ -39,7 +40,10 @@ class Index extends React.Component<Props, State> {
   render() {
     const { children, location } = this.props;
     const { Header, Content, Footer } = Layout;
-    const inUserDetailPage = location.pathname.startsWith(pages.users.index);
+    const inUserDetailPage = matchPath(location.pathname, {
+      path: pages.users.detail,
+      exact: true,
+    });
     return (
       <Layout className={inUserDetailPage ? 'user-page' : ''}>
         <Header>

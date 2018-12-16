@@ -40,7 +40,11 @@ export default {
   },
   effects: {
     * getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = formatListQuery(query);
+      const formattedQuery = {
+        ...formatListQuery(query),
+        orderBy: 'accepted',
+        orderDirection: 'DESC',
+      };
       const savedState = yield select(state => state.users.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;

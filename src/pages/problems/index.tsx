@@ -177,7 +177,7 @@ class ProblemList extends React.Component<Props, State> {
         <Col xs={24} md={6} xxl={4}>
           <Card bordered={false}>
             <ToDetailCard label="Go to Problem" placeholder="Problem ID"
-                          toDetailLink={id => urlf(api.problems.detail, { param: { id } })} />
+                          toDetailLink={id => urlf(pages.problems.detail, { param: { id } })} />
           </Card>
           <Card bordered={false}>
             <FilterCard fields={[

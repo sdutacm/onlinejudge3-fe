@@ -11,6 +11,7 @@ import api from '@/configs/apis';
 import langs from '@/configs/solutionLanguages';
 import SolutionTable from '@/components/SolutionTable';
 import results from '@/configs/results';
+import pages from '@/configs/pages';
 
 interface Props extends ReduxProps, RouteProps {
   data: List<Solution>;
@@ -43,7 +44,7 @@ class SolutionList extends React.Component<Props, State> {
         <Col xs={24} lg={6} xxl={4}>
           <Card bordered={false}>
             <ToDetailCard label="Go to Solution" placeholder="Solution ID"
-                          toDetailLink={id => urlf(api.solutions.detail, { param: { id } })} />
+                          toDetailLink={id => urlf(pages.solutions.detail, { param: { id } })} />
           </Card>
           <Card bordered={false}>
             <FilterCard fields={[

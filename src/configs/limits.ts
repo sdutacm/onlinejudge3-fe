@@ -1,9 +1,9 @@
 const limits = {
   users: {
-    list: 50,
+    list: 20,
   },
   problems: {
-    list: 50,
+    list: 20,
   },
   solutions: {
     list: 10,

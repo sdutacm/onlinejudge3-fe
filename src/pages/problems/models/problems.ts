@@ -1,13 +1,16 @@
 import * as service from '../services/problems';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
-import { genTimeFlag, isStateExpired } from '@/utils/misc';
+import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
+import { isEqual } from 'lodash';
+import { formatListQuery } from '@/utils/format';
 
 const initialState = {
   list: {
     page: 1,
     count: 0,
     rows: [],
+    _query: {},
   },
   detail: {},
 };
@@ -15,20 +18,38 @@ const initialState = {
 export default {
   state: initialState,
   reducers: {
-    setList(state, { payload: { data } }) {
-      state.list = data;
+    setList(state, { payload: { data, query } }) {
+      state.list = {
+        ...data,
+        _query: query,
+        ...genTimeFlag(5 * 60 * 1000),
+      };
     },
     setDetail(state, { payload: { id, data } }) {
-      state.detail[id] = { ...data, ...genTimeFlag(20000) };
+      state.detail[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearExpiredDetail(state) {
+      state.detail = clearExpiredStateProperties(state.detail);
     },
   },
   effects: {
-    * getList({ payload: query = { page: 1 } }, { call, put }) {
-      const ret: ApiResponse<List<Problem> > = yield call(service.getList, query);
+    * getList({ payload: query }, { call, put, select }) {
+      const formattedQuery = formatListQuery(query);
+      const savedState = yield select(state => state.problems.list);
+      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+        return;
+      }
+      const ret: ApiResponse<List<Problem> > = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
-          payload: { data: ret.data },
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
         });
       }
       return ret;
@@ -43,6 +64,9 @@ export default {
         yield put({
           type: 'setDetail',
           payload: { id, data: ret.data },
+        });
+        yield put({
+          type: 'clearExpiredDetail',
         });
       }
       return ret;

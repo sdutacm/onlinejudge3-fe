@@ -47,3 +47,22 @@ export function formatPercentage(a: number, b: number, precision: number = 2): s
   }
   return parseFloat(ratio).toFixed(prec) + '%';
 }
+
+/**
+ * Format list query, and only reserve valid property
+ * @param {ListQuery} query
+ * @returns {ListQuery}
+ */
+export function formatListQuery(query: ListQuery): ListQuery {
+  const formattedQuery: ListQuery = {
+    ...query,
+    page: +query.page || 1,
+  };
+  query.limit && (formattedQuery.limit = +query.limit);
+  for (const q in formattedQuery) {
+    if (formattedQuery.hasOwnProperty(q) && !formattedQuery[q]) {
+      delete formattedQuery[q];
+    }
+  }
+  return formattedQuery;
+}

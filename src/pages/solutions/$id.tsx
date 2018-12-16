@@ -38,7 +38,10 @@ class SolutionDetail extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, session, dispatch } = this.props;
+    const { loading, data: allData, session, match, dispatch } = this.props;
+    const id = ~~match.params.id;
+    const data: Solution = allData[id] || {};
+    console.log(loading, id, data, allData);
     const dataReady = !loading && data;
     return (
       <div>

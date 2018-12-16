@@ -23,3 +23,18 @@ export function genTimeFlag(expires: number): TimeFlag {
 export function isStateExpired(savedState): boolean {
   return !savedState || (savedState && savedState._et < Date.now());
 }
+
+/**
+ * Clear expired properties in state (only check the top level of the state object)
+ * @param state
+ * @returns {any}
+ */
+export function clearExpiredStateProperties(state: any): any {
+  const newState = {};
+  for (const key in state) {
+    if (state.hasOwnProperty(key) && !isStateExpired(state[key])) {
+      newState[key] = state[key];
+    }
+  }
+  return newState;
+}

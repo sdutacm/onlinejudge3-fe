@@ -4,6 +4,7 @@ import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
 import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
+import { requestEffect } from '@/utils/effectInterceptor';
 
 const initialState = {
   list: {
@@ -64,22 +65,31 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: id }, { call, put, select }) {
+    * getDetail({ payload: id }, { all, call, put, select }) {
       const savedState = yield select(state => state.problems.detail[id]);
       if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: ApiResponse<Problem> = yield call(service.getDetail, id);
-      if (ret.success) {
+      const [detailRet, tagsRet]: ApiResponse<any>[] = yield all([
+        call(service.getDetail, id),
+        call(service.getProblemTags, id),
+      ]);
+
+      detailRet.data.tags = [];
+      try {
+        detailRet.data.tags = [ ...tagsRet.data.rows ];
+      }
+      catch (err) {}
+      if (detailRet.success) {
         yield put({
           type: 'setDetail',
-          payload: { id, data: ret.data },
+          payload: { id, data: detailRet.data },
         });
         yield put({
           type: 'clearExpiredDetail',
         });
       }
-      return ret;
+      return detailRet;
     },
     * getTagList(action, { call, put, select }) {
       const savedState = yield select(state => state.problems.tagList);
@@ -105,15 +115,15 @@ export default {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === pages.problems.index) {
-          dispatch({ type: 'getList', payload: query });
-          dispatch({ type: 'getTagList' });
+          requestEffect(dispatch, { type: 'getList', payload: query });
+          requestEffect(dispatch, { type: 'getTagList' });
         }
         const matchDetail = matchPath(pathname, {
           path: pages.problems.detail,
           exact: true,
         });
         if (matchDetail) {
-          dispatch({ type: 'getDetail', payload: matchDetail.params['id'] });
+          requestEffect(dispatch, { type: 'getDetail', payload: matchDetail.params['id'] });
         }
       });
     },

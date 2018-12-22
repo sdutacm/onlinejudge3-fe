@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon } from 'antd';
+import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon, Popover } from 'antd';
 import Link from 'umi/link';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
@@ -9,12 +9,6 @@ import ProblemContent from '@/components/ProblemContent';
 import styles from './$id.less';
 import SubmissionModal from '@/components/SubmitSolutionModal';
 import NotFound from '@/pages/404';
-
-const tmpTagMap = {
-  1: 'Greedy',
-  2: 'Math',
-  3: 'DP',
-};
 
 interface Props extends ReduxProps, RouteProps {
   data: Problem;
@@ -95,7 +89,11 @@ class ProblemDetail extends React.Component<Props, State> {
             </Card>
             {!loading && data.tags && !!data.tags.length && <Card bordered={false}>
               <h4 style={{ lineHeight: 1, marginBottom: '12px' }}>Tags</h4>
-              {data.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}
+              {data.tags.map(tag =>
+                <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+                  <Link to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}><Tag>{tag.name.en}</Tag></Link>
+                </Popover>
+              )}
             </Card>}
           </Affix>
         </Col>

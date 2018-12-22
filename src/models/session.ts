@@ -1,4 +1,5 @@
 import * as service from '../services/session';
+import { endInterception, initInterceptor, startInterception } from '@/utils/effectInterceptor';
 
 const initialState = {
   loggedIn: false,
@@ -29,6 +30,7 @@ export default {
   },
   effects: {
     * fetch(action, { call, put }) {
+      startInterception();
       const ret: ApiResponse<Session> = yield call(service.fetch);
       if (ret.success) {
         yield put({
@@ -36,6 +38,7 @@ export default {
           payload: { user: ret.data },
         });
       }
+      endInterception();
       return ret;
     },
     * reload(action, { put }) {
@@ -59,6 +62,7 @@ export default {
   },
   subscriptions: {
     setup({ dispatch, history }) {
+      initInterceptor();
       return history.listen(({ pathname }) => {
         // if(pathname === '/session') {
         //   dispatch({ type: 'fetch' });

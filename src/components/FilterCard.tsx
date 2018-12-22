@@ -30,6 +30,7 @@ class FilterCard extends React.Component<Props, any> {
           query: {
             ...query,
             ...values,
+            page: 1,
           },
         });
       }

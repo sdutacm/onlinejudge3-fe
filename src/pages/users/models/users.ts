@@ -4,6 +4,7 @@ import pages from '@/configs/pages';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
 import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
+import { requestEffect } from '@/utils/effectInterceptor';
 
 const initialState = {
   list: {
@@ -89,14 +90,14 @@ export default {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === pages.users.index) {
-          dispatch({ type: 'getList', payload: query });
+          requestEffect(dispatch, { type: 'getList', payload: query });
         }
         const matchDetail = matchPath(pathname, {
           path: pages.users.detail,
           exact: true,
         });
         if (matchDetail) {
-          dispatch({ type: 'getDetail', payload: matchDetail.params['id'] });
+          requestEffect(dispatch, { type: 'getDetail', payload: matchDetail.params['id'] });
         }
       });
     },

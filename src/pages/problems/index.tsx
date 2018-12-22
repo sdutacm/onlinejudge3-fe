@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Input, Icon, Row, Col, Card, Tag, Progress, Popover } from 'antd';
+import { Table, Pagination, Form, Input, Icon, Row, Col, Card, Tag, Progress, Popover } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
@@ -12,6 +12,7 @@ import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import api from '@/configs/apis';
 import { formatPercentage } from '@/utils/format';
+import gStyles from '@/general.less';
 
 interface Props extends ReduxProps, RouteProps {
   data: List<Problem>;
@@ -60,7 +61,7 @@ class ProblemList extends React.Component<Props, State> {
   handleChangePage = page => {
     router.push({
       pathname: this.props.location.pathname,
-      query: { ...this.props.location.query, page, tags: [1, 2] },
+      query: { ...this.props.location.query, page },
     });
   };
 
@@ -112,7 +113,11 @@ class ProblemList extends React.Component<Props, State> {
     }
     router.replace({
       pathname: this.props.location.pathname,
-      query: { ...this.props.location.query, tagIds },
+      query: {
+        ...this.props.location.query,
+        tagIds,
+        page: 1,
+      },
     });
   };
 
@@ -217,14 +222,17 @@ class ProblemList extends React.Component<Props, State> {
             ]} />
           </Card>
           <Card bordered={false}>
-            <div className="field-title">Tags</div>
-            <div className="tags">
-              {tagList.rows.map(tag =>
-                <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
-                  <a onClick={() => this.toggleTag(tag.tagId)}><Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.name.en}</Tag></a>
-                </Popover>
-              )}
-            </div>
+            <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+              <Form.Item label="Tags">
+                <div className="tags">
+                  {tagList.rows.map(tag =>
+                    <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+                      <a onClick={() => this.toggleTag(tag.tagId)}><Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.name.en}</Tag></a>
+                    </Popover>
+                  )}
+                </div>
+              </Form.Item>
+            </Form>
           </Card>
         </Col>
       </Row>

@@ -15,15 +15,16 @@ export function getList(query) {
 }
 
 export function getDetail(id) {
-  const url = urlf(api.problems.detail, {
-    param: {
-      id,
-    },
-  });
+  const url = urlf(api.problems.detail, { param: { id } });
   return get(url, 1000);
 }
 
 export function getTagList() {
   const url = urlf(api.tags.base);
+  return get(url);
+}
+
+export function getProblemTags(id) {
+  const url = urlf(api.problems.tags, { param: { id } });
   return get(url);
 }

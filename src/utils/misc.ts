@@ -21,7 +21,7 @@ export function genTimeFlag(expires: number): TimeFlag {
  * @returns {boolean}
  */
 export function isStateExpired(savedState): boolean {
-  return !savedState || (savedState && savedState._et < Date.now());
+  return !savedState || !savedState._et || (savedState._et < Date.now());
 }
 
 /**

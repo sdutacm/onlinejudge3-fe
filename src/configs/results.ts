@@ -89,13 +89,9 @@ export const resultsMap = {
 const results = [];
 for (const id in resultsMap) {
   const result = resultsMap[id];
-  // @ts-ignore
-  if (id === Results.WT || id === Results.JG) {
-    continue;
-  }
   results.push({
     ...result,
-    id,
+    id: +id,
   });
 }
 

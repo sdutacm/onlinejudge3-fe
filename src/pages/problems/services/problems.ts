@@ -22,3 +22,8 @@ export function getDetail(id) {
   });
   return get(url, 1000);
 }
+
+export function getTagList() {
+  const url = urlf(api.tags.base);
+  return get(url);
+}

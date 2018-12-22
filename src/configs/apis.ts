@@ -37,6 +37,9 @@ const api = {
       status: '',
     }
   },
+  tags: {
+    base: '/tags',
+  },
 };
 
 export default api;

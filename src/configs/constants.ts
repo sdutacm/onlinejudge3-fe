@@ -1,6 +1,8 @@
-const consts = {
+const constants = {
   siteName: 'SDUT OJ',
   accessTokenCookieName: 'access_token_openoj',
+  avatarUrlPrefix: 'https://acm.sdut.edu.cn/sdutoj',
+  bannerUrlPrefix: 'https://acm.sdut.edu.cn/sdutoj',
   requestTimeout: 30000,
   msgDuration: {
     success: 3,
@@ -12,4 +14,4 @@ const consts = {
   modalAnimationDurationSwitch: 600,
 };
 
-export default consts;
+export default constants;

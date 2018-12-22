@@ -37,7 +37,7 @@ declare interface Problem {
   hint?: string,
   source: string;
   author: string;
-  tags: number[];
+  tags?: ProblemTag[];
   timeLimit?: number,
   memoryLimit?: number,
   createdAt: number;
@@ -73,4 +73,13 @@ declare interface Solution {
   shared: boolean;
   createdAt: number;
   code?: string;
+}
+
+declare interface ProblemTag {
+  tagId: number;
+  name: {
+    en: string;
+    zhHans: string;
+    zhHant: string;
+  }
 }

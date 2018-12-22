@@ -10,7 +10,7 @@ import ToDetailCard from '@/components/ToDetailCard';
 import api from '@/configs/apis';
 import langs from '@/configs/solutionLanguages';
 import SolutionTable from '@/components/SolutionTable';
-import results from '@/configs/results';
+import results, { Results } from '@/configs/results';
 import pages from '@/configs/pages';
 
 interface Props extends ReduxProps, RouteProps {
@@ -56,7 +56,9 @@ class SolutionList extends React.Component<Props, State> {
                 })
               },
               {
-                displayName: 'Result', fieldName: 'result', options: results.map(res => {
+                displayName: 'Result', fieldName: 'result', options: results.filter(res => {
+                  return res.id !== Results.WT && res.id !== Results.JG
+                }).map(res => {
                   return { fieldName: res.id, displayName: res.fullName };
                 })
               },

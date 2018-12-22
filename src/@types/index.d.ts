@@ -12,6 +12,11 @@ declare interface List<T> {
   rows: T[];
 }
 
+declare interface FullList<T> {
+  count: number;
+  rows: T[];
+}
+
 declare interface ListQuery {
   page?: number;
   orderBy?: string;

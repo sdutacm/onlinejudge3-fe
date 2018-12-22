@@ -13,6 +13,10 @@ const initialState = {
     _query: {},
   },
   detail: {},
+  tagList: {
+    count: 0,
+    rows: [],
+  }
 };
 
 export default {
@@ -27,6 +31,12 @@ export default {
     },
     setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    setTagList(state, { payload: { data } }) {
+      state.tagList = {
         ...data,
         ...genTimeFlag(60 * 60 * 1000),
       };
@@ -70,7 +80,21 @@ export default {
         });
       }
       return ret;
-    }
+    },
+    * getTagList(action, { call, put, select }) {
+      const savedState = yield select(state => state.problems.tagList);
+      if (!isStateExpired(savedState)) {
+        return;
+      }
+      const ret: ApiResponse<FullList<ProblemTag> > = yield call(service.getTagList);
+      if (ret.success) {
+        yield put({
+          type: 'setTagList',
+          payload: { data: ret.data },
+        });
+      }
+      return ret;
+    },
     // * reloadList(action, { put, select }) {
     //   const page = yield select(state => state.problems.query.page);
     //   const title = yield select(state => state.problems.query.title);
@@ -82,6 +106,7 @@ export default {
       return history.listen(({ pathname, query }) => {
         if (pathname === pages.problems.index) {
           dispatch({ type: 'getList', payload: query });
+          dispatch({ type: 'getTagList' });
         }
         const matchDetail = matchPath(pathname, {
           path: pages.problems.detail,

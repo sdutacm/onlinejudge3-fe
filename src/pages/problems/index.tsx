@@ -13,14 +13,9 @@ import ToDetailCard from '@/components/ToDetailCard';
 import api from '@/configs/apis';
 import { formatPercentage } from '@/utils/format';
 
-const tmpTagMap = {
-  1: 'Greedy',
-  2: 'Math',
-  3: 'DP',
-};
-
 interface Props extends ReduxProps, RouteProps {
   data: List<Problem>;
+  tagList: FullList<ProblemTag>;
 }
 
 interface State {
@@ -63,10 +58,9 @@ class ProblemList extends React.Component<Props, State> {
   }
 
   handleChangePage = page => {
-    const { title } = this.props.location.query;
     router.push({
-      pathname: pages.problems.index,
-      query: { page, title },
+      pathname: this.props.location.pathname,
+      query: { ...this.props.location.query, page, tags: [1, 2] },
     });
   };
 
@@ -85,14 +79,47 @@ class ProblemList extends React.Component<Props, State> {
       filtered: !!searchTitle,
     });
     router.push({
-      pathname: pages.problems.index,
+      pathname: this.props.location.pathname,
       query: { page: 1, title: searchTitle },
     });
   };
 
+  getTagIdsFromQuery = (): number[] => {
+    let tagIds: number[] = [];
+    const originalTagIds = this.props.location.query.tagIds;
+    if (Array.isArray(originalTagIds)) {
+      tagIds = originalTagIds.map(v => +v);
+    }
+    else if (typeof originalTagIds === 'string') {
+      tagIds = [+originalTagIds];
+    }
+    return tagIds;
+  };
+
+  toggleTag = (tagId: number, replace: boolean = false): void => {
+    let tagIds = this.getTagIdsFromQuery();
+    if (replace) {
+      tagIds = [tagId];
+    }
+    else {
+      const index = tagIds.indexOf(tagId);
+      if (~index) {
+        tagIds.splice(index, 1);
+      }
+      else {
+        tagIds.push(tagId);
+      }
+    }
+    router.replace({
+      pathname: this.props.location.pathname,
+      query: { ...this.props.location.query, tagIds },
+    });
+  };
+
   render() {
-    const { loading, data: { page, count, rows } } = this.props;
-    let searchInput;
+    const { loading, data: { page, count, rows }, tagList } = this.props;
+    const tagIds = this.getTagIdsFromQuery();
+    // let searchInput;
     return (
       <Row gutter={16}>
         <Col xs={24} md={18} xxl={20}>
@@ -132,14 +159,18 @@ class ProblemList extends React.Component<Props, State> {
                 render={(text, record: Problem) => (
                   <div>
                     <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
-                    {record.tags.length ? <div className="float-right">{record.tags.map(tag => <Tag key={tag}>{tmpTagMap[tag]}</Tag>)}</div> :
+                    {record.tags.length ? <div className="float-right">{record.tags.map(tag =>
+                      <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+                        <a onClick={() => this.toggleTag(tag.tagId, true)}><Tag>{tag.name.en}</Tag></a>
+                      </Popover>
+                      )}</div> :
                       <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
                     }
                   </div>
                 )}
               />
               <Table.Column
-                title="Stat."
+                title="Stats"
                 key="Statistics"
                 className="no-wrap"
                 render={(text, record: Problem) => (
@@ -183,8 +214,17 @@ class ProblemList extends React.Component<Props, State> {
             <FilterCard fields={[
               { displayName: 'Title', fieldName: 'title' },
               { displayName: 'Source', fieldName: 'source' },
-              { displayName: 'Tags', fieldName: 'tags' },
             ]} />
+          </Card>
+          <Card bordered={false}>
+            <div className="field-title">Tags</div>
+            <div className="tags">
+              {tagList.rows.map(tag =>
+                <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+                  <a onClick={() => this.toggleTag(tag.tagId)}><Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.name.en}</Tag></a>
+                </Popover>
+              )}
+            </div>
           </Card>
         </Col>
       </Row>
@@ -196,6 +236,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['problems/getList'],
     data: state.problems.list,
+    tagList: state.problems.tagList,
   };
 }
 

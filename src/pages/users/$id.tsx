@@ -10,6 +10,7 @@ import moment from 'moment';
 import xss from 'xss';
 import { Results } from '@/configs/results';
 import NotFound from '@/pages/404';
+import constants from '@/configs/constants';
 
 interface Props extends RouteProps, ReduxProps {
   data: User;
@@ -64,7 +65,7 @@ class UserDetail extends React.Component<Props, State> {
         <div className="content-view" style={{ position: 'relative' }}>
           <div className="u-header" style={{ height: '60px' }}>
             <span className="u-avatar">
-              <Avatar size={120} icon="user" src={data.avatar} />
+              <Avatar size={120} icon="user" src={data.avatar && `${constants.avatarUrlPrefix}${data.avatar}`} />
             </span>
             <span className="u-info">
               <h1>{data.nickname}</h1>

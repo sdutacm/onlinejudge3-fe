@@ -3,13 +3,14 @@ import throttle from 'lodash.throttle';
 import { Popover, Icon } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
 import styles from './ResponsiveNav.less';
+import { Location } from '@/@types/props';
 
 // Powered by https://github.com/id-kemo/responsive-menu-ant-design
 
 interface Props {
   mobileBreakPoint: number;
   applyViewportChange: number;
-  activeLinkKey: string;
+  location: Location;
   placement: TooltipPlacement;
   navMenu: React.ReactNode;
   session: object;
@@ -50,7 +51,7 @@ class ResponsiveNav extends React.Component<Props, any> {
     const NavMenu = this.props.navMenu;
     if (this.state.viewportWidth >= this.props.mobileBreakPoint) {
       // @ts-ignore
-      return <NavMenu activeLinkKey={this.props.activeLinkKey} />;
+      return <NavMenu location={this.props.location} />;
     }
 
     return (
@@ -58,7 +59,7 @@ class ResponsiveNav extends React.Component<Props, any> {
         // @ts-ignore
         content={<NavMenu
           onLinkClick={() => this.handleMenuVisibility(false)}
-          activeLinkKey={this.props.activeLinkKey}
+          location={this.props.location}
           mobileVersion
         />
         }

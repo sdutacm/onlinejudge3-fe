@@ -13,11 +13,10 @@ import NoteSvg from '@/assets/svg/note.svg';
 import moment from 'moment';
 import { urlf } from '@/utils/format';
 
-// Powered by https://github.com/id-kemo/responsive-menu-ant-design
+// Reference https://github.com/id-kemo/responsive-menu-ant-design
 
 interface Props extends ReduxProps, RouteProps {
   mobileVersion: boolean;
-  activeLinkKey: string;
   onLinkClick: () => void;
   className: string;
   session: ISessionStatus;
@@ -95,13 +94,10 @@ class NavMenu extends React.Component<Props, any> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session } = this.props;
-    let { activeLinkKey } = this.props;
+    const { mobileVersion, onLinkClick, className, loading, session, location } = this.props;
+    let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
-    }
-    else if (activeLinkKey.startsWith(pages.contests.index)) {
-      activeLinkKey = pages.contests.index;
     }
     return (
       <Menu

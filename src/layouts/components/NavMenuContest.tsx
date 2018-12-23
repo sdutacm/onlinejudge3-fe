@@ -1,19 +1,16 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag } from 'antd';
+import { Menu, Icon, Spin } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
-import JoinModal from './JoinModal';
 import gStyles from '../../general.less';
 import styles from './ResponsiveNav.less';
-import { Location, ReduxProps, RouteProps } from '@/@types/props';
-import NoteSvg from '@/assets/svg/note.svg';
+import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import { matchPath } from 'react-router';
 import router from 'umi/router';
-import NotFound from '@/pages/404';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -21,7 +18,7 @@ interface Props extends ReduxProps, RouteProps {
   mobileVersion: boolean;
   onLinkClick: () => void;
   className: string;
-  session: TypeObject<ISession>;
+  session: TypeObject<ISessionStatus>;
 }
 
 class NavMenuContest extends React.Component<Props, any> {
@@ -37,33 +34,39 @@ class NavMenuContest extends React.Component<Props, any> {
     };
   }
 
-  logOut = () => {
+  getMatchContest = () => {
+    return matchPath(this.props.location.pathname, {
+      path: pages.contests.home,
+    });
+  };
+
+  getContestId = () => {
+    const matchContest = this.getMatchContest();
+    return +matchContest.params['id'];
+  };
+
+  logout = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'contestSession/logout',
+      type: 'contests/logout',
+      payload: this.getContestId(),
     }).then(ret => {
       msg.auto(ret);
-      router.push(pages.index);
+      setTimeout(() => router.push(pages.index), constants.menuAnimationDurationFade);
     });
   };
 
   render() {
     const { mobileVersion, onLinkClick, className, loading, session: allContestSession, location } = this.props;
-    const matchContest = matchPath(location.pathname, {
-      path: pages.contests.home,
-    });
-    const id = ~~matchContest.params['id'];
+    const matchContest = this.getMatchContest();
+    const id = this.getContestId();
     let session: ISessionStatus = {
       loggedIn: false,
       user: {} as ISession,
     };
     if (allContestSession[id]) {
-      session = {
-        loggedIn: true,
-        user: allContestSession[id],
-      };
+      session = allContestSession[id];
     }
-    console.log('session', session);
 
     let activeLinkKey = location.pathname;
     if (matchContest) {
@@ -104,45 +107,25 @@ class NavMenuContest extends React.Component<Props, any> {
               <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
             </Menu.Item>
             :
-            session.loggedIn ?
-              <Menu.ItemGroup title={<span><Avatar icon="user"
-                                                   src={session.user.avatar}
-                                                   className={styles.avatarDefault} /><span style={{ marginLeft: '8px' }}>{session.user.nickname}</span></span>}>
-                <Menu.Item key="profile">
-                  <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
-                </Menu.Item>
+            session.loggedIn &&
+              <Menu.ItemGroup title={<span><span>{session.user.nickname}</span></span>}>
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
-                  this.logOut();
+                  this.logout();
                 }}>Logout</Menu.Item>
               </Menu.ItemGroup>
-              :
-              <Menu.Item key="join">
-                <JoinModal onShow={onLinkClick}>Join</JoinModal>
-              </Menu.Item>
           :
           loading ?
             <Menu.Item key="loading" style={{ float: 'right' }}>
               <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
             </Menu.Item>
             :
-            session.loggedIn ?
+            session.loggedIn &&
               <Menu.SubMenu
-                title={<span><Avatar icon="user" src={session.user.avatar} className={styles.avatarDefault} /><Icon type="down"
-                                                                                          className={gStyles.iconRight} /></span>}
+                title={<span>{session.user.nickname}<Icon type="down" className={gStyles.iconRight} /></span>}
                 style={{ float: 'right' }}>
-                <Menu.Item key="nickname" disabled>
-                  <span>{session.user.nickname}</span>
-                </Menu.Item>
-                <Menu.Item key="profile">
-                  <Link  to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
-                </Menu.Item>
-                <Menu.Item key="logout" onClick={this.logOut}>Logout</Menu.Item>
+                <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>
-              :
-              <Menu.Item key="join" style={{ float: 'right' }}>
-                <JoinModal>Join</JoinModal>
-              </Menu.Item>
         }
       </Menu>
     );
@@ -152,7 +135,7 @@ class NavMenuContest extends React.Component<Props, any> {
 function mapStateToProps(state) {
   const session = state.contests.session;
   return {
-    loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
+    loading: !!state.loading.effects['contests/getSession'] || !!state.loading.effects['contests/logout'],
     session,
   };
 }

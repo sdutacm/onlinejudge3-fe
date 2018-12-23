@@ -27,6 +27,7 @@ export default {
     reset() {
       return { ...initialState };
     },
+    // TODO session 改变后清理掉 contestSession 以及所有登录态相关数据
   },
   effects: {
     * fetch(action, { call, put }) {

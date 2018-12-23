@@ -33,6 +33,12 @@ export default {
         ...genTimeFlag(60 * 60 * 1000),
       };
     },
+    clearSession(state, { payload: { id } }) {
+      state.session[id] = {
+        loggedIn: false,
+        user: {},
+      };
+    },
     clearExpiredSession(state) {
       state.session = clearExpiredStateProperties(state.session);
     },
@@ -80,11 +86,55 @@ export default {
           type: 'setSession',
           payload: {
             id,
+            data: {
+              loggedIn: true,
+              user: ret.data,
+            },
+          },
+        });
+        yield put({
+          type: 'clearExpiredSession',
+        });
+      }
+      else {
+        yield put({
+          type: 'setSession',
+          payload: {
+            id,
+            data: {
+              loggedIn: false,
+              user: {},
+              _code: ret.code,
+            },
+          },
+        });
+      }
+      return ret;
+    },
+    * login({ payload: { id, data } }, { call, put }) {
+      const ret: ApiResponse<ISession> = yield call(service.login, id, data);
+      if (ret.success) {
+        yield put({
+          type: 'setSession',
+          payload: {
+            id,
             data: ret.data,
           },
         });
         yield put({
           type: 'clearExpiredSession',
+        });
+      }
+      return ret;
+    },
+    * logout({ payload: id }, { call, put }) {
+      const ret: ApiResponse<ISession> = yield call(service.logout, id);
+      if (ret.success) {
+        yield put({
+          type: 'clearSession',
+          payload: {
+            id,
+          },
         });
       }
       return ret;
@@ -116,13 +166,12 @@ export default {
         if (pathname === pages.contests.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
         }
-        const matchHome = matchPath(pathname, {
-          path: pages.contests.home,
-          exact: true,
-        });
-        if (matchHome) {
-          requestEffect(dispatch, { type: 'getSession', payload: matchHome.params['id'] });
-        }
+        // const matchContest = matchPath(pathname, {
+        //   path: pages.contests.home,
+        // });
+        // if (matchContest) {
+        //   requestEffect(dispatch, { type: 'getSession', payload: matchContest.params['id'] });
+        // }
       });
     },
   },

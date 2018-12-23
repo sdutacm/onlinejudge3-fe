@@ -84,7 +84,7 @@ class NavMenu extends React.Component<Props, any> {
     </div>
   );
 
-  logOut = () => {
+  logout = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'session/logout',
@@ -143,7 +143,7 @@ class NavMenu extends React.Component<Props, any> {
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
-                  this.logOut();
+                  this.logout();
                 }}>Logout</Menu.Item>
               </Menu.ItemGroup>
               :
@@ -167,7 +167,7 @@ class NavMenu extends React.Component<Props, any> {
                 <Menu.Item key="profile">
                   <Link  to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
-                <Menu.Item key="logout" onClick={this.logOut}>Logout</Menu.Item>
+                <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>
               :
               <Menu.Item key="join" style={{ float: 'right' }}>

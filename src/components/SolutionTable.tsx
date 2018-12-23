@@ -16,7 +16,7 @@ import { Results } from '@/configs/results';
 
 interface Props extends ReduxProps, RouteProps {
   loading: boolean;
-  data: List<Solution>;
+  data: List<ISolution>;
   showPagination: boolean;
   isDetail: boolean;
 }
@@ -92,21 +92,21 @@ class SolutionTable extends React.Component<Props, State> {
           {isDetail && <Table.Column
             title="ID"
             key="ID"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <span>{record.solutionId}</span>
             )}
           />}
           <Table.Column
             title="User"
             key="User"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <UserBar user={record.user} />
             )}
           />
           <Table.Column
             title={'Prob.'}
             key="Problem"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <Popover content={record.problem.title}>
                 <Link to={urlf(pages.problems.detail, { param: { id: record.problem.problemId } })}
                       onClick={e => e.stopPropagation()}>{record.problem.problemId}</Link>
@@ -118,7 +118,7 @@ class SolutionTable extends React.Component<Props, State> {
             key="Result"
             dataIndex="solutionId"
             className="result-bar"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <ResultBar percent={0} timeLimit={record.problem.timeLimit} result={record.result} />
             )}
           />
@@ -126,35 +126,35 @@ class SolutionTable extends React.Component<Props, State> {
             title="Time"
             key="Time"
             className="near-result-bar"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <span>{record.time}</span>
             )}
           />
           <Table.Column
             title={'Mem.'}
             key="Memory"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <span>{record.memory}</span>
             )}
           />
           <Table.Column
             title={'Len.'}
             key="Length"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <span>{record.codeLength}</span>
             )}
           />
           <Table.Column
             title={'Lang.'}
             key="Language"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <span>{langsMap[record.language].displayShortName}</span>
             )}
           />
           <Table.Column
             title="At"
             key="At"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <TimeBar time={record.createdAt * 1000} />
             )}
           />
@@ -162,7 +162,7 @@ class SolutionTable extends React.Component<Props, State> {
             title=""
             key=""
             className="float-btn"
-            render={(text, record: Solution) => (
+            render={(text, record: ISolution) => (
               <Link to={urlf(pages.solutions.detail, { param: { id: record.solutionId } })}
                     onClick={e => e.stopPropagation()}>
                 <Icon type="ellipsis" theme="outlined" />

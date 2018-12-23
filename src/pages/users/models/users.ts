@@ -50,7 +50,7 @@ export default {
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: ApiResponse<List<User> > = yield call(service.getList, formattedQuery);
+      const ret: ApiResponse<List<IUser> > = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -67,7 +67,7 @@ export default {
       if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: ApiResponse<User> = yield call(service.getDetail, id);
+      const ret: ApiResponse<IUser> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
           type: 'setDetail',

@@ -53,7 +53,7 @@ export default {
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: ApiResponse<List<Problem> > = yield call(service.getList, formattedQuery);
+      const ret: ApiResponse<List<IProblem> > = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -96,7 +96,7 @@ export default {
       if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: ApiResponse<FullList<ProblemTag> > = yield call(service.getTagList);
+      const ret: ApiResponse<FullList<ITag> > = yield call(service.getTagList);
       if (ret.success) {
         yield put({
           type: 'setTagList',

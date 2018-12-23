@@ -14,7 +14,7 @@ import results, { Results } from '@/configs/results';
 import pages from '@/configs/pages';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<Solution>;
+  data: List<ISolution>;
 }
 
 interface State {

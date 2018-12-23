@@ -20,7 +20,7 @@ interface Props extends ReduxProps, RouteProps {
   activeLinkKey: string;
   onLinkClick: () => void;
   className: string;
-  session: SessionStatus;
+  session: ISessionStatus;
 }
 
 class NavMenu extends React.Component<Props, any> {

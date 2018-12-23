@@ -24,3 +24,5 @@ declare interface ListQuery {
   limit?: number;
   [key: string]: any;
 }
+
+declare type Timestamp = number;

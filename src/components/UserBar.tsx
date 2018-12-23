@@ -6,7 +6,7 @@ import { urlf } from '@/utils/format';
 import constants from '@/configs/constants';
 
 interface Props {
-  user: User;
+  user: IUser;
 }
 
 const UserBar: React.StatelessComponent<Props> = ({ user }) => {

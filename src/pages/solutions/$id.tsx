@@ -10,8 +10,8 @@ import { hasPermission } from '@/utils/permission';
 import NotFound from '../404';
 
 interface Props extends RouteProps, ReduxProps {
-  session: Session;
-  data: Solution;
+  session: ISession;
+  data: ISolution;
 }
 
 interface State {
@@ -45,7 +45,7 @@ class SolutionDetail extends React.Component<Props, State> {
     if (notFound) {
       return <NotFound />;
     }
-    const data: Solution = allData[id] || {};
+    const data: ISolution = allData[id] || {};
     return (
       <div>
         <Card bordered={false} className="list-card">

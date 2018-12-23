@@ -15,8 +15,8 @@ import { formatPercentage } from '@/utils/format';
 import gStyles from '@/general.less';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<Problem>;
-  tagList: FullList<ProblemTag>;
+  data: List<IProblem>;
+  tagList: FullList<ITag>;
 }
 
 interface State {
@@ -161,7 +161,7 @@ class ProblemList extends React.Component<Props, State> {
                 //     filterDropdownVisible: visible,
                 //   }, () => searchInput && searchInput.focus());
                 // }}
-                render={(text, record: Problem) => (
+                render={(text, record: IProblem) => (
                   <div>
                     <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
                     {record.tags.length ? <div className="float-right">{record.tags.map(tag =>
@@ -178,7 +178,7 @@ class ProblemList extends React.Component<Props, State> {
                 title="Stats"
                 key="Statistics"
                 className="no-wrap"
-                render={(text, record: Problem) => (
+                render={(text, record: IProblem) => (
                   <Popover title="AC / Total" content={`${record.accepted} / ${record.submitted} (${formatPercentage(record.accepted, record.submitted)})`}>
                     <Link to={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
                           onClick={e => e.stopPropagation()}
@@ -196,7 +196,7 @@ class ProblemList extends React.Component<Props, State> {
               <Table.Column
                 title="Source"
                 key="Source"
-                render={(text, record: Problem) => (
+                render={(text, record: IProblem) => (
                   <span>{record.source}</span>
                 )}
               />

@@ -11,7 +11,7 @@ import ToDetailCard from '@/components/ToDetailCard';
 import UserBar from '@/components/UserBar';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<User>;
+  data: List<IUser>;
 }
 
 interface State {
@@ -51,21 +51,21 @@ class Standings extends React.Component<Props, State> {
               <Table.Column
                 title="Rank"
                 key="Rank"
-                render={(text, record: User, index) => (
+                render={(text, record: IUser, index) => (
                   <span>{(page - 1) * limit + index + 1}</span>
                 )}
               />
               <Table.Column
                 title="User"
                 key="User"
-                render={(text, record: User) => (
+                render={(text, record: IUser) => (
                   <UserBar user={record} />
                 )}
               />
               <Table.Column
                 title="Accepted"
                 key="Accepted"
-                render={(text, record: User) => (
+                render={(text, record: IUser) => (
                   <span>{record.accepted}</span>
                 )}
               />

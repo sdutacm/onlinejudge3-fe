@@ -6,7 +6,7 @@ import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 
 interface Props {
   loading: boolean;
-  data: Problem;
+  data: IProblem;
 }
 
 const ProblemContent: React.StatelessComponent<Props> = ({ loading, data }) => {

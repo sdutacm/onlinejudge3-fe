@@ -31,7 +31,7 @@ export default {
   effects: {
     * fetch(action, { call, put }) {
       startInterception();
-      const ret: ApiResponse<Session> = yield call(service.fetch);
+      const ret: ApiResponse<ISession> = yield call(service.fetch);
       if (ret.success) {
         yield put({
           type: 'setSession',
@@ -51,7 +51,7 @@ export default {
       return yield call(service.login, data);
     },
     * logout(action, { call, put }) {
-      const ret: ApiResponse<Session> = yield call(service.logout);
+      const ret: ApiResponse<ISession> = yield call(service.logout);
       if (ret.success) {
         yield put({
           type: 'reset',

@@ -14,6 +14,7 @@ const initialState = {
     _query: {},
   },
   detail: {},
+  session: {},
 };
 
 export default {
@@ -25,6 +26,15 @@ export default {
         _query: query,
         ...genTimeFlag(5 * 60 * 1000),
       };
+    },
+    setSession(state, { payload: { id, data } }) {
+      state.session[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearExpiredSession(state) {
+      state.session = clearExpiredStateProperties(state.session);
     },
     setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
@@ -38,7 +48,11 @@ export default {
   },
   effects: {
     * getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = formatListQuery(query);
+      const formattedQuery = {
+        ...formatListQuery(query),
+        orderBy: 'contestId',
+        orderDirection: 'DESC',
+      };
       const savedState = yield select(state => state.contests.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
@@ -51,6 +65,26 @@ export default {
             data: ret.data,
             query: formattedQuery,
           },
+        });
+      }
+      return ret;
+    },
+    * getSession({ payload: id }, { call, put, select }) {
+      const savedState = yield select(state => state.contests.session[id]);
+      if (!isStateExpired(savedState)) {
+        return;
+      }
+      const ret: ApiResponse<ISession> = yield call(service.getSession, id);
+      if (ret.success) {
+        yield put({
+          type: 'setSession',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+        yield put({
+          type: 'clearExpiredSession',
         });
       }
       return ret;
@@ -82,12 +116,12 @@ export default {
         if (pathname === pages.contests.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
         }
-        const matchDetail = matchPath(pathname, {
-          path: pages.contests.detail,
+        const matchHome = matchPath(pathname, {
+          path: pages.contests.home,
           exact: true,
         });
-        if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: matchDetail.params['id'] });
+        if (matchHome) {
+          requestEffect(dispatch, { type: 'getSession', payload: matchHome.params['id'] });
         }
       });
     },

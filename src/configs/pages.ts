@@ -17,6 +17,6 @@ export default {
   },
   contests: {
     index: '/contests',
-    detail: '/contests/:id',
+    home: '/contests/:id',
   }
 };

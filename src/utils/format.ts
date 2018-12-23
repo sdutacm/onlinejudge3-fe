@@ -1,5 +1,6 @@
 import UrlAssembler from 'url-assembler';
 import { floor } from 'math-precision';
+import moment from 'moment';
 
 interface UrlArg {
   param?: object;
@@ -65,4 +66,15 @@ export function formatListQuery(query: ListQuery): ListQuery {
     }
   }
   return formattedQuery;
+}
+
+export function toLongTs(timestamp: Timestamp): Timestamp {
+  return timestamp * 1000;
+}
+
+export function formatFullTime(timestamp: Timestamp): string {
+  if (new Date().getFullYear() === new Date(timestamp).getFullYear()) {
+    return moment(timestamp).format('MM-DD HH:mm');
+  }
+  return moment(timestamp).format('YYYY-MM-DD HH:mm');
 }

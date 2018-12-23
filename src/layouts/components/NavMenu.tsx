@@ -100,8 +100,8 @@ class NavMenu extends React.Component<Props, any> {
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
     }
-    else if (activeLinkKey.startsWith(pages.contest.index)) {
-      activeLinkKey = pages.contest.index;
+    else if (activeLinkKey.startsWith(pages.contests.index)) {
+      activeLinkKey = pages.contests.index;
     }
     return (
       <Menu
@@ -113,12 +113,8 @@ class NavMenu extends React.Component<Props, any> {
           <Link to={pages.problems.index} onClick={onLinkClick}>Problems</Link>
         </Menu.Item>
 
-        <Menu.Item key={pages.contest.index}>
-          <Link to={pages.contest.index} onClick={onLinkClick}>Contests</Link>
-        </Menu.Item>
-
-        <Menu.Item key="/Experiments">
-          <Link to={pages.index} onClick={onLinkClick}>Experiments</Link>
+        <Menu.Item key={pages.contests.index}>
+          <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>Contests</Link>
         </Menu.Item>
 
         <Menu.Item key={pages.users.index}>

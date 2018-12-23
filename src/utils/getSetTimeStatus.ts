@@ -2,20 +2,20 @@ import moment from 'moment';
 
 /**
  * Parse status wording based on time
- * @param {string} startTime
- * @param {string} endTime
- * @param {string} currentTime
+ * @param {Timestamp} startTime
+ * @param {Timestamp} endTime
+ * @param {Timestamp} currentTime
  * @returns {string}
  */
-function getSetTimeStatus(startTime: string, endTime: string, currentTime: string): string {
-  if (moment(currentTime).isBefore(startTime)) {
+function getSetTimeStatus(startTime: Timestamp, endTime: Timestamp, currentTime: Timestamp): string {
+  if (currentTime < startTime) {
     return 'Pending';
   }
-  else if (moment(currentTime).isSame(endTime) || moment(currentTime).isAfter(endTime)) {
-    return 'Ended';
+  else if (startTime <= currentTime && currentTime < endTime) {
+    return 'Running';
   }
   else {
-    return 'Running';
+    return 'Ended';
   }
 }
 

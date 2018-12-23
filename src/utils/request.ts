@@ -40,6 +40,7 @@ async function request(url: string, options: AxiosRequestConfig = {}): Promise<A
     ...options,
   });
   checkStatus(response);
+  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
   return response.data;
 }
 

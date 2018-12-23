@@ -11,7 +11,7 @@ import SubmissionModal from '@/components/SubmitSolutionModal';
 import NotFound from '@/pages/404';
 
 interface Props extends ReduxProps, RouteProps {
-  data: IProblem;
+  data: TypeObject<IProblem>;
 }
 
 interface State {
@@ -30,7 +30,7 @@ class ProblemDetail extends React.Component<Props, State> {
     if (notFound) {
       return <NotFound />;
     }
-    const data: IProblem = allData[id] || {};
+    const data = allData[id] || {} as IProblem;
     return (
       <Row gutter={16} className="content-view">
         <Col xs={24} md={18} xxl={18}>

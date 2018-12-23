@@ -25,4 +25,9 @@ declare interface ListQuery {
   [key: string]: any;
 }
 
+declare interface TypeObject<T> {
+  [key: string]: T;
+  [key: number]: T;
+}
+
 declare type Timestamp = number;

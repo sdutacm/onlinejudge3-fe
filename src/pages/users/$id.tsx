@@ -13,7 +13,7 @@ import NotFound from '@/pages/404';
 import constants from '@/configs/constants';
 
 interface Props extends RouteProps, ReduxProps {
-  data: IUser;
+  data: TypeObject<IUser>;
   session: ISession;
 }
 
@@ -58,7 +58,7 @@ class UserDetail extends React.Component<Props, State> {
     if (notFound) {
       return <NotFound />;
     }
-    const data: IUser = allData[id] || {};
+    const data = allData[id] || {} as IUser;
     return (
       <div>
         <div className="u-bbg"></div>

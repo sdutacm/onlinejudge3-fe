@@ -7,12 +7,13 @@ import gStyles from '@/general.less';
 
 export interface FilterCardFieldOption {
   displayName: string;
-  fieldName: string;
+  fieldName: string | number;
   options?: FilterCardFieldOption[];
 }
 
 interface Props extends RouteProps, FormProps {
   fields: FilterCardFieldOption[];
+  initQuery?: any;
 }
 
 class FilterCard extends React.Component<Props, any> {
@@ -40,7 +41,7 @@ class FilterCard extends React.Component<Props, any> {
   handleReset = e => {
     e.preventDefault();
     this.props.form.resetFields();
-    router.replace({ pathname: this.props.location.pathname });
+    router.replace({ pathname: this.props.location.pathname, query: this.props.initQuery });
   };
 
   render() {
@@ -53,7 +54,7 @@ class FilterCard extends React.Component<Props, any> {
           <Form.Item label={field.displayName} key={field.fieldName}>
             {getFieldDecorator(field.fieldName, { initialValue: query[field.fieldName] })(
               field.options ? <Select>
-                {field.options.map(f => (<Select.Option key={f.fieldName}>{f.displayName}</Select.Option>))}
+                {field.options.map(f => (<Select.Option key={f.fieldName.toString()}>{f.displayName}</Select.Option>))}
               </Select> : <Input />)}
           </Form.Item>
         ))}

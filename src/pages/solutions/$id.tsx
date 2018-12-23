@@ -11,7 +11,7 @@ import NotFound from '../404';
 
 interface Props extends RouteProps, ReduxProps {
   session: ISession;
-  data: ISolution;
+  data: TypeObject<ISolution>;
 }
 
 interface State {
@@ -45,7 +45,7 @@ class SolutionDetail extends React.Component<Props, State> {
     if (notFound) {
       return <NotFound />;
     }
-    const data: ISolution = allData[id] || {};
+    const data = allData[id] || {} as ISolution;
     return (
       <div>
         <Card bordered={false} className="list-card">

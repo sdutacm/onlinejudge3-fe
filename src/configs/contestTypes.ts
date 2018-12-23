@@ -16,13 +16,19 @@ export const contestTypesMap = {
   },
 };
 
-const contestTypes = [];
-for (const id in contestTypesMap) {
-  const result = contestTypesMap[id];
-  contestTypes.push({
-    ...result,
-    id: +id,
-  });
-}
+const contestTypes = [
+  {
+    id: ContestTypes.Public,
+    name: 'Public',
+  },
+  {
+    id: ContestTypes.Private,
+    name: 'Private',
+  },
+  {
+    id: ContestTypes.Register,
+    name: 'Register',
+  },
+];
 
 export default contestTypes;

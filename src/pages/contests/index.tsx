@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Tabs, Popover } from 'antd';
+import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
@@ -9,7 +9,7 @@ import { toLongTs, urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import { Link } from 'react-router-dom';
-import contestTypes from '@/configs/contestTypes';
+import contestTypes, { ContestTypes } from '@/configs/contestTypes';
 import gStyles from '@/general.less';
 import TimeStatusBadge from '@/pages/contest/acm/components/TimeStatusBadge';
 import classNames from 'classnames';
@@ -42,7 +42,6 @@ class ContestList extends React.Component<Props, State> {
   };
 
   handleChangeCategory = category => {
-    console.log(typeof category, category);
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, category: category, page: 1 },
@@ -68,6 +67,17 @@ class ContestList extends React.Component<Props, State> {
                    pagination={false}
                    className="responsive-table"
             >
+              <Table.Column
+                title=""
+                key="Type"
+                className="text-right td-icon"
+                render={(text, record: IContest) => (
+                  <span>
+                    {record.type === ContestTypes.Private && <Icon type="lock" />}
+                    {record.type === ContestTypes.Register && <Icon type="team" />}
+                  </span>
+                )}
+              />
               <Table.Column
                 title="Title"
                 key="Title"
@@ -128,7 +138,7 @@ class ContestList extends React.Component<Props, State> {
                   return { fieldName: res.id, displayName: res.name };
                 })
               },
-            ]} />
+            ]} initQuery={{ category: query.category }} />
           </Card>
         </Col>
       </Row>

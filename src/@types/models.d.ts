@@ -95,6 +95,8 @@ declare interface IContest {
   title: string;
   type: number;
   category: number;
+  intro: string;
+  description?: string,
   password?: string;
   startAt: number;
   endAt: number;

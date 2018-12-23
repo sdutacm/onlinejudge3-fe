@@ -14,6 +14,9 @@ const limits = {
       status: 10,
     }
   },
+  contests: {
+    list: 20,
+  },
 };
 
 export default limits;

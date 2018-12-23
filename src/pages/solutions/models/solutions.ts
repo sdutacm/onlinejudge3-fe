@@ -111,7 +111,10 @@ export default {
       if (ret.success) {
         yield put({
           type: 'setDetail',
-          payload: { id, data: ret.data },
+          payload: {
+            id,
+            data: ret.data,
+          },
         });
         yield put({
           type: 'clearExpiredDetail',

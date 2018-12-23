@@ -5,12 +5,6 @@ const api = {
   },
   session: {
     base: '/session',
-    status: '/session',
-    registerVerificationCode: '/register_email',
-    register: '/register',
-    forgotPassword: '/forgot_password',
-    login: '/login',
-    logout: '/session',
   },
   verifications: {
     code: '/verifications/code',
@@ -19,7 +13,10 @@ const api = {
     base: '/users',
     detail: '/users/:id',
     password: '/users/:id/password',
-    email: '/users/:id/email',
+    avatar: '/users/:id/avatar',
+    bannerImage: '/users/:id/bannerImage',
+    problemResultStats: '/users/:id/problemResultStats',
+    solutionCalendar: '/users/:id/solutionCalendar',
   },
   problems: {
     base: '/problems',
@@ -37,6 +34,24 @@ const api = {
       submit: '/submit',
       status: '',
     }
+  },
+  contests: {
+    base: '/contests',
+    detail: '/contests/:id',
+    session: '/contests/:id/session',
+    problems: '/contests/:id/problems',
+    problemResultStats: '/contests/:id/problemResultStats',
+    users: '/contests/:id/users',
+    userDetail: '/contests/:id/users/:uid',
+    ranklist: '/contests/:id/ranklist',
+  },
+  topics: {
+    base: '/topics',
+    detail: '/topics/:id',
+    replies: '/topics/:id/replies'
+  },
+  replies: {
+    base: '/replies',
   },
   tags: {
     base: '/tags',

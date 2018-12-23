@@ -15,4 +15,8 @@ export default {
     index: '/users',
     detail: '/users/:id',
   },
+  contests: {
+    index: '/contests',
+    detail: '/contests/:id',
+  }
 };

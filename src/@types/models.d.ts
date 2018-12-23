@@ -188,6 +188,10 @@ declare interface IReply {
     avatar: string;
     bannerImage: string;
   };
+  topic?: {
+    topicId: number;
+    title: string;
+  };
   content: string;
   createdAt: Timestamp;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon } from 'antd';
+import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
@@ -14,9 +14,11 @@ import gStyles from '@/general.less';
 import TimeStatusBadge from '@/pages/contest/acm/components/TimeStatusBadge';
 import classNames from 'classnames';
 import moment from 'moment';
+import constants from '@/configs/constants';
 
 interface Props extends ReduxProps, RouteProps {
   data: List<IContest>;
+  session: ISessionStatus;
 }
 
 interface State {
@@ -34,6 +36,16 @@ class ContestList extends React.Component<Props, State> {
     }
   }
 
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    if (this.props.session.loggedIn != nextProps.session.loggedIn && !nextProps.session.loggedIn &&
+      nextProps.location.query.joined) {
+      router.replace({
+        pathname: this.props.location.pathname,
+        query: { ...this.props.location.query, joined: undefined, page: 1 },
+      });
+    }
+  }
+
   handleChangePage = page => {
     router.push({
       pathname: this.props.location.pathname,
@@ -48,8 +60,15 @@ class ContestList extends React.Component<Props, State> {
     });
   };
 
+  handleChangeJoined = joined => {
+    setTimeout(() => router.replace({
+      pathname: this.props.location.pathname,
+      query: { ...this.props.location.query, joined: joined || undefined, page: 1 },
+    }), constants.switchAnimationDuration);
+  };
+
   render() {
-    const { loading, data: { page, count, rows }, location: { query } } = this.props;
+    const { loading, data: { page, count, rows }, location: { query }, session } = this.props;
     const serverTime = Date.now() - (window as any)._t_diff;
     return (
       <Row gutter={16}>
@@ -140,6 +159,19 @@ class ContestList extends React.Component<Props, State> {
               },
             ]} initQuery={{ category: query.category }} />
           </Card>
+          {session.loggedIn &&
+          <Card bordered={false}>
+            <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+              <Form.Item className="single-form-item" label={
+                <div>
+                  <span style={{ lineHeight: '2em' }}>My Joined Contests</span>
+                  <div className="float-right">
+                    <Switch defaultChecked={!!query.joined} onChange={this.handleChangeJoined} loading={loading} />
+                  </div>
+                </div>
+              } />
+            </Form>
+          </Card>}
         </Col>
       </Row>
     );
@@ -150,6 +182,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['contests/getList'],
     data: state.contests.list,
+    session: state.session,
   };
 }
 

@@ -13,6 +13,7 @@ const constants = {
   modalAnimationDurationShake: 400,
   modalAnimationDurationSwitch: 600,
   menuAnimationDurationFade: 300,
+  switchAnimationDuration: 360,
 };
 
 export default constants;

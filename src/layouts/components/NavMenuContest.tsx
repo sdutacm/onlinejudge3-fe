@@ -49,7 +49,7 @@ class NavMenuContest extends React.Component<Props, any> {
     const { dispatch } = this.props;
     dispatch({
       type: 'contests/logout',
-      payload: this.getContestId(),
+      payload: { id: this.getContestId() },
     }).then(ret => {
       msg.auto(ret);
       setTimeout(() => router.push(pages.index), constants.menuAnimationDurationFade);
@@ -89,17 +89,20 @@ class NavMenuContest extends React.Component<Props, any> {
         selectedKeys={[`${activeLinkKey}`]}
         className={className}
       >
+        {session.loggedIn &&
         <Menu.Item key={pages.contests.overview}>
           <Link to={urlf(pages.contests.overview, { param: matchContest.params })} onClick={onLinkClick}>Overview</Link>
-        </Menu.Item>
+        </Menu.Item>}
 
+        {session.loggedIn &&
         <Menu.Item key={pages.contests.solutions}>
           <Link to={urlf(pages.contests.solutions, { param: matchContest.params })} onClick={onLinkClick}>Solutions</Link>
-        </Menu.Item>
+        </Menu.Item>}
 
+        {session.loggedIn &&
         <Menu.Item key={pages.contests.ranklist}>
           <Link to={urlf(pages.contests.ranklist, { param: matchContest.params })} onClick={onLinkClick}>Ranklist</Link>
-        </Menu.Item>
+        </Menu.Item>}
 
         {mobileVersion ?
           loading ?

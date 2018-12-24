@@ -57,6 +57,9 @@ export default {
         yield put({
           type: 'reset',
         });
+        yield put({
+          type: 'contests/clearAllContestSessions',
+        });
       }
       return ret;
     },

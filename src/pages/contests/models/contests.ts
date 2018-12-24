@@ -1,6 +1,5 @@
 import * as service from '../services/contests';
 import pages from '@/configs/pages';
-import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
 import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
@@ -39,6 +38,9 @@ export default {
         user: {},
       };
     },
+    clearAllSessions(state) {
+      state.session = {};
+    },
     clearExpiredSession(state) {
       state.session = clearExpiredStateProperties(state.session);
     },
@@ -75,10 +77,12 @@ export default {
       }
       return ret;
     },
-    * getSession({ payload: id }, { call, put, select }) {
-      const savedState = yield select(state => state.contests.session[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getSession({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.contests.session[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const ret: ApiResponse<ISession> = yield call(service.getSession, id);
       if (ret.success) {
@@ -127,7 +131,7 @@ export default {
       }
       return ret;
     },
-    * logout({ payload: id }, { call, put }) {
+    * logout({ payload: { id } }, { call, put }) {
       const ret: ApiResponse<ISession> = yield call(service.logout, id);
       if (ret.success) {
         yield put({
@@ -139,7 +143,13 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: id }, { call, put, select }) {
+    // 仅能在登出 OJ 用户后由调用者触发，暂不支持主动触发，因为后端没有相应接口
+    * clearAllContestSessions(action, { call, put }) {
+      yield put({
+        type: 'clearAllSessions',
+      });
+    },
+    * getDetail({ payload: { id } }, { call, put, select }) {
       const savedState = yield select(state => state.contests.detail[id]);
       if (!isStateExpired(savedState)) {
         return;

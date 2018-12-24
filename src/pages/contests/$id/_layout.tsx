@@ -28,7 +28,7 @@ class ContestBase extends React.Component<Props, State> {
   componentDidMount(): void {
     this.props.dispatch({
       type: 'contests/getSession',
-      payload: +this.props.match.params.id,
+      payload: { id: +this.props.match.params.id },
     });
   }
 
@@ -38,13 +38,13 @@ class ContestBase extends React.Component<Props, State> {
     if (nextProps.location.pathname !== pages.contests.home &&
       !this.props.session && nextProps.session && !nextProps.session.loggedIn) {
       const id = getPathParamId(nextProps.location.pathname, pages.contests.home);
-      router.push(urlf(pages.contests.home, { param: { id }}));
+      router.replace(urlf(pages.contests.home, { param: { id }}));
     }
   }
 
   render() {
     const { loading, session, detail, children } = this.props;
-    // console.log('base render', loading, this.props.session, this.props.detail);
+    // console.log('base render', loading, session);
     if (loading) {
       return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
     }
@@ -55,7 +55,7 @@ class ContestBase extends React.Component<Props, State> {
 function mapStateToProps(state) {
   const id = getPathParamId(state.routing.location.pathname, pages.contests.home);
   return {
-    loading: !!state.loading.effects['contests/getSession'],
+    loading: !state.contests.session[id] || !!state.loading.effects['contests/getSession'],
     session: state.contests.session[id],
     detail: state.contests.detail[id],
   };

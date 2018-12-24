@@ -5,10 +5,10 @@ import { FormProps, ReduxProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import { Codes } from '@/configs/codes/codes';
-import gStyles from '@/general.less';
 import styles from './index.less';
 import msg from '@/utils/msg';
-import constants from '@/configs/constants';
+import router from 'umi/router';
+import { urlf } from '@/utils/format';
 
 interface IContestSessionState extends ISessionStatus {
   _code: number;
@@ -47,6 +47,18 @@ class ContestHome extends React.Component<Props, State> {
     this.state = {
       tab,
     };
+  }
+
+  componentDidMount(): void {
+    if (this.props.session.loggedIn) {
+      router.replace(urlf(pages.contests.overview, { param: { id: this.props.id } }));
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    if (!this.props.session.loggedIn && nextProps.session.loggedIn) {
+      router.replace(urlf(pages.contests.overview, { param: { id: nextProps.id } }));
+    }
   }
 
   switchTab = (e, tab) => {
@@ -131,7 +143,7 @@ class ContestHome extends React.Component<Props, State> {
 
             {!globalSession.loggedIn &&
             <Form.Item>
-              Have an OJ account registered the contest? <a onClick={e => this.switchTab(e, 'loginGlobal')}>Login OJ</a>
+              Have an OJ account joined the contest? <a onClick={e => this.switchTab(e, 'loginGlobal')}>Login OJ</a>
             </Form.Item>}
 
             <Form.Item>

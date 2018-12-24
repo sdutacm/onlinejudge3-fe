@@ -37,7 +37,7 @@ class ContestList extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-    if (this.props.session.loggedIn != nextProps.session.loggedIn && !nextProps.session.loggedIn &&
+    if (this.props.session.loggedIn && !nextProps.session.loggedIn &&
       nextProps.location.query.joined) {
       router.replace({
         pathname: this.props.location.pathname,

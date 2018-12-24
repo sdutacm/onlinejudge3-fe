@@ -416,6 +416,18 @@ pre {
   background-color: @color-gray;
 }
 
+.problem-result-mark-row {
+  border-left: 8px solid transparent;
+
+  &.accepted {
+    border-left-color: @color-green;
+  }
+
+  &.attempted {
+    border-left-color: @color-red;
+  }
+}
+
 @-webkit-keyframes ant-progress-active {
   0% {
     opacity: .1;

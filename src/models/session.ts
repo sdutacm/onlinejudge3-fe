@@ -49,7 +49,15 @@ export default {
       return yield select(state => state.session);
     },
     * login({ payload: data }, { call, put }) {
-      return yield call(service.login, data);
+      const ret: ApiResponse<any> = yield call(service.login, data);
+      if (ret.success) {
+        const userId = ret.data.userId;
+        yield put({
+          type: 'users/getProblemResultStats',
+          payload: { userId },
+        });
+      }
+      return ret;
     },
     * logout(action, { call, put }) {
       const ret: ApiResponse<ISession> = yield call(service.logout);
@@ -58,7 +66,10 @@ export default {
           type: 'reset',
         });
         yield put({
-          type: 'contests/clearAllContestSessions',
+          type: 'contests/clearAllSessions',
+        });
+        yield put({
+          type: 'users/clearProblemResultStats',
         });
       }
       return ret;

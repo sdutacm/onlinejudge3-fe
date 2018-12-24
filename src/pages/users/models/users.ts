@@ -14,6 +14,10 @@ const initialState = {
     _query: {},
   },
   detail: {},
+  problemResultStats: {
+    acceptedProblemIds: [],
+    attemptedProblemIds: [],
+  },
 };
 
 export default {
@@ -37,6 +41,16 @@ export default {
     },
     reset() {
       return { ...initialState };
+    },
+    setProblemResultStats(state, { payload: { data, query } }) {
+      state.problemResultStats = {
+        ...data,
+        _query: query,
+        ...genTimeFlag(60 * 1000),
+      };
+    },
+    clearProblemResultStats(state) {
+      state.problemResultStats = initialState.problemResultStats;
     },
   },
   effects: {
@@ -87,6 +101,33 @@ export default {
     },
     * forgotPassword({ payload: data }, { call, put }) {
       return yield call(service.forgotPassword, data);
+    },
+    * getProblemResultStats({ payload: { userId, contestId } = { userId: null, contestId: null } },
+                            { call, put, select }) {
+      const globalSess = yield select(state => state.session);
+      userId = userId || globalSess.user.userId;
+      if (!userId) {
+        return;
+      }
+      const formattedQuery = {
+        userId,
+        contestId,
+      };
+      const savedState = yield select(state => state.users.problemResultStats);
+      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+        return;
+      }
+      const ret: ApiResponse<IUserProblemResultStats> = yield call(service.getProblemResultStats, userId, contestId);
+      if (ret.success) {
+        yield put({
+          type: 'setProblemResultStats',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
     },
   },
   subscriptions: {

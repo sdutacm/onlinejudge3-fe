@@ -13,10 +13,12 @@ import ToDetailCard from '@/components/ToDetailCard';
 import api from '@/configs/apis';
 import { formatPercentage } from '@/utils/format';
 import gStyles from '@/general.less';
+import classNames from 'classnames';
 
 interface Props extends ReduxProps, RouteProps {
   data: List<IProblem>;
   tagList: FullList<ITag>;
+  problemResultStats: IUserProblemResultStats;
 }
 
 interface State {
@@ -122,7 +124,9 @@ class ProblemList extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data: { page, count, rows }, tagList } = this.props;
+    const {
+      loading, data: { page, count, rows }, tagList, problemResultStats: { acceptedProblemIds, attemptedProblemIds }
+    } = this.props;
     const tagIds = this.getTagIdsFromQuery();
     // let searchInput;
     return (
@@ -135,6 +139,11 @@ class ProblemList extends React.Component<Props, State> {
                    onChange={this.handleChangeTable}
                    pagination={false}
                    className="responsive-table"
+                   rowClassName={(record: IProblem) => classNames(
+                     'problem-result-mark-row',
+                     { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
+                     { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                   )}
             >
               <Table.Column
                 title="Title"
@@ -245,6 +254,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['problems/getList'],
     data: state.problems.list,
     tagList: state.problems.tagList,
+    problemResultStats: state.users.problemResultStats,
   };
 }
 

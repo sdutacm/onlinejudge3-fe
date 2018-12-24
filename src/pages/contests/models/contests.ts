@@ -143,12 +143,6 @@ export default {
       }
       return ret;
     },
-    // 仅能在登出 OJ 用户后由调用者触发，暂不支持主动触发，因为后端没有相应接口
-    * clearAllContestSessions(action, { call, put }) {
-      yield put({
-        type: 'clearAllSessions',
-      });
-    },
     * getDetail({ payload: { id } }, { call, put, select }) {
       const savedState = yield select(state => state.contests.detail[id]);
       if (!isStateExpired(savedState)) {

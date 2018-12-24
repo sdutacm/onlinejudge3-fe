@@ -30,3 +30,15 @@ export function getDetail(id) {
   });
   return get(url, 1000);
 }
+
+export function getProblemResultStats(userId, contestId = null) {
+  const url = urlf(api.users.problemResultStats, {
+    param: {
+      id: userId,
+    },
+    query: {
+      contestId,
+    },
+  });
+  return get(url);
+}

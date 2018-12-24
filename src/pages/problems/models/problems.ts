@@ -120,6 +120,7 @@ export default {
         if (pathname === pages.problems.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
           requestEffect(dispatch, { type: 'getTagList' });
+          requestEffect(dispatch, { type: 'users/getProblemResultStats' });
         }
         const matchDetail = matchPath(pathname, {
           path: pages.problems.detail,

@@ -38,25 +38,39 @@ class ContestOverview extends React.Component<Props, State> {
     this.state = {};
   }
 
+  checkDetail = (detail: IContest) => {
+    const { id, session, dispatch } = this.props;
+    // console.log('check', detail);
+    if (!detail) {
+      return;
+    }
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
+    if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
+      dispatch({
+        type: 'contests/getProblems',
+        payload: { id },
+      });
+      dispatch({
+        type: 'users/getProblemResultStats',
+        payload: { userId: session.user.userId, contestId: id },
+      });
+      dispatch({
+        type: 'contests/getProblemResultStats',
+        payload: { id },
+      });
+    }
+  };
+
   componentDidMount(): void {
-    const { id, dispatch, session } = this.props;
-    dispatch({
-      type: 'contests/getDetail',
-      payload: { id },
-    });
-    // TODO 仅比赛开始才 fetch 后面的数据
-    dispatch({
-      type: 'contests/getProblems',
-      payload: { id },
-    });
-    dispatch({
-      type: 'users/getProblemResultStats',
-      payload: { userId: session.user.userId, contestId: id },
-    });
-    dispatch({
-      type: 'contests/getProblemResultStats',
-      payload: { id },
-    });
+    this.checkDetail(this.props.detail);
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    if (!this.props.detail && nextProps.detail) {
+      // console.log(this.props.detail, nextProps.detail);
+      this.checkDetail(nextProps.detail);
+    }
   }
 
   render() {
@@ -81,7 +95,7 @@ class ContestOverview extends React.Component<Props, State> {
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     return (
-        <Row gutter={16} className="content-view-sm">
+        <Row gutter={16} className="content-view">
           <Col xs={24}>
             <Card bordered={false}>
               <h2 className="text-center">{detail.title}</h2>
@@ -125,20 +139,27 @@ class ContestOverview extends React.Component<Props, State> {
                   title="Stats"
                   key="Statistics"
                   className="no-wrap"
-                  render={(text, record: IProblem) => (
-                    <Popover title="AC / Total" content={`${contestProblemResultStats[record.problemId].accepted} / ${contestProblemResultStats[record.problemId].submitted} (${formatPercentage(contestProblemResultStats[record.problemId].accepted, contestProblemResultStats[record.problemId].submitted)})`}>
-                      <Link to={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
-                            onClick={e => e.stopPropagation()}
-                      >
-                        <Progress className={styles.miniRatioProgress} type="circle"
-                                  percent={contestProblemResultStats[record.problemId].accepted / contestProblemResultStats[record.problemId].submitted * 100 || 0} width={12}
-                                  strokeWidth={12}
-                                  showInfo={false}
-                        />
-                        <span className="ml-sm-md">{contestProblemResultStats[record.problemId].accepted}</span>
-                      </Link>
-                    </Popover>
-                  )}
+                  render={(text, record: IProblem) => {
+                    if (!contestProblemResultStats[record.problemId]) {
+                      return null;
+                    }
+                    return (
+                      <Popover title="AC / Total"
+                               content={`${contestProblemResultStats[record.problemId].accepted} / ${contestProblemResultStats[record.problemId].submitted} (${formatPercentage(contestProblemResultStats[record.problemId].accepted, contestProblemResultStats[record.problemId].submitted)})`}>
+                        <Link to={urlf(pages.contests.solutions, { param: { id }, query: { problemId: record.problemId } })}
+                              onClick={e => e.stopPropagation()}
+                        >
+                          <Progress className={styles.miniRatioProgress} type="circle"
+                                    percent={contestProblemResultStats[record.problemId].accepted / contestProblemResultStats[record.problemId].submitted * 100 || 0}
+                                    width={12}
+                                    strokeWidth={12}
+                                    showInfo={false}
+                          />
+                          <span className="ml-sm-md">{contestProblemResultStats[record.problemId].accepted}</span>
+                        </Link>
+                      </Popover>
+                    );
+                  }}
                 />
               </Table>
             </Card>

@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Form, Input, Select, Modal } from 'antd';
-// import numberToAlphabet from '../utils/numberToAlphabet';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import langs from '@/configs/solutionLanguages';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import router from 'umi/router';
 import pages from '@/configs/pages';
-import { urlf } from '@/utils/format';
+import { numberToAlphabet, urlf } from '@/utils/format';
 
 interface Props extends ReduxProps, RouteProps, FormProps {
   problemId: number;
@@ -44,7 +43,10 @@ class SubmitSolutionModal extends React.Component<Props, State> {
           if (ret.success) {
             msg.success('Submit successfully');
             this.handleHideModel();
-            setTimeout(() => router.push(urlf(pages.solutions.detail, { param: { id: ret.data.solutionId } })),
+            const url = contestId
+              ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: ret.data.solutionId } })
+              : urlf(pages.solutions.detail, { param: { id: ret.data.solutionId } });
+            setTimeout(() => router.push(url),
               constants.modalAnimationDurationFade
             );
           }
@@ -82,7 +84,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Problem">
               {getFieldDecorator('problemId')(<span
-                className="ant-form-text">{problemIndex ? numberToAlphabet(problemIndex - 1) : problemId} - {title}</span>)}
+                className="ant-form-text">{problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}</span>)}
             </Form.Item>
 
             <Form.Item label="Language">

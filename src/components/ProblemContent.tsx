@@ -3,13 +3,15 @@ import { Skeleton } from 'antd';
 import xss from 'xss';
 import styles from './ProblemContent.less';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
+import { numberToAlphabet } from '@/utils/format';
 
 interface Props {
   loading: boolean;
   data: IProblem;
+  problemIndex?: number;
 }
 
-const ProblemContent: React.StatelessComponent<Props> = ({ loading, data }) => {
+const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, problemIndex }) => {
   if (loading) {
     return (
       <div>
@@ -23,7 +25,7 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data }) => {
   }
   return (
     <div className={styles.problemContent}>
-      <h2 className="text-center">{data.title}</h2>
+      <h2 className="text-center">{problemIndex ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}
       <div dangerouslySetInnerHTML={{ __html: xss(data.description) }} />

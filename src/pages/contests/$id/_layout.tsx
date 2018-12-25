@@ -12,6 +12,7 @@ import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import { floor } from 'math-precision';
 
 interface Props extends RouteProps, ReduxProps {
+  id: number;
   session: ISessionStatus;
   detail: IContest;
 }
@@ -37,21 +38,33 @@ class ContestBase extends React.Component<Props, State> {
   };
 
   componentDidMount(): void {
-    this.props.dispatch({
+    const { id, session, dispatch } = this.props;
+    dispatch({
       type: 'contests/getSession',
-      payload: { id: +this.props.match.params.id },
+      payload: { id },
     });
+    if (session && session.loggedIn) {
+      dispatch({
+        type: 'contests/getDetail',
+        payload: { id },
+      });
+    }
     const progressTimer: any = setInterval(this.updateProgress, 1000);
     this.setState({ progressTimer });
   }
 
-
   componentWillReceiveProps(nextProps: Readonly<Props>): void {
     // console.log(nextProps.location.pathname);
+    const id = getPathParamId(nextProps.location.pathname, pages.contests.home);
     if (nextProps.location.pathname !== pages.contests.home &&
       !this.props.session && nextProps.session && !nextProps.session.loggedIn) {
-      const id = getPathParamId(nextProps.location.pathname, pages.contests.home);
       router.replace(urlf(pages.contests.home, { param: { id }}));
+    }
+    if (!(this.props.session && this.props.session.loggedIn) && nextProps.session && nextProps.session.loggedIn) {
+      this.props.dispatch({
+        type: 'contests/getDetail',
+        payload: { id },
+      });
     }
   }
 
@@ -100,6 +113,7 @@ class ContestBase extends React.Component<Props, State> {
 function mapStateToProps(state) {
   const id = getPathParamId(state.routing.location.pathname, pages.contests.home);
   return {
+    id,
     loading: !state.contests.session[id] || !!state.loading.effects['contests/getSession'],
     session: state.contests.session[id],
     detail: state.contests.detail[id],

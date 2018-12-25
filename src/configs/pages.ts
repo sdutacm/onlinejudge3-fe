@@ -19,9 +19,9 @@ export default {
     index: '/contests',
     home: '/contests/:id',
     overview: '/contests/:id/overview',
-    problems: '/contests/:id/problems',
     problemDetail: '/contests/:id/problems/:index',
     solutions: '/contests/:id/solutions',
+    solutionDetail: '/contests/:id/solutions/:sid',
     ranklist: '/contests/:id/ranklist',
   }
 };

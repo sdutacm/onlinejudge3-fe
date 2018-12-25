@@ -74,13 +74,12 @@ export default {
         call(service.getDetail, id),
         call(service.getProblemTags, id),
       ]);
-
-      detailRet.data.tags = [];
-      try {
-        detailRet.data.tags = [ ...tagsRet.data.rows ];
-      }
-      catch (err) {}
       if (detailRet.success) {
+        detailRet.data.tags = [];
+        try {
+          detailRet.data.tags = [ ...tagsRet.data.rows ];
+        }
+        catch (err) {}
         yield put({
           type: 'setDetail',
           payload: {

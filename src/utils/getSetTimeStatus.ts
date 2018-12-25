@@ -7,7 +7,10 @@ import moment from 'moment';
  * @param {Timestamp} currentTime
  * @returns {string}
  */
-function getSetTimeStatus(startTime: Timestamp, endTime: Timestamp, currentTime: Timestamp): string {
+
+type ContestTimeStatus = 'Pending' | 'Running' | 'Ended';
+
+function getSetTimeStatus(startTime: Timestamp, endTime: Timestamp, currentTime: Timestamp): ContestTimeStatus {
   if (currentTime < startTime) {
     return 'Pending';
   }

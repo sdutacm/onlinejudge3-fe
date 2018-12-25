@@ -4,7 +4,7 @@ import Link from 'umi/link';
 import { Table } from 'antd';
 import moment from 'moment';
 import TimeStatusBadge from '../components/TimeStatusBadge';
-import numberToAlphabet from '@/utils/numberToAlphabet';
+// import numberToAlphabet from '@/utils/numberToAlphabet';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
 

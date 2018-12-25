@@ -69,7 +69,7 @@ class ContestList extends React.Component<Props, State> {
 
   render() {
     const { loading, data: { page, count, rows }, location: { query }, session } = this.props;
-    const serverTime = Date.now() - (window as any)._t_diff;
+    const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       <Row gutter={16}>
         <Col xs={24}>

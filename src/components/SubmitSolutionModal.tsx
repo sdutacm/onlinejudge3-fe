@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Form, Input, Select, Modal } from 'antd';
-import numberToAlphabet from '../utils/numberToAlphabet';
+// import numberToAlphabet from '../utils/numberToAlphabet';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import langs from '@/configs/solutionLanguages';
 import msg from '@/utils/msg';

@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 import router from 'umi/router';
 import moment from 'moment';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
-import secToTimeStr from '@/utils/secToTimeStr';
+// import secToTimeStr from '@/utils/secToTimeStr';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
 

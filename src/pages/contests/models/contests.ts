@@ -14,6 +14,8 @@ const initialState = {
   },
   detail: {},
   session: {},
+  problems: {},
+  problemResultStats: {},
 };
 
 export default {
@@ -52,6 +54,24 @@ export default {
     },
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
+    },
+    setProblems(state, { payload: { id, data } }) {
+      state.problems[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearExpiredProblems(state) {
+      state.problems = clearExpiredStateProperties(state.problems);
+    },
+    setProblemResultStats(state, { payload: { id, data } }) {
+      state.problemResultStats[id] = {
+        ...data,
+        ...genTimeFlag(30 * 1000),
+      };
+    },
+    clearExpiredProblemResultStats(state) {
+      state.problemResultStats = clearExpiredStateProperties(state.problemResultStats);
     },
   },
   effects: {
@@ -159,6 +179,46 @@ export default {
         });
         yield put({
           type: 'clearExpiredDetail',
+        });
+      }
+      return ret;
+    },
+    * getProblems({ payload: { id } }, { call, put, select }) {
+      const savedState = yield select(state => state.contests.problems[id]);
+      if (!isStateExpired(savedState)) {
+        return;
+      }
+      const ret: ApiResponse<FullList<IProblem> > = yield call(service.getProblems, id);
+      if (ret.success) {
+        yield put({
+          type: 'setProblems',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+        yield put({
+          type: 'clearExpiredProblems',
+        });
+      }
+      return ret;
+    },
+    * getProblemResultStats({ payload: { id } }, { call, put, select }) {
+      const savedState = yield select(state => state.contests.problemResultStats[id]);
+      if (!isStateExpired(savedState)) {
+        return;
+      }
+      const ret: ApiResponse<IContestProblemResultStats> = yield call(service.getProblemResultStats, id);
+      if (ret.success) {
+        yield put({
+          type: 'setProblemResultStats',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+        yield put({
+          type: 'clearExpiredProblemResultStats',
         });
       }
       return ret;

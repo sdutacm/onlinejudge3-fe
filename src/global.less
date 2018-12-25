@@ -353,6 +353,14 @@ pre {
   }
 }
 
+.content-view-sm {
+  @media only screen and (min-width: 768px) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 668px;
+  }
+}
+
 .responsive-table {
   @media only screen and (max-width: 767px) {
     :global(.ant-table-body) {
@@ -621,5 +629,22 @@ pre {
 
   .ant-form-item-label {
     padding-bottom: 0;
+  }
+}
+
+.top-progress {
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  top: @header-height;
+  left: 0;
+  height: 4px;
+
+  .ant-progress-inner {
+    vertical-align: top;
+  }
+
+  .ant-progress-bg {
+    height: 4px !important;
   }
 }

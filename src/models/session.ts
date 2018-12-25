@@ -53,6 +53,9 @@ export default {
       if (ret.success) {
         const userId = ret.data.userId;
         yield put({
+          type: 'contests/clearAllSessions',
+        });
+        yield put({
           type: 'users/getProblemResultStats',
           payload: { userId },
         });

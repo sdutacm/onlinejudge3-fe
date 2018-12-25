@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import ProblemPage from '@/components/ProblemPage';
+import ProblemDetailPage from '@/components/ProblemDetailPage';
 
 interface Props extends ReduxProps, RouteProps {
   data: TypeObject<IProblem>;
@@ -25,7 +25,7 @@ class ProblemDetail extends React.Component<Props, State> {
     const { loading, data: allData, session, match } = this.props;
     const id = ~~match.params.id;
     const data = allData[id] || {} as IProblem;
-    return <ProblemPage loading={loading} data={data} session={session} />;
+    return <ProblemDetailPage loading={loading} data={data} session={session} />;
   }
 }
 

@@ -8,7 +8,7 @@ import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import { toLongTs } from '@/utils/format';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
-import ProblemPage from '@/components/ProblemPage';
+import ProblemDetailPage from '@/components/ProblemDetailPage';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -31,7 +31,7 @@ class ContestProblem extends React.Component<Props, State> {
   }
 
   checkDetail = (detail: IContest) => {
-    const { id, session, dispatch } = this.props;
+    const { id, dispatch } = this.props;
     if (!detail) {
       return;
     }
@@ -71,7 +71,7 @@ class ContestProblem extends React.Component<Props, State> {
     }
     const index = ~~match.params.index;
     const problem = (rows && rows[index]) || {} as IProblem;
-    return <ProblemPage loading={problemsLoading} data={problem} session={session} contestId={id} problemIndex={index} />;
+    return <ProblemDetailPage loading={problemsLoading} data={problem} session={session} contestId={id} problemIndex={index} />;
   }
 }
 

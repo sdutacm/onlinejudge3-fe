@@ -6,7 +6,7 @@ import { Card, Switch, Skeleton } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
-import { hasPermission } from '@/utils/permission';
+import { hasPermission, isSelf } from '@/utils/permission';
 import NotFound from '../404';
 
 interface Props extends RouteProps, ReduxProps {
@@ -58,7 +58,7 @@ class SolutionDetail extends React.Component<Props, State> {
               {data.code ?
                 <div>
                   <div style={{ height: '32px' }}>
-                    {hasPermission(session, data.user.userId) &&
+                    {isSelf(session, data.user.userId) &&
                     <div className="float-left">
                       <span>Share Code</span>
                       <Switch defaultChecked={data.shared} disabled={loading} onChange={this.onShareChange}

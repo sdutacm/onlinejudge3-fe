@@ -4,7 +4,7 @@ import pages from '@/configs/pages';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
+import { numberToAlphabet, urlf } from '@/utils/format';
 import UserBar from '@/components/UserBar';
 import ResultBar from '@/components/ResultBar';
 import { langsMap } from '@/configs/solutionLanguages';
@@ -13,12 +13,15 @@ import limits from '@/configs/limits';
 import { Table, Popover, Pagination, Icon } from 'antd';
 import classNames from 'classnames';
 import { Results } from '@/configs/results';
+import { ContestTypes } from '@/configs/contestTypes';
 
 interface Props extends ReduxProps, RouteProps {
   loading: boolean;
   data: List<ISolution>;
   showPagination: boolean;
   isDetail: boolean;
+  contestId?: number;
+  problemList?: any[];
 }
 
 interface State {
@@ -63,13 +66,20 @@ class SolutionTable extends React.Component<Props, State> {
 
   handleChangePage = page => {
     router.push({
-      pathname: pages.solutions.index,
+      pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
     });
   };
 
   render() {
-    const { loading, data: { page, count, rows }, showPagination, isDetail } = this.props;
+    const {
+      loading,
+      data: { page, count, rows },
+      showPagination,
+      isDetail,
+      contestId,
+      problemList,
+    } = this.props;
     return (
       <>
         <Table dataSource={rows}
@@ -84,8 +94,11 @@ class SolutionTable extends React.Component<Props, State> {
                  }
                )}
                onRow={(record) => {
+                 const solutionDetailUrl = contestId
+                   ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: record.solutionId } })
+                   : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
                  return {
-                   onClick: () => !this.props.isDetail && router.push(urlf(pages.solutions.detail, { param: { id: record.solutionId } }))
+                   onClick: () => !this.props.isDetail && router.push(solutionDetailUrl)
                  };
                }}
         >
@@ -100,18 +113,33 @@ class SolutionTable extends React.Component<Props, State> {
             title="User"
             key="User"
             render={(text, record: ISolution) => (
-              <UserBar user={record.user} />
+              <UserBar user={record.user} isContestUser={record.contest && record.contest.type === ContestTypes.Register} />
             )}
           />
           <Table.Column
             title={'Prob.'}
             key="Problem"
-            render={(text, record: ISolution) => (
-              <Popover content={record.problem.title}>
-                <Link to={urlf(pages.problems.detail, { param: { id: record.problem.problemId } })}
-                      onClick={e => e.stopPropagation()}>{record.problem.problemId}</Link>
-              </Popover>
-            )}
+            render={(text, record: ISolution) => {
+              let contestProblem = null;
+              if (contestId && problemList) {
+                for (const problem of problemList) {
+                  if (problem.problemId === record.problem.problemId) {
+                    contestProblem = problem;
+                    break;
+                  }
+                }
+              }
+              const problemDetailUrl = contestId && contestProblem
+                ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: contestProblem.index } })
+                : urlf(pages.problems.detail, { param: { id: record.problem.problemId } });
+              return (
+                <Popover content={contestProblem ? contestProblem.title : record.problem.title}>
+                  <Link to={problemDetailUrl} onClick={e => e.stopPropagation()}>
+                    {contestProblem ? numberToAlphabet(contestProblem.index) : record.problem.problemId}
+                  </Link>
+                </Popover>
+              );
+            }}
           />
           <Table.Column
             title="Res."
@@ -162,12 +190,17 @@ class SolutionTable extends React.Component<Props, State> {
             title=""
             key=""
             className="float-btn"
-            render={(text, record: ISolution) => (
-              <Link to={urlf(pages.solutions.detail, { param: { id: record.solutionId } })}
-                    onClick={e => e.stopPropagation()}>
-                <Icon type="ellipsis" theme="outlined" />
-              </Link>
-            )}
+            render={(text, record: ISolution) => {
+              const solutionDetailUrl = contestId
+                ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: record.solutionId } })
+                : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
+              return (
+                <Link to={solutionDetailUrl}
+                      onClick={e => e.stopPropagation()}>
+                  <Icon type="ellipsis" theme="outlined" />
+                </Link>
+              );
+            }}
           />}
         </Table>
         {showPagination ? <Pagination

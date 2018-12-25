@@ -17,7 +17,7 @@ interface Props {
   problemIndex?: number;
 }
 
-const ProblemPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex }) => {
+const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex }) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
@@ -103,4 +103,4 @@ const ProblemPage: React.StatelessComponent<Props> = ({ loading, data, session, 
   );
 };
 
-export default ProblemPage;
+export default ProblemDetailPage;

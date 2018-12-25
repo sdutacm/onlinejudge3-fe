@@ -72,6 +72,7 @@ declare interface ISolution {
   contest?: {
     contestId: number;
     title: string;
+    type: number;
   };
   result: number;
   time: number;

@@ -164,7 +164,7 @@ class ContestList extends React.Component<Props, State> {
             <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
               <Form.Item className="single-form-item" label={
                 <div>
-                  <span style={{ lineHeight: '2em' }}>My Joined Contests</span>
+                  <span className="title">My Joined Contests</span>
                   <div className="float-right">
                     <Switch defaultChecked={!!query.joined} onChange={this.handleChangeJoined} loading={loading} />
                   </div>

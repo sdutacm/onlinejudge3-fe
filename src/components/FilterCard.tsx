@@ -45,8 +45,7 @@ class FilterCard extends React.Component<Props, any> {
   };
 
   render() {
-    const { location: { query }, fields } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { location: { query }, fields, form: { getFieldDecorator } } = this.props;
     return (
       <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit} onReset={this.handleReset}
             className={gStyles.cardForm}>

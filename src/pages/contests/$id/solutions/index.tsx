@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Spin } from 'antd';
-import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
+import { Row, Col, Card, Spin, Form, Switch } from 'antd';
+import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import SolutionTable from '@/components/SolutionTable';
@@ -14,6 +14,7 @@ import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
 import { isEqual } from 'lodash';
+import router from 'umi/router';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -25,6 +26,7 @@ interface Props extends ReduxProps, RouteProps {
 }
 
 interface State {
+  filterOwned: boolean;
 }
 
 class ContestSolutions extends React.Component<Props, State> {
@@ -32,7 +34,9 @@ class ContestSolutions extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      filterOwned: ~~this.props.location.query.userId === this.props.session.user.userId,
+    };
   }
 
   checkDetail = (detail: IContest) => {
@@ -71,8 +75,21 @@ class ContestSolutions extends React.Component<Props, State> {
     }
     if (!isEqual(this.props.location.query, nextProps.location.query)) {
       this.checkSolution(nextProps.location.query);
+      this.setState({ filterOwned: ~~nextProps.location.query.userId === nextProps.session.user.userId });
     }
   }
+
+  handleChangeOwned = owned => {
+    this.setState({ filterOwned: owned });
+    setTimeout(() => router.replace({
+      pathname: this.props.location.pathname,
+      query: {
+        ...this.props.location.query,
+        userId: owned ? this.props.session.user.userId : undefined,
+        page: 1,
+      },
+    }), constants.switchAnimationDuration);
+  };
 
   render() {
     const {
@@ -84,6 +101,7 @@ class ContestSolutions extends React.Component<Props, State> {
       loading,
       data,
       dispatch,
+      location: { query },
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
       return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
@@ -132,6 +150,19 @@ class ContestSolutions extends React.Component<Props, State> {
               },
             ]} />
           </Card>
+          {session.loggedIn &&
+          <Card bordered={false}>
+            <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+              <Form.Item className="single-form-item" label={
+                <div>
+                  <span className="title">My Solutions</span>
+                  <div className="float-right">
+                    <Switch checked={this.state.filterOwned} onChange={this.handleChangeOwned} loading={loading} />
+                  </div>
+                </div>
+              } />
+            </Form>
+          </Card>}
         </Col>
       </Row>
     );

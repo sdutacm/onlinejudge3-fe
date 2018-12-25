@@ -52,7 +52,7 @@ class NavMenuContest extends React.Component<Props, any> {
       payload: { id: this.getContestId() },
     }).then(ret => {
       msg.auto(ret);
-      setTimeout(() => router.push(pages.index), constants.menuAnimationDurationFade);
+      setTimeout(() => router.push(pages.contests.index), constants.menuAnimationDurationFade);
     });
   };
 

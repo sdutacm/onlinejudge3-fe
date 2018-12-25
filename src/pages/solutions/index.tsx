@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card } from 'antd';
+import { Row, Col, Card, Form, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
@@ -9,18 +9,32 @@ import langs from '@/configs/solutionLanguages';
 import SolutionTable from '@/components/SolutionTable';
 import results, { Results } from '@/configs/results';
 import pages from '@/configs/pages';
+import gStyles from '@/general.less';
+import { isEqual } from 'lodash';
+import router from 'umi/router';
+import constants from '@/configs/constants';
 
 interface Props extends ReduxProps, RouteProps {
   data: List<ISolution>;
+  session: ISessionStatus;
 }
 
 interface State {
+  filterOwned: boolean;
 }
 
 class SolutionList extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      filterOwned: ~~this.props.location.query.userId === this.props.session.user.userId,
+    };
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    if (!isEqual(this.props.location.query, nextProps.location.query)) {
+      this.setState({ filterOwned: ~~nextProps.location.query.userId === nextProps.session.user.userId });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -29,8 +43,20 @@ class SolutionList extends React.Component<Props, State> {
     }
   }
 
+  handleChangeOwned = owned => {
+    this.setState({ filterOwned: owned });
+    setTimeout(() => router.replace({
+      pathname: this.props.location.pathname,
+      query: {
+        ...this.props.location.query,
+        userId: owned ? this.props.session.user.userId : undefined,
+        page: 1,
+      },
+    }), constants.switchAnimationDuration);
+  };
+
   render() {
-    const { loading, data, dispatch } = this.props;
+    const { loading, data, dispatch, session } = this.props;
     return (
       <Row gutter={16}>
         <Col xs={24} lg={18} xxl={20}>
@@ -61,6 +87,19 @@ class SolutionList extends React.Component<Props, State> {
               },
             ]} />
           </Card>
+          {session.loggedIn &&
+          <Card bordered={false}>
+            <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+              <Form.Item className="single-form-item" label={
+                <div>
+                  <span className="title">My Solutions</span>
+                  <div className="float-right">
+                    <Switch checked={this.state.filterOwned} onChange={this.handleChangeOwned} loading={loading} />
+                  </div>
+                </div>
+              } />
+            </Form>
+          </Card>}
         </Col>
       </Row>
     );
@@ -71,6 +110,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['solutions/getList'],
     data: state.solutions.list,
+    session: state.session,
   };
 }
 

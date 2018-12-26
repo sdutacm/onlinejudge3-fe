@@ -71,9 +71,12 @@ class NavMenuContest extends React.Component<Props, any> {
     let activeLinkKey = location.pathname;
     if (matchContest) {
       for (let key in pages.contests) {
+        if (key === 'index' || key === 'home') {
+          continue;
+        }
         const matchPage = matchPath(location.pathname, {
           path: pages.contests[key],
-          exact: true,
+          // exact: true,
         });
         // console.log(pages.contests[key], matchPage);
         if (matchPage) {

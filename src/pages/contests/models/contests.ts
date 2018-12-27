@@ -16,6 +16,7 @@ const initialState = {
   session: {},
   problems: {},
   problemResultStats: {},
+  ranklist: {},
 };
 
 export default {
@@ -67,11 +68,20 @@ export default {
     setProblemResultStats(state, { payload: { id, data } }) {
       state.problemResultStats[id] = {
         ...data,
-        ...genTimeFlag(30 * 1000),
+        ...genTimeFlag(25 * 1000),
       };
     },
     clearExpiredProblemResultStats(state) {
       state.problemResultStats = clearExpiredStateProperties(state.problemResultStats);
+    },
+    setRanklist(state, { payload: { id, data } }) {
+      state.ranklist[id] = {
+        ...data,
+        ...genTimeFlag(25 * 1000),
+      };
+    },
+    clearExpiredRanklist(state) {
+      state.ranklist = clearExpiredStateProperties(state.ranklist);
     },
   },
   effects: {
@@ -219,6 +229,28 @@ export default {
         });
         yield put({
           type: 'clearExpiredProblemResultStats',
+        });
+      }
+      return ret;
+    },
+    * getRanklist({ payload: { id } }, { call, put, select }) {
+      const savedState = yield select(state => state.contests.ranklist[id]);
+      if (!isStateExpired(savedState)) {
+        return;
+      }
+      const ret: ApiResponse<FullList<IRanklistRow> > = yield call(service.getRanklist, id);
+      console.log('ok', ret);
+      if (ret.success) {
+        // 应先 clear，防止 set 时间过长导致又被 clear 掉
+        yield put({
+          type: 'clearExpiredRanklist',
+        });
+        yield put({
+          type: 'setRanklist',
+          payload: {
+            id,
+            data: ret.data,
+          },
         });
       }
       return ret;

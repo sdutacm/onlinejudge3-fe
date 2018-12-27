@@ -149,7 +149,7 @@ declare interface IRanklistProblemResultStat {
   time: number;
 }
 
-declare interface IRanklist {
+declare interface IRanklistRow {
   rank: number;
   user: {
     userId: number;
@@ -162,6 +162,8 @@ declare interface IRanklist {
   time: number;
   stats: IRanklistProblemResultStat[];
 }
+
+declare type IRanklist = IRanklistRow[];
 
 declare interface ITopic {
   topicId: number;

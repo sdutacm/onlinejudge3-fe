@@ -14,6 +14,7 @@ const constants = {
   modalAnimationDurationSwitch: 600,
   menuAnimationDurationFade: 300,
   switchAnimationDuration: 400,
+  ranklistUpdateInterval: 30000,
 };
 
 export default constants;

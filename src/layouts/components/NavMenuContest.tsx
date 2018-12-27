@@ -52,7 +52,7 @@ class NavMenuContest extends React.Component<Props, any> {
       payload: { id: this.getContestId() },
     }).then(ret => {
       msg.auto(ret);
-      setTimeout(() => router.push(pages.contests.index), constants.menuAnimationDurationFade);
+      setTimeout(() => router.push(urlf(pages.contests.index, { query: { category: 0 } })), constants.menuAnimationDurationFade);
     });
   };
 
@@ -92,6 +92,10 @@ class NavMenuContest extends React.Component<Props, any> {
         selectedKeys={[`${activeLinkKey}`]}
         className={className}
       >
+        <Menu.Item key={pages.contests.index}>
+          <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}><Icon type="left" /> Contests</Link>
+        </Menu.Item>
+
         {session.loggedIn &&
         <Menu.Item key={pages.contests.overview}>
           <Link to={urlf(pages.contests.overview, { param: matchContest.params })} onClick={onLinkClick}>Overview</Link>

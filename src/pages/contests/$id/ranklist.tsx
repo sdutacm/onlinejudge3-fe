@@ -64,7 +64,7 @@ class ContestRanklist extends React.Component<Props, State> {
   }
 
   refreshRanklist = () => {
-    console.log('refreshRank');
+    // console.log('refreshRank');
     this.props.dispatch({
       type: 'contests/getRanklist',
       payload: { id: this.props.id },

@@ -173,10 +173,12 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: { id } }, { call, put, select }) {
-      const savedState = yield select(state => state.contests.detail[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getDetail({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.contests.detail[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const ret: ApiResponse<IContest> = yield call(service.getDetail, id);
       if (ret.success) {
@@ -193,10 +195,12 @@ export default {
       }
       return ret;
     },
-    * getProblems({ payload: { id } }, { call, put, select }) {
-      const savedState = yield select(state => state.contests.problems[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getProblems({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.contests.problems[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const ret: ApiResponse<FullList<IProblem> > = yield call(service.getProblems, id);
       if (ret.success) {
@@ -213,10 +217,12 @@ export default {
       }
       return ret;
     },
-    * getProblemResultStats({ payload: { id } }, { call, put, select }) {
-      const savedState = yield select(state => state.contests.problemResultStats[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getProblemResultStats({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.contests.problemResultStats[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const ret: ApiResponse<IContestProblemResultStats> = yield call(service.getProblemResultStats, id);
       if (ret.success) {
@@ -233,13 +239,14 @@ export default {
       }
       return ret;
     },
-    * getRanklist({ payload: { id } }, { call, put, select }) {
-      const savedState = yield select(state => state.contests.ranklist[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getRanklist({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.contests.ranklist[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const ret: ApiResponse<FullList<IRanklistRow> > = yield call(service.getRanklist, id);
-      console.log('ok', ret);
       if (ret.success) {
         // 应先 clear，防止 set 时间过长导致又被 clear 掉
         yield put({

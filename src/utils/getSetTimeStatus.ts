@@ -8,7 +8,7 @@ import moment from 'moment';
  * @returns {string}
  */
 
-type ContestTimeStatus = 'Pending' | 'Running' | 'Ended';
+export type ContestTimeStatus = 'Pending' | 'Running' | 'Ended';
 
 function getSetTimeStatus(startTime: Timestamp, endTime: Timestamp, currentTime: Timestamp): ContestTimeStatus {
   if (currentTime < startTime) {

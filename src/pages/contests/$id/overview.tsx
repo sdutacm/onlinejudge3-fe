@@ -8,13 +8,14 @@ import ProblemContent from '@/components/ProblemContent';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
 import xss from 'xss';
-import { formatPercentage, numberToAlphabet, toLongTs, urlf } from '@/utils/format';
+import { formatPercentage, numberToAlphabet, secToTimeStr, toLongTs, urlf } from '@/utils/format';
 import moment from 'moment';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import TimeStatusBadge from '@/pages/contest/acm/components/TimeStatusBadge';
 import styles from '@/pages/problems/index.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import Countdown from '@/components/Countdown';
 
 interface Props extends ReduxProps {
   id: number;
@@ -94,6 +95,7 @@ class ContestOverview extends React.Component<Props, State> {
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
+
     return (
         <Row gutter={16} className="content-view">
           <Col xs={24}>
@@ -105,8 +107,21 @@ class ContestOverview extends React.Component<Props, State> {
               <p className="text-center">
                 <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
               </p>
-              <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }} style={{ marginTop: '15px' }} />
+              {timeStatus === 'Pending' ?
+                <Countdown secs={Math.floor((startTime - currentTime) / 1000)}
+                           renderTime={(secs: number) =>
+                             <h1 className="text-center" style={{ margin: '30px 0' }}>{secToTimeStr(secs, true)}</h1>
+                           }
+                           handleRequestTimeSync={() => {
+                             const currentTime = Date.now() - ((window as any)._t_diff || 0);
+                             return Math.floor((startTime - currentTime) / 1000);
+                           }}
+                           timeSyncInterval={30000}
+                /> :
+                <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }} style={{ marginTop: '15px' }} />
+              }
             </Card>
+            {timeStatus !== 'Pending' &&
             <Card bordered={false} className="list-card">
               <Table dataSource={problems.rows}
                      rowKey="problemId"
@@ -162,7 +177,7 @@ class ContestOverview extends React.Component<Props, State> {
                   }}
                 />
               </Table>
-            </Card>
+            </Card>}
           </Col>
         </Row>
     );

@@ -8,8 +8,9 @@ import constants from '@/configs/constants';
 import gStyles from '@/general.less';
 import router from 'umi/router';
 import { secToTimeStr, toLongTs, urlf } from '@/utils/format';
-import getSetTimeStatus from '@/utils/getSetTimeStatus';
+import getSetTimeStatus, { ContestTimeStatus } from '@/utils/getSetTimeStatus';
 import { floor } from 'math-precision';
+import setStatePromise from '@/utils/setStatePromise';
 
 interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -24,6 +25,7 @@ interface State {
 
 class ContestBase extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
+  setStatePromise = setStatePromise.bind(this);
 
   constructor(props) {
     super(props);
@@ -33,8 +35,36 @@ class ContestBase extends React.Component<Props, State> {
     };
   }
 
-  updateProgress = () => {
-    this.setState({ currentTime: Date.now() - ((window as any)._t_diff || 0) });
+  getContestTimeStatus = (): ContestTimeStatus | '' => {
+    const { detail } = this.props;
+    if (!detail) {
+      return '';
+    }
+    const { currentTime } = this.state;
+    const startTime = toLongTs(detail.startAt);
+    const endTime = toLongTs(detail.endAt);
+    return getSetTimeStatus(startTime, endTime, currentTime);
+  };
+
+  updateProgress = async () => {
+    const oldTimeStatus = this.getContestTimeStatus();
+    if (oldTimeStatus === 'Ended') {
+      if (this.state.currentTime - toLongTs(this.props.detail.endAt) >= 1000) {
+        clearInterval(this.state.progressTimer);
+        return;
+      }
+    }
+    await this.setStatePromise({ currentTime: Date.now() - ((window as any)._t_diff || 0) });
+    const newTimeStatus = this.getContestTimeStatus();
+    if (oldTimeStatus === 'Pending' && newTimeStatus === 'Running') {
+      this.props.dispatch({
+        type: 'contests/getDetail',
+        payload: {
+          id: this.props.id,
+          force: true,
+        },
+      });
+    }
   };
 
   componentDidMount(): void {
@@ -86,7 +116,7 @@ class ContestBase extends React.Component<Props, State> {
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
-    if (!(timeStatus === 'Running' || currentTime - endTime < 1000)) {
+    if (!(timeStatus === 'Running' || (timeStatus === 'Ended' && currentTime - endTime < 1000))) {
       return <div>{children}</div>;
     }
     const percent = floor((currentTime - startTime) / (endTime - startTime) * 100, 1);

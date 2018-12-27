@@ -85,7 +85,7 @@ class Ranklist extends React.Component<Props, State> {
       rank: 64,
       user: 250,
       solved: 64,
-      time: 72,
+      time: 80,
       stat: 80,
     };
     const infoWidth = width.rank + width.user +  width.solved + width.time;

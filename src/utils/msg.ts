@@ -18,7 +18,7 @@ function auto(data) {
   catch (e) {
     console.error(e);
   }
-  if (data.success) {
+  if (data && data.success) {
     success(msg);
   }
   else {

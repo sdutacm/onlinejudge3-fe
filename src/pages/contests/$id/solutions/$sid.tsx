@@ -18,6 +18,7 @@ interface Props extends ReduxProps, RouteProps {
   detail: IContest;
   problems: FullList<IProblem>;
   data: ISolution;
+  changeSharedLoading: boolean;
 }
 
 interface State {
@@ -31,20 +32,28 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     this.state = {};
   }
 
-  checkSolutionDetail = (sid) => {
-    this.props.dispatch({
+  checkSolutionDetail = (props: Props) => {
+    // 由于 DOM 结构问题，可能导致多次 unmount -> mount，所以由 componentDidMount 执行此函数可能发出多次重复请求
+    if (!props.detail) {
+      return;
+    }
+    props.dispatch({
       type: 'solutions/getDetail',
-      payload: ~~sid,
+      payload: ~~props.match.params.sid,
     })
   };
 
   componentDidMount(): void {
-    this.checkSolutionDetail(this.props.match.params.sid);
+    this.checkSolutionDetail(this.props);
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    // 临时措施，获取到 detail 后补一次请求
+    if (!this.props.detail && nextProps.detail) {
+      this.checkSolutionDetail(nextProps);
+    }
     if (!isEqual(this.props.match.params, nextProps.match.params)) {
-      this.checkSolutionDetail(nextProps.match.params.sid);
+      this.checkSolutionDetail(nextProps);
     }
   }
 
@@ -57,11 +66,12 @@ class ContestSolutionDetail extends React.Component<Props, State> {
       problems: { rows: problemRows },
       loading,
       data: allData,
+      changeSharedLoading,
       dispatch,
       match,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
-      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
+      return <div><Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} /></div>;
     }
     const problemList = (problemRows || []).map((problem, index) => ({
       problemId: problem.problemId,
@@ -71,8 +81,8 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     }));
     const sid = ~~match.params.sid;
     const data = allData[sid] || {} as ISolution;
-    return <SolutionDetailPage loading={loading} data={data} session={session} dispatch={dispatch}
-                               contestId={id} problemList={problemList} />;
+    return <div><SolutionDetailPage loading={loading} data={data} session={session} changeSharedLoading={changeSharedLoading}
+                                    dispatch={dispatch} contestId={id} problemList={problemList} /></div>;
   }
 }
 
@@ -87,6 +97,7 @@ function mapStateToProps(state) {
     problems: state.contests.problems[id] || {},
     loading: !!state.loading.effects['solutions/getDetail'],
     data: state.solutions.detail,
+    changeSharedLoading: !!state.loading.effects['solutions/changeShared'],
   };
 }
 

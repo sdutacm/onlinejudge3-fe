@@ -96,7 +96,10 @@ export default {
           const solutionId = solutionIds[0];
           ret.data && ret.data[solutionId] && (yield put({
             type: 'updateDetail',
-            payload: { id: solutionId, data: ret.data[solutionId] },
+            payload: {
+              id: solutionId,
+              data: ret.data[solutionId],
+            },
           }));
         }
       }
@@ -124,7 +127,20 @@ export default {
     },
     * submit({ payload: data }, { call, put }) {
       return yield call(service.submit, data);
-    }
+    },
+    * changeShared({ payload: { id, shared } }, { call, put }) {
+      const ret: ApiResponse<any> = yield call(service.changeShared, id, shared);
+      if (ret.success) {
+        yield put({
+          type: 'updateDetail',
+          payload: {
+            id,
+            data: { shared },
+          },
+        })
+      }
+      return ret;
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

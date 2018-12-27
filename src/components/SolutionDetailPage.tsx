@@ -7,10 +7,12 @@ import { atomOneLight } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { hasPermission, isSelf } from '@/utils/permission';
 import NotFound from '@/pages/404';
+import msg from '@/utils/msg';
 
 interface Props extends ReduxProps {
   loading: boolean;
   data: ISolution;
+  changeSharedLoading: boolean;
   session: ISessionStatus;
   contestId?: number;
   problemList?: any[];
@@ -37,11 +39,19 @@ class SolutionDetailPage extends React.Component<Props, State> {
   }
 
   onShareChange = (checked) => {
-    console.log(checked);
+    this.props.dispatch({
+      type: 'solutions/changeShared',
+      payload: {
+        id: this.props.data.solutionId,
+        shared: checked,
+      },
+    }).then(ret => {
+      msg.auto(ret);
+    })
   };
 
   render() {
-    const { loading, data, session, dispatch, contestId, problemList } = this.props;
+    const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList } = this.props;
     if (!loading && !data.solutionId) {
       return <NotFound />;
     }
@@ -60,7 +70,8 @@ class SolutionDetailPage extends React.Component<Props, State> {
                     {isSelf(session, data.user.userId) &&
                     <div className="float-left">
                       <span>Share Code</span>
-                      <Switch defaultChecked={data.shared} disabled={loading} onChange={this.onShareChange}
+                      <Switch checked={data.shared} disabled={loading} loading={changeSharedLoading}
+                              onChange={this.onShareChange}
                               className="ml-md" />
                     </div>}
                     <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>

@@ -26,6 +26,7 @@ const api = {
   solutions: {
     base: '/solutions',
     detail: '/solutions/:id',
+    shared: '/solutions/:id/shared',
   },
   contest: {
     acm: {

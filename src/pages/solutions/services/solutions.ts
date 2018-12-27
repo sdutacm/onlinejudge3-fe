@@ -1,4 +1,4 @@
-import { get, post } from '@/utils/request';
+import { get, patch, post } from '@/utils/request';
 import api from '@/configs/apis';
 import limits from '@/configs/limits';
 import { urlf } from '@/utils/format';
@@ -24,9 +24,7 @@ export function getListByIds(query) {
 
 export function getDetail(id) {
   const url = urlf(api.solutions.detail, {
-    param: {
-      id,
-    },
+    param: { id },
   });
   return get(url, 1000);
 }
@@ -34,4 +32,11 @@ export function getDetail(id) {
 export function submit(data) {
   const url = api.solutions.base;
   return post(url, data);
+}
+
+export function changeShared(id, shared) {
+  const url = urlf(api.solutions.shared, {
+    param: { id },
+  });
+  return patch(url, { shared });
 }

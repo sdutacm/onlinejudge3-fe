@@ -42,11 +42,6 @@ class ContestRanklist extends React.Component<Props, State> {
       return;
     }
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
-    const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
-    dispatch({
-      type: 'contests/getProblems',
-      payload: { id },
-    });
     dispatch({
       type: 'contests/getRanklist',
       payload: { id },

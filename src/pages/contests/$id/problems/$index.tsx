@@ -30,30 +30,23 @@ class ContestProblem extends React.Component<Props, State> {
     this.state = {};
   }
 
-  checkDetail = (detail: IContest) => {
-    const { id, dispatch } = this.props;
-    if (!detail) {
-      return;
-    }
-    const currentTime = Date.now() - ((window as any)._t_diff || 0);
-    const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
-    if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
-      dispatch({
-        type: 'contests/getProblems',
-        payload: { id },
-      });
-    }
-  };
+  // checkDetail = (detail: IContest) => {
+  //   const { id, dispatch } = this.props;
+  //   if (!detail) {
+  //     return;
+  //   }
+  //   const currentTime = Date.now() - ((window as any)._t_diff || 0);
+  //   const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
+  //   if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
+  //     dispatch({
+  //       type: 'contests/getProblems',
+  //       payload: { id, force: true },
+  //     });
+  //   }
+  // };
 
   componentDidMount(): void {
     window.scrollTo(0, 0);
-    this.checkDetail(this.props.detail);
-  }
-
-  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-    if (!this.props.detail && nextProps.detail) {
-      this.checkDetail(nextProps.detail);
-    }
   }
 
   render() {

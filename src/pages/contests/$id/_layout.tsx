@@ -56,11 +56,19 @@ class ContestBase extends React.Component<Props, State> {
     }
     await this.setStatePromise({ currentTime: Date.now() - ((window as any)._t_diff || 0) });
     const newTimeStatus = this.getContestTimeStatus();
-    if (oldTimeStatus === 'Pending' && newTimeStatus === 'Running') {
-      this.props.dispatch({
+    if (oldTimeStatus === 'Pending' && newTimeStatus === 'Running') { // 比赛开始
+      const { id, dispatch } = this.props;
+      dispatch({
         type: 'contests/getDetail',
         payload: {
-          id: this.props.id,
+          id,
+          force: true,
+        },
+      });
+      dispatch({
+        type: 'contests/getProblems',
+        payload: {
+          id,
           force: true,
         },
       });
@@ -78,6 +86,10 @@ class ContestBase extends React.Component<Props, State> {
         type: 'contests/getDetail',
         payload: { id },
       });
+      dispatch({
+        type: 'contests/getProblems',
+        payload: { id },
+      });
     }
     const progressTimer: any = setInterval(this.updateProgress, 1000);
     this.setState({ progressTimer });
@@ -93,7 +105,17 @@ class ContestBase extends React.Component<Props, State> {
     if (!(this.props.session && this.props.session.loggedIn) && nextProps.session && nextProps.session.loggedIn) {
       this.props.dispatch({
         type: 'contests/getDetail',
-        payload: { id },
+        payload: {
+          id,
+          force: true,
+        },
+      });
+      this.props.dispatch({
+        type: 'contests/getProblems',
+        payload: {
+          id,
+          force: true,
+        },
       });
     }
   }

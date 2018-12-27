@@ -49,10 +49,6 @@ class ContestOverview extends React.Component<Props, State> {
     const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
     if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
       dispatch({
-        type: 'contests/getProblems',
-        payload: { id },
-      });
-      dispatch({
         type: 'users/getProblemResultStats',
         payload: { userId: session.user.userId, contestId: id },
       });

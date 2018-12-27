@@ -39,21 +39,6 @@ class ContestSolutions extends React.Component<Props, State> {
     };
   }
 
-  checkDetail = (detail: IContest) => {
-    const { id, dispatch } = this.props;
-    if (!detail) {
-      return;
-    }
-    const currentTime = Date.now() - ((window as any)._t_diff || 0);
-    const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
-    if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
-      dispatch({
-        type: 'contests/getProblems',
-        payload: { id },
-      });
-    }
-  };
-
   checkSolution = (query) => {
     this.props.dispatch({
       type: 'solutions/getList',
@@ -65,14 +50,10 @@ class ContestSolutions extends React.Component<Props, State> {
   };
 
   componentDidMount(): void {
-    this.checkDetail(this.props.detail);
     this.checkSolution(this.props.location.query);
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-    if (!this.props.detail && nextProps.detail) {
-      this.checkDetail(nextProps.detail);
-    }
     if (!isEqual(this.props.location.query, nextProps.location.query)) {
       this.checkSolution(nextProps.location.query);
       this.setState({ filterOwned: ~~nextProps.location.query.userId === nextProps.session.user.userId });

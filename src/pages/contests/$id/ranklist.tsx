@@ -99,6 +99,7 @@ class ContestRanklist extends React.Component<Props, State> {
             <Ranklist data={ranklist}
                       loading={ranklistLoading}
                       problemNum={problems.count || 0}
+                      session={session}
                       userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register}/>}
                       needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
                       handleUpdate={this.refreshRanklist}

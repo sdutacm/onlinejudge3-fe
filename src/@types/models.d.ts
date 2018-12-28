@@ -161,6 +161,7 @@ declare interface IRanklistRow {
   solved: number;
   time: number;
   stats: IRanklistProblemResultStat[];
+  _self?: boolean;
 }
 
 declare type IRanklist = IRanklistRow[];

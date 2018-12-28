@@ -10,6 +10,7 @@ interface Props {
   problemNum: number;
   userCellRender: (user: IUser) => React.ReactNode;
   needAutoUpdate: boolean;
+  session: ISessionStatus;
   handleUpdate?: () => any;
   updateInterval?: number;
   existedHeaderClassName?: string,
@@ -74,7 +75,7 @@ class Ranklist extends React.Component<Props, State> {
   }, 3000);
 
   render() {
-    const { data, loading, problemNum, userCellRender, existedHeaderClassName } = this.props;
+    const { data, loading, problemNum, userCellRender, existedHeaderClassName, session } = this.props;
     const { contentWidth } = this.state;
     // const contentWidth = 0;
     if (!data || !problemNum) {
@@ -106,12 +107,24 @@ class Ranklist extends React.Component<Props, State> {
     catch (e) {}
 
     const canFixLeft = contentWidth > (infoWidth + width.stat) && contentWidth < widthSum;
+
+    let ranklist = data;
+    if (session.loggedIn) {
+      for (const row of data) {
+        if (row.user && row.user.userId === session.user.userId) {
+          ranklist = [{ ...row, _self: true }, ...data];
+          break;
+        }
+      }
+    }
+
     return (
-      <Table dataSource={data}
-             rowKey={record => `${record.user && record.user.userId}`}
+      <Table dataSource={ranklist}
+             rowKey={(record, index) => `${record._self ? '_self' : record.user && record.user.userId}`}
              loading={loading}
              pagination={false}
              className="ranklist"
+             rowClassName={(record) => record._self ? 'self-rank-row' : ''}
              scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
       >
         <Table.Column

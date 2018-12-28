@@ -76,10 +76,12 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: id }, { call, put, select }) {
-      const savedState = yield select(state => state.users.detail[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getDetail({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.users.detail[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const ret: ApiResponse<IUser> = yield call(service.getDetail, id);
       if (ret.success) {
@@ -102,7 +104,7 @@ export default {
     * forgotPassword({ payload: data }, { call, put }) {
       return yield call(service.forgotPassword, data);
     },
-    * getProblemResultStats({ payload: { userId, contestId } = { userId: null, contestId: null } },
+    * getProblemResultStats({ payload: { userId, contestId, force = false } = { userId: null, contestId: null } },
                             { call, put, select }) {
       const globalSess = yield select(state => state.session);
       userId = userId || globalSess.user.userId;
@@ -113,9 +115,11 @@ export default {
         userId,
         contestId,
       };
-      const savedState = yield select(state => state.users.problemResultStats);
-      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
-        return;
+      if (!force) {
+        const savedState = yield select(state => state.users.problemResultStats);
+        if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+          return;
+        }
       }
       const ret: ApiResponse<IUserProblemResultStats> = yield call(service.getProblemResultStats, userId, contestId);
       if (ret.success) {
@@ -141,7 +145,7 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: matchDetail.params['id'] });
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
         }
       });
     },

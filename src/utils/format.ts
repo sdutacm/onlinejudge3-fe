@@ -1,6 +1,7 @@
 import UrlAssembler from 'url-assembler';
 import { floor } from 'math-precision';
 import moment from 'moment';
+import constants from '@/configs/constants';
 
 interface UrlArg {
   param?: object;
@@ -122,7 +123,7 @@ export function secToTimeStr(second: number, showDay = false): string {
  * @param {number | string} number
  * @returns {string}
  */
-export function numberToAlphabet (number: number | string): string {
+export function numberToAlphabet(number: number | string): string {
   let n = ~~number;
   let radix = 26;
   let cnt = 1;
@@ -138,4 +139,14 @@ export function numberToAlphabet (number: number | string): string {
     n /= radix;
   }
   return res.reverse().join('');
+}
+
+export function formatAvatarUrl(fileName, full = false): string {
+  if (!fileName) {
+    return '';
+  }
+  if (full) {
+    return `${constants.avatarUrlPrefix}${fileName}`;
+  }
+  return `${constants.avatarUrlPrefix}s_${fileName}`;
 }

@@ -71,7 +71,7 @@ class ContestSolutionDetail extends React.Component<Props, State> {
       match,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
-      return <div><Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} /></div>;
+      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
     }
     const problemList = (problemRows || []).map((problem, index) => ({
       problemId: problem.problemId,
@@ -81,8 +81,9 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     }));
     const sid = ~~match.params.sid;
     const data = allData[sid] || {} as ISolution;
-    return <div><SolutionDetailPage loading={loading} data={data} session={session} changeSharedLoading={changeSharedLoading}
-                                    dispatch={dispatch} contestId={id} problemList={problemList} /></div>;
+    return <SolutionDetailPage loading={loading} data={data} session={session} changeSharedLoading={changeSharedLoading}
+                               dispatch={dispatch} contestId={id} problemList={problemList}
+    />;
   }
 }
 

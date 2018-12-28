@@ -1,23 +1,51 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Avatar, Tabs, List, Icon, Skeleton } from 'antd';
+import { Row, Col, Card, Avatar, Tabs, List, Icon, Skeleton, Upload, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './$id.less';
-import { urlf } from '@/utils/format';
+import { formatAvatarUrl, urlf } from '@/utils/format';
 import pages from '@/configs/pages';
 import moment from 'moment';
 import xss from 'xss';
 import { Results } from '@/configs/results';
 import NotFound from '@/pages/404';
 import constants from '@/configs/constants';
+import msg from '@/utils/msg';
+import { isSelf } from '@/utils/permission';
+import api from '@/configs/apis';
+import classNames from 'classnames';
+import loadImage from 'image-promise';
+
+interface UploadFileType {
+  name: string;
+  type: string;
+}
+
+function validateFile(validTypes: UploadFileType[], maxSize: number) {
+  return function (file) {
+    const isValidType = validTypes.filter(v => v.type === file.type).length > 0;
+    if (!isValidType) {
+      msg.error(`Invalid file format. Only ${validTypes.map(v => v.name).join(', ')} allowed`);
+    }
+    const isValidSize = file.size / 1024 / 1024 < maxSize;
+    if (!isValidSize) {
+      msg.error(`File must be smaller than ${maxSize} MiB`);
+    }
+    return isValidType && isValidSize;
+  }
+}
 
 interface Props extends RouteProps, ReduxProps {
   data: TypeObject<IUser>;
-  session: ISession;
+  session: ISessionStatus;
 }
 
 interface State {
+  uploadAvatarLoading: boolean;
+  uploadBannerImageLoading: boolean;
+  bannerImageLoading: boolean;
+  bannerImageUrl: string;
 }
 
 class UserDetail extends React.Component<Props, State> {
@@ -25,7 +53,12 @@ class UserDetail extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      uploadAvatarLoading: false,
+      uploadBannerImageLoading: false,
+      bannerImageLoading: false,
+      bannerImageUrl: '',
+    };
   }
 
   list = [
@@ -51,21 +84,166 @@ class UserDetail extends React.Component<Props, State> {
     />
   );
 
+  checkBannerImage = (props: Props) => {
+    const { data: allData, match } = props;
+    const id = ~~match.params.id;
+    const data = allData[id] || {} as IUser;
+    if (!data.bannerImage) {
+      return;
+    }
+    const thumbUrl = `${constants.bannerImageUrlPrefix}xs_${data.bannerImage}`;
+    const fullUrl = `${constants.bannerImageUrlPrefix}${data.bannerImage}`;
+    this.setState({
+      bannerImageLoading: true,
+      bannerImageUrl: thumbUrl,
+    });
+    loadImage(fullUrl).then(() => {
+      try {
+        setTimeout(() => {
+          this.setState({
+            bannerImageLoading: false,
+            bannerImageUrl: fullUrl,
+          });
+        }, 2000);
+      }
+      catch (err) {
+        console.error(err);
+      }
+    }).catch(err => {
+      console.warn('err');
+      console.error(err);
+      this && this.setState && this.setState({
+        bannerImageLoading: false,
+        bannerImageUrl: fullUrl,
+      });
+    });
+  };
+
+  componentDidMount(): void {
+    window.scrollTo(0, 0);
+    this.checkBannerImage(this.props);
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    const oldId = ~~this.props.match.params.id;
+    const newId = ~~nextProps.match.params.id;
+    let oldBannerImage = '';
+    let newBannerImage = '';
+    try {
+      oldBannerImage = this.props.data[oldId].bannerImage;
+    }
+    catch (e) {}
+    try {
+      newBannerImage = nextProps.data[newId].bannerImage;
+    }
+    catch (e) {}
+    if (oldBannerImage !== newBannerImage) {
+      this.checkBannerImage(nextProps);
+    }
+  }
+
+  validateAvatar = validateFile([
+      { name: 'JPG', type: 'image/jpeg' },
+      { name: 'BMP', type: 'image/bmp' },
+      { name: 'PNG', type: 'image/png' },
+    ], 2
+  );
+
+  handleAvatarChange = (info) => {
+    if (info.file.status === 'uploading') {
+      this.setState({ uploadAvatarLoading: true });
+    }
+    else if (info.file.status === 'done') {
+      const resp = info.file.response;
+      msg.auto(resp);
+      if (resp.success) {
+        this.props.dispatch({
+          type: 'users/getDetail',
+          payload: {
+            id: ~~this.props.match.params.id,
+            force: true,
+          },
+        });
+        this.props.dispatch({
+          type: 'session/fetch',
+        });
+      }
+      this.setState({ uploadAvatarLoading: false });
+    }
+  };
+
+  validateBannerImage = validateFile([
+      { name: 'JPG', type: 'image/jpeg' },
+      { name: 'BMP', type: 'image/bmp' },
+      { name: 'PNG', type: 'image/png' },
+    ], 8
+  );
+
+  handleBannerImageChange = (info) => {
+    if (info.file.status === 'uploading') {
+      this.setState({ uploadBannerImageLoading: true });
+    }
+    else if (info.file.status === 'done') {
+      const resp = info.file.response;
+      msg.auto(resp);
+      if (resp.success) {
+        this.props.dispatch({
+          type: 'users/getDetail',
+          payload: {
+            id: ~~this.props.match.params.id,
+            force: true,
+          },
+        });
+      }
+      this.setState({ uploadBannerImageLoading: false });
+    }
+  };
+
   render() {
-    const { loading, data: allData, match } = this.props;
+    const { loading, data: allData, session, match } = this.props;
+    const { uploadAvatarLoading, uploadBannerImageLoading, bannerImageLoading, bannerImageUrl } = this.state;
     const id = ~~match.params.id;
     const notFound = !loading && !allData[id];
     if (notFound) {
       return <NotFound />;
     }
     const data = allData[id] || {} as IUser;
+    const self = isSelf(session, data.userId);
     return (
       <div>
-        <div className="u-bbg"></div>
+        <div className={classNames('u-bbg', { thumb: bannerImageLoading, 'no-banner': !data.bannerImage })} style={{
+          backgroundImage: data.bannerImage ? `url(${bannerImageUrl})` : undefined,
+        }} />
+        {self &&
+        <div className="banner-edit-btn">
+          <Upload name="bannerImage"
+                  action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
+                  beforeUpload={this.validateBannerImage}
+                  onChange={this.handleBannerImageChange}
+                  showUploadList={false}
+          >
+            <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
+          </Upload>
+        </div>}
         <div className="content-view" style={{ position: 'relative' }}>
           <div className="u-header" style={{ height: '60px' }}>
             <span className="u-avatar">
-              <Avatar size={120} icon="user" src={data.avatar && `${constants.avatarUrlPrefix}${data.avatar}`} />
+              {!self ?
+                <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} /> :
+                <Upload name="avatar"
+                        className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
+                        action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
+                        beforeUpload={this.validateAvatar}
+                        onChange={this.handleAvatarChange}
+                        showUploadList={false}
+                >
+                  {uploadAvatarLoading || loading ?
+                    <Icon type="loading" className="upload-mask-icon" /> :
+                    <Icon type="upload" className="upload-mask-icon"  />
+                  }
+                  <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} />
+                </Upload>
+              }
             </span>
             <span className="u-info">
               <h1>{data.nickname}</h1>
@@ -74,7 +252,11 @@ class UserDetail extends React.Component<Props, State> {
 
           <div className="u-content">
             <Row gutter={16}>
-              <Col xs={24} md={18} xxl={20}>
+              <Col xs={24} md={18} xxl={18}>
+                <Card bordered={false}>
+                  <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能们</h3>
+                </Card>
+
                 {/*<Card bordered={false}>*/}
                   {/*<h3>Rating</h3>*/}
                   {/*<img src="http://127.0.0.1/oj3_bgs/rating3.png" style={{ maxWidth: '100%' }} />*/}
@@ -85,16 +267,16 @@ class UserDetail extends React.Component<Props, State> {
                   {/*<img src="http://127.0.0.1/oj3_bgs/ac-cal.png" style={{ maxWidth: '100%' }} />*/}
                 {/*</Card>*/}
 
-                <Card bordered={false}>
-                  <h3>Activities</h3>
-                  <Tabs defaultActiveKey="1">
-                    <Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>
-                    <Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>
-                    <Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>
-                  </Tabs>
-                </Card>
+                {/*<Card bordered={false}>*/}
+                  {/*<h3>Activities</h3>*/}
+                  {/*<Tabs defaultActiveKey="1">*/}
+                    {/*<Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>*/}
+                    {/*<Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>*/}
+                    {/*<Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>*/}
+                  {/*</Tabs>*/}
+                {/*</Card>*/}
               </Col>
-              <Col xs={24} md={6} xxl={4}>
+              <Col xs={24} md={6} xxl={6}>
                 <Card bordered={false}>
                   <div style={{ width: '100%' }}>
                     <Link to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })} className="normal-text-link">

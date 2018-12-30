@@ -96,7 +96,8 @@ class ContestRanklist extends React.Component<Props, State> {
             </p>
           </Card>
           <Card bordered={false} className="list-card">
-            <Ranklist data={ranklist}
+            <Ranklist id={id}
+                      data={ranklist}
                       loading={ranklistLoading}
                       problemNum={problems.count || 0}
                       session={session}

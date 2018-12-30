@@ -1,13 +1,16 @@
 import React from 'react';
 import { ReduxProps, RouteProps } from '@/@types/props';
+import { connect } from 'dva';
 import SolutionTable from '@/components/SolutionTable';
 import { Card, Switch, Skeleton } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { atomOneLight } from 'react-syntax-highlighter/styles/hljs';
+import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { hasPermission, isSelf } from '@/utils/permission';
 import NotFound from '@/pages/404';
 import msg from '@/utils/msg';
+import { getPathParamId } from '@/utils/getPathParams';
+import pages from '@/configs/pages';
 
 interface Props extends ReduxProps {
   loading: boolean;
@@ -16,6 +19,7 @@ interface Props extends ReduxProps {
   session: ISessionStatus;
   contestId?: number;
   problemList?: any[];
+  theme: ITheme;
 }
 
 interface State {
@@ -51,7 +55,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList } = this.props;
+    const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList, theme } = this.props;
     if (!loading && !data.solutionId) {
       return <NotFound />;
     }
@@ -78,7 +82,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
                   </div>
                   <SyntaxHighlighter language={langsMap4Hljs[data.language]}
                                      showLineNumbers
-                                     style={atomOneLight}>{data.code}</SyntaxHighlighter>
+                                     style={theme === 'dark' ? atomOneDark : atomOneLight}>{data.code}</SyntaxHighlighter>
                 </div> :
                 <div>
                   <h3 className="warning-text">You do not have permission to view code</h3>
@@ -93,4 +97,10 @@ class SolutionDetailPage extends React.Component<Props, State> {
   }
 }
 
-export default SolutionDetailPage;
+function mapStateToProps(state) {
+  return {
+    theme: state.settings.theme,
+  };
+}
+
+export default connect(mapStateToProps)(SolutionDetailPage);

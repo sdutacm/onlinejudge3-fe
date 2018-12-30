@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin } from 'antd';
+import { Menu, Icon, Spin, Popover } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
@@ -11,6 +11,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import { matchPath } from 'react-router';
 import router from 'umi/router';
+import ThemeSvg from '@/assets/svg/theme.svg';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -19,12 +20,13 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: TypeObject<ISessionStatus>;
+  theme: ITheme;
 }
 
 class NavMenuContest extends React.Component<Props, any> {
   static defaultProps: Partial<Props> = {
     mobileVersion: false,
-    className: styles.nav,
+    className: 'nav',
   };
 
   constructor(props) {
@@ -33,6 +35,13 @@ class NavMenuContest extends React.Component<Props, any> {
       sessionLoaded: false,
     };
   }
+
+  toggleTheme = () => {
+    this.props.dispatch({
+      type: 'settings/setTheme',
+      payload: { theme: this.props.theme === 'dark' ? 'light' : 'dark' },
+    })
+  };
 
   getMatchContest = () => {
     return matchPath(this.props.location.pathname, {
@@ -57,7 +66,7 @@ class NavMenuContest extends React.Component<Props, any> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session: allContestSession, location } = this.props;
+    const { mobileVersion, onLinkClick, className, loading, session: allContestSession, location, theme } = this.props;
     const matchContest = this.getMatchContest();
     const id = this.getContestId();
     let session: ISessionStatus = {
@@ -137,6 +146,13 @@ class NavMenuContest extends React.Component<Props, any> {
                 <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>
         }
+
+        <Menu.Item key="theme" style={{ float: 'right' }} onClick={this.toggleTheme}>
+          <Popover content={theme === 'light' ? 'Go to Deep Dark Fantasy' : 'Back to Real Light World'}
+                   mouseEnterDelay={5}>
+            <a><Icon component={ThemeSvg} /></a>
+          </Popover>
+        </Menu.Item>
       </Menu>
     );
   }
@@ -147,6 +163,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['contests/getSession'] || !!state.loading.effects['contests/logout'],
     session,
+    theme: state.settings.theme,
   };
 }
 

@@ -2,6 +2,8 @@
 @import "layouts/variables";
 @import "../node_modules/antd/lib/style/themes/default";
 @import "../node_modules/antd/lib/button/style/mixin";
+@import 'margin';
+@import "dark";
 
 // Sticky footer powered by https://github.com/philipwalton/solved-by-flexbox
 
@@ -85,6 +87,15 @@ pre {
         color: inherit;
       }
     }
+  }
+}
+
+.nav {
+  line-height: @header-height;
+  border-bottom: none;
+
+  @media only screen and (max-width: 767px) {
+    border-right: none;
   }
 }
 
@@ -263,6 +274,10 @@ pre {
   }
 }
 
+.display-none {
+  display: none !important;
+}
+
 .text-left {
   text-align: left;
 }
@@ -293,46 +308,6 @@ pre {
 
 .float-right {
   float: right;
-}
-
-.ml-sm {
-  margin-left: 4px;
-}
-
-.ml-sm-md {
-  margin-left: 6px;
-}
-
-.ml-md {
-  margin-left: 8px;
-}
-
-.ml-md-lg {
-  margin-left: 12px;
-}
-
-.ml-lg {
-  margin-left: 16px;
-}
-
-.mr-sm {
-  margin-right: 4px;
-}
-
-.mr-sm-md {
-  margin-right: 6px;
-}
-
-.mr-md {
-  margin-right: 8px;
-}
-
-.mr-md-lg {
-  margin-right: 12px;
-}
-
-.mr-lg {
-  margin-right: 16px;
 }
 
 .text-ellipsis {
@@ -570,7 +545,7 @@ pre {
 @import "./Josefin_Sans";
 .u-bbg {
   //background-image: url('http://127.0.0.1/oj3_bgs/sunflowers-cut.jpg');
-  background-color: #888;
+  background-color: #acacac;
   height: 500px;
   width: 100%;
   background-size: cover;
@@ -590,7 +565,7 @@ pre {
     justify-content: center;
     align-items: center;
     font-size: 4em;
-    color: #acacac;
+    color: #ddd;
     font-weight: 100;
     font-family: 'Josefin Sans', sans-serif;
     padding-top: @header-height;
@@ -620,6 +595,10 @@ pre {
 
 .u-content {
   margin-top: 25px;
+}
+
+.card-block-divider {
+  border-left: 1px solid #ddd;
 }
 
 .warning-text {

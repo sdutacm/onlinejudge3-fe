@@ -1,10 +1,13 @@
 import React from 'react';
 import { Table } from 'antd';
-import { numberToAlphabet, secToTimeStr } from '@/utils/format';
+import { numberToAlphabet, secToTimeStr, urlf } from '@/utils/format';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import pages from '@/configs/pages';
 
 interface Props {
+  id: number;
   data: IRanklist;
   loading: boolean;
   problemNum: number;
@@ -75,7 +78,7 @@ class Ranklist extends React.Component<Props, State> {
   }, 3000);
 
   render() {
-    const { data, loading, problemNum, userCellRender, existedHeaderClassName, session } = this.props;
+    const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session } = this.props;
     const { contentWidth } = this.state;
     // const contentWidth = 0;
     if (!data || !problemNum) {
@@ -153,7 +156,10 @@ class Ranklist extends React.Component<Props, State> {
           width={width.solved}
           fixed={canFixLeft}
           render={(text, record: IRanklistRow) => (
-            <div>{record.solved}</div>
+            <div><Link to={urlf(pages.contests.solutions, {
+              param: { id },
+              query: { userId: record.user && record.user.userId }
+            })}>{record.solved}</Link></div>
           )}
         />
         <Table.Column

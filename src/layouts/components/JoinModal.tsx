@@ -55,7 +55,7 @@ class JoinModal extends React.Component<any, any> {
               onClick={e => this.switchTab(e, 'register')}>Register</a>
             </Form.Item>
 
-            <Form.Item className={gStyles.displayNone}>
+            <Form.Item className="display-none">
               <Button htmlType="submit" />
             </Form.Item>
           </Form>
@@ -140,7 +140,7 @@ class JoinModal extends React.Component<any, any> {
               Already have an account? <a onClick={e => this.switchTab(e, 'login')}>Login</a>
             </Form.Item>
 
-            <Form.Item className={gStyles.displayNone}>
+            <Form.Item className="display-none">
               <Button htmlType="submit" />
             </Form.Item>
           </Form>
@@ -205,7 +205,7 @@ class JoinModal extends React.Component<any, any> {
               Back to <a onClick={e => this.switchTab(e, 'login')}>Login</a>
             </Form.Item>
 
-            <Form.Item className={gStyles.displayNone}>
+            <Form.Item className="display-none">
               <Button htmlType="submit" />
             </Form.Item>
           </Form>

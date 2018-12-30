@@ -10,6 +10,7 @@ import gStyles from '../../general.less';
 import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import NoteSvg from '@/assets/svg/note.svg';
+import ThemeSvg from '@/assets/svg/theme.svg';
 import moment from 'moment';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 
@@ -20,12 +21,13 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: ISessionStatus;
+  theme: ITheme;
 }
 
 class NavMenu extends React.Component<Props, any> {
   static defaultProps: Partial<Props> = {
     mobileVersion: false,
-    className: styles.nav,
+    className: 'nav',
   };
 
   constructor(props) {
@@ -35,11 +37,13 @@ class NavMenu extends React.Component<Props, any> {
     };
   }
 
-  notificationsList = [
-    { notificationId: 1, title: 'lxh mentioned you at a discussion', time: 1539733234 },
-    { notificationId: 2, title: 'bLue answered your question', time: 1539733234 },
-    { notificationId: 3, title: 'Your contest register has been accepted', time: 1539733234 },
-  ];
+  // notificationsList = [
+  //   { notificationId: 1, title: 'lxh mentioned you at a discussion', time: 1539733234 },
+  //   { notificationId: 2, title: 'bLue answered your question', time: 1539733234 },
+  //   { notificationId: 3, title: 'Your contest register has been accepted', time: 1539733234 },
+  // ];
+
+  notificationsList = [];
 
   notifications = (
     <List
@@ -55,7 +59,7 @@ class NavMenu extends React.Component<Props, any> {
             />
         </List.Item>
       )}
-      footer={(<a><div className="text-center" style={{ paddingBottom: 0 }}>View All</div></a>)}
+      footer={!!this.notificationsList.length && <a><div className="text-center" style={{ paddingBottom: 0 }}>View All</div></a>}
     />
   );
 
@@ -84,6 +88,13 @@ class NavMenu extends React.Component<Props, any> {
     </div>
   );
 
+  toggleTheme = () => {
+    this.props.dispatch({
+      type: 'settings/setTheme',
+      payload: { theme: this.props.theme === 'dark' ? 'light' : 'dark' },
+    })
+  };
+
   logout = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -94,7 +105,7 @@ class NavMenu extends React.Component<Props, any> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session, location } = this.props;
+    const { mobileVersion, onLinkClick, className, loading, session, location, theme } = this.props;
     let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
@@ -117,9 +128,9 @@ class NavMenu extends React.Component<Props, any> {
           <Link to={pages.users.index} onClick={onLinkClick}>Standings</Link>
         </Menu.Item>
 
-        <Menu.Item key="/Forum">
-          <Link to={pages.index} onClick={onLinkClick}>Forum</Link>
-        </Menu.Item>
+        {/*<Menu.Item key="/Forum">*/}
+          {/*<Link to={pages.index} onClick={onLinkClick}>Forum</Link>*/}
+        {/*</Menu.Item>*/}
 
         {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
           <Link to={pages.index} onClick={onLinkClick}>Idea Notes</Link>
@@ -181,11 +192,17 @@ class NavMenu extends React.Component<Props, any> {
             <a><Icon type="bell" theme="outlined" /></a>
           </Popover>
         </Menu.Item>}
-        {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>
-          <Popover content={this.ideaNotes} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">
-            <a><Icon theme="outlined" component={NoteSvg} /></a>
+        {/*{!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>*/}
+          {/*<Popover content={this.ideaNotes} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">*/}
+            {/*<a><Icon theme="outlined" component={NoteSvg} /></a>*/}
+          {/*</Popover>*/}
+        {/*</Menu.Item>}*/}
+        <Menu.Item key="theme" style={{ float: 'right' }} onClick={this.toggleTheme}>
+          <Popover content={theme === 'light' ? 'Go to Deep Dark Fantasy' : 'Back to Real Light World'}
+                   mouseEnterDelay={5}>
+            <a><Icon component={ThemeSvg} /></a>
           </Popover>
-        </Menu.Item>}
+        </Menu.Item>
       </Menu>
     );
   }
@@ -196,6 +213,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
     session,
+    theme: state.settings.theme,
   };
 }
 

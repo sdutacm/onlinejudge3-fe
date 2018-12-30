@@ -211,3 +211,9 @@ declare interface ITag {
   };
   createdAt: Timestamp;
 }
+
+declare type ITheme = 'light' | 'dark';
+
+declare interface ISettings {
+  theme: ITheme;
+}

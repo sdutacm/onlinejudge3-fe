@@ -1,0 +1,264 @@
+body.dark {
+  background-color: rgb(45, 46, 48); // dark
+  color: rgb(223, 223, 223); // dark
+}
+
+.dark {
+  //@primary-color: #1e66d5; // dark
+  @bg-color: rgb(45, 46, 48); // dark
+  @font-color: rgb(223, 223, 223); // dark
+  @component-bg: #222222; // dark
+
+
+  //@import 'variables_dark';
+
+
+  h1, h2, h3, h4, h5, h6 {
+    color: @font-color; // dark
+  }
+
+  //.ant-card {
+  //  color: @font-color; // dark
+  //  background-color: rgb(34, 34, 34); // dark
+  //}
+  @import "./variables_dark";
+
+  @import 'styles/dark_antd/style/mixins/index';
+  @import 'styles/dark_antd/button/style/index';
+  @import 'styles/dark_antd/input/style/index';
+  @import 'styles/dark_antd/select/style/index';
+  @import 'styles/dark_antd/grid/style/index';
+  @import 'styles/dark_antd/form/style/index';
+  @import 'styles/dark_antd/card/style/index';
+  @import 'styles/dark_antd/table/style/index';
+  @import 'styles/dark_antd/pagination/style/index';
+  @import 'styles/dark_antd/menu/style/index';
+  @import 'styles/dark_antd/progress/style/index';
+  @import 'styles/dark_antd/tag/style/index';
+  @import 'styles/dark_antd/badge/style/index';
+  @import 'styles/dark_antd/tabs/style/index';
+  @import 'styles/dark_antd/popover/style/index';
+  @import 'styles/dark_antd/switch/style/index';
+  @import 'styles/dark_antd/skeleton/style/index';
+  @import 'styles/dark_antd/modal/style/index';
+  @import 'styles/dark_antd/message/style/index';
+
+  @import (multiple) 'margin';
+
+  .ant-layout {
+    background: @bg-color;
+  }
+
+  .ant-layout-header {
+    background-color: rgba(34, 34, 34, 0.7); // dark
+
+    .ant-menu-horizontal > .ant-menu-item > a {
+      color: @font-color; // dark;
+      &:hover {
+        color: @primary-color;
+      }
+    }
+
+    .ant-menu {
+      color: @font-color; // dark;
+    }
+  }
+
+  .ant-layout-content {
+    background-color: @bg-color;
+  }
+
+  .ant-layout-footer {
+    background-color: darken(@bg-color, 4%);
+  }
+
+  .nav {
+    line-height: @header-height;
+    border-bottom: none;
+
+    @media only screen and (max-width: 767px) {
+      border-right: none;
+    }
+  }
+
+  .ant-menu-item .anticon {
+    font-size: 20px;
+    vertical-align: middle;
+    margin-right: 0;
+  }
+
+  .ant-table-thead > tr > th {
+    padding: 16px 8px 8px;
+
+    &:first-of-type {
+      padding-left: 16px;
+    }
+
+    &:last-of-type {
+      padding-right: 16px;
+    }
+  }
+
+  .ant-table-tbody > tr > td {
+    padding: 8px;
+
+    &:first-of-type {
+      padding-left: 16px;
+    }
+
+    &:last-of-type {
+      padding-right: 16px;
+    }
+  }
+
+  .input-button {
+    :global(.ant-input-search-button) {
+      border-radius: @border-radius-base;
+
+      .btn-default;
+    }
+  }
+
+  .input-button-disabled {
+    .input-button;
+
+    :global(.ant-input-search-button) {
+      &,
+      &:hover,
+      &:focus,
+      &:active,
+      &.active {
+        .button-color(@btn-disable-color; @btn-disable-bg; @btn-disable-border);
+      }
+      cursor: not-allowed;
+      > * {
+        pointer-events: none;
+      }
+    }
+  }
+
+  .ant-table-tbody > tr > td.result-bar {
+    border-left: 1px solid rgb(117, 117, 117);
+    border-right: 1px solid rgb(117, 117, 117);
+
+    .result {
+      color: @text-color;
+    }
+  }
+
+  .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
+    background: @component-bg;
+  }
+
+  .click-table {
+    .ant-table-tbody > tr {
+      .float-btn {
+        padding: 0;
+
+        a {
+          display: block;
+          visibility: hidden;
+        }
+
+        width: 1px; // tmp
+      }
+    }
+  }
+
+  .bg-green {
+    background-color: @color-green;
+  }
+
+  .bg-red {
+    background-color: @color-red;
+  }
+
+  .bg-yellow {
+    background-color: @color-yellow;
+  }
+
+  .bg-skyblue {
+    background-color: @color-skyblue;
+  }
+
+  .bg-purple {
+    background-color: @color-purple;
+  }
+
+  .bg-gray {
+    background-color: @color-gray;
+  }
+
+  .problem-result-mark-row {
+    border-left: 8px solid transparent;
+
+    &.accepted {
+      border-left-color: @color-green;
+    }
+
+    &.attempted {
+      border-left-color: @color-red;
+    }
+  }
+
+  .ranklist {
+    .ant-table-tbody > tr > td.stat {
+      padding: 0;
+      height: 1px;
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
+
+      .stat-inner {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: inline-table;
+
+        span {
+          display: table-cell;
+          vertical-align: middle;
+          padding: 8px;
+        }
+      }
+    }
+
+    .self-rank-row > td {
+      border-bottom: 2px solid @primary-color;
+    }
+
+    .accepted {
+      background: darken(#0a5f00, 4%);
+    }
+    .failed {
+      background: darken(#7d0800, 4%);
+    }
+    .frozen {
+      background: #2f4a8e;
+    }
+    .fb {
+      background: #248e18;
+      color: #fff;
+    }
+    .fb .attempted {
+      color: #f0f0f0;
+    }
+  }
+
+  .u-bbg {
+    background-color: #585858;
+
+    &.no-banner::before {
+      color: #acacac;
+    }
+  }
+
+  .u-avatar {
+    .ant-avatar {
+      border: 4px solid #333;
+    }
+  }
+
+  .card-block-divider {
+    border-left: 1px solid #555;
+  }
+}

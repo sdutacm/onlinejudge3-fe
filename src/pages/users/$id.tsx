@@ -286,7 +286,7 @@ class UserDetail extends React.Component<Props, State> {
                       </div>
                     </Link>
                     <Link to={urlf(pages.solutions.index, { query: { userId: data.userId } })} className="normal-text-link">
-                      <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center', borderLeft: '1px solid #ddd' }}>
+                      <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }} className="card-block-divider">
                         <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
                         <p style={{ fontSize: '12px' }}>Total</p>
                       </div>

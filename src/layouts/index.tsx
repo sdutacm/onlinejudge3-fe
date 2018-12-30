@@ -10,6 +10,7 @@ import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import moment from 'moment';
 import { matchPath } from 'react-router';
+import classNames from 'classnames';
 
 interface Props extends ReduxProps, RouteProps {
 }
@@ -45,7 +46,9 @@ class Index extends React.Component<Props, State> {
       exact: true,
     });
     return (
-      <Layout className={inUserDetailPage ? 'user-page' : ''}>
+      <Layout className={classNames({
+        'user-page': inUserDetailPage,
+      })}>
         <Header>
           <Row>
             <Col>

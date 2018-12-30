@@ -16,7 +16,9 @@ export default {
     // 'primary-color': '#1e66d5', // dark
     'btn-border-radius-base': '100px',
     'btn-border-radius-sm': '100px',
-    'icon-url': '"/assets/fonts/iconfont"'
+    'success-color': '#4fb24f',
+    'error-color': '#e23a36',
+    'icon-url': '"/assets/fonts/iconfont"',
   },
   proxy: {
     '/api/': {

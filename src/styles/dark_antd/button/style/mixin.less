@@ -221,7 +221,9 @@
   &:focus,
   &:active,
   &.active {
-    background: @btn-default-bg;
+    color: @btn-default-color; // dark
+    background: lighten(@btn-default-bg, 10%); // dark
+    border-color: transparent; // dark
     text-decoration: none;
   }
 }

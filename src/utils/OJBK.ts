@@ -21,7 +21,6 @@ function calcTcode(OJBK: string) {
 
 async function checkOJBK() {
   const OJBK = jscookie.get('OJBK');
-  console.log('OJBK: {' + OJBK + '}');
   if (!OJBK) {
     return false;
   }
@@ -32,7 +31,6 @@ async function checkOJBK() {
   catch (e) {
     console.error(e);
   }
-  console.log('checkOJBK', ret);
   if (ret.success) {
     const tcode = ret.tcode;
     return calcTcode(OJBK) === tcode;

@@ -1,6 +1,7 @@
 export default {
   base: '/onlinejudge3_beta/',
   publicPath: '/onlinejudge3_beta/',
+  outputPath: './onlinejudge3_beta',
   hash: true,
   plugins: [
     ['umi-plugin-react', {

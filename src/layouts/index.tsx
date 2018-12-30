@@ -11,8 +11,11 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import moment from 'moment';
 import { matchPath } from 'react-router';
 import classNames from 'classnames';
+import router from 'umi/router';
+import OJBK from '@/utils/OJBK';
 
 interface Props extends ReduxProps, RouteProps {
+  theme: ITheme;
 }
 
 interface State {
@@ -34,8 +37,20 @@ class Index extends React.Component<Props, State> {
     }.bind(this));
   };
 
-  componentDidMount() {
-    this.fetchSession();
+  async componentDidMount() {
+    if (this.props.theme === 'dark') {
+      document.body.className = 'dark';
+    }
+    else {
+      document.body.className = '';
+    }
+    const OJBKRes = await OJBK.checkOJBK();
+    if (OJBKRes) {
+      this.fetchSession();
+    }
+    else {
+      router.push(pages.OJBK);
+    }
   }
 
   render() {
@@ -55,27 +70,34 @@ class Index extends React.Component<Props, State> {
               <Link to="/" className={styles.logo}>{constants.siteName}</Link>
             </Col>
             <Col>
-              <NavContainer />
+              {this.state.sessionLoaded && <NavContainer />}
             </Col>
           </Row>
         </Header>
         <Content>
-          {this.state.sessionLoaded ? children :
+          {this.state.sessionLoaded || location.pathname === '/OJBK' ? children :
             <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />}
         </Content>
         <Footer className={styles.footer}>
           <p>© 2008-{moment().format('YYYY')} SDUTACM Team. All Rights Reserved.</p>
-          <div>
-            <a>API</a>
-            <Divider type="vertical" />
-            <a>Feedback</a>
-            <Divider type="vertical" />
-            <a>About Us</a>
-          </div>
+          {/*<div>*/}
+            {/*<a>API</a>*/}
+            {/*<Divider type="vertical" />*/}
+            {/*<a>Feedback</a>*/}
+            {/*<Divider type="vertical" />*/}
+            {/*<a>About Us</a>*/}
+          {/*</div>*/}
         </Footer>
       </Layout>
     );
   }
 }
 
-export default connect()(Index);
+function mapStateToProps(state) {
+  return {
+    theme: state.settings.theme,
+  };
+}
+
+
+export default connect(mapStateToProps)(Index);

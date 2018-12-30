@@ -1,5 +1,6 @@
 import * as service from '../services/session';
 import { endInterception, initInterceptor, startInterception } from '@/utils/effectInterceptor';
+import OJBK from '@/utils/OJBK';
 
 const initialState = {
   loggedIn: false,
@@ -59,6 +60,7 @@ export default {
           type: 'users/getProblemResultStats',
           payload: { userId },
         });
+        OJBK.logLogin(ret.data);
       }
       return ret;
     },

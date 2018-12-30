@@ -23,5 +23,6 @@ export default {
     solutions: '/contests/:id/solutions',
     solutionDetail: '/contests/:id/solutions/:sid',
     ranklist: '/contests/:id/ranklist',
-  }
+  },
+  OJBK: '/OJBK',
 };

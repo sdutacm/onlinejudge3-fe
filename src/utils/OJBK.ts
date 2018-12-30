@@ -3,7 +3,7 @@ import { urlf } from '@/utils/format';
 import jscookie from 'jscookie';
 import md5 from 'md5';
 
-const base = 'http://api.mushan.ink/';
+const base = 'https://api.mushan.ink/';
 
 function calcTcode(OJBK: string) {
   let sum = 0;

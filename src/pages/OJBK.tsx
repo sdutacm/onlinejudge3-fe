@@ -58,7 +58,7 @@ class OJBKPre extends React.Component<Props, State> {
       <div style={{ margin: '150px auto 0', maxWidth: '400px' }}>
         <h2 className="text-center" style={{ marginBottom: '45px' }}>Require OJ Beta Key to access</h2>
         <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
-          <Form.Item label="OJBK">
+          <Form.Item label="OJBK (OJ Beta Key)">
             {getFieldDecorator('OJBK', {
               rules: [{ required: true, message: 'Please input OJBK' }],
             })(<Input />)}

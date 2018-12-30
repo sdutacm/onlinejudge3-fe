@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "umi dev",
-    "build": "umi build && mv ./dist/static/assets ./dist",
+    "build": "umi build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

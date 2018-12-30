@@ -1,4 +1,6 @@
 export default {
+  base: '/onlinejudge3_beta/',
+  hash: true,
   plugins: [
     ['umi-plugin-react', {
       dva: {
@@ -21,10 +23,10 @@ export default {
     'icon-url': '"/assets/fonts/iconfont"',
   },
   proxy: {
-    '/api/': {
+    '/onlinejudge3/index.php/API_ng/': {
       target: 'http://localhost:8848/index.php/API_ng/',
       changeOrigin: true,
-      pathRewrite: { '^/api/' : '' }
+      pathRewrite: { '^/onlinejudge3/index.php/API_ng/' : '' }
     }
   },
   urlLoaderExcludes: [/\.svg$/],

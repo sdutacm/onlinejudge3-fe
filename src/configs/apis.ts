@@ -1,5 +1,6 @@
 const api = {
-  base: '/api',
+  // base: '/api',
+  base: '/onlinejudge3/index.php/API_ng',
   general: {
     csrf: '/csrf',
   },

@@ -21,7 +21,7 @@ class SolutionDetail extends React.Component<Props, State> {
   }
 
   onShareChange = (checked) => {
-    console.log(checked);
+    // console.log(checked);
   };
 
   render() {

@@ -33,7 +33,6 @@ class ContestHome extends React.Component<Props, State> {
     super(props);
     const { session } = this.props;
     let tab: TabType = '';
-    console.log('Codes', Codes);
     switch (session._code) {
       case Codes.R_CONTESTS_NEED_LOGIN_OJ:
         tab = 'loginGlobal';

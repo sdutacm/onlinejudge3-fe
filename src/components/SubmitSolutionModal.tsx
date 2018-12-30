@@ -90,6 +90,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
             <Form.Item label="Language">
               {getFieldDecorator('language', {
                 rules: [{ required: true, message: 'Please select language' }],
+                initialValue: 'g++', // TODO 判断用户默认语言设置
               })(
                 <Select placeholder="Select a language">
                   {langs.map(lang => (<Select.Option key={lang.fieldName}>{lang.displayFullName}</Select.Option>))}

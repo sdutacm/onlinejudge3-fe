@@ -4,6 +4,7 @@ import xss from 'xss';
 import styles from './ProblemContent.less';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { numberToAlphabet } from '@/utils/format';
+import classNames from 'classnames';
 
 interface Props {
   loading: boolean;
@@ -24,7 +25,7 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
     );
   }
   return (
-    <div className={styles.problemContent}>
+    <div className={classNames(styles.problemContent, 'problem-content')}>
       <h2 className="text-center">{problemIndex ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}

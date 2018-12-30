@@ -1,22 +1,23 @@
-import * as service from '../services/verifications';
-// import less from 'less';
+import localStorage from '@/utils/localStorage';
 
 const initialState = {
   theme: 'light',
 };
 
 export default {
-  state: initialState,
+  state: {
+    ...initialState,
+    ...localStorage.get('settings'),
+  },
   reducers: {
     setTheme(state, { payload: { theme } }) {
-      // less.modifyVars({
-      //   '@primary-color': '#e23a36',
-      // });
       if (theme === 'dark') {
         document.body.className = 'dark';
+        localStorage.set('settings', { ...state, theme });
       }
       else {
         document.body.className = '';
+        localStorage.set('settings', { ...state, theme });
       }
       state.theme = theme;
     },

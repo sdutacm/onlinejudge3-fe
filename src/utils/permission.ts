@@ -17,6 +17,9 @@ export function isAdminDog(session: ISessionStatus): boolean {
 }
 
 export function isSelf(session: ISessionStatus, userId: number): boolean {
+  if (!session || !userId) {
+    return false;
+  }
   try {
     return session.user.userId === userId;
   }

@@ -42,3 +42,12 @@ export function getProblemResultStats(userId, contestId = null) {
   });
   return get(url);
 }
+
+export function getSolutionStats(id) {
+  const url = urlf(api.users.solutionStats, {
+    param: {
+      id,
+    },
+  });
+  return get(url);
+}

@@ -11,7 +11,7 @@ import ToDetailCard from '@/components/ToDetailCard';
 import { Link } from 'react-router-dom';
 import contestTypes, { ContestTypes } from '@/configs/contestTypes';
 import gStyles from '@/general.less';
-import TimeStatusBadge from '@/pages/contest/acm/components/TimeStatusBadge';
+import TimeStatusBadge from '@/components/TimeStatusBadge';
 import classNames from 'classnames';
 import moment from 'moment';
 import constants from '@/configs/constants';

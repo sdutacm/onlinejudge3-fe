@@ -76,27 +76,33 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: { id, force = false } }, { call, put, select }) {
+    * getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
       if (!force) {
         const savedState = yield select(state => state.users.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
       }
-      const ret: ApiResponse<IUser> = yield call(service.getDetail, id);
-      if (ret.success) {
+      const [detailRet, solutionStatsRet]: ApiResponse<any>[] = yield all([
+        call(service.getDetail, id),
+        call(service.getSolutionStats, id),
+      ]);
+      if (detailRet.success) {
+        const solutionStats = ((solutionStatsRet && solutionStatsRet.data) || {}) as IUserSolutionStats;
+        detailRet.data.accepted = solutionStats.accepted || 0;
+        detailRet.data.submitted = solutionStats.submitted || 0;
+        yield put({
+          type: 'clearExpiredDetail',
+        });
         yield put({
           type: 'setDetail',
           payload: {
             id,
-            data: ret.data,
+            data: detailRet.data,
           },
         });
-        yield put({
-          type: 'clearExpiredDetail',
-        });
       }
-      return ret;
+      return detailRet;
     },
     * register({ payload: data }, { call, put }) {
       return yield call(service.register, data);

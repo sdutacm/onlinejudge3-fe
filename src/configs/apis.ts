@@ -17,6 +17,7 @@ const api = {
     bannerImage: '/users/:id/bannerImage',
     problemResultStats: '/users/:id/problemResultStats',
     solutionCalendar: '/users/:id/solutionCalendar',
+    solutionStats: '/users/:id/solutionStats',
   },
   problems: {
     base: '/problems',
@@ -27,14 +28,6 @@ const api = {
     base: '/solutions',
     detail: '/solutions/:id',
     shared: '/solutions/:id/shared',
-  },
-  contest: {
-    acm: {
-      index: '/set/',
-      problem: '/set_problem/',
-      submit: '/submit',
-      status: '',
-    }
   },
   contests: {
     base: '/contests',

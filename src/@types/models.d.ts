@@ -35,6 +35,11 @@ declare interface IUserProblemResultStats {
   attemptedProblemIds: number[];
 }
 
+declare interface IUserSolutionStats {
+  accepted: number;
+  submitted: number;
+}
+
 declare interface IProblem {
   problemId: number;
   title: string;

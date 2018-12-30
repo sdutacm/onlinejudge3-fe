@@ -11,7 +11,7 @@ import xss from 'xss';
 import { formatPercentage, numberToAlphabet, secToTimeStr, toLongTs, urlf } from '@/utils/format';
 import moment from 'moment';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
-import TimeStatusBadge from '@/pages/contest/acm/components/TimeStatusBadge';
+import TimeStatusBadge from '@/components/TimeStatusBadge';
 import styles from '@/pages/problems/index.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';

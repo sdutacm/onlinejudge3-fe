@@ -5,7 +5,7 @@ const constants = {
   // bannerImageUrlPrefix: 'http://127.0.0.1/tmp4oj/banner_images/',
   avatarUrlPrefix: '/image/avatars/',
   bannerImageUrlPrefix: '/image/banner_images/',
-  requestTimeout: 30000,
+  requestTimeout: 60000,
   msgDuration: {
     success: 3,
     error: 5,

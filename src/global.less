@@ -336,11 +336,32 @@ pre {
   }
 }
 
+.content-view-xs {
+  width: 90%;
+
+  @media only screen and (min-width: 400px) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 380px;
+  }
+}
+
 .responsive-table {
   @media only screen and (max-width: 767px) {
     :global(.ant-table-body) {
       width: 650px;
     }
+  }
+}
+
+.center-view {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  @media only screen and (max-width: 767px) {
+    top: 47.5%;
   }
 }
 

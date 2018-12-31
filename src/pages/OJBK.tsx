@@ -55,7 +55,7 @@ class OJBKPre extends React.Component<Props, State> {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <div style={{ margin: '150px auto 0', maxWidth: '400px' }}>
+      <div className="content-view-xs center-view">
         <h2 className="text-center" style={{ marginBottom: '45px' }}>Require OJ Beta Key to access</h2>
         <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
           <Form.Item label="OJBK (OJ Beta Key)">
@@ -65,7 +65,7 @@ class OJBKPre extends React.Component<Props, State> {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" block htmlType="submit" loading={this.state.loading}>Enter OJ Pre-Beta World</Button>
+            <Button type="primary" block htmlType="submit" loading={this.state.loading}>Submit</Button>
           </Form.Item>
         </Form>
       </div>

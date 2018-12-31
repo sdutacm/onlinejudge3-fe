@@ -146,7 +146,7 @@ class UserDetail extends React.Component<Props, State> {
       { name: 'JPG', type: 'image/jpeg' },
       { name: 'BMP', type: 'image/bmp' },
       { name: 'PNG', type: 'image/png' },
-    ], 2
+    ], 4
   );
 
   handleAvatarChange = (info) => {
@@ -176,7 +176,7 @@ class UserDetail extends React.Component<Props, State> {
       { name: 'JPG', type: 'image/jpeg' },
       { name: 'BMP', type: 'image/bmp' },
       { name: 'PNG', type: 'image/png' },
-    ], 8
+    ], 12
   );
 
   handleBannerImageChange = (info) => {

@@ -35,12 +35,12 @@
 // Background color for `<body>`
 @body-background : #2D2E30; // dark
 // Base background color for most components
-@component-background : #222222; // dark
+@component-background : #252525; // dark
 @font-family : "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif,
 "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 @code-family : "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-@heading-color : fade(#fff, 85%); // dark
-@text-color : fade(#fff, 65%); // dark
+@heading-color : fade(#fff, 80%); // dark
+@text-color : fade(#fff, 60%); // dark
 @text-color-secondary : fade(#fff, 45%); // dark
 @heading-color-dark : fade(#000, 100%); // dark
 @text-color-dark : fade(#000, 85%); // dark
@@ -269,7 +269,7 @@
 @input-placeholder-color : hsv(0, 0, 75%);
 @input-color : @text-color;
 @input-border-color : @border-color-base;
-@input-bg : #222222; // dark
+@input-bg : @component-background; // dark
 @input-addon-bg : @background-color-light;
 @input-hover-border-color : @primary-color;
 @input-disabled-bg : @disabled-bg;
@@ -324,7 +324,7 @@
 @menu-inline-toplevel-item-height: 40px;
 @menu-item-height: 40px;
 @menu-collapsed-width: 80px;
-@menu-bg: @component-background;
+@menu-bg: darken(@component-background, 6%); // dark
 @menu-popup-bg: @component-background;
 @menu-item-color: @text-color;
 @menu-highlight-color: @primary-color;

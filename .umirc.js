@@ -25,10 +25,10 @@ export default {
     'icon-url': '"/assets/fonts/iconfont"',
   },
   proxy: {
-    '/onlinejudge3/index.php/API_ng/': {
+    '/onlinejudge2/index.php/API_ng/': {
       target: 'http://localhost:8848/index.php/API_ng/',
       changeOrigin: true,
-      pathRewrite: { '^/onlinejudge3/index.php/API_ng/' : '' }
+      pathRewrite: { '^/onlinejudge2/index.php/API_ng/' : '' }
     }
   },
   urlLoaderExcludes: [/\.svg$/],

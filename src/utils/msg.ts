@@ -15,8 +15,8 @@ function auto(data) {
   try {
     msg = data.msg || codeMsgs[data.code];
   }
-  catch (e) {
-    console.error(e);
+  catch (err) {
+    console.error(err);
   }
   if (data && data.success) {
     success(msg);

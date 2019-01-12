@@ -39,10 +39,10 @@ class Index extends React.Component<Props, State> {
 
   async componentDidMount() {
     if (this.props.theme === 'dark') {
-      document.body.className = 'dark';
+      document.body.classList.add('dark');
     }
     else {
-      document.body.className = '';
+      document.body.classList.remove('dark');
     }
     const OJBKRes = await OJBK.checkOJBK();
     if (OJBKRes) {

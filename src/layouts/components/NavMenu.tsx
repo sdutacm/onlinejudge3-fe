@@ -13,6 +13,7 @@ import NoteSvg from '@/assets/svg/note.svg';
 import ThemeSvg from '@/assets/svg/theme.svg';
 import moment from 'moment';
 import { formatAvatarUrl, urlf } from '@/utils/format';
+import router from 'umi/router';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -168,15 +169,17 @@ class NavMenu extends React.Component<Props, any> {
             </Menu.Item>
             :
             session.loggedIn ?
-              <Menu.SubMenu
-                title={<span><Avatar icon="user" src={formatAvatarUrl(session.user.avatar)} className={styles.avatarDefault} /><Icon type="down"
-                                                                                          className={gStyles.iconRight} /></span>}
-                style={{ float: 'right' }}>
+              <Menu.SubMenu title={<span>
+                  <Avatar icon="user" src={formatAvatarUrl(session.user.avatar)} className={styles.avatarDefault} />
+                  <Icon type="down" className={gStyles.iconRight} />
+                </span>}
+                            onTitleClick={() => router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))}
+                            style={{ float: 'right' }}>
                 <Menu.Item key="nickname" disabled>
                   <span>{session.user.nickname}</span>
                 </Menu.Item>
                 <Menu.Item key="profile">
-                  <Link  to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
+                  <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>

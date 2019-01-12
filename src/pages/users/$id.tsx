@@ -110,7 +110,6 @@ class UserDetail extends React.Component<Props, State> {
         console.error(err);
       }
     }).catch(err => {
-      console.warn('err');
       console.error(err);
       this && this.setState && this.setState({
         bannerImageLoading: false,
@@ -239,7 +238,7 @@ class UserDetail extends React.Component<Props, State> {
                 >
                   {uploadAvatarLoading || loading ?
                     <Icon type="loading" className="upload-mask-icon" /> :
-                    <Icon type="upload" className="upload-mask-icon"  />
+                    <Icon type="upload" className="upload-mask-icon" />
                   }
                   <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} />
                 </Upload>

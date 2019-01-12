@@ -5,10 +5,14 @@
   height: @header-height;
   line-height: @header-height;
   padding: 0 20px 0 0;
-  color: inherit;
   font-weight: 600;
   font-size: 16px;
   text-align: center;
+
+  &:not(:hover):not(:active) {
+    color: inherit;
+  }
+
   &:focus, &:hover, &:active {
     text-decoration: none;
   }

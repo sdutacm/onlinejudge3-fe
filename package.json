@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/sdutacm/onlinejudge3-fe#readme",
   "dependencies": {
+    "antd": "3.11.6",
     "axios": "^0.18.0",
     "csshake": "^1.5.3",
     "image-promise": "^5.0.1",
@@ -28,7 +29,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-markdown": "^3.6.0",
     "react-syntax-highlighter": "^9.0.0",
-    "umi": "^2.2.8",
+    "umi": "~2.2.8",
     "url-assembler": "^1.2.10",
     "xss": "^1.0.3"
   },
@@ -42,6 +43,6 @@
     "roadhog-api-doc": "^1.1.2",
     "typescript": "^3.0.3",
     "typescript-eslint-parser": "^18.0.0",
-    "umi-plugin-react": "^1.2.3"
+    "umi-plugin-react": "~1.2.3"
   }
 }

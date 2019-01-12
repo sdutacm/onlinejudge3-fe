@@ -28,8 +28,8 @@ async function checkOJBK() {
   try {
     ret = await get(urlf(base, { query: { OJBK } }));
   }
-  catch (e) {
-    console.error(e);
+  catch (err) {
+    console.error(err);
   }
   if (ret.success) {
     const tcode = ret.tcode;

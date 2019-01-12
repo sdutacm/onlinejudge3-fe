@@ -12,11 +12,11 @@ export default {
   reducers: {
     setTheme(state, { payload: { theme } }) {
       if (theme === 'dark') {
-        document.body.className = 'dark';
+        document.body.classList.add('dark');
         localStorage.set('settings', { ...state, theme });
       }
       else {
-        document.body.className = '';
+        document.body.classList.remove('dark');
         localStorage.set('settings', { ...state, theme });
       }
       state.theme = theme;

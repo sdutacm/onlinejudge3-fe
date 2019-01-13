@@ -5,6 +5,7 @@ import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/util
 import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
+import { Results } from '@/configs/results';
 
 const initialState = {
   list: {
@@ -83,14 +84,16 @@ export default {
           return;
         }
       }
-      const [detailRet, solutionStatsRet]: ApiResponse<any>[] = yield all([
+      const [detailRet, solutionStatsRet, solutionCalendarRet]: ApiResponse<any>[] = yield all([
         call(service.getDetail, id),
         call(service.getSolutionStats, id),
+        call(service.getSolutionCalendar, id, Results.AC),
       ]);
       if (detailRet.success) {
         const solutionStats = ((solutionStatsRet && solutionStatsRet.data) || {}) as IUserSolutionStats;
         detailRet.data.accepted = solutionStats.accepted || 0;
         detailRet.data.submitted = solutionStats.submitted || 0;
+        detailRet.data.solutionCalendar = ((solutionCalendarRet && solutionCalendarRet.data) || []) as ISolutionCalendar;
         yield put({
           type: 'clearExpiredDetail',
         });

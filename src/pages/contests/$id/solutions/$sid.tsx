@@ -4,8 +4,6 @@ import { Spin } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import { toLongTs } from '@/utils/format';
-import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
 import { isEqual } from 'lodash';

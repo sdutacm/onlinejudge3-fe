@@ -51,3 +51,15 @@ export function getSolutionStats(id) {
   });
   return get(url);
 }
+
+export function getSolutionCalendar(id, result) {
+  const url = urlf(api.users.solutionCalendar, {
+    param: {
+      id,
+    },
+    query: {
+      result,
+    },
+  });
+  return get(url);
+}

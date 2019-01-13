@@ -16,6 +16,7 @@ import { isSelf } from '@/utils/permission';
 import api from '@/configs/apis';
 import classNames from 'classnames';
 import loadImage from 'image-promise';
+import SolutionCalendar from '@/components/SolutionCalendar';
 
 interface UploadFileType {
   name: string;
@@ -261,10 +262,10 @@ class UserDetail extends React.Component<Props, State> {
                   {/*<img src="http://127.0.0.1/oj3_bgs/rating3.png" style={{ maxWidth: '100%' }} />*/}
                 {/*</Card>*/}
 
-                {/*<Card bordered={false}>*/}
-                  {/*<h3>AC Calendar</h3>*/}
-                  {/*<img src="http://127.0.0.1/oj3_bgs/ac-cal.png" style={{ maxWidth: '100%' }} />*/}
-                {/*</Card>*/}
+                <Card bordered={false}>
+                  <h3>AC Calendar</h3>
+                  <SolutionCalendar data={data.solutionCalendar} />
+                </Card>
 
                 {/*<Card bordered={false}>*/}
                   {/*<h3>Activities</h3>*/}

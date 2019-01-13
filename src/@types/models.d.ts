@@ -28,6 +28,7 @@ declare interface IUser {
   settings?: any;
   verified?: boolean;
   coin?: number;
+  solutionCalendar?: ISolutionCalendar;
 }
 
 declare interface IUserProblemResultStats {

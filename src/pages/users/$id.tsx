@@ -17,6 +17,7 @@ import api from '@/configs/apis';
 import classNames from 'classnames';
 import loadImage from 'image-promise';
 import SolutionCalendar from '@/components/SolutionCalendar';
+import Rating from '@/components/Rating';
 
 interface UploadFileType {
   name: string;
@@ -254,17 +255,17 @@ class UserDetail extends React.Component<Props, State> {
             <Row gutter={16}>
               <Col xs={24} md={18} xxl={18}>
                 <Card bordered={false}>
-                  <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能们</h3>
+                  <h3>Rating</h3>
+                  <Rating rating={data.rating} ratingHistory={data.ratingHistory || []} loading={loading} />
                 </Card>
-
-                {/*<Card bordered={false}>*/}
-                  {/*<h3>Rating</h3>*/}
-                  {/*<img src="http://127.0.0.1/oj3_bgs/rating3.png" style={{ maxWidth: '100%' }} />*/}
-                {/*</Card>*/}
 
                 <Card bordered={false}>
                   <h3>AC Calendar</h3>
                   <SolutionCalendar data={data.solutionCalendar} />
+                </Card>
+
+                <Card bordered={false}>
+                  <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能</h3>
                 </Card>
 
                 {/*<Card bordered={false}>*/}

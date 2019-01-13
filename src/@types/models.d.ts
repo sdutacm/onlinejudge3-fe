@@ -23,6 +23,8 @@ declare interface IUser {
   class?: string;
   accepted?: number;
   submitted?: number;
+  rating?: number;
+  ratingHistory?: IRatingHistory;
   email?: string;
   site?: string;
   settings?: any;
@@ -40,6 +42,26 @@ declare interface IUserSolutionStats {
   accepted: number;
   submitted: number;
 }
+
+declare interface IDateCount {
+  date: string;
+  count: number;
+}
+
+declare type ISolutionCalendar = IDateCount[];
+
+declare interface IRatingHistoryItem {
+  contest: {
+    contestId: number;
+    title: number;
+  };
+  rank: number;
+  rating: number;
+  ratingChange: number;
+  date: string;
+}
+
+declare type IRatingHistory = IRatingHistoryItem[];
 
 declare interface IProblem {
   problemId: number;
@@ -90,13 +112,6 @@ declare interface ISolution {
   createdAt: Timestamp;
   code?: string;
 }
-
-declare interface IDateCount {
-  date: string;
-  count: number;
-}
-
-declare type ISolutionCalendar = IDateCount[];
 
 declare interface IContest {
   contestId: number;

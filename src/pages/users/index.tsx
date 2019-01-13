@@ -69,6 +69,13 @@ class Standings extends React.Component<Props, State> {
                   <span>{record.accepted}</span>
                 )}
               />
+              <Table.Column
+                title="Rating"
+                key="Rating"
+                render={(text, record: IUser) => (
+                  <span>{record.rating ? record.rating : ''}</span>
+                )}
+              />
             </Table>
             <Pagination
               className="ant-table-pagination"

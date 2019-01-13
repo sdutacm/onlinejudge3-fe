@@ -84,16 +84,18 @@ export default {
           return;
         }
       }
-      const [detailRet, solutionStatsRet, solutionCalendarRet]: ApiResponse<any>[] = yield all([
+      const [detailRet, solutionStatsRet, solutionCalendarRet, ratingHistoryRet]: ApiResponse<any>[] = yield all([
         call(service.getDetail, id),
         call(service.getSolutionStats, id),
         call(service.getSolutionCalendar, id, Results.AC),
+        call(service.getRatingHistory, id),
       ]);
       if (detailRet.success) {
         const solutionStats = ((solutionStatsRet && solutionStatsRet.data) || {}) as IUserSolutionStats;
         detailRet.data.accepted = solutionStats.accepted || 0;
         detailRet.data.submitted = solutionStats.submitted || 0;
         detailRet.data.solutionCalendar = ((solutionCalendarRet && solutionCalendarRet.data) || []) as ISolutionCalendar;
+        detailRet.data.ratingHistory = ((ratingHistoryRet && ratingHistoryRet.data && ratingHistoryRet.data.rows) || []) as IRatingHistory;
         yield put({
           type: 'clearExpiredDetail',
         });

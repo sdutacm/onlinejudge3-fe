@@ -63,3 +63,12 @@ export function getSolutionCalendar(id, result) {
   });
   return get(url);
 }
+
+export function getRatingHistory(id) {
+  const url = urlf(api.users.ratingHistory, {
+    param: {
+      id,
+    },
+  });
+  return get(url);
+}

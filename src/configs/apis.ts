@@ -19,6 +19,7 @@ const api = {
     problemResultStats: '/users/:id/problemResultStats',
     solutionCalendar: '/users/:id/solutionCalendar',
     solutionStats: '/users/:id/solutionStats',
+    ratingHistory: '/users/:id/ratingHistory',
   },
   problems: {
     base: '/problems',

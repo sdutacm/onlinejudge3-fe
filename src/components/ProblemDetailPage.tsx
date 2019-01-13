@@ -8,6 +8,8 @@ import styles from './ProblemPage.less';
 import SubmissionModal from '@/components/SubmitSolutionModal';
 import gStyles from '@/general.less';
 import NotFound from '@/pages/404';
+import EditProblemPropModal from '@/components/EditProblemPropModal';
+import { isPermissionDog } from '@/utils/permission';
 
 interface Props {
   loading: boolean;
@@ -96,6 +98,12 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
                 </div>
               </Form.Item>
             </Form>
+          </Card>}
+          {!loading && isPermissionDog(session) &&
+          <Card bordered={false}>
+            <EditProblemPropModal data={data}>
+              <Button block>Modify Prop.</Button>
+            </EditProblemPropModal>
           </Card>}
         </Affix>
       </Col>

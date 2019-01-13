@@ -8,7 +8,7 @@ export function getPathParams(pathname: string, scheme: string, exact: boolean =
   return match ? match.params : {};
 }
 
-export function getPathParamId(pathname: string, scheme: string, exact: boolean = false): any {
+export function getPathParamId(pathname: string, scheme: string, exact: boolean = false): number {
   const params = getPathParams(pathname, scheme, exact);
   return ~~params.id;
 }

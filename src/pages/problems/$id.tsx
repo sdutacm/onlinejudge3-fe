@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import ProblemDetailPage from '@/components/ProblemDetailPage';
+import { getPathParamId } from '@/utils/getPathParams';
+import pages from '@/configs/pages';
 
 interface Props extends ReduxProps, RouteProps {
   data: TypeObject<IProblem>;
@@ -19,6 +21,19 @@ class ProblemDetail extends React.Component<Props, State> {
 
   componentDidMount(): void {
     window.scrollTo(0, 0);
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    // 当用户态显现
+    if (!this.props.session.loggedIn && nextProps.session.loggedIn) {
+      nextProps.dispatch({
+        type: 'problems/getDetail',
+        payload: {
+          id: getPathParamId(nextProps.location.pathname, pages.problems.detail),
+          force: true,
+        },
+      })
+    }
   }
 
   render() {

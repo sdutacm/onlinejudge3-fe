@@ -65,10 +65,12 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: id }, { all, call, put, select }) {
-      const savedState = yield select(state => state.problems.detail[id]);
-      if (!isStateExpired(savedState)) {
-        return;
+    * getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
+      if (!force) {
+        const savedState = yield select(state => state.problems.detail[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
       }
       const [detailRet, tagsRet]: ApiResponse<any>[] = yield all([
         call(service.getDetail, id),
@@ -107,6 +109,12 @@ export default {
       }
       return ret;
     },
+    * modifyProblemTags({ payload: { id, tagIds } }, { call }) {
+      return yield call(service.setProblemTags, id, { tagIds });
+    },
+    * modifyProblemDifficulty({ payload: { id, difficulty } }, { call }) {
+      return yield call(service.setProblemDifficulty, id, { difficulty });
+    },
     // * reloadList(action, { put, select }) {
     //   const page = yield select(state => state.problems.query.page);
     //   const title = yield select(state => state.problems.query.title);
@@ -126,7 +134,7 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: matchDetail.params['id'] });
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
         }
       });
     },

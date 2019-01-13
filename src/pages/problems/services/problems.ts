@@ -1,4 +1,4 @@
-import { get } from '@/utils/request';
+import { get, patch } from '@/utils/request';
 import api from '@/configs/apis';
 import limits from '@/configs/limits';
 import { urlf } from '@/utils/format';
@@ -27,4 +27,14 @@ export function getTagList() {
 export function getProblemTags(id) {
   const url = urlf(api.problems.tags, { param: { id } });
   return get(url);
+}
+
+export function setProblemTags(id, data) {
+  const url = urlf(api.problems.tags, { param: { id } });
+  return patch(url, data);
+}
+
+export function setProblemDifficulty(id, data) {
+  const url = urlf(api.problems.difficulty, { param: { id } });
+  return patch(url, data);
 }

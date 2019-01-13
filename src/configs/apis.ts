@@ -24,6 +24,7 @@ const api = {
     base: '/problems',
     detail: '/problems/:id',
     tags: '/problems/:id/tags',
+    difficulty: '/problems/:id/difficulty',
   },
   solutions: {
     base: '/solutions',

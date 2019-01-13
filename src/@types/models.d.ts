@@ -54,6 +54,7 @@ declare interface IProblem {
   tags?: ITag[];
   timeLimit?: number;
   memoryLimit?: number;
+  difficulty: number;
   accepted?: number;
   submitted?: number;
   createdAt: Timestamp;

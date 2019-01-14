@@ -42,7 +42,7 @@ function setOJBK(OJBK) {
   jscookie.set({
     name: 'OJBK',
     value: OJBK,
-    exdays: 7,
+    exdays: 30,
     path: '/',
   });
 }

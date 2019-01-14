@@ -2,7 +2,7 @@ import React from 'react';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { connect } from 'dva';
 import SolutionTable from '@/components/SolutionTable';
-import { Card, Switch, Skeleton } from 'antd';
+import { Card, Switch, Skeleton, Icon, Popover } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
@@ -73,10 +73,19 @@ class SolutionDetailPage extends React.Component<Props, State> {
                   <div style={{ height: '32px' }}>
                     {isSelf(session, data.user.userId) &&
                     <div className="float-left">
-                      <span>Share Code</span>
+                      <span>Share Code
+                        <Popover title="Shared code will be disabled in one of these cases" content={<div>
+                          <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
+                          <li>The user viewing code has not solved the problem</li>
+                          <li>The problem exists in some running contests</li>
+                          </ul>
+                        </div>}>
+                          <Icon type="info-circle" className="info-tips ml-sm-md" />
+                        </Popover>
+                      </span>
                       <Switch checked={data.shared} disabled={loading} loading={changeSharedLoading}
                               onChange={this.onShareChange}
-                              className="ml-md" />
+                              className="ml-lg" />
                     </div>}
                     <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
                   </div>

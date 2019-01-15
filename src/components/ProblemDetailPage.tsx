@@ -99,7 +99,7 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
               </Form.Item>
             </Form>
           </Card>}
-          {!loading && isPermissionDog(session) &&
+          {!contestId && !loading && isPermissionDog(session) &&
           <Card bordered={false}>
             <EditProblemPropModal data={data}>
               <Button block>Modify Prop.</Button>

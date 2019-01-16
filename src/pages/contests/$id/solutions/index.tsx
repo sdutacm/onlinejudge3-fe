@@ -10,11 +10,11 @@ import { numberToAlphabet, toLongTs, urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import langs from '@/configs/solutionLanguages';
 import results, { Results } from '@/configs/results';
-import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
 import { isEqual } from 'lodash';
 import router from 'umi/router';
+import PageLoading from '@/components/PageLoading';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -85,7 +85,7 @@ class ContestSolutions extends React.Component<Props, State> {
       location: { query },
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
-      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
+      return <PageLoading />;
     }
     const problemList = (problemRows || []).map((problem, index) => ({
       problemId: problem.problemId,

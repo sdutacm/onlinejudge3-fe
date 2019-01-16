@@ -1,14 +1,10 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Spin } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import getSetTimeStatus from '@/utils/getSetTimeStatus';
-import { toLongTs } from '@/utils/format';
-import constants from '@/configs/constants';
-import gStyles from '@/general.less';
 import ProblemDetailPage from '@/components/ProblemDetailPage';
+import PageLoading from '@/components/PageLoading';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -60,7 +56,7 @@ class ContestProblem extends React.Component<Props, State> {
       match,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
-      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
+      return <PageLoading />;
     }
     const index = ~~match.params.index;
     const problem = (rows && rows[index]) || {} as IProblem;

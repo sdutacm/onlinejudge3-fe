@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Row, Col, Spin, Divider } from 'antd';
-import Link from 'umi/link';
+import { Layout, Row, Col, Spin, Divider, Button } from 'antd';
+import { Link } from 'react-router-dom';
 import NavContainer from './components/NavContainer';
 import pages from '../configs/pages';
 import constants from '../configs/constants';
-import gStyles from '../general.less';
 import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import moment from 'moment';
@@ -13,6 +12,7 @@ import { matchPath } from 'react-router';
 import classNames from 'classnames';
 import router from 'umi/router';
 import OJBK from '@/utils/OJBK';
+import PageLoading from '@/components/PageLoading';
 
 interface Props extends ReduxProps, RouteProps {
   theme: ITheme;
@@ -20,6 +20,8 @@ interface Props extends ReduxProps, RouteProps {
 
 interface State {
   sessionLoaded: boolean;
+  error: Error;
+  errorStack: string;
 }
 
 class Index extends React.Component<Props, State> {
@@ -27,6 +29,8 @@ class Index extends React.Component<Props, State> {
     super(props);
     this.state = {
       sessionLoaded: false,
+      error: null,
+      errorStack: '',
     };
   }
 
@@ -53,9 +57,25 @@ class Index extends React.Component<Props, State> {
     }
   }
 
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    this.setState({
+      error,
+      errorStack: errorInfo.componentStack,
+    });
+  }
+
   render() {
     const { children, location } = this.props;
     const { Header, Content, Footer } = Layout;
+    if (this.state.error) {
+      return (
+        <div className="center-view text-center">
+          <h2 style={{ marginBottom: '30px' }}>Oops... OJ Crashed!</h2>
+          <p><Button onClick={() => window.location.reload()}>Reload Page</Button></p>
+          <p><Link to={pages.index} onClick={() => setTimeout(() => window.location.reload(), 500)}><Button>Back to Home</Button></Link></p>
+        </div>
+      );
+    }
     const inUserDetailPage = matchPath(location.pathname, {
       path: pages.users.detail,
       exact: true,
@@ -67,7 +87,7 @@ class Index extends React.Component<Props, State> {
         <Header>
           <Row>
             <Col>
-              <Link to="/" className={styles.logo}>{constants.siteName}</Link>
+              <Link to={pages.index} className={styles.logo}>{constants.siteName}</Link>
             </Col>
             <Col>
               {this.state.sessionLoaded && <NavContainer />}
@@ -76,7 +96,7 @@ class Index extends React.Component<Props, State> {
         </Header>
         <Content>
           {this.state.sessionLoaded || location.pathname === '/OJBK' ? children :
-            <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />}
+            <PageLoading />}
         </Content>
         <Footer className={styles.footer}>
           <p>© 2008-{moment().format('YYYY')} SDUTACM Team. All Rights Reserved.</p>

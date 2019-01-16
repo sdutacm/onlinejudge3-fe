@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Spin, Progress, Popover } from 'antd';
+import { Progress, Popover } from 'antd';
 import pages from '@/configs/pages';
 import { getPathParamId } from '@/utils/getPathParams';
-import constants from '@/configs/constants';
-import gStyles from '@/general.less';
 import router from 'umi/router';
 import { secToTimeStr, toLongTs, urlf } from '@/utils/format';
 import getSetTimeStatus, { ContestTimeStatus } from '@/utils/getSetTimeStatus';
 import { floor } from 'math-precision';
 import setStatePromise from '@/utils/setStatePromise';
+import PageLoading from '@/components/PageLoading';
 
 interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -129,7 +128,7 @@ class ContestBase extends React.Component<Props, State> {
     const { currentTime } = this.state;
     // console.log('base render', loading, session);
     if (loading) {
-      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
+      return <PageLoading />;
     }
     else if (!detail) {
       return <div>{children}</div>;

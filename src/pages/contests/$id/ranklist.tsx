@@ -5,13 +5,13 @@ import { Spin, Row, Col, Card } from 'antd';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import constants from '@/configs/constants';
-import gStyles from '@/general.less';
 import Ranklist from '@/components/Ranklist';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import { toLongTs } from '@/utils/format';
 import moment from 'moment';
 import UserBar from '@/components/UserBar';
 import { ContestTypes } from '@/configs/contestTypes';
+import PageLoading from '@/components/PageLoading';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -79,7 +79,7 @@ class ContestRanklist extends React.Component<Props, State> {
       match,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
-      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
+      return <PageLoading />;
     }
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     const startTime = toLongTs(detail.startAt);

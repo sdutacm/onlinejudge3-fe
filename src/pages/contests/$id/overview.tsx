@@ -1,12 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Spin, Table, Popover, Progress } from 'antd';
-import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
+import { ReduxProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import ProblemContent from '@/components/ProblemContent';
-import constants from '@/configs/constants';
-import gStyles from '@/general.less';
 import xss from 'xss';
 import { formatPercentage, numberToAlphabet, secToTimeStr, toLongTs, urlf } from '@/utils/format';
 import moment from 'moment';
@@ -16,6 +13,7 @@ import styles from '@/pages/problems/index.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import Countdown from '@/components/Countdown';
+import PageLoading from '@/components/PageLoading';
 
 interface Props extends ReduxProps {
   id: number;
@@ -85,7 +83,7 @@ class ContestOverview extends React.Component<Props, State> {
     // console.log(contestProblemResultStats);
 
     if (detailLoading || detailLoading === undefined || !detail) {
-      return <Spin delay={constants.indicatorDisplayDelay} className={gStyles.spin} />;
+      return <PageLoading />;
     }
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     const startTime = toLongTs(detail.startAt);

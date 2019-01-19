@@ -111,6 +111,7 @@ declare interface ISolution {
   shared: boolean;
   createdAt: Timestamp;
   code?: string;
+  compileInfo?: string;
 }
 
 declare interface IContest {

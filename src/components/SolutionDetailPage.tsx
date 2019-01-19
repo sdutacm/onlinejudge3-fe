@@ -6,11 +6,9 @@ import { Card, Switch, Skeleton, Icon, Popover } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
-import { hasPermission, isSelf } from '@/utils/permission';
+import { isSelf } from '@/utils/permission';
 import NotFound from '@/pages/404';
 import msg from '@/utils/msg';
-import { getPathParamId } from '@/utils/getPathParams';
-import pages from '@/configs/pages';
 
 interface Props extends ReduxProps {
   loading: boolean;
@@ -32,6 +30,13 @@ const langsMap4Hljs = {
   'python2': 'python',
   'python3': 'python',
   'c#': 'cs',
+};
+
+const highlighterLineNumberStyle = {
+  float: 'left',
+  paddingRight: '20px',
+  textAlign: 'right',
+  opacity: '.5',
 };
 
 class SolutionDetailPage extends React.Component<Props, State> {
@@ -65,13 +70,33 @@ class SolutionDetailPage extends React.Component<Props, State> {
           <SolutionTable loading={loading} data={{ rows: loading ? [] : [data] }} dispatch={dispatch}
                          showPagination={false} isDetail contestId={contestId} problemList={problemList} />
         </Card>
+
+        {!loading && data.compileInfo &&
+        <Card bordered={false}>
+          <div>
+            <div style={{ height: '32px' }}>
+              <div className="float-left">
+                <span>Compile Info</span>
+              </div>
+              <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
+            </div>
+            <SyntaxHighlighter language="text"
+                               showLineNumbers
+                               style={theme === 'dark' ? atomOneDark : atomOneLight}
+                               lineNumberContainerStyle={highlighterLineNumberStyle}
+            >
+              {data.compileInfo}
+            </SyntaxHighlighter>
+          </div>
+        </Card>}
+
         <Card bordered={false}>
           {!loading ?
             <>
               {data.code ?
                 <div>
                   <div style={{ height: '32px' }}>
-                    {isSelf(session, data.user.userId) &&
+                    {isSelf(session, data.user.userId) ?
                     <div className="float-left">
                       <span>Share Code
                         <Popover title="Shared code will be disabled in one of these cases" content={<div>
@@ -86,12 +111,19 @@ class SolutionDetailPage extends React.Component<Props, State> {
                       <Switch checked={data.shared} disabled={loading} loading={changeSharedLoading}
                               onChange={this.onShareChange}
                               className="ml-lg" />
+                    </div> :
+                    <div className="float-left">
+                      <span>Code</span>
                     </div>}
                     <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
                   </div>
                   <SyntaxHighlighter language={langsMap4Hljs[data.language]}
                                      showLineNumbers
-                                     style={theme === 'dark' ? atomOneDark : atomOneLight}>{data.code}</SyntaxHighlighter>
+                                     style={theme === 'dark' ? atomOneDark : atomOneLight}
+                                     lineNumberContainerStyle={highlighterLineNumberStyle}
+                  >
+                    {data.code}
+                  </SyntaxHighlighter>
                 </div> :
                 <div>
                   <h3 className="warning-text">You do not have permission to view code</h3>

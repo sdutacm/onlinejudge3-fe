@@ -5,6 +5,7 @@ import styles from './ProblemContent.less';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { numberToAlphabet } from '@/utils/format';
 import classNames from 'classnames';
+import AutoLaTeX from '@/components/AutoLaTeX';
 
 interface Props {
   loading: boolean;
@@ -29,13 +30,13 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
       <h2 className="text-center">{problemIndex ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}
-      <div dangerouslySetInnerHTML={{ __html: xss(data.description) }} />
+      <AutoLaTeX content={xss(data.description)} />
 
       {data.input && <h3>Input</h3>}
-      <div dangerouslySetInnerHTML={{ __html: xss(data.input) }} />
+      <AutoLaTeX content={xss(data.input)} />
 
       {data.output && <h3>Output</h3>}
-      <div dangerouslySetInnerHTML={{ __html: xss(data.output) }} />
+      <AutoLaTeX content={xss(data.output)} />
 
       {(data.sampleInput || data.sampleOutput) && <h3>Sample</h3>}
       {data.sampleInput && <h4 className={styles.problemSubSectionHeader}>Input&nbsp;<CopyToClipboardButton text={data.sampleInput} addNewLine /></h4>}
@@ -44,7 +45,7 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
       {data.sampleOutput && <pre>{data.sampleOutput}</pre>}
 
       {data.hint && <h3>Hint</h3>}
-      <div dangerouslySetInnerHTML={{ __html: xss(data.hint) }} />
+      <AutoLaTeX content={xss(data.hint)} />
     </div>
   );
 };

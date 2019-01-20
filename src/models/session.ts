@@ -1,6 +1,7 @@
 import * as service from '../services/session';
 import { endInterception, initInterceptor, startInterception } from '@/utils/effectInterceptor';
 import OJBK from '@/utils/OJBK';
+import { genTimeFlag } from '@/utils/misc';
 
 const initialState = {
   loggedIn: false,
@@ -22,8 +23,11 @@ export default {
     //   return newState;
     // },
     setSession(state, { payload: { user } }) {
+      const timeFlag = genTimeFlag(30 * 24 * 60 * 60 * 1000);
       state.loggedIn = true;
       state.user = user;
+      state._t = timeFlag._t;
+      state._et = timeFlag._et;
     },
     reset() {
       return { ...initialState };

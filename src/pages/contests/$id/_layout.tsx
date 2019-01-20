@@ -97,25 +97,35 @@ class ContestBase extends React.Component<Props, State> {
   componentWillReceiveProps(nextProps: Readonly<Props>): void {
     // console.log(nextProps.location.pathname);
     const id = getPathParamId(nextProps.location.pathname, pages.contests.home);
+    const { dispatch } = nextProps;
     if (nextProps.location.pathname !== pages.contests.home &&
       !this.props.session && nextProps.session && !nextProps.session.loggedIn) {
       router.replace(urlf(pages.contests.home, { param: { id }}));
     }
-    if (!(this.props.session && this.props.session.loggedIn) && nextProps.session && nextProps.session.loggedIn) {
-      this.props.dispatch({
+    // 用户态变成已登录
+    if (!(this.props.session && this.props.session.loggedIn) && (nextProps.session && nextProps.session.loggedIn)) {
+      dispatch({
         type: 'contests/getDetail',
         payload: {
           id,
           force: true,
         },
       });
-      this.props.dispatch({
+      dispatch({
         type: 'contests/getProblems',
         payload: {
           id,
           force: true,
         },
       });
+    }
+    // 用户态变成已登出
+    if ((this.props.session && this.props.session.loggedIn) && !(nextProps.session && nextProps.session.loggedIn)) {
+      dispatch({
+        type: 'contests/getSession',
+        payload: { id },
+      });
+      router.replace(urlf(pages.contests.home, { param: { id }}));
     }
   }
 

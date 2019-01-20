@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Row, Col, Spin, Divider, Button } from 'antd';
+import { Layout, Row, Col, Spin, Divider, Button, notification } from 'antd';
 import { Link } from 'react-router-dom';
 import NavContainer from './components/NavContainer';
 import pages from '../configs/pages';
@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import router from 'umi/router';
 import OJBK from '@/utils/OJBK';
 import PageLoading from '@/components/PageLoading';
+import { isStateExpired } from '@/utils/misc';
 
 interface Props extends ReduxProps, RouteProps {
   theme: ITheme;
@@ -22,6 +23,7 @@ interface State {
   sessionLoaded: boolean;
   error: Error;
   errorStack: string;
+  bgCheckSessionTimer: number;
 }
 
 class Index extends React.Component<Props, State> {
@@ -31,14 +33,29 @@ class Index extends React.Component<Props, State> {
       sessionLoaded: false,
       error: null,
       errorStack: '',
+      bgCheckSessionTimer: 0,
     };
   }
 
   fetchSession = () => {
     const { dispatch } = this.props;
-    dispatch({ type: 'session/fetch' }).then(function () {
+    dispatch({ type: 'session/fetch' }).then(() => {
       this.setState({ sessionLoaded: true });
-    }.bind(this));
+    });
+  };
+
+  bgCheckSession = () => {
+    const { dispatch } = this.props;
+    dispatch({ type: 'session/getSession' }).then(session => {
+      if (session.loggedIn && isStateExpired(session)) {
+        notification.warning({
+          message: 'Session Expired',
+          description: 'Your session expired. Please re-login.',
+          duration: null,
+        });
+        dispatch({type: 'session/logout' });
+      }
+    });
   };
 
   async componentDidMount() {
@@ -55,6 +72,12 @@ class Index extends React.Component<Props, State> {
     else {
       router.push(pages.OJBK);
     }
+    const bgCheckSessionTimer: any = setInterval(this.bgCheckSession, 60 * 1000);
+    this.setState({ bgCheckSessionTimer });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.bgCheckSessionTimer);
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {

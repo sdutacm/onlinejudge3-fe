@@ -19,7 +19,7 @@ interface Props extends ReduxProps, RouteProps {
   mobileVersion: boolean;
   onLinkClick: () => void;
   className: string;
-  session: TypeObject<ISessionStatus>;
+  session: ITypeObject<ISessionStatus>;
   theme: ITheme;
 }
 

@@ -53,7 +53,7 @@ export default {
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: ApiResponse<List<IProblem> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<IProblem> > = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -72,7 +72,7 @@ export default {
           return;
         }
       }
-      const [detailRet, tagsRet]: ApiResponse<any>[] = yield all([
+      const [detailRet, tagsRet]: IApiResponse<any>[] = yield all([
         call(service.getDetail, id),
         call(service.getProblemTags, id),
       ]);
@@ -100,7 +100,7 @@ export default {
       if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: ApiResponse<FullList<ITag> > = yield call(service.getTagList);
+      const ret: IApiResponse<IFullList<ITag> > = yield call(service.getTagList);
       if (ret.success) {
         yield put({
           type: 'setTagList',

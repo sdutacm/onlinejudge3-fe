@@ -31,9 +31,9 @@ function checkStatus(response: AxiosResponse) {
  * Send a request and get API response
  * @param {string} url
  * @param {AxiosRequestConfig} options
- * @returns {Promise<ApiResponse<any>>}
+ * @returns {Promise<IApiResponse<any>>}
  */
-async function request(url: string, options: AxiosRequestConfig = {}): Promise<ApiResponse<any> > {
+async function request(url: string, options: AxiosRequestConfig = {}): Promise<IApiResponse<any> > {
   const axiosInstance = initAxios();
   const response = await axiosInstance({
     url,
@@ -44,13 +44,13 @@ async function request(url: string, options: AxiosRequestConfig = {}): Promise<A
   return response.data;
 }
 
-export async function get(url: string, minDuration?: number): Promise<ApiResponse<any> > {
+export async function get(url: string, minDuration?: number): Promise<IApiResponse<any> > {
   const startTime = Date.now();
   const res = await request(url);
   if (minDuration > 0) {
       const duration = Date.now() - startTime;
       if (duration < minDuration) {
-        return new Promise<ApiResponse<any> >((resolve, reject) => {
+        return new Promise<IApiResponse<any> >((resolve, reject) => {
           setTimeout(() => resolve(res), minDuration - duration);
         });
       }
@@ -58,28 +58,28 @@ export async function get(url: string, minDuration?: number): Promise<ApiRespons
   return res;
 }
 
-export function post(url: string, data?: any): Promise<ApiResponse<any> > {
+export function post(url: string, data?: any): Promise<IApiResponse<any> > {
   return request(url, {
     method: 'post',
     data,
   });
 }
 
-export function put(url: string, data?: any): Promise<ApiResponse<any> > {
+export function put(url: string, data?: any): Promise<IApiResponse<any> > {
   return request(url, {
     method: 'put',
     data,
   });
 }
 
-export function patch(url: string, data?: any): Promise<ApiResponse<any> > {
+export function patch(url: string, data?: any): Promise<IApiResponse<any> > {
   return request(url, {
     method: 'patch',
     data,
   });
 }
 
-export function del(url: string, data?: any): Promise<ApiResponse<any> > {
+export function del(url: string, data?: any): Promise<IApiResponse<any> > {
   return request(url, {
     method: 'delete',
     data,

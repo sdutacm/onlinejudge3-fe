@@ -37,11 +37,15 @@ export default {
   effects: {
     * fetch(action, { call, put }) {
       startInterception();
-      const ret: ApiResponse<ISession> = yield call(service.fetch);
+      const ret: IApiResponse<ISession> = yield call(service.fetch);
       if (ret.success) {
         yield put({
           type: 'setSession',
           payload: { user: ret.data },
+        });
+        yield put({
+          type: 'messages/getUnreadList',
+          payload: { userId: ret.data.userId },
         });
       }
       endInterception();
@@ -54,7 +58,7 @@ export default {
       return yield select(state => state.session);
     },
     * login({ payload: data }, { call, put }) {
-      const ret: ApiResponse<any> = yield call(service.login, data);
+      const ret: IApiResponse<any> = yield call(service.login, data);
       if (ret.success) {
         const userId = ret.data.userId;
         yield put({
@@ -64,12 +68,16 @@ export default {
           type: 'users/getProblemResultStats',
           payload: { userId },
         });
+        yield put({
+          type: 'messages/getUnreadList',
+          payload: { userId },
+        });
         OJBK.logLogin(ret.data);
       }
       return ret;
     },
     * logout(action, { call, put }) {
-      const ret: ApiResponse<ISession> = yield call(service.logout);
+      const ret: IApiResponse<ISession> = yield call(service.logout);
       if (ret.success) {
         yield put({
           type: 'reset',
@@ -79,6 +87,9 @@ export default {
         });
         yield put({
           type: 'users/clearProblemResultStats',
+        });
+        yield put({
+          type: 'messages/clearAllMessages',
         });
       }
       return ret;

@@ -95,7 +95,7 @@ export default {
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: ApiResponse<List<IContest> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<IContest> > = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -114,7 +114,7 @@ export default {
           return;
         }
       }
-      const ret: ApiResponse<ISession> = yield call(service.getSession, id);
+      const ret: IApiResponse<ISession> = yield call(service.getSession, id);
       if (ret.success) {
         yield put({
           type: 'setSession',
@@ -146,7 +146,7 @@ export default {
       return ret;
     },
     * login({ payload: { id, data } }, { call, put }) {
-      const ret: ApiResponse<ISession> = yield call(service.login, id, data);
+      const ret: IApiResponse<ISession> = yield call(service.login, id, data);
       if (ret.success) {
         yield put({
           type: 'setSession',
@@ -162,7 +162,7 @@ export default {
       return ret;
     },
     * logout({ payload: { id } }, { call, put }) {
-      const ret: ApiResponse<ISession> = yield call(service.logout, id);
+      const ret: IApiResponse<ISession> = yield call(service.logout, id);
       if (ret.success) {
         yield put({
           type: 'clearSession',
@@ -180,7 +180,7 @@ export default {
           return;
         }
       }
-      const ret: ApiResponse<IContest> = yield call(service.getDetail, id);
+      const ret: IApiResponse<IContest> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
           type: 'setDetail',
@@ -202,7 +202,7 @@ export default {
           return;
         }
       }
-      const ret: ApiResponse<FullList<IProblem> > = yield call(service.getProblems, id);
+      const ret: IApiResponse<IFullList<IProblem> > = yield call(service.getProblems, id);
       if (ret.success) {
         yield put({
           type: 'setProblems',
@@ -224,7 +224,7 @@ export default {
           return;
         }
       }
-      const ret: ApiResponse<IContestProblemResultStats> = yield call(service.getProblemResultStats, id);
+      const ret: IApiResponse<IContestProblemResultStats> = yield call(service.getProblemResultStats, id);
       if (ret.success) {
         yield put({
           type: 'setProblemResultStats',
@@ -246,7 +246,7 @@ export default {
           return;
         }
       }
-      const ret: ApiResponse<FullList<IRanklistRow> > = yield call(service.getRanklist, id);
+      const ret: IApiResponse<IFullList<IRanklistRow> > = yield call(service.getRanklist, id);
       if (ret.success) {
         // 应先 clear，防止 set 时间过长导致又被 clear 掉
         yield put({

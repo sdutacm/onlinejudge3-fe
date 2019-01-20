@@ -6,7 +6,7 @@ import msg from '@/utils/msg';
 
 interface Props extends ReduxProps, RouteProps, FormProps {
   data: IProblem;
-  tagList: FullList<ITag>;
+  tagList: IFullList<ITag>;
 }
 
 interface State {

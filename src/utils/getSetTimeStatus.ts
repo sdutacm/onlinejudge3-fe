@@ -2,15 +2,15 @@ import moment from 'moment';
 
 /**
  * Parse status wording based on time
- * @param {Timestamp} startTime
- * @param {Timestamp} endTime
- * @param {Timestamp} currentTime
+ * @param {ITimestamp} startTime
+ * @param {ITimestamp} endTime
+ * @param {ITimestamp} currentTime
  * @returns {string}
  */
 
 export type ContestTimeStatus = 'Pending' | 'Running' | 'Ended';
 
-function getSetTimeStatus(startTime: Timestamp, endTime: Timestamp, currentTime: Timestamp): ContestTimeStatus {
+function getSetTimeStatus(startTime: ITimestamp, endTime: ITimestamp, currentTime: ITimestamp): ContestTimeStatus {
   if (currentTime < startTime) {
     return 'Pending';
   }

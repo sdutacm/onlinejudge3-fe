@@ -16,8 +16,8 @@ import gStyles from '@/general.less';
 import classNames from 'classnames';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<IProblem>;
-  tagList: FullList<ITag>;
+  data: IList<IProblem>;
+  tagList: IFullList<ITag>;
   problemResultStats: IUserProblemResultStats;
 }
 

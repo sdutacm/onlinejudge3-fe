@@ -33,6 +33,14 @@ declare interface IUser {
   solutionCalendar?: ISolutionCalendar;
 }
 
+declare interface IUserLite {
+  userId: number;
+  username: string;
+  nickname: string;
+  avatar: string;
+  bannerImage: string;
+}
+
 declare interface IUserProblemResultStats {
   acceptedProblemIds: number[];
   attemptedProblemIds: number[];
@@ -80,19 +88,13 @@ declare interface IProblem {
   difficulty: number;
   accepted?: number;
   submitted?: number;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
 }
 
 declare interface ISolution {
   solutionId: number;
-  user: {
-    userId: number;
-    username: string;
-    nickname: string;
-    avatar: string;
-    bannerImage: string;
-  };
+  user: IUserLite;
   problem: {
     problemId: number;
     title: string;
@@ -109,7 +111,7 @@ declare interface ISolution {
   language: string;
   codeLength: number;
   shared: boolean;
-  createdAt: Timestamp;
+  createdAt: ITimestamp;
   code?: string;
   compileInfo?: string;
 }
@@ -130,8 +132,8 @@ declare interface IContest {
   team?: boolean;
   hidden?: boolean;
   ended: boolean;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
 }
 
 declare interface IContestProblemResultStats {
@@ -162,8 +164,8 @@ declare interface IContestUser {
     email?: string;
     clothing?: string;
   }[];
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
 }
 
 declare interface IRanklistProblemResultStat {
@@ -174,13 +176,7 @@ declare interface IRanklistProblemResultStat {
 
 declare interface IRanklistRow {
   rank: number;
-  user: {
-    userId: number;
-    username: string;
-    nickname: string;
-    avatar: string;
-    bannerImage: string;
-  };
+  user: IUserLite;
   solved: number;
   time: number;
   stats: IRanklistProblemResultStat[];
@@ -191,13 +187,7 @@ declare type IRanklist = IRanklistRow[];
 
 declare interface ITopic {
   topicId: number;
-  user: {
-    userId: number;
-    username: string;
-    nickname: string;
-    avatar: string;
-    bannerImage: string;
-  };
+  user: IUserLite;
   problem: {
     problemId: number;
     title: string;
@@ -205,24 +195,18 @@ declare interface ITopic {
   title: string;
   content?: string;
   replyCount: number;
-  createdAt: Timestamp;
+  createdAt: ITimestamp;
 }
 
 declare interface IReply {
   replyId: number;
-  user?: {
-    userId: number;
-    username: string;
-    nickname: string;
-    avatar: string;
-    bannerImage: string;
-  };
+  user?: IUserLite;
   topic?: {
     topicId: number;
     title: string;
   };
   content: string;
-  createdAt: Timestamp;
+  createdAt: ITimestamp;
 }
 
 declare interface ITag {
@@ -232,7 +216,17 @@ declare interface ITag {
     zhHans: string;
     zhHant: string;
   };
-  createdAt: Timestamp;
+  createdAt: ITimestamp;
+}
+
+declare interface IMessage {
+  messageId: number;
+  from: IUserLite;
+  to: IUserLite;
+  title: string;
+  content: string;
+  read: boolean;
+  createdAt: ITimestamp,
 }
 
 declare type ITheme = 'light' | 'dark';

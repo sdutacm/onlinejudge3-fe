@@ -6,7 +6,7 @@ import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 
 interface Props extends ReduxProps, RouteProps {
-  data: TypeObject<IProblem>;
+  data: ITypeObject<IProblem>;
   session: ISessionStatus;
 }
 

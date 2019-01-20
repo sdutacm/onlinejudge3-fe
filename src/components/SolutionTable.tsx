@@ -17,7 +17,7 @@ import { ContestTypes } from '@/configs/contestTypes';
 
 interface Props extends ReduxProps, RouteProps {
   loading: boolean;
-  data: List<ISolution>;
+  data: IList<ISolution>;
   showPagination: boolean;
   isDetail: boolean;
   contestId?: number;

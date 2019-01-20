@@ -10,7 +10,7 @@ export function getList(query) {
       page: query.page || 1,
       limit: limits.solutions.list,
       orderDirection: 'DESC',
-    } as ListQuery,
+    } as IListQuery,
   });
   return get(url);
 }

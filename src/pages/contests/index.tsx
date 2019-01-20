@@ -17,7 +17,7 @@ import moment from 'moment';
 import constants from '@/configs/constants';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<IContest>;
+  data: IList<IContest>;
   session: ISessionStatus;
 }
 

@@ -70,6 +70,7 @@ pre {
       &>.ant-menu-item, &>.ant-menu-submenu {
         border-bottom: none;
         top: 0;
+        margin-top: 0;
 
         &>a:before {
           bottom: 0;
@@ -259,6 +260,16 @@ pre {
     padding-bottom: 0;
   }
 
+  &.no-inner-horizontal .ant-popover-content .ant-popover-inner-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  &.inner-content-scroll-md .ant-popover-content .ant-popover-inner-content {
+    overflow: auto;
+    max-height: 400px;
+  }
+
   .ant-popover-title {
     text-align: center;
     padding-top: 12px;
@@ -275,6 +286,25 @@ pre {
 
   &:last-of-type {
     margin-bottom: 0;
+  }
+}
+
+.message-list {
+  background: transparent;
+
+  .mark-as-read {
+    visibility: hidden;
+  }
+
+  > .ant-collapse-item {
+    .message-footer {
+      font-size: 14px;
+      color: @text-color;
+    }
+
+    &:hover .mark-as-read {
+      visibility: visible;
+    }
   }
 }
 

@@ -18,7 +18,7 @@ interface Props extends RouteProps, ReduxProps {
 }
 
 interface State {
-  currentTime: Timestamp;
+  currentTime: ITimestamp;
   progressTimer: number;
 }
 

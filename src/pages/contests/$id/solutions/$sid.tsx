@@ -12,7 +12,7 @@ interface Props extends ReduxProps, RouteProps {
   session: ISessionStatus;
   detailLoading: boolean;
   detail: IContest;
-  problems: FullList<IProblem>;
+  problems: IFullList<IProblem>;
   data: ISolution;
   changeSharedLoading: boolean;
 }

@@ -53,6 +53,10 @@ const api = {
   tags: {
     base: '/tags',
   },
+  messages: {
+    base: '/messages',
+    detail: '/messages/:id',
+  },
 };
 
 export default api;

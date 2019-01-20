@@ -55,7 +55,7 @@ export default {
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: ApiResponse<List<ISolution> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<ISolution> > = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -69,12 +69,12 @@ export default {
     },
     * getListByIds({ payload }, { call, put, select }) {
       const { type, solutionIds } = payload;
-      const ret: ApiResponse<List<ISolution> > = yield call(service.getListByIds, { solutionIds });
+      const ret: IApiResponse<IList<ISolution> > = yield call(service.getListByIds, { solutionIds });
       if (ret.success) {
         const state = yield select();
         if (type === 'list') {
           let hasChange = false;
-          const list: List<ISolution> = state.solutions.list;
+          const list: IList<ISolution> = state.solutions.list;
           const rows = list.rows.map(row => {
             if (ret.data[row.solutionId]) {
               hasChange = true;
@@ -110,7 +110,7 @@ export default {
       if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: ApiResponse<ISolution> = yield call(service.getDetail, id);
+      const ret: IApiResponse<ISolution> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
           type: 'setDetail',
@@ -129,7 +129,7 @@ export default {
       return yield call(service.submit, data);
     },
     * changeShared({ payload: { id, shared } }, { call, put }) {
-      const ret: ApiResponse<any> = yield call(service.changeShared, id, shared);
+      const ret: IApiResponse<any> = yield call(service.changeShared, id, shared);
       if (ret.success) {
         yield put({
           type: 'updateDetail',

@@ -21,7 +21,7 @@ interface Props extends ReduxProps {
   detailLoading: boolean;
   detail: IContest;
   problemsLoading: boolean;
-  problems: FullList<IProblem>;
+  problems: IFullList<IProblem>;
   userProblemResultStats: IUserProblemResultStats;
   contestProblemResultStats: IContestProblemResultStats;
 }

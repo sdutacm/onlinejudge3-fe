@@ -5,7 +5,7 @@ import SolutionDetailPage from '@/components/SolutionDetailPage';
 
 interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
-  data: TypeObject<ISolution>;
+  data: ITypeObject<ISolution>;
   changeSharedLoading: boolean;
 }
 

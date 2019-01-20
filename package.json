@@ -26,6 +26,7 @@
     "js-cookie": "^2.2.0",
     "jscookie": "^1.1.0",
     "katex": "^0.10.0",
+    "lodash": "^4.17.11",
     "lodash.throttle": "^4.1.1",
     "math-precision": "^1.0.5",
     "md5": "^2.2.1",

@@ -5,7 +5,7 @@ import pages from '@/configs/pages';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 
 interface Props {
-  user: IUser;
+  user: IUser | IUserLite;
   isContestUser?: boolean;
 }
 

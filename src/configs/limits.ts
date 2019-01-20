@@ -8,13 +8,11 @@ const limits = {
   solutions: {
     list: 10,
   },
-  contest: {
-    acm: {
-      list: 10,
-      status: 10,
-    }
-  },
   contests: {
+    list: 20,
+  },
+  messages: {
+    unread: 100,
     list: 20,
   },
 };

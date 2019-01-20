@@ -11,7 +11,7 @@ import ToDetailCard from '@/components/ToDetailCard';
 import UserBar from '@/components/UserBar';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<IUser>;
+  data: IList<IUser>;
 }
 
 interface State {

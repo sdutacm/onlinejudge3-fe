@@ -37,10 +37,12 @@ body.dark {
   @import 'styles/dark_antd/tag/style/index';
   @import 'styles/dark_antd/badge/style/index';
   @import 'styles/dark_antd/tabs/style/index';
+  @import 'styles/dark_antd/collapse/style/index';
   @import 'styles/dark_antd/popover/style/index';
   @import 'styles/dark_antd/switch/style/index';
   @import 'styles/dark_antd/spin/style/index';
   @import 'styles/dark_antd/skeleton/style/index';
+  @import 'styles/dark_antd/divider/style/index';
   @import 'styles/dark_antd/modal/style/index';
   @import 'styles/dark_antd/message/style/index';
   @import 'styles/dark_antd/notification/style/index';
@@ -171,7 +173,9 @@ body.dark {
       &.active {
         .button-color(@btn-disable-color; @btn-disable-bg; @btn-disable-border);
       }
+
       cursor: not-allowed;
+
       > * {
         pointer-events: none;
       }
@@ -193,6 +197,50 @@ body.dark {
 
   .ant-form-item-required::before {
     content: none;
+  }
+
+  .ant-badge-count {
+    box-shadow: 0 0 0 1px #000;
+  }
+
+  .ant-list-split .ant-list-item {
+    border-bottom: 1px solid @border-color-split;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .ant-list-split .ant-list-header {
+    border-bottom: 1px solid @border-color-split;
+  }
+
+  .ant-list-something-after-last-item .ant-spin-container > .ant-list-item:last-child {
+    border-bottom: 1px solid @border-color-split;
+  }
+
+  .ant-collapse {
+    > .ant-collapse-item {
+      border-bottom-color: @border-color-base;
+
+      > .ant-collapse-header {
+        color: @heading-color;
+      }
+    }
+
+    .ant-collapse-borderless > .ant-collapse-item {
+      border-bottom-color: @border-color-base;
+    }
+  }
+
+  .message-list {
+    background: transparent;
+
+    > .ant-collapse-item {
+      .message-footer {
+        color: @text-color;
+      }
+    }
   }
 
   .click-table {
@@ -274,16 +322,20 @@ body.dark {
     .accepted {
       background: darken(#0a5f00, 4%);
     }
+
     .failed {
       background: darken(#7d0800, 4%);
     }
+
     .frozen {
       background: #2f4a8e;
     }
+
     .fb {
       background: #248e18;
       color: #fff;
     }
+
     .fb .attempted {
       color: #f0f0f0;
     }

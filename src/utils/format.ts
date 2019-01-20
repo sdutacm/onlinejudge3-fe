@@ -52,28 +52,28 @@ export function formatPercentage(a: number, b: number, precision: number = 2): s
 
 /**
  * Format list query, and only reserve valid property
- * @param {ListQuery} query
- * @returns {ListQuery}
+ * @param {IListQuery} query
+ * @returns {IListQuery}
  */
-export function formatListQuery(query: ListQuery): ListQuery {
-  const formattedQuery: ListQuery = {
+export function formatListQuery(query: IListQuery): IListQuery {
+  const formattedQuery: IListQuery = {
     ...query,
     page: +query.page || 1,
   };
   query.limit && (formattedQuery.limit = +query.limit);
   for (const q in formattedQuery) {
-    if (formattedQuery.hasOwnProperty(q) && !formattedQuery[q]) {
+    if (formattedQuery.hasOwnProperty(q) && !formattedQuery[q] && formattedQuery[q] !== false) {
       delete formattedQuery[q];
     }
   }
   return formattedQuery;
 }
 
-export function toLongTs(timestamp: Timestamp): Timestamp {
+export function toLongTs(timestamp: ITimestamp): ITimestamp {
   return timestamp * 1000;
 }
 
-export function formatFullTime(timestamp: Timestamp): string {
+export function formatFullTime(timestamp: ITimestamp): string {
   if (new Date().getFullYear() === new Date(timestamp).getFullYear()) {
     return moment(timestamp).format('MM-DD HH:mm');
   }

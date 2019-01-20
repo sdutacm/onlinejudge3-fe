@@ -39,7 +39,7 @@ function validateFile(validTypes: UploadFileType[], maxSize: number) {
 }
 
 interface Props extends RouteProps, ReduxProps {
-  data: TypeObject<IUser>;
+  data: ITypeObject<IUser>;
   session: ISessionStatus;
 }
 

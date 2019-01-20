@@ -12,7 +12,7 @@ interface Props extends ReduxProps, RouteProps {
   detailLoading: boolean;
   detail: IContest;
   problemsLoading: boolean;
-  problems: FullList<IProblem>;
+  problems: IFullList<IProblem>;
 }
 
 interface State {

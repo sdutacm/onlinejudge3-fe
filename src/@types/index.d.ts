@@ -1,23 +1,23 @@
-declare interface ApiResponse<T> {
+declare interface IApiResponse<T> {
   success: boolean;
   code?: number;
   msg?: string;
   data?: T;
 }
 
-declare interface List<T> {
+declare interface IList<T> {
   page: number;
   count: number;
   limit: number;
   rows: T[];
 }
 
-declare interface FullList<T> {
+declare interface IFullList<T> {
   count: number;
   rows: T[];
 }
 
-declare interface ListQuery {
+declare interface IListQuery {
   page?: number;
   orderBy?: string;
   orderDirection?: 'ASC' | 'DESC';
@@ -25,9 +25,9 @@ declare interface ListQuery {
   [key: string]: any;
 }
 
-declare interface TypeObject<T> {
+declare interface ITypeObject<T> {
   [key: string]: T;
   [key: number]: T;
 }
 
-declare type Timestamp = number;
+declare type ITimestamp = number;

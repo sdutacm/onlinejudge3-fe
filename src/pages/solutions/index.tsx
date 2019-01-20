@@ -15,7 +15,7 @@ import router from 'umi/router';
 import constants from '@/configs/constants';
 
 interface Props extends ReduxProps, RouteProps {
-  data: List<ISolution>;
+  data: IList<ISolution>;
   session: ISessionStatus;
 }
 

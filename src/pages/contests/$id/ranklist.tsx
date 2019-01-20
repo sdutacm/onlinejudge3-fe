@@ -19,9 +19,9 @@ interface Props extends ReduxProps, RouteProps {
   detailLoading: boolean;
   detail: IContest;
   problemsLoading: boolean;
-  problems: FullList<IProblem>;
+  problems: IFullList<IProblem>;
   ranklistLoading: boolean;
-  ranklist: FullList<IRanklistRow>;
+  ranklist: IFullList<IRanklistRow>;
 }
 
 interface State {

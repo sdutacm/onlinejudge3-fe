@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag } from 'antd';
+import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag, Collapse, Divider } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
@@ -14,6 +14,7 @@ import ThemeSvg from '@/assets/svg/theme.svg';
 import moment from 'moment';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 import router from 'umi/router';
+import xss from 'xss';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -23,6 +24,7 @@ interface Props extends ReduxProps, RouteProps {
   className: string;
   session: ISessionStatus;
   theme: ITheme;
+  unreadMessages: IList<IMessage>;
 }
 
 class NavMenu extends React.Component<Props, any> {
@@ -37,32 +39,6 @@ class NavMenu extends React.Component<Props, any> {
       sessionLoaded: false,
     };
   }
-
-  // notificationsList = [
-  //   { notificationId: 1, title: 'lxh mentioned you at a discussion', time: 1539733234 },
-  //   { notificationId: 2, title: 'bLue answered your question', time: 1539733234 },
-  //   { notificationId: 3, title: 'Your contest register has been accepted', time: 1539733234 },
-  // ];
-
-  notificationsList = [];
-
-  notifications = (
-    <List
-      itemLayout="horizontal"
-      size="small"
-      // loadMore={() => console.log('more')}
-      dataSource={this.notificationsList.slice(0, 3)}
-      renderItem={item => (
-        <List.Item actions={[<a key={item.notificationId}>View</a>]}>
-            <List.Item.Meta
-              title={<a>{item.title}</a>}
-              description={moment(item.time * 1000).fromNow()}
-            />
-        </List.Item>
-      )}
-      footer={!!this.notificationsList.length && <a><div className="text-center" style={{ paddingBottom: 0 }}>View All</div></a>}
-    />
-  );
 
   ideaNotesList = [
     { content: '这货可能是个 dp', tmpTag: (<Tag><a>cyk的游戏</a></Tag>), time: 1539733234 },
@@ -105,8 +81,54 @@ class NavMenu extends React.Component<Props, any> {
     });
   };
 
+  messagesComponent = () => {
+    const { unreadMessages: { count, rows }, dispatch } = this.props;
+    return (
+      <div>
+        {count ?
+          <Collapse bordered={false} className="message-list">
+            {rows.map(m =>
+              <Collapse.Panel showArrow={false}
+                              key={`${m.messageId}`}
+                              header={<div>
+                                <div><a className="normal-text-link">{m.title}</a></div>
+                                <div className="message-footer">
+                                  {m.from.userId ?
+                                    <Link to={urlf(pages.users.detail, { param: { id: m.from.userId } })}
+                                          className="normal-text-link"
+                                          onClick={e => e.stopPropagation()}
+                                    >{m.from.nickname}</Link> :
+                                    <span>System</span>
+                                  }
+                                  <span className="ml-md-lg">{moment(m.createdAt * 1000).fromNow()}</span>
+                                  <a className="ml-md-lg mark-as-read" onClick={e => {
+                                    e.stopPropagation();
+                                    dispatch({
+                                      type: 'messages/markRead',
+                                      payload: {
+                                        id: m.messageId,
+                                        read: true,
+                                      },
+                                    }).then(ret => msg.auto(ret));
+                                  }}>Mark as read</a>
+                                </div>
+                              </div>}>
+                <div dangerouslySetInnerHTML={{ __html: xss(m.content.replace(/\n/g, '<br />')) }} />
+              </Collapse.Panel>
+            )}
+          </Collapse> :
+          <div>
+            <div className="text-center" style={{ lineHeight: '60px' }}>No New Message</div>
+            <Divider style={{ margin: '0' }} />
+          </div>
+        }
+        <div className="text-center" style={{ lineHeight: '45px' }}><Link to={'/'}>View All</Link></div>
+      </div>
+    );
+  };
+
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session, location, theme } = this.props;
+    const { mobileVersion, onLinkClick, className, loading, session, location, theme, unreadMessages } = this.props;
     let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
@@ -189,10 +211,15 @@ class NavMenu extends React.Component<Props, any> {
               </Menu.Item>
         }
 
-        {!mobileVersion && session.loggedIn && <Menu.Item key="/notifications" style={{ float: 'right' }}>
-          <Popover content={this.notifications} title="Notifications" placement="bottom" trigger="click" overlayClassName="menu-popover no-inner-vertical">
-            {/*<a><Badge count={3}><Icon type="bell" theme="outlined" /></Badge></a>*/}
-            <a><Icon type="bell" theme="outlined" /></a>
+        {!mobileVersion && session.loggedIn && <Menu.Item key="messages" style={{ float: 'right' }}>
+          <Popover content={this.messagesComponent()}
+                   title="Messages"
+                   placement="bottom"
+                   trigger="click"
+                   overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
+                   overlayStyle={{ width: '400px' }}
+          >
+            <a><Badge count={unreadMessages.count}><Icon type="bell" theme="outlined" /></Badge></a>
           </Popover>
         </Menu.Item>}
         {/*{!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>*/}
@@ -217,6 +244,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
     session,
     theme: state.settings.theme,
+    unreadMessages: state.messages.unread,
   };
 }
 

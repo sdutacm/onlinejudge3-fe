@@ -17,6 +17,7 @@ import { isStateExpired } from '@/utils/misc';
 
 interface Props extends ReduxProps, RouteProps {
   theme: ITheme;
+  session: ISessionStatus;
 }
 
 interface State {
@@ -24,6 +25,7 @@ interface State {
   error: Error;
   errorStack: string;
   bgCheckSessionTimer: number;
+  bgGetUnreadMessagesTimer: number;
 }
 
 class Index extends React.Component<Props, State> {
@@ -34,6 +36,7 @@ class Index extends React.Component<Props, State> {
       error: null,
       errorStack: '',
       bgCheckSessionTimer: 0,
+      bgGetUnreadMessagesTimer: 0,
     };
   }
 
@@ -45,17 +48,25 @@ class Index extends React.Component<Props, State> {
   };
 
   bgCheckSession = () => {
-    const { dispatch } = this.props;
-    dispatch({ type: 'session/getSession' }).then(session => {
-      if (session.loggedIn && isStateExpired(session)) {
-        notification.warning({
-          message: 'Session Expired',
-          description: 'Your session expired. Please re-login.',
-          duration: null,
-        });
-        dispatch({type: 'session/logout' });
-      }
-    });
+    const { dispatch, session } = this.props;
+    if (session.loggedIn && isStateExpired(session)) {
+      notification.warning({
+        message: 'Session Expired',
+        description: 'Your session expired. Please re-login.',
+        duration: null,
+      });
+      dispatch({ type: 'session/logout' });
+    }
+  };
+
+  bgGetUnreadMessages = () => {
+    const { dispatch, session } = this.props;
+    if (session.loggedIn) {
+      dispatch({
+        type: 'messages/getUnreadList',
+        payload: { userId: session.user.userId },
+      });
+    }
   };
 
   async componentDidMount() {
@@ -72,12 +83,16 @@ class Index extends React.Component<Props, State> {
     else {
       router.push(pages.OJBK);
     }
+    // background timer tasks
     const bgCheckSessionTimer: any = setInterval(this.bgCheckSession, 60 * 1000);
     this.setState({ bgCheckSessionTimer });
+    const bgGetUnreadMessagesTimer: any = setInterval(this.bgGetUnreadMessages, 10 * 60 * 1000);
+    this.setState({ bgGetUnreadMessagesTimer });
   }
 
   componentWillUnmount() {
     clearInterval(this.state.bgCheckSessionTimer);
+    clearInterval(this.state.bgGetUnreadMessagesTimer);
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
@@ -138,6 +153,7 @@ class Index extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
+    session: state.session,
     theme: state.settings.theme,
   };
 }

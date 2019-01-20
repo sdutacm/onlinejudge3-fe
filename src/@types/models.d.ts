@@ -229,6 +229,15 @@ declare interface IMessage {
   createdAt: ITimestamp,
 }
 
+declare interface IFavorite {
+  favoriteId: number;
+  type: 'problem' | 'contest';
+  target: any;
+  note: string;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
+}
+
 declare type ITheme = 'light' | 'dark';
 
 declare interface ISettings {

@@ -10,6 +10,8 @@ import gStyles from '@/general.less';
 import NotFound from '@/pages/404';
 import EditProblemPropModal from '@/components/EditProblemPropModal';
 import { isPermissionDog } from '@/utils/permission';
+import AddFavorite from '@/components/AddFavorite';
+import DeleteFavorite from '@/components/DeleteFavorite';
 
 interface Props {
   loading: boolean;
@@ -17,15 +19,17 @@ interface Props {
   session: ISessionStatus;
   contestId?: number;
   problemIndex?: number;
+  favorites: IFavorite[];
 }
 
-const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex }) => {
+const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex, favorites }) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
   const solutionsUrl = contestId
     ? urlf(pages.contests.solutions, { param: { id: contestId }, query: { problemId: data.problemId } })
     : urlf(pages.solutions.index, { query: { problemId: data.problemId } });
+  const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
   return (
     <Row gutter={16} className="content-view">
       <Col xs={24} md={18} xxl={18}>
@@ -52,9 +56,18 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
               {/*<Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>*/}
             {/*</Link>*/}
             <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
-              <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                <Icon type="star" theme="outlined" />
-              </Button>
+              {!favorite ?
+                <AddFavorite type="problem" id={data.problemId} >
+                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                    <Icon type="star" theme="outlined" />
+                  </Button>
+                </AddFavorite> :
+                <DeleteFavorite favoriteId={favorite.favoriteId}>
+                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                    <Icon type="star" theme="filled" />
+                  </Button>
+                </DeleteFavorite>
+              }
               <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
                 <Icon type="share-alt" theme="outlined" />
               </Button>

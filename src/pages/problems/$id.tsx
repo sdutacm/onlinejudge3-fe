@@ -8,6 +8,7 @@ import pages from '@/configs/pages';
 interface Props extends ReduxProps, RouteProps {
   data: ITypeObject<IProblem>;
   session: ISessionStatus;
+  favorites: IFullList<IFavorite>;
 }
 
 interface State {
@@ -37,10 +38,10 @@ class ProblemDetail extends React.Component<Props, State> {
   }
 
   render() {
-    const { loading, data: allData, session, match } = this.props;
+    const { loading, data: allData, session, match, favorites } = this.props;
     const id = ~~match.params.id;
     const data = allData[id] || {} as IProblem;
-    return <ProblemDetailPage loading={loading} data={data} session={session} />;
+    return <ProblemDetailPage loading={loading} data={data} session={session} favorites={favorites.rows} />;
   }
 }
 
@@ -49,6 +50,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['problems/getDetail'],
     data: state.problems.detail,
     session: state.session,
+    favorites: state.favorites.list,
   };
 }
 

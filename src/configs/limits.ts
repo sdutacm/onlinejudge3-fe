@@ -15,6 +15,9 @@ const limits = {
     unread: 100,
     list: 10,
   },
+  favorites: {
+    list: 10,
+  },
 };
 
 export default limits;

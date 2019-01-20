@@ -13,6 +13,7 @@ interface Props extends ReduxProps, RouteProps {
   detail: IContest;
   problemsLoading: boolean;
   problems: IFullList<IProblem>;
+  favorites: IFullList<IFavorite>;
 }
 
 interface State {
@@ -54,13 +55,20 @@ class ContestProblem extends React.Component<Props, State> {
       problemsLoading,
       problems: { rows },
       match,
+      favorites,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
     }
     const index = ~~match.params.index;
     const problem = (rows && rows[index]) || {} as IProblem;
-    return <ProblemDetailPage loading={problemsLoading} data={problem} session={session} contestId={id} problemIndex={index} />;
+    return <ProblemDetailPage loading={problemsLoading}
+                              data={problem}
+                              session={session}
+                              contestId={id}
+                              problemIndex={index}
+                              favorites={favorites.rows}
+    />;
   }
 }
 
@@ -73,6 +81,7 @@ function mapStateToProps(state) {
     detail: state.contests.detail[id],
     problemsLoading: state.loading.effects['contests/getProblems'],
     problems: state.contests.problems[id] || {},
+    favorites: state.favorites.list,
   };
 }
 

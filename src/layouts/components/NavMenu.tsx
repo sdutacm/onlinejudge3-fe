@@ -150,9 +150,9 @@ class NavMenu extends React.Component<Props, State> {
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
                 </Menu.Item>
-                <Menu.Item key="favorites">
-                  <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>
-                </Menu.Item>
+                {/*<Menu.Item key="favorites">*/}
+                  {/*<Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>*/}
+                {/*</Menu.Item>*/}
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
                   this.logout();
@@ -181,9 +181,9 @@ class NavMenu extends React.Component<Props, State> {
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
-                <Menu.Item key="favorites">
-                  <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>
-                </Menu.Item>
+                {/*<Menu.Item key="favorites">*/}
+                  {/*<Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>*/}
+                {/*</Menu.Item>*/}
                 <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>
               :

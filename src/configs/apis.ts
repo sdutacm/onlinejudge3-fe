@@ -20,6 +20,7 @@ const api = {
     solutionCalendar: '/users/:id/solutionCalendar',
     solutionStats: '/users/:id/solutionStats',
     ratingHistory: '/users/:id/ratingHistory',
+    favorites: '/users/:id/favorites',
   },
   problems: {
     base: '/problems',
@@ -56,6 +57,10 @@ const api = {
   messages: {
     base: '/messages',
     detail: '/messages/:id',
+  },
+  favorites: {
+    base: '/favorites',
+    detail: '/favorites/:id',
   },
 };
 

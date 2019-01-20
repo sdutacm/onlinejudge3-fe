@@ -13,7 +13,7 @@ const limits = {
   },
   messages: {
     unread: 100,
-    list: 20,
+    list: 10,
   },
 };
 

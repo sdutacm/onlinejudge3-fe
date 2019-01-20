@@ -24,5 +24,11 @@ export default {
     solutionDetail: '/contests/:id/solutions/:sid',
     ranklist: '/contests/:id/ranklist',
   },
+  messages: {
+    index: '/messages',
+  },
+  favorites: {
+    index: '/favorites',
+  },
   OJBK: '/OJBK',
 };

@@ -11,10 +11,9 @@ import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import NoteSvg from '@/assets/svg/note.svg';
 import ThemeSvg from '@/assets/svg/theme.svg';
-import moment from 'moment';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 import router from 'umi/router';
-import xss from 'xss';
+import MessageList from '@/components/MessageList';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -24,10 +23,16 @@ interface Props extends ReduxProps, RouteProps {
   className: string;
   session: ISessionStatus;
   theme: ITheme;
+  unreadMessagesLoading: boolean;
   unreadMessages: IList<IMessage>;
 }
 
-class NavMenu extends React.Component<Props, any> {
+interface State {
+  sessionLoaded: boolean;
+  messagesVisible: boolean;
+}
+
+class NavMenu extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     mobileVersion: false,
     className: 'nav',
@@ -37,6 +42,7 @@ class NavMenu extends React.Component<Props, any> {
     super(props);
     this.state = {
       sessionLoaded: false,
+      messagesVisible: false,
     };
   }
 
@@ -82,47 +88,16 @@ class NavMenu extends React.Component<Props, any> {
   };
 
   messagesComponent = () => {
-    const { unreadMessages: { count, rows }, dispatch } = this.props;
+    const { unreadMessagesLoading, unreadMessages: { count, rows }, dispatch } = this.props;
     return (
       <div>
-        {count ?
-          <Collapse bordered={false} className="message-list">
-            {rows.map(m =>
-              <Collapse.Panel showArrow={false}
-                              key={`${m.messageId}`}
-                              header={<div>
-                                <div><a className="normal-text-link">{m.title}</a></div>
-                                <div className="message-footer">
-                                  {m.from.userId ?
-                                    <Link to={urlf(pages.users.detail, { param: { id: m.from.userId } })}
-                                          className="normal-text-link"
-                                          onClick={e => e.stopPropagation()}
-                                    >{m.from.nickname}</Link> :
-                                    <span>System</span>
-                                  }
-                                  <span className="ml-md-lg">{moment(m.createdAt * 1000).fromNow()}</span>
-                                  <a className="ml-md-lg mark-as-read" onClick={e => {
-                                    e.stopPropagation();
-                                    dispatch({
-                                      type: 'messages/markRead',
-                                      payload: {
-                                        id: m.messageId,
-                                        read: true,
-                                      },
-                                    }).then(ret => msg.auto(ret));
-                                  }}>Mark as read</a>
-                                </div>
-                              </div>}>
-                <div dangerouslySetInnerHTML={{ __html: xss(m.content.replace(/\n/g, '<br />')) }} />
-              </Collapse.Panel>
-            )}
-          </Collapse> :
-          <div>
-            <div className="text-center" style={{ lineHeight: '60px' }}>No New Message</div>
-            <Divider style={{ margin: '0' }} />
-          </div>
-        }
-        <div className="text-center" style={{ lineHeight: '45px' }}><Link to={'/'}>View All</Link></div>
+        <MessageList count={count} rows={rows} dispatch={dispatch} loading={unreadMessagesLoading} />
+        <div className="text-center" style={{ lineHeight: '45px' }}>
+          <Link to={urlf(pages.messages.index, { query: { type: 'received' } })}
+                onClick={() => this.setState({ messagesVisible: false })}>
+            View All
+          </Link>
+        </div>
       </div>
     );
   };
@@ -175,6 +150,9 @@ class NavMenu extends React.Component<Props, any> {
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
                 </Menu.Item>
+                <Menu.Item key="favorites">
+                  <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>
+                </Menu.Item>
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
                   this.logout();
@@ -203,6 +181,9 @@ class NavMenu extends React.Component<Props, any> {
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
+                <Menu.Item key="favorites">
+                  <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>
+                </Menu.Item>
                 <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>
               :
@@ -211,13 +192,15 @@ class NavMenu extends React.Component<Props, any> {
               </Menu.Item>
         }
 
-        {!mobileVersion && session.loggedIn && <Menu.Item key="messages" style={{ float: 'right' }}>
+        {!mobileVersion && session.loggedIn && <Menu.Item key="unreadMessages" style={{ float: 'right' }}>
           <Popover content={this.messagesComponent()}
                    title="Messages"
                    placement="bottom"
                    trigger="click"
                    overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
-                   overlayStyle={{ width: '400px' }}
+                   overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
+                   visible={this.state.messagesVisible}
+                   onVisibleChange={messagesVisible => this.setState({ messagesVisible })}
           >
             <a><Badge count={unreadMessages.count}><Icon type="bell" theme="outlined" /></Badge></a>
           </Popover>
@@ -244,6 +227,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
     session,
     theme: state.settings.theme,
+    unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,
   };
 }

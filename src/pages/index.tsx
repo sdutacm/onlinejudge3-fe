@@ -29,6 +29,10 @@ const content = `
 
 请至少拥有一个 GitHub 帐号，按照上方链接中的指引参与问题反馈。
 
+## 更新日志
+
+[CHANGELOG](https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md)
+
 `;
 
 export default () => (

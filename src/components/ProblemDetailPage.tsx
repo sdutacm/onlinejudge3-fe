@@ -56,17 +56,21 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
               {/*<Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>*/}
             {/*</Link>*/}
             <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
-              {!favorite ?
-                <AddFavorite type="problem" id={data.problemId} >
-                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                    <Icon type="star" theme="outlined" />
-                  </Button>
-                </AddFavorite> :
-                <DeleteFavorite favoriteId={favorite.favoriteId}>
-                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                    <Icon type="star" theme="filled" />
-                  </Button>
-                </DeleteFavorite>
+              {session.loggedIn ?
+                (!favorite ?
+                  <AddFavorite type="problem" id={data.problemId}>
+                    <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                      <Icon type="star" theme="outlined" />
+                    </Button>
+                  </AddFavorite> :
+                  <DeleteFavorite favoriteId={favorite.favoriteId}>
+                    <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                      <Icon type="star" theme="filled" />
+                    </Button>
+                  </DeleteFavorite>) :
+                <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                  <Icon type="star" theme="outlined" />
+                </Button>
               }
               <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
                 <Icon type="share-alt" theme="outlined" />

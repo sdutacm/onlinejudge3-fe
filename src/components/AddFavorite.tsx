@@ -86,7 +86,7 @@ class AddFavorite extends React.Component<Props, State> {
                 )}
               </Form.Item>
             </Form>
-            <Button type="primary" block loading={loading} onClick={this.handleAdd}>Submit</Button>
+            <Button type="primary" block loading={loading} onClick={this.handleAdd}>Add</Button>
           </div>}
         visible={this.state.visible}
         onVisibleChange={visible => this.setState({ visible })}

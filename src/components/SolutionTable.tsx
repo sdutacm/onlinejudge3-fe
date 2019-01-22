@@ -176,7 +176,7 @@ class SolutionTable extends React.Component<Props, State> {
             title={'Lang.'}
             key="Language"
             render={(text, record: ISolution) => (
-              <span>{langsMap[record.language].displayShortName}</span>
+              <span>{langsMap[record.language] ? langsMap[record.language].displayShortName : record.language}</span>
             )}
           />
           <Table.Column

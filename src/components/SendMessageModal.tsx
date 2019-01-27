@@ -68,6 +68,7 @@ class SendMessageModal extends React.Component<Props, State> {
           confirmLoading={loading}
           onOk={this.handleOk}
           onCancel={this.handleHideModel}
+          zIndex={1031}
         >
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Title">

@@ -45,7 +45,6 @@ class SendMessageModal extends React.Component<Props, State> {
 
   handleShowModel = e => {
     if (e) {
-      console.log('stop');
       e.stopPropagation();
     }
     this.setState({ visible: true });

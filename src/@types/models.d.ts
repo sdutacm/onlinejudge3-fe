@@ -225,7 +225,8 @@ declare interface IMessage {
   to: IUserLite;
   title: string;
   content: string;
-  read: boolean;
+  read?: boolean;
+  anonymous: boolean;
   createdAt: ITimestamp,
 }
 

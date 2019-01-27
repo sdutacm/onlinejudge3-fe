@@ -1,4 +1,4 @@
-import { get, patch } from '@/utils/request';
+import { get, patch, post } from '@/utils/request';
 import api from '@/configs/apis';
 import { urlf } from '@/utils/format';
 
@@ -19,4 +19,8 @@ export function markRead(id, read) {
     },
   });
   return patch(url, { read });
+}
+
+export function send(data) {
+  return post(api.messages.base, data);
 }

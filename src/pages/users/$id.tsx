@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import loadImage from 'image-promise';
 import SolutionCalendar from '@/components/SolutionCalendar';
 import Rating from '@/components/Rating';
+import SendMessageModal from '@/components/SendMessageModal';
 
 interface UploadFileType {
   name: string;
@@ -323,6 +324,13 @@ class UserDetail extends React.Component<Props, State> {
                     </table>
                   </Skeleton>
                 </Card>
+
+                {!loading && session.loggedIn && !isSelf(session, data.userId) &&
+                <Card bordered={false}>
+                  <SendMessageModal toUserId={data.userId}>
+                    <Button block>Send Message</Button>
+                  </SendMessageModal>
+                </Card>}
 
                 {/*<Card bordered={false}>*/}
                   {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}

@@ -9,6 +9,7 @@ import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { isSelf } from '@/utils/permission';
 import NotFound from '@/pages/404';
 import msg from '@/utils/msg';
+import PageTitle from '@/components/PageTitle';
 
 interface Props extends ReduxProps {
   loading: boolean;
@@ -65,75 +66,77 @@ class SolutionDetailPage extends React.Component<Props, State> {
       return <NotFound />;
     }
     return (
-      <div>
-        <Card bordered={false} className="list-card">
-          <SolutionTable loading={loading} data={{ rows: loading ? [] : [data] }} dispatch={dispatch}
-                         showPagination={false} isDetail contestId={contestId} problemList={problemList} />
-        </Card>
+      <PageTitle title="Solution Detail" loading={loading}>
+        <div>
+          <Card bordered={false} className="list-card">
+            <SolutionTable loading={loading} data={{ rows: loading ? [] : [data] }} dispatch={dispatch}
+                           showPagination={false} isDetail contestId={contestId} problemList={problemList} />
+          </Card>
 
-        {!loading && data.compileInfo &&
-        <Card bordered={false}>
-          <div>
-            <div style={{ height: '32px' }}>
-              <div className="float-left">
-                <span>Compile Info</span>
-              </div>
-              <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
-            </div>
-            <SyntaxHighlighter language="text"
-                               showLineNumbers
-                               style={theme === 'dark' ? atomOneDark : atomOneLight}
-                               lineNumberContainerStyle={highlighterLineNumberStyle}
-            >
-              {data.compileInfo}
-            </SyntaxHighlighter>
-          </div>
-        </Card>}
-
-        <Card bordered={false}>
-          {!loading ?
-            <>
-              {data.code ?
-                <div>
-                  <div style={{ height: '32px' }}>
-                    {isSelf(session, data.user.userId) ?
-                    <div className="float-left">
-                      <span>Share Code
-                        <Popover title="Shared code will be disabled in one of these cases" content={<div>
-                          <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
-                          <li>The user viewing code has not solved the problem</li>
-                          <li>The problem exists in some running contests</li>
-                          </ul>
-                        </div>}>
-                          <Icon type="info-circle" className="info-tips ml-sm-md" />
-                        </Popover>
-                      </span>
-                      <Switch checked={data.shared} disabled={loading} loading={changeSharedLoading}
-                              onChange={this.onShareChange}
-                              className="ml-lg" />
-                    </div> :
-                    <div className="float-left">
-                      <span>Code</span>
-                    </div>}
-                    <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
-                  </div>
-                  <SyntaxHighlighter language={langsMap4Hljs[data.language]}
-                                     showLineNumbers
-                                     style={theme === 'dark' ? atomOneDark : atomOneLight}
-                                     lineNumberContainerStyle={highlighterLineNumberStyle}
-                  >
-                    {data.code}
-                  </SyntaxHighlighter>
-                </div> :
-                <div>
-                  <h3 className="warning-text">You do not have permission to view code</h3>
+          {!loading && data.compileInfo &&
+          <Card bordered={false}>
+            <div>
+              <div style={{ height: '32px' }}>
+                <div className="float-left">
+                  <span>Compile Info</span>
                 </div>
-              }
-            </> :
-            <Skeleton active title={false} paragraph={{ rows: 6, width: ['26%', '0%', '19%', '50%', '20%', '5%'] }} />
-          }
-        </Card>
-      </div>
+                <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
+              </div>
+              <SyntaxHighlighter language="text"
+                                 showLineNumbers
+                                 style={theme === 'dark' ? atomOneDark : atomOneLight}
+                                 lineNumberContainerStyle={highlighterLineNumberStyle}
+              >
+                {data.compileInfo}
+              </SyntaxHighlighter>
+            </div>
+          </Card>}
+
+          <Card bordered={false}>
+            {!loading ?
+              <>
+                {data.code ?
+                  <div>
+                    <div style={{ height: '32px' }}>
+                      {isSelf(session, data.user.userId) ?
+                      <div className="float-left">
+                        <span>Share Code
+                          <Popover title="Shared code will be disabled in one of these cases" content={<div>
+                            <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
+                            <li>The user viewing code has not solved the problem</li>
+                            <li>The problem exists in some running contests</li>
+                            </ul>
+                          </div>}>
+                            <Icon type="info-circle" className="info-tips ml-sm-md" />
+                          </Popover>
+                        </span>
+                        <Switch checked={data.shared} disabled={loading} loading={changeSharedLoading}
+                                onChange={this.onShareChange}
+                                className="ml-lg" />
+                      </div> :
+                      <div className="float-left">
+                        <span>Code</span>
+                      </div>}
+                      <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
+                    </div>
+                    <SyntaxHighlighter language={langsMap4Hljs[data.language]}
+                                       showLineNumbers
+                                       style={theme === 'dark' ? atomOneDark : atomOneLight}
+                                       lineNumberContainerStyle={highlighterLineNumberStyle}
+                    >
+                      {data.code}
+                    </SyntaxHighlighter>
+                  </div> :
+                  <div>
+                    <h3 className="warning-text">You do not have permission to view code</h3>
+                  </div>
+                }
+              </> :
+              <Skeleton active title={false} paragraph={{ rows: 6, width: ['26%', '0%', '19%', '50%', '20%', '5%'] }} />
+            }
+          </Card>
+        </div>
+      </PageTitle>
     );
   }
 }

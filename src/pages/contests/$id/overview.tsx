@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import Countdown from '@/components/Countdown';
 import PageLoading from '@/components/PageLoading';
+import PageTitle from '@/components/PageTitle';
 
 interface Props extends ReduxProps {
   id: number;
@@ -91,6 +92,7 @@ class ContestOverview extends React.Component<Props, State> {
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
 
     return (
+      <PageTitle title="Overview">
         <Row gutter={16} className="content-view">
           <Col xs={24}>
             <Card bordered={false}>
@@ -174,6 +176,7 @@ class ContestOverview extends React.Component<Props, State> {
             </Card>}
           </Col>
         </Row>
+      </PageTitle>
     );
   }
 }

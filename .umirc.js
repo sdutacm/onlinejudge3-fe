@@ -13,7 +13,11 @@ export default {
         exclude: [/models\//],
       },
       hardSource: true,
-      title: 'SDUT OnlineJudge',
+      title: {
+        defaultTitle: 'SDUT OnlineJudge',
+        separator: '|',
+        format: '{current} {separator} {parent}',
+      },
     }],
   ],
   theme: {

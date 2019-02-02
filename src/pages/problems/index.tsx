@@ -1,3 +1,7 @@
+/**
+ * title: Problems
+ */
+
 import React from 'react';
 import { connect } from 'dva';
 import { Table, Pagination, Form, Input, Icon, Row, Col, Card, Tag, Progress, Popover } from 'antd';
@@ -10,7 +14,6 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
-import api from '@/configs/apis';
 import { formatPercentage } from '@/utils/format';
 import gStyles from '@/general.less';
 import classNames from 'classnames';

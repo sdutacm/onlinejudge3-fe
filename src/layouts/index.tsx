@@ -1,6 +1,10 @@
+/**
+ * title: SDUT OnlineJudge
+ */
+
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Row, Col, Spin, Divider, Button, notification } from 'antd';
+import { Layout, Row, Col, Button, notification } from 'antd';
 import { Link } from 'react-router-dom';
 import NavContainer from './components/NavContainer';
 import pages from '../configs/pages';
@@ -14,6 +18,7 @@ import router from 'umi/router';
 import OJBK from '@/utils/OJBK';
 import PageLoading from '@/components/PageLoading';
 import { isStateExpired } from '@/utils/misc';
+import PageTitle from '@/components/PageTitle';
 
 interface Props extends ReduxProps, RouteProps {
   theme: ITheme;
@@ -107,11 +112,13 @@ class Index extends React.Component<Props, State> {
     const { Header, Content, Footer } = Layout;
     if (this.state.error) {
       return (
-        <div className="center-view text-center">
-          <h2 style={{ marginBottom: '30px' }}>Oops... OJ Crashed!</h2>
-          <p><Button onClick={() => window.location.reload()}>Reload Page</Button></p>
-          <p><Link to={pages.index} onClick={() => setTimeout(() => window.location.reload(), 500)}><Button>Back to Home</Button></Link></p>
-        </div>
+        <PageTitle title="x_x">
+          <div className="center-view text-center">
+            <h2 style={{ marginBottom: '30px' }}>Oops... OJ Crashed!</h2>
+            <p><Button onClick={() => window.location.reload()}>Reload Page</Button></p>
+            <p><Link to={pages.index} onClick={() => setTimeout(() => window.location.reload(), 500)}><Button>Back to Home</Button></Link></p>
+          </div>
+        </PageTitle>
       );
     }
     const inUserDetailPage = matchPath(location.pathname, {

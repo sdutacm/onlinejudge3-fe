@@ -27,7 +27,7 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
   }
   return (
     <div className={classNames(styles.problemContent, 'problem-content')}>
-      <h2 className="text-center">{problemIndex ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
+      <h2 className="text-center">{Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}
       <AutoLaTeX content={xss(data.description)} />

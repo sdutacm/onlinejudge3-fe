@@ -1,3 +1,7 @@
+/**
+ * title: Solutions
+ */
+
 import React from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Switch } from 'antd';

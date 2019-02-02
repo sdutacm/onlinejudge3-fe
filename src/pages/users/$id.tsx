@@ -19,6 +19,7 @@ import loadImage from 'image-promise';
 import SolutionCalendar from '@/components/SolutionCalendar';
 import Rating from '@/components/Rating';
 import SendMessageModal from '@/components/SendMessageModal';
+import PageTitle from '@/components/PageTitle';
 
 interface UploadFileType {
   name: string;
@@ -212,134 +213,136 @@ class UserDetail extends React.Component<Props, State> {
     const data = allData[id] || {} as IUser;
     const self = isSelf(session, data.userId);
     return (
-      <div>
-        <div className={classNames('u-bbg', { thumb: bannerImageLoading, 'no-banner': !data.bannerImage })} style={{
-          backgroundImage: data.bannerImage ? `url(${bannerImageUrl})` : undefined,
-        }} />
-        {self &&
-        <div className="banner-edit-btn">
-          <Upload name="bannerImage"
-                  action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
-                  beforeUpload={this.validateBannerImage}
-                  onChange={this.handleBannerImageChange}
-                  showUploadList={false}
-          >
-            <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
-          </Upload>
-        </div>}
-        <div className="content-view" style={{ position: 'relative' }}>
-          <div className="u-header" style={{ height: '60px' }}>
-            <span className="u-avatar">
-              {!self ?
-                <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} /> :
-                <Upload name="avatar"
-                        className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
-                        action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
-                        beforeUpload={this.validateAvatar}
-                        onChange={this.handleAvatarChange}
-                        showUploadList={false}
-                >
-                  {uploadAvatarLoading || loading ?
-                    <Icon type="loading" className="upload-mask-icon" /> :
-                    <Icon type="upload" className="upload-mask-icon" />
-                  }
-                  <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} />
-                </Upload>
-              }
-            </span>
-            <span className="u-info">
-              <h1>{data.nickname}</h1>
-            </span>
-          </div>
+      <PageTitle title={data.nickname} loading={loading}>
+        <div>
+          <div className={classNames('u-bbg', { thumb: bannerImageLoading, 'no-banner': !data.bannerImage })} style={{
+            backgroundImage: data.bannerImage ? `url(${bannerImageUrl})` : undefined,
+          }} />
+          {self &&
+          <div className="banner-edit-btn">
+            <Upload name="bannerImage"
+                    action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
+                    beforeUpload={this.validateBannerImage}
+                    onChange={this.handleBannerImageChange}
+                    showUploadList={false}
+            >
+              <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
+            </Upload>
+          </div>}
+          <div className="content-view" style={{ position: 'relative' }}>
+            <div className="u-header" style={{ height: '60px' }}>
+              <span className="u-avatar">
+                {!self ?
+                  <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} /> :
+                  <Upload name="avatar"
+                          className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
+                          action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
+                          beforeUpload={this.validateAvatar}
+                          onChange={this.handleAvatarChange}
+                          showUploadList={false}
+                  >
+                    {uploadAvatarLoading || loading ?
+                      <Icon type="loading" className="upload-mask-icon" /> :
+                      <Icon type="upload" className="upload-mask-icon" />
+                    }
+                    <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} />
+                  </Upload>
+                }
+              </span>
+              <span className="u-info">
+                <h1>{data.nickname}</h1>
+              </span>
+            </div>
 
-          <div className="u-content">
-            <Row gutter={16}>
-              <Col xs={24} md={18} xxl={18}>
-                <Card bordered={false}>
-                  <h3>Rating</h3>
-                  <Rating rating={data.rating} ratingHistory={data.ratingHistory || []} loading={loading} />
-                </Card>
+            <div className="u-content">
+              <Row gutter={16}>
+                <Col xs={24} md={18} xxl={18}>
+                  <Card bordered={false}>
+                    <h3>Rating</h3>
+                    <Rating rating={data.rating} ratingHistory={data.ratingHistory || []} loading={loading} />
+                  </Card>
 
-                <Card bordered={false}>
-                  <h3>AC Calendar</h3>
-                  <SolutionCalendar data={data.solutionCalendar} />
-                </Card>
+                  <Card bordered={false}>
+                    <h3>AC Calendar</h3>
+                    <SolutionCalendar data={data.solutionCalendar} />
+                  </Card>
 
-                <Card bordered={false}>
-                  <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能</h3>
-                </Card>
+                  <Card bordered={false}>
+                    <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能</h3>
+                  </Card>
 
-                {/*<Card bordered={false}>*/}
-                  {/*<h3>Activities</h3>*/}
-                  {/*<Tabs defaultActiveKey="1">*/}
-                    {/*<Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>*/}
-                    {/*<Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>*/}
-                    {/*<Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>*/}
-                  {/*</Tabs>*/}
-                {/*</Card>*/}
-              </Col>
-              <Col xs={24} md={6} xxl={6}>
-                <Card bordered={false}>
-                  <div style={{ width: '100%' }}>
-                    <Link to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })} className="normal-text-link">
-                      <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }}>
-                        <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.accepted}</strong></p>
-                        <p style={{ fontSize: '12px' }}>AC</p>
-                      </div>
-                    </Link>
-                    <Link to={urlf(pages.solutions.index, { query: { userId: data.userId } })} className="normal-text-link">
-                      <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }} className="card-block-divider">
-                        <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
-                        <p style={{ fontSize: '12px' }}>Total</p>
-                      </div>
-                    </Link>
-                  </div>
-                </Card>
-                <Card bordered={false} className={styles.infoBoard}>
-                  <Skeleton active loading={loading} paragraph={{ rows: 5, width: '100%' }}>
-                    <table>
-                      <tbody>
-                      <tr>
-                        <td>School</td>
-                        <td>{xss(data.school)}</td>
-                      </tr>
-                      <tr>
-                        <td>College</td>
-                        <td>{xss(data.college)}</td>
-                      </tr>
-                      <tr>
-                        <td>Major</td>
-                        <td>{xss(data.major)}</td>
-                      </tr>
-                      <tr>
-                        <td>Class</td>
-                        <td>{xss(data.class)}</td>
-                      </tr>
-                      {data.site ?
-                      <tr>
-                        <td>Site</td>
-                        <td><a href={xss(data.site)} target="_blank">{xss(data.site)}</a></td>
-                      </tr> : null}
-                      </tbody>
-                    </table>
-                  </Skeleton>
-                </Card>
+                  {/*<Card bordered={false}>*/}
+                    {/*<h3>Activities</h3>*/}
+                    {/*<Tabs defaultActiveKey="1">*/}
+                      {/*<Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>*/}
+                      {/*<Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>*/}
+                      {/*<Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>*/}
+                    {/*</Tabs>*/}
+                  {/*</Card>*/}
+                </Col>
+                <Col xs={24} md={6} xxl={6}>
+                  <Card bordered={false}>
+                    <div style={{ width: '100%' }}>
+                      <Link to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })} className="normal-text-link">
+                        <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }}>
+                          <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.accepted}</strong></p>
+                          <p style={{ fontSize: '12px' }}>AC</p>
+                        </div>
+                      </Link>
+                      <Link to={urlf(pages.solutions.index, { query: { userId: data.userId } })} className="normal-text-link">
+                        <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }} className="card-block-divider">
+                          <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
+                          <p style={{ fontSize: '12px' }}>Total</p>
+                        </div>
+                      </Link>
+                    </div>
+                  </Card>
+                  <Card bordered={false} className={styles.infoBoard}>
+                    <Skeleton active loading={loading} paragraph={{ rows: 5, width: '100%' }}>
+                      <table>
+                        <tbody>
+                        <tr>
+                          <td>School</td>
+                          <td>{xss(data.school)}</td>
+                        </tr>
+                        <tr>
+                          <td>College</td>
+                          <td>{xss(data.college)}</td>
+                        </tr>
+                        <tr>
+                          <td>Major</td>
+                          <td>{xss(data.major)}</td>
+                        </tr>
+                        <tr>
+                          <td>Class</td>
+                          <td>{xss(data.class)}</td>
+                        </tr>
+                        {data.site ?
+                        <tr>
+                          <td>Site</td>
+                          <td><a href={xss(data.site)} target="_blank">{xss(data.site)}</a></td>
+                        </tr> : null}
+                        </tbody>
+                      </table>
+                    </Skeleton>
+                  </Card>
 
-                {!loading && session.loggedIn && !isSelf(session, data.userId) &&
-                <Card bordered={false}>
-                  <SendMessageModal toUserId={data.userId}>
-                    <Button block>Send Message</Button>
-                  </SendMessageModal>
-                </Card>}
+                  {!loading && session.loggedIn && !isSelf(session, data.userId) &&
+                  <Card bordered={false}>
+                    <SendMessageModal toUserId={data.userId}>
+                      <Button block>Send Message</Button>
+                    </SendMessageModal>
+                  </Card>}
 
-                {/*<Card bordered={false}>*/}
-                  {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}
-                {/*</Card>*/}
-              </Col>
-            </Row>
+                  {/*<Card bordered={false}>*/}
+                    {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}
+                  {/*</Card>*/}
+                </Col>
+              </Row>
+            </div>
           </div>
         </div>
-      </div>
+      </PageTitle>
     );
   }
 }

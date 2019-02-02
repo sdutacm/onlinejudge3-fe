@@ -1,3 +1,7 @@
+/**
+ * title: Contest Door
+ */
+
 import React from 'react';
 import { connect } from 'dva';
 import { Form, Input, Button } from 'antd';

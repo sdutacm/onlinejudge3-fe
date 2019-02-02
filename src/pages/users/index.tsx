@@ -1,3 +1,7 @@
+/**
+ * title: Standings
+ */
+
 import React from 'react';
 import { connect } from 'dva';
 import { Table, Pagination, Row, Col, Card } from 'antd';

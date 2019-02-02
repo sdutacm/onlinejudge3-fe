@@ -7,6 +7,7 @@
 //   </div>
 // );
 import Markdown from 'react-markdown';
+import PageTitle from '@/components/PageTitle';
 
 const content = `
 # 欢迎来到 Online Judge 3 内测
@@ -36,7 +37,9 @@ const content = `
 `;
 
 export default () => (
-  <div className="content-view-sm" style={{ marginTop: '60px' }}>
-    <Markdown source={content} linkTarget="_blank" />
-  </div>
+  <PageTitle title={null}>
+    <div className="content-view-sm" style={{ marginTop: '60px' }}>
+      <Markdown source={content} linkTarget="_blank" />
+    </div>
+  </PageTitle>
 );

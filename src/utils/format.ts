@@ -150,3 +150,10 @@ export function formatAvatarUrl(fileName, full = false): string {
   }
   return `${constants.avatarUrlPrefix}s_${fileName}`;
 }
+
+export function formatPageTitle(title: string | null, loading: boolean = false): string {
+  if (loading) {
+    return `</> | ${constants.siteTitle}`;
+  }
+  return title ? `${title} | ${constants.siteTitle}` : constants.siteTitle;
+}

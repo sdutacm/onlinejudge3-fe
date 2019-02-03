@@ -95,9 +95,12 @@ class ContestBase extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>): void {
-    // console.log(nextProps.location.pathname);
-    const id = getPathParamId(nextProps.location.pathname, pages.contests.home);
-    const { dispatch } = nextProps;
+    const { id, dispatch } = nextProps;
+    // 用户离开比赛
+    if (!id) {
+      return;
+    }
+    // 进入到比赛内部页面，但未获得比赛 session，强制拉回到比赛守卫
     if (nextProps.location.pathname !== pages.contests.home &&
       !this.props.session && nextProps.session && !nextProps.session.loggedIn) {
       router.replace(urlf(pages.contests.home, { param: { id }}));

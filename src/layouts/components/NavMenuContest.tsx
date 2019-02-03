@@ -12,6 +12,7 @@ import { urlf } from '@/utils/format';
 import { matchPath } from 'react-router';
 import router from 'umi/router';
 import ThemeSvg from '@/assets/svg/theme.svg';
+import setStatePromise from '@/utils/setStatePromise';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -23,7 +24,11 @@ interface Props extends ReduxProps, RouteProps {
   theme: ITheme;
 }
 
-class NavMenuContest extends React.Component<Props, any> {
+interface State {
+  logoutLoading: boolean;
+}
+
+class NavMenuContest extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     mobileVersion: false,
     className: 'nav',
@@ -32,9 +37,11 @@ class NavMenuContest extends React.Component<Props, any> {
   constructor(props) {
     super(props);
     this.state = {
-      sessionLoaded: false,
+      logoutLoading: false,
     };
   }
+
+  setStatePromise = setStatePromise.bind(this);
 
   toggleTheme = () => {
     this.props.dispatch({
@@ -55,18 +62,32 @@ class NavMenuContest extends React.Component<Props, any> {
   };
 
   logout = () => {
+    this.setState({ logoutLoading: true });
     const { dispatch } = this.props;
     dispatch({
       type: 'contests/logout',
-      payload: { id: this.getContestId() },
+      payload: {
+        id: this.getContestId(),
+        clearSession: false,
+      },
     }).then(ret => {
       msg.auto(ret);
-      setTimeout(() => router.push(urlf(pages.contests.index, { query: { category: 0 } })), constants.menuAnimationDurationFade);
+      setTimeout(async () => {
+        await this.setStatePromise({ logoutLoading: false });
+        router.push(urlf(pages.contests.index, { query: { category: 0 } }));
+        dispatch({
+          type: 'contests/clearSession',
+          payload: {
+            id: this.getContestId(),
+          },
+        });
+      }, constants.menuAnimationDurationFade);
     });
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session: allContestSession, location, theme } = this.props;
+    const { mobileVersion, onLinkClick, className, loading: sessionEffectsLoading, session: allContestSession, location, theme } = this.props;
+    const loading = sessionEffectsLoading || this.state.logoutLoading;
     const matchContest = this.getMatchContest();
     const id = this.getContestId();
     let session: ISessionStatus = {

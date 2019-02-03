@@ -161,9 +161,9 @@ export default {
       }
       return ret;
     },
-    * logout({ payload: { id } }, { call, put }) {
+    * logout({ payload: { id, clearSession = true } }, { call, put }) {
       const ret: IApiResponse<ISession> = yield call(service.logout, id);
-      if (ret.success) {
+      if (ret.success && clearSession) {
         yield put({
           type: 'clearSession',
           payload: {

@@ -1,5 +1,5 @@
 /**
- * title: Contest Door
+ * title: Contest Guard
  */
 
 import React from 'react';

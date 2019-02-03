@@ -89,9 +89,9 @@ class Index extends React.Component<Props, State> {
       router.push(pages.OJBK);
     }
     // background timer tasks
-    const bgCheckSessionTimer: any = setInterval(this.bgCheckSession, 60 * 1000);
+    const bgCheckSessionTimer: any = setInterval(this.bgCheckSession, constants.bgCheckSessionInterval);
     this.setState({ bgCheckSessionTimer });
-    const bgGetUnreadMessagesTimer: any = setInterval(this.bgGetUnreadMessages, 10 * 60 * 1000);
+    const bgGetUnreadMessagesTimer: any = setInterval(this.bgGetUnreadMessages, constants.bgGetUnreadMessagesInterval);
     this.setState({ bgGetUnreadMessagesTimer });
   }
 

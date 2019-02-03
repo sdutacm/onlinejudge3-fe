@@ -3,7 +3,7 @@ import { floor } from 'math-precision';
 import moment from 'moment';
 import constants from '@/configs/constants';
 
-interface UrlArg {
+export interface IUrlFArg {
   param?: object;
   query?: object;
 }
@@ -11,10 +11,10 @@ interface UrlArg {
 /**
  * Format url
  * @param {string} url
- * @param {UrlArg} arg
+ * @param {IUrlFArg} arg
  * @returns {string}
  */
-export function urlf(url: string, arg?: UrlArg): string {
+export function urlf(url: string, arg?: IUrlFArg): string {
   let ret = new UrlAssembler(url);
   if (arg) {
     const { param, query } = arg;
@@ -119,13 +119,18 @@ export function secToTimeStr(second: number, showDay = false): string {
 }
 
 /**
- * Format number index to alphabet
+ * Format number index to alphabet index
+ * 0 => 'A'
+ * 2 => 'C'
+ * 25 => 'Z'
+ * 26 => 'AA'
+ * 28 => 'AC
  * @param {number | string} number
  * @returns {string}
  */
 export function numberToAlphabet(number: number | string): string {
   let n = ~~number;
-  let radix = 26;
+  const radix = 26;
   let cnt = 1;
   let p = radix;
   while (n >= p) {
@@ -136,9 +141,34 @@ export function numberToAlphabet(number: number | string): string {
   let res = [];
   for (; cnt > 0; cnt--) {
     res.push(String.fromCharCode(n % radix + 65));
-    n /= radix;
+    n = Math.trunc(n / radix);
   }
   return res.reverse().join('');
+}
+
+/**
+ * Format alphabet index to number index
+ * 'A' => 0
+ * 'C' => 2
+ * 'Z' => 25
+ * 'AA' => 26
+ * 'AC' => 28
+ * @param {string} alphabet
+ * @returns {number}
+ */
+export function alphabetToNumber(alphabet: string): number {
+  if (typeof alphabet !== 'string' || !alphabet.length) {
+    return -1;
+  }
+  const chars = `${alphabet}`.toUpperCase().split('').reverse();
+  const radix = 26;
+  let p = 1;
+  let res = -1;
+  chars.forEach(ch => {
+    res += (ch.charCodeAt(0) - 65) * p + p;
+    p *= radix;
+  });
+  return res;
 }
 
 export function formatAvatarUrl(fileName, full = false): string {

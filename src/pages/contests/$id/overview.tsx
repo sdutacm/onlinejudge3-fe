@@ -142,7 +142,7 @@ class ContestOverview extends React.Component<Props, State> {
                   key="Title"
                   render={(text, record: IProblem, index) => (
                     <div>
-                      <Link to={urlf(pages.contests.problemDetail, { param: { id, index } })}>{record.title}</Link>
+                      <Link to={urlf(pages.contests.problemDetail, { param: { id, index: numberToAlphabet(index) } })}>{record.title}</Link>
                     </div>
                   )}
                 />

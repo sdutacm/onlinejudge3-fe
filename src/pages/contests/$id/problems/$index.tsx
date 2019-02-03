@@ -5,6 +5,7 @@ import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import ProblemDetailPage from '@/components/ProblemDetailPage';
 import PageLoading from '@/components/PageLoading';
+import { alphabetToNumber } from '@/utils/format';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -60,7 +61,7 @@ class ContestProblem extends React.Component<Props, State> {
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
     }
-    const index = ~~match.params.index;
+    const index = alphabetToNumber(match.params.index);
     const problem = (rows && rows[index]) || {} as IProblem;
     return <ProblemDetailPage loading={problemsLoading}
                               data={problem}

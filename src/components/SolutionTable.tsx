@@ -130,7 +130,7 @@ class SolutionTable extends React.Component<Props, State> {
                 }
               }
               const problemDetailUrl = contestId && contestProblem
-                ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: contestProblem.index } })
+                ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: numberToAlphabet(contestProblem.index) } })
                 : urlf(pages.problems.detail, { param: { id: record.problem.problemId } });
               return (
                 <Popover content={contestProblem ? contestProblem.title : record.problem.title}>

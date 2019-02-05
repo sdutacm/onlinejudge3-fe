@@ -47,21 +47,21 @@ class ContestList extends React.Component<Props, State> {
     }
   }
 
-  handleChangePage = page => {
+  handlePageChange = page => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
     });
   };
 
-  handleChangeCategory = category => {
+  handleCategoryChange = category => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, category: category, page: 1 },
     });
   };
 
-  handleChangeJoined = joined => {
+  handleJoinedChange = joined => {
     setTimeout(() => router.replace({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, joined: joined || undefined, page: 1 },
@@ -75,7 +75,7 @@ class ContestList extends React.Component<Props, State> {
       <PageTitle title={query.category == 1 ? 'Experiments' : 'Contests'}>
         <Row gutter={16}>
           <Col xs={24}>
-            <Tabs defaultActiveKey={query.category} activeKey={query.category} animated={false} onChange={this.handleChangeCategory}>
+            <Tabs defaultActiveKey={query.category} activeKey={query.category} animated={false} onChange={this.handleCategoryChange}>
               <Tabs.TabPane tab="Contests" key="0" />
               <Tabs.TabPane tab="Experiments" key="1" />
             </Tabs>
@@ -142,7 +142,7 @@ class ContestList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.contests.list}
-                onChange={this.handleChangePage}
+                onChange={this.handlePageChange}
               />
             </Card>
           </Col>
@@ -168,7 +168,7 @@ class ContestList extends React.Component<Props, State> {
                   <div>
                     <span className="title">My Joined Contests</span>
                     <div className="float-right">
-                      <Switch defaultChecked={!!query.joined} onChange={this.handleChangeJoined} loading={loading} />
+                      <Switch defaultChecked={!!query.joined} onChange={this.handleJoinedChange} loading={loading} />
                     </div>
                   </div>
                 } />

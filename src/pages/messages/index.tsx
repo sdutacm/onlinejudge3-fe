@@ -32,14 +32,14 @@ class MessageListPage extends React.Component<Props, State> {
     }
   }
 
-  handleChangePage = page => {
+  handlePageChange = page => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
     });
   };
 
-  handleChangeType = type => {
+  handleTypeChange = type => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, type, page: 1 },
@@ -54,7 +54,7 @@ class MessageListPage extends React.Component<Props, State> {
     return (
       <Row gutter={16}>
         <Col xs={24}>
-          <Tabs defaultActiveKey={query.type} activeKey={query.type} animated={false} onChange={this.handleChangeType}>
+          <Tabs defaultActiveKey={query.type} activeKey={query.type} animated={false} onChange={this.handleTypeChange}>
             <Tabs.TabPane tab="Received" key="received" />
             <Tabs.TabPane tab="Sent" key="sent" />
           </Tabs>
@@ -71,7 +71,7 @@ class MessageListPage extends React.Component<Props, State> {
               total={data.count}
               current={data.page}
               pageSize={limits.messages.list}
-              onChange={this.handleChangePage}
+              onChange={this.handlePageChange}
             />
           </Card>
         </Col>

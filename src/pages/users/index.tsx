@@ -33,15 +33,30 @@ class Standings extends React.Component<Props, State> {
     }
   }
 
-  handleChangePage = page => {
+  handlePageChange = page => {
     router.push({
       pathname: pages.users.index,
       query: { ...this.props.location.query, page },
     });
   };
 
+  handleTableChange = (pagination, filters, sorter) => {
+    router.push({
+      pathname: pages.users.index,
+      query: {
+        ...this.props.location.query,
+        page: 1,
+        orderBy: sorter.columnKey,
+        orderDirection: sorter.columnKey ? (sorter.order === 'descend' ? 'DESC' : 'ASC') : undefined,
+      },
+    });
+  };
+
   render() {
-    const { loading, data: { page, count, limit, rows } } = this.props;
+    const { loading, data: { page, count, limit, rows }, location: { query } } = this.props;
+    const orderBy = query.orderBy || 'accepted';
+    const orderDirection = query.orderDirection || 'DESC';
+    const defaultSortOrder = orderDirection === 'DESC' ? 'descend' : 'ascend';
     return (
       <Row gutter={16}>
         <Col xs={24} md={18} xxl={20}>
@@ -51,6 +66,7 @@ class Standings extends React.Component<Props, State> {
                    loading={loading}
                    pagination={false}
                    className="responsive-table"
+                   onChange={this.handleTableChange}
             >
               <Table.Column
                 title="Rank"
@@ -68,14 +84,18 @@ class Standings extends React.Component<Props, State> {
               />
               <Table.Column
                 title="Accepted"
-                key="Accepted"
+                key="accepted"
+                sorter
+                sortOrder={orderBy === 'accepted' ? defaultSortOrder : undefined}
                 render={(text, record: IUser) => (
                   <span>{record.accepted}</span>
                 )}
               />
               <Table.Column
                 title="Rating"
-                key="Rating"
+                key="rating"
+                sorter
+                sortOrder={orderBy === 'rating' ? defaultSortOrder : undefined}
                 render={(text, record: IUser) => (
                   <span>{record.rating ? record.rating : ''}</span>
                 )}
@@ -86,7 +106,7 @@ class Standings extends React.Component<Props, State> {
               total={count}
               current={page}
               pageSize={limits.users.list}
-              onChange={this.handleChangePage}
+              onChange={this.handlePageChange}
             />
           </Card>
         </Col>

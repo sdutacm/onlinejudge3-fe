@@ -47,7 +47,7 @@ class SolutionList extends React.Component<Props, State> {
     }
   }
 
-  handleChangeOwned = owned => {
+  handleOwnedChange = owned => {
     this.setState({ filterOwned: owned });
     setTimeout(() => router.replace({
       pathname: this.props.location.pathname,
@@ -98,7 +98,7 @@ class SolutionList extends React.Component<Props, State> {
                 <div>
                   <span className="title">My Solutions</span>
                   <div className="float-right">
-                    <Switch checked={this.state.filterOwned} onChange={this.handleChangeOwned} loading={loading} />
+                    <Switch checked={this.state.filterOwned} onChange={this.handleOwnedChange} loading={loading} />
                   </div>
                 </div>
               } />

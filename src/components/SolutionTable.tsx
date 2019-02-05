@@ -64,7 +64,7 @@ class SolutionTable extends React.Component<Props, State> {
     });
   };
 
-  handleChangePage = page => {
+  handlePageChange = page => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -208,7 +208,7 @@ class SolutionTable extends React.Component<Props, State> {
           total={count}
           current={page}
           pageSize={limits.solutions.list}
-          onChange={this.handleChangePage}
+          onChange={this.handlePageChange}
         /> : <div />}
       </>
     );

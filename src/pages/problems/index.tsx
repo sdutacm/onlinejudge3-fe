@@ -63,7 +63,7 @@ class ProblemList extends React.Component<Props, State> {
     });
   }
 
-  handleChangePage = page => {
+  handlePageChange = page => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -74,7 +74,7 @@ class ProblemList extends React.Component<Props, State> {
     this.setState({ searchTitle: e.target.value });
   };
 
-  handleChangeTable = (e) => {
+  handleTableChange = (e) => {
     console.log(e);
   };
 
@@ -139,7 +139,7 @@ class ProblemList extends React.Component<Props, State> {
             <Table dataSource={rows}
                    rowKey="problemId"
                    loading={loading}
-                   onChange={this.handleChangeTable}
+                   onChange={this.handleTableChange}
                    pagination={false}
                    className="responsive-table"
                    rowClassName={(record: IProblem) => classNames(
@@ -218,7 +218,7 @@ class ProblemList extends React.Component<Props, State> {
               total={count}
               current={page}
               pageSize={limits.problems.list}
-              onChange={this.handleChangePage}
+              onChange={this.handlePageChange}
             />
           </Card>
         </Col>

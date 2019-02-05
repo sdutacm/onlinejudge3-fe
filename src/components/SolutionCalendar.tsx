@@ -6,13 +6,18 @@ import moment from 'moment';
 
 interface Props {
   data: ISolutionCalendar;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface State {
 }
 
 class SolutionCalendar extends React.Component<Props, State> {
-  static defaultProps: Partial<Props> = {};
+  static defaultProps: Partial<Props> = {
+    startDate: moment().subtract(1, 'year').add(1, 'day').format('YYYY-MM-DD'),
+    endDate: moment().format('YYYY-MM-DD'),
+  };
 
   constructor(props) {
     super(props);
@@ -24,12 +29,12 @@ class SolutionCalendar extends React.Component<Props, State> {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, startDate, endDate } = this.props;
     return (
       <div>
         <CalendarHeatmap
-          startDate={moment().subtract(1, 'year').add(1, 'day').format('YYYY-MM-DD')}
-          endDate={moment().format('YYYY-MM-DD')}
+          startDate={startDate}
+          endDate={endDate}
           values={data || []}
           classForValue={value => {
             let level = 0;

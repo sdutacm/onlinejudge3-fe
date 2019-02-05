@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Avatar, Tabs, List, Icon, Skeleton, Upload, Button } from 'antd';
+import { Row, Col, Card, Avatar, List, Icon, Skeleton, Upload, Button, Select } from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './$id.less';
 import { formatAvatarUrl, urlf } from '@/utils/format';
@@ -50,6 +50,7 @@ interface State {
   uploadBannerImageLoading: boolean;
   bannerImageLoading: boolean;
   bannerImageUrl: string;
+  solutionCalendarPeriod: number | null;
 }
 
 class UserDetail extends React.Component<Props, State> {
@@ -62,6 +63,7 @@ class UserDetail extends React.Component<Props, State> {
       uploadBannerImageLoading: false,
       bannerImageLoading: false,
       bannerImageUrl: '',
+      solutionCalendarPeriod: null,
     };
   }
 
@@ -202,9 +204,15 @@ class UserDetail extends React.Component<Props, State> {
     }
   };
 
+  handleSolutionCalendarPeriodChange = value => {
+    this.setState({ solutionCalendarPeriod: value });
+  };
+
   render() {
     const { loading, data: allData, session, match } = this.props;
-    const { uploadAvatarLoading, uploadBannerImageLoading, bannerImageLoading, bannerImageUrl } = this.state;
+    const {
+      uploadAvatarLoading, uploadBannerImageLoading, bannerImageLoading, bannerImageUrl, solutionCalendarPeriod,
+    } = this.state;
     const id = ~~match.params.id;
     const notFound = !loading && !allData[id];
     if (notFound) {
@@ -212,6 +220,11 @@ class UserDetail extends React.Component<Props, State> {
     }
     const data = allData[id] || {} as IUser;
     const self = isSelf(session, data.userId);
+    const solutionCalendarYears = new Set();
+    (data.solutionCalendar || []).forEach(d => {
+      const year = +d.date.split('-')[0];
+      solutionCalendarYears.add(year);
+    });
     return (
       <PageTitle title={data.nickname} loading={loading}>
         <div>
@@ -263,8 +276,23 @@ class UserDetail extends React.Component<Props, State> {
                   </Card>
 
                   <Card bordered={false}>
-                    <h3>AC Calendar</h3>
-                    <SolutionCalendar data={data.solutionCalendar} />
+                    <h3>
+                      AC Calendar
+                      <Select defaultValue={null}
+                              className="float-right"
+                              size="small"
+                              onChange={this.handleSolutionCalendarPeriodChange}
+                      >
+                        {Array.from(solutionCalendarYears).map(y =>
+                          <Select.Option key={y} value={y}>{y}</Select.Option>
+                        )}
+                        <Select.Option value={null}>Recent</Select.Option>
+                      </Select>
+                    </h3>
+                    <SolutionCalendar data={data.solutionCalendar}
+                                      startDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-01-01` : undefined}
+                                      endDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-12-31` : undefined}
+                    />
                   </Card>
 
                   <Card bordered={false}>

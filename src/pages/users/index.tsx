@@ -47,7 +47,7 @@ class Standings extends React.Component<Props, State> {
         ...this.props.location.query,
         page: 1,
         orderBy: sorter.columnKey,
-        orderDirection: sorter.columnKey ? (sorter.order === 'descend' ? 'DESC' : 'ASC') : undefined,
+        orderDirection: sorter.columnKey && sorter.order ? 'DESC' : undefined,
       },
     });
   };

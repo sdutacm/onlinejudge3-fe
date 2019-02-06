@@ -26,7 +26,7 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
     );
   }
   return (
-    <div className={classNames(styles.problemContent, 'problem-content')}>
+    <div className={classNames(styles.problemContent, 'problem-content', 'content-area')}>
       <h2 className="text-center">{Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}

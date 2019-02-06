@@ -114,7 +114,10 @@ class ContestOverview extends React.Component<Props, State> {
                            }}
                            timeSyncInterval={30000}
                 /> :
-                <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }} style={{ marginTop: '15px' }} />
+                <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }}
+                     className="content-area"
+                     style={{ marginTop: '15px' }}
+                />
               }
             </Card>
             {timeStatus !== 'Pending' &&

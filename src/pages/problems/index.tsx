@@ -9,14 +9,13 @@ import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
-import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
-import { formatPercentage } from '@/utils/format';
 import gStyles from '@/general.less';
 import classNames from 'classnames';
+import SolutionResultStats from '@/components/SolutionResultStats';
 
 interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -191,18 +190,11 @@ class ProblemList extends React.Component<Props, State> {
                 key="Statistics"
                 className="no-wrap"
                 render={(text, record: IProblem) => (
-                  <Popover title="AC / Total" content={`${record.accepted} / ${record.submitted} (${formatPercentage(record.accepted, record.submitted)})`}>
-                    <Link to={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
-                          onClick={e => e.stopPropagation()}
-                    >
-                      <Progress className={styles.miniRatioProgress} type="circle"
-                                percent={record.accepted / record.submitted * 100 || 0} width={12}
-                                strokeWidth={12}
-                                showInfo={false}
-                      />
-                      <span className="ml-sm-md">{record.accepted}</span>
-                    </Link>
-                  </Popover>
+                  <SolutionResultStats
+                    accepted={record.accepted}
+                    submitted={record.submitted}
+                    toSolutionsLink={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
+                  />
                 )}
               />
               <Table.Column

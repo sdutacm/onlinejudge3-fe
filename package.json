@@ -38,6 +38,7 @@
     "react-markdown": "^3.6.0",
     "react-syntax-highlighter": "^9.0.0",
     "react-tooltip": "^3.9.2",
+    "short-number": "^1.0.6",
     "umi": "~2.2.8",
     "url-assembler": "^1.2.10",
     "xss": "^1.0.3"

@@ -9,12 +9,12 @@ import { formatPercentage, numberToAlphabet, secToTimeStr, toLongTs, urlf } from
 import moment from 'moment';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import TimeStatusBadge from '@/components/TimeStatusBadge';
-import styles from '@/pages/problems/index.less';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import Countdown from '@/components/Countdown';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
+import SolutionResultStats from '@/components/SolutionResultStats';
 
 interface Props extends ReduxProps {
   id: number;
@@ -158,20 +158,11 @@ class ContestOverview extends React.Component<Props, State> {
                       return null;
                     }
                     return (
-                      <Popover title="AC / Total"
-                               content={`${contestProblemResultStats[record.problemId].accepted} / ${contestProblemResultStats[record.problemId].submitted} (${formatPercentage(contestProblemResultStats[record.problemId].accepted, contestProblemResultStats[record.problemId].submitted)})`}>
-                        <Link to={urlf(pages.contests.solutions, { param: { id }, query: { problemId: record.problemId } })}
-                              onClick={e => e.stopPropagation()}
-                        >
-                          <Progress className={styles.miniRatioProgress} type="circle"
-                                    percent={contestProblemResultStats[record.problemId].accepted / contestProblemResultStats[record.problemId].submitted * 100 || 0}
-                                    width={12}
-                                    strokeWidth={12}
-                                    showInfo={false}
-                          />
-                          <span className="ml-sm-md">{contestProblemResultStats[record.problemId].accepted}</span>
-                        </Link>
-                      </Popover>
+                      <SolutionResultStats
+                        accepted={contestProblemResultStats[record.problemId].accepted}
+                        submitted={contestProblemResultStats[record.problemId].submitted}
+                        toSolutionsLink={urlf(pages.contests.solutions, { param: { id }, query: { problemId: record.problemId } })}
+                      />
                     );
                   }}
                 />

@@ -5,7 +5,8 @@ import styles from './ProblemContent.less';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { numberToAlphabet } from '@/utils/format';
 import classNames from 'classnames';
-import AutoLaTeX from '@/components/AutoLaTeX';
+import 'katex/dist/katex.min.css';
+import AutoLaTeX from 'react-autolatex';
 
 interface Props {
   loading: boolean;
@@ -30,13 +31,13 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
       <h2 className="text-center">{Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}
-      <AutoLaTeX content={xss(data.description)} />
+      <AutoLaTeX>{xss(data.description)}</AutoLaTeX>
 
       {data.input && <h3>Input</h3>}
-      <AutoLaTeX content={xss(data.input)} />
+      <AutoLaTeX>{xss(data.input)}</AutoLaTeX>
 
       {data.output && <h3>Output</h3>}
-      <AutoLaTeX content={xss(data.output)} />
+      <AutoLaTeX>{xss(data.output)}</AutoLaTeX>
 
       {(data.sampleInput || data.sampleOutput) && <h3>Sample</h3>}
       {data.sampleInput && <h4 className={styles.problemSubSectionHeader}>Input&nbsp;<CopyToClipboardButton text={data.sampleInput} addNewLine /></h4>}
@@ -45,7 +46,7 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
       {data.sampleOutput && <pre>{data.sampleOutput}</pre>}
 
       {data.hint && <h3>Hint</h3>}
-      <AutoLaTeX content={xss(data.hint)} />
+      <AutoLaTeX>{xss(data.hint)}</AutoLaTeX>
     </div>
   );
 };

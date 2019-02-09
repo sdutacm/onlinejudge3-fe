@@ -31,6 +31,7 @@
     "lodash.throttle": "^4.1.1",
     "math-precision": "^1.0.5",
     "md5": "^2.2.1",
+    "react-autolatex": "^1.1.2",
     "react-calendar-heatmap": "^1.8.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",

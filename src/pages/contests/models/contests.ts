@@ -183,14 +183,14 @@ export default {
       const ret: IApiResponse<IContest> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
+          type: 'clearExpiredDetail',
+        });
+        yield put({
           type: 'setDetail',
           payload: {
             id,
             data: ret.data,
           },
-        });
-        yield put({
-          type: 'clearExpiredDetail',
         });
       }
       return ret;

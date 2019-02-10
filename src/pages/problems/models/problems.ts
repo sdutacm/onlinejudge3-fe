@@ -83,14 +83,14 @@ export default {
         }
         catch (err) {}
         yield put({
+          type: 'clearExpiredDetail',
+        });
+        yield put({
           type: 'setDetail',
           payload: {
             id,
             data: detailRet.data,
           },
-        });
-        yield put({
-          type: 'clearExpiredDetail',
         });
       }
       return detailRet;

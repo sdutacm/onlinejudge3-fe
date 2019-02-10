@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Form, Input, Icon, Row, Col, Card, Tag, Progress, Popover } from 'antd';
+import { Table, Pagination, Form, Row, Col, Card, Tag, Popover } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';

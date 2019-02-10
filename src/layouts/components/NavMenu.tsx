@@ -108,18 +108,30 @@ class NavMenu extends React.Component<Props, State> {
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
     }
+    if (activeLinkKey.startsWith(pages.sets.index)) {
+      activeLinkKey = pages.sets.index;
+    }
+    const from = location.query.from;
     return (
       <Menu
         mode={mobileVersion ? 'vertical' : 'horizontal'}
         selectedKeys={[`${activeLinkKey}`]}
         className={className}
       >
+        {!!(from && activeLinkKey !== pages.sets.index && !activeLinkKey.startsWith(pages.contests.index)) &&
+        <Menu.Item key={from}>
+          <Link to={from} onClick={onLinkClick}><Icon type="left" /> Set</Link>
+        </Menu.Item>}
         <Menu.Item key={pages.problems.index}>
           <Link to={pages.problems.index} onClick={onLinkClick}>Problems</Link>
         </Menu.Item>
 
         <Menu.Item key={pages.contests.index}>
           <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>Contests</Link>
+        </Menu.Item>
+
+        <Menu.Item key={pages.sets.index}>
+          <Link to={pages.sets.index} onClick={onLinkClick}>Sets</Link>
         </Menu.Item>
 
         <Menu.Item key={pages.users.index}>

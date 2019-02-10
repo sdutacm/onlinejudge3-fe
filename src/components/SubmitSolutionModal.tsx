@@ -8,12 +8,14 @@ import constants from '@/configs/constants';
 import router from 'umi/router';
 import pages from '@/configs/pages';
 import { numberToAlphabet, urlf } from '@/utils/format';
+import { RouteLocation } from '@/@types/props';
 
-interface Props extends ReduxProps, RouteProps, FormProps {
+interface Props extends ReduxProps, FormProps {
   problemId: number;
   problemIndex?: number;
   contestId?: number;
   title: string;
+  location?: RouteLocation;
 }
 
 interface State {
@@ -32,7 +34,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
     this.props.form.setFieldsValue({
       problemId: this.props.problemId,
     });
-    const { dispatch, contestId } = this.props;
+    const { dispatch, contestId, location } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -45,7 +47,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
             this.handleHideModel();
             const url = contestId
               ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: ret.data.solutionId } })
-              : urlf(pages.solutions.detail, { param: { id: ret.data.solutionId } });
+              : urlf(pages.solutions.detail, { param: { id: ret.data.solutionId }, query: { from: location.query.from } });
             setTimeout(() => router.push(url),
               constants.modalAnimationDurationFade
             );

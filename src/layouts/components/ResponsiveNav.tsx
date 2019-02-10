@@ -3,14 +3,14 @@ import throttle from 'lodash.throttle';
 import { Popover, Icon } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
 import styles from './ResponsiveNav.less';
-import { Location } from '@/@types/props';
+import { RouteLocation } from '@/@types/props';
 
 // Powered by https://github.com/id-kemo/responsive-menu-ant-design
 
 interface Props {
   mobileBreakPoint: number;
   applyViewportChange: number;
-  location: Location;
+  location: RouteLocation;
   placement: TooltipPlacement;
   navMenu: React.ReactNode;
   session: object;

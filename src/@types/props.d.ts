@@ -16,12 +16,12 @@ export interface ReduxProps {
   loading?: boolean;
 }
 
-export interface Location extends H.Location {
+export interface RouteLocation extends H.Location {
   query: any;
 }
 
 export interface RouteProps extends RouteComponentProps<any> {
-  location: Location;
+  location: RouteLocation;
 }
 
 export interface FormProps extends FormComponentProps {

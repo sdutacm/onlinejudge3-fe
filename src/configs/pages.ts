@@ -8,9 +8,6 @@ export default {
     index: '/solutions',
     detail: '/solutions/:id',
   },
-  contest: {
-    index: '/contest/acm',
-  },
   users: {
     index: '/users',
     detail: '/users/:id',

@@ -6,7 +6,6 @@ import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
 import gStyles from '../../general.less';
-import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import { matchPath } from 'react-router';

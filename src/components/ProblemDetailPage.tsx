@@ -13,8 +13,10 @@ import { isPermissionDog } from '@/utils/permission';
 import AddFavorite from '@/components/AddFavorite';
 import DeleteFavorite from '@/components/DeleteFavorite';
 import PageTitle from '@/components/PageTitle';
+import { withRouter } from 'react-router';
+import { RouteProps } from '@/@types/props';
 
-interface Props {
+interface Props extends RouteProps {
   loading: boolean;
   data: IProblem;
   session: ISessionStatus;
@@ -23,13 +25,13 @@ interface Props {
   favorites: IFavorite[];
 }
 
-const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex, favorites }) => {
+const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location }) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
   const solutionsUrl = contestId
     ? urlf(pages.contests.solutions, { param: { id: contestId }, query: { problemId: data.problemId } })
-    : urlf(pages.solutions.index, { query: { problemId: data.problemId } });
+    : urlf(pages.solutions.index, { query: { problemId: data.problemId, from: location.query.from } });
   const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
   return (
     <PageTitle title={Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title} loading={loading}>
@@ -46,8 +48,12 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
                 ? <Button type="primary" block disabled>Submit</Button>
                 : (!session.loggedIn
                   ? <Button type="primary" block disabled>Login to Submit</Button>
-                  : <SubmissionModal problemId={data.problemId} title={data.title}
-                                     contestId={contestId} problemIndex={problemIndex}>
+                  : <SubmissionModal problemId={data.problemId}
+                                     title={data.title}
+                                     contestId={contestId}
+                                     problemIndex={problemIndex}
+                                     location={location}
+                  >
                     <Button type="primary" block>Submit</Button>
                   </SubmissionModal>)
               }
@@ -131,4 +137,4 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
   );
 };
 
-export default ProblemDetailPage;
+export default withRouter(ProblemDetailPage);

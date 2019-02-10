@@ -79,6 +79,7 @@ class SolutionTable extends React.Component<Props, State> {
       isDetail,
       contestId,
       problemList,
+      location,
     } = this.props;
     return (
       <>
@@ -96,7 +97,7 @@ class SolutionTable extends React.Component<Props, State> {
                onRow={(record) => {
                  const solutionDetailUrl = contestId
                    ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: record.solutionId } })
-                   : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
+                   : urlf(pages.solutions.detail, { param: { id: record.solutionId }, query: { from: location.query.from } });
                  return {
                    onClick: () => !this.props.isDetail && router.push(solutionDetailUrl)
                  };
@@ -131,7 +132,7 @@ class SolutionTable extends React.Component<Props, State> {
               }
               const problemDetailUrl = contestId && contestProblem
                 ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: numberToAlphabet(contestProblem.index) } })
-                : urlf(pages.problems.detail, { param: { id: record.problem.problemId } });
+                : urlf(pages.problems.detail, { param: { id: record.problem.problemId }, query: { from: location.query.from } });
               return (
                 <Popover content={contestProblem ? contestProblem.title : record.problem.title}>
                   <Link to={problemDetailUrl} onClick={e => e.stopPropagation()}>

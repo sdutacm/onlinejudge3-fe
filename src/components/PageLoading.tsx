@@ -4,12 +4,13 @@ import constants from '@/configs/constants';
 import PageTitle from '@/components/PageTitle';
 
 interface Props {
+  delay?: boolean;
 }
 
-const PageLoading: React.StatelessComponent<Props> = ({}) => (
+const PageLoading: React.StatelessComponent<Props> = ({ delay = false }) => (
   <PageTitle title={null} loading={true}>
     <div className="center-view">
-      <Spin delay={constants.indicatorDisplayDelay} />
+      <Spin delay={delay ? constants.indicatorDisplayDelay : undefined} />
     </div>
   </PageTitle>
 );

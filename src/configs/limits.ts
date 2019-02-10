@@ -18,6 +18,9 @@ const limits = {
   favorites: {
     list: 10,
   },
+  sets: {
+    list: 20,
+  },
 };
 
 export default limits;

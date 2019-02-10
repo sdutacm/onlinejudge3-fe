@@ -62,6 +62,10 @@ const api = {
     base: '/favorites',
     detail: '/favorites/:id',
   },
+  sets: {
+    base: '/sets',
+    detail: '/sets/:id',
+  }
 };
 
 export default api;

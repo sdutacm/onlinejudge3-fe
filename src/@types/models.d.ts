@@ -239,6 +239,26 @@ declare interface IFavorite {
   updatedAt: ITimestamp;
 }
 
+declare interface ISet {
+  setId: number;
+  title: string;
+  description: string;
+  type: 'standard';
+  props: any;
+  startAt: ITimestamp;
+  endAt: ITimestamp;
+  hidden?: boolean;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
+}
+
+declare interface ISetPropsTypeStandard {
+  sections: {
+    title: string;
+    problems: IProblem[];
+  }[];
+}
+
 declare type ITheme = 'light' | 'dark';
 
 declare interface ISettings {

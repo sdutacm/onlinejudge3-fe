@@ -30,5 +30,9 @@ export default {
   favorites: {
     index: '/favorites',
   },
+  sets: {
+    index: '/sets',
+    detail: '/sets/:id',
+  },
   OJBK: '/OJBK',
 };

@@ -16,5 +16,5 @@ export function getList(query) {
 
 export function getDetail(id) {
   const url = urlf(api.sets.detail, { param: { id } });
-  return get(url, 1000);
+  return get(url);
 }

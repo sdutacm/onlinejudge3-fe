@@ -81,7 +81,9 @@ class MessageList extends React.Component<Props, State> {
                                 </SendMessageModal>}
                               </div>
                             </div>}>
-              <div dangerouslySetInnerHTML={{ __html: xss(m.content.replace(/\n/g, '<br />')) }} />
+              <div dangerouslySetInnerHTML={{ __html: xss(m.content.replace(/\n/g, '<br />')) }}
+                   style={{ wordWrap: 'break-word' }}
+              />
             </Collapse.Panel>
           )}
         </Collapse>

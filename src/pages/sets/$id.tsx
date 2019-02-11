@@ -90,7 +90,9 @@ class SetDetail extends React.Component<Props, State> {
                           key="Title"
                           render={(text, record: IProblem, problemIndex) => (
                               <span>
-                                <span>{`${numberToAlphabet(sectionIndex)}${problemIndex + 1}`} - </span>
+                                <span style={{ minWidth: '32px', display: 'inline-block' }}>
+                                  {`${sectionIndex + 1}${numberToAlphabet(problemIndex)}`}
+                                </span>
                                 {record.problemId && record.title ?
                                   <Link to={urlf(pages.problems.detail, {
                                     param: { id: record.problemId },

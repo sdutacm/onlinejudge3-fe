@@ -124,10 +124,10 @@ class UserDetail extends React.Component<Props, State> {
     });
   };
 
-  componentDidMount(): void {
-    window.scrollTo(0, 0);
-    this.checkBannerImage(this.props);
-  }
+  // componentDidMount(): void {
+  //   window.scrollTo(0, 0);
+  //   this.checkBannerImage(this.props);
+  // }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
     const oldId = ~~this.props.match.params.id;

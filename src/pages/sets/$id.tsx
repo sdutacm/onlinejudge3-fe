@@ -27,9 +27,9 @@ class SetDetail extends React.Component<Props, State> {
     this.state = {};
   }
 
-  componentDidMount(): void {
-    window.scrollTo(0, 0);
-  }
+  // componentDidMount(): void {
+  //   window.scrollTo(0, 0);
+  // }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
     // 当用户态显现

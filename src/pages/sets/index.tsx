@@ -23,11 +23,11 @@ class SetList extends React.Component<Props> {
     super(props);
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      window.scrollTo(0, 0);
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.location !== prevProps.location) {
+  //     window.scrollTo(0, 0);
+  //   }
+  // }
 
   handlePageChange = page => {
     router.push({

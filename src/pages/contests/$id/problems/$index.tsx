@@ -43,9 +43,9 @@ class ContestProblem extends React.Component<Props, State> {
   //   }
   // };
 
-  componentDidMount(): void {
-    window.scrollTo(0, 0);
-  }
+  // componentDidMount(): void {
+  //   window.scrollTo(0, 0);
+  // }
 
   render() {
     const {

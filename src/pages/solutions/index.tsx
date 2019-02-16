@@ -41,11 +41,11 @@ class SolutionList extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      window.scrollTo(0, 0);
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.location !== prevProps.location) {
+  //     window.scrollTo(0, 0);
+  //   }
+  // }
 
   handleOwnedChange = owned => {
     this.setState({ filterOwned: owned });

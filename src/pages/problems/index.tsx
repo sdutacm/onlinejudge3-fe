@@ -43,11 +43,11 @@ class ProblemList extends React.Component<Props, State> {
     this.setStateFromQuery(this.props.location.query);
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      window.scrollTo(0, 0);
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.location !== prevProps.location) {
+  //     window.scrollTo(0, 0);
+  //   }
+  // }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.location.query.title !== this.props.location.query.title) {

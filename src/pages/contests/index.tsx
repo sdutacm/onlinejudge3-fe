@@ -31,11 +31,11 @@ class ContestList extends React.Component<Props, State> {
     this.state = {};
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      window.scrollTo(0, 0);
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.location !== prevProps.location) {
+  //     window.scrollTo(0, 0);
+  //   }
+  // }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
     if (this.props.session.loggedIn && !nextProps.session.loggedIn &&

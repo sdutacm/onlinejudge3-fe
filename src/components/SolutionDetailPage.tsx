@@ -18,7 +18,7 @@ interface Props extends ReduxProps {
   session: ISessionStatus;
   contestId?: number;
   problemList?: any[];
-  theme: ITheme;
+  theme: ISettingsTheme;
 }
 
 interface State {

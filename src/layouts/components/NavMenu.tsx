@@ -22,7 +22,7 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: ISessionStatus;
-  theme: ITheme;
+  theme: ISettingsTheme;
   unreadMessagesLoading: boolean;
   unreadMessages: IList<IMessage>;
 }

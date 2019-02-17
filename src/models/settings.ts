@@ -2,7 +2,8 @@ import localStorage from '@/utils/localStorage';
 
 const initialState = {
   theme: 'light',
-};
+  color: 'default',
+} as ISettings;
 
 export default {
   state: {

@@ -188,7 +188,7 @@ body.dark {
     border-right: 1px solid rgb(82, 82, 82);
 
     .result {
-      color: @text-color;
+      color: @heading-color;
     }
   }
 
@@ -339,6 +339,36 @@ body.dark {
 
     .fb .attempted {
       color: #f0f0f0;
+    }
+  }
+
+  &.colorblind-dp {
+    .bg-green {
+      background-color: @color-blind-dp-green;
+    }
+
+    .problem-result-mark-row {
+      &.accepted {
+        border-left-color: @color-blind-dp-green;
+      }
+    }
+
+    .ranklist {
+      .accepted {
+        background: #028aa7;
+      }
+
+      .failed {
+        background: #bd2f2f;
+      }
+
+      .frozen {
+        background: darken(#ffc107, 5%);
+      }
+
+      .fb {
+        background: #0078e2;
+      }
     }
   }
 

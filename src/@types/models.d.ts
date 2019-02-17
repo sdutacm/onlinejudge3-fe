@@ -259,8 +259,11 @@ declare interface ISetPropsTypeStandard {
   }[];
 }
 
-declare type ITheme = 'light' | 'dark';
+declare type ISettingsTheme = 'light' | 'dark';
+
+declare type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';
 
 declare interface ISettings {
-  theme: ITheme;
+  theme: ISettingsTheme;
+  color: ISettingsColor;
 }

@@ -21,7 +21,7 @@ import { isStateExpired } from '@/utils/misc';
 import PageTitle from '@/components/PageTitle';
 
 interface Props extends ReduxProps, RouteProps {
-  theme: ITheme;
+  settings: ISettings;
   session: ISessionStatus;
 }
 
@@ -75,11 +75,18 @@ class Index extends React.Component<Props, State> {
   };
 
   async componentDidMount() {
-    if (this.props.theme === 'dark') {
+    const settings = this.props.settings;
+    if (settings.theme === 'dark') {
       document.body.classList.add('dark');
     }
     else {
       document.body.classList.remove('dark');
+    }
+    if (settings.color === 'colorblind-dp') {
+      document.body.classList.add('colorblind-dp');
+    }
+    else {
+      document.body.classList.remove('colorblind-dp');
     }
     const OJBKRes = await OJBK.checkOJBK();
     if (OJBKRes) {
@@ -161,7 +168,7 @@ class Index extends React.Component<Props, State> {
 function mapStateToProps(state) {
   return {
     session: state.session,
-    theme: state.settings.theme,
+    settings: state.settings,
   };
 }
 

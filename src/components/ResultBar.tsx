@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'dva';
 import { Popover } from 'antd';
 import { Results, resultsMap } from '@/configs/results';
 
@@ -6,6 +7,7 @@ interface Props {
   percent: number;
   timeLimit: number;
   result: number;
+  colorSettings: ISettingsColor;
 }
 
 interface State {
@@ -71,7 +73,7 @@ class ResultBar extends React.Component<Props, State> {
 
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.result !== nextProps.result && isFinished(nextProps.result)) {
-      console.log('judged!');
+      // console.log('judged!');
       clearInterval(this.state.timer);
       if (resultsMap[nextProps.result].shortName === 'AC') {
         this.setState({ percent: 100, lockAnim: true });
@@ -84,16 +86,24 @@ class ResultBar extends React.Component<Props, State> {
   }
 
   render() {
-    const { result } = this.props;
+    const { result, colorSettings } = this.props;
     if (!isFinished(result) || this.state.lockAnim) {
       return <div className="progress" style={{ width: this.state.percent + '%' }}>&nbsp;</div>;
     }
     return (
       <Popover title={resultsMap[result].fullName} content={resultsMap[result].description}>
-        <div className={`result bg-${resultsMap[result].normalColor}`}><span>{resultsMap[result].shortName}</span></div>
+        <div className={`result bg-${colorSettings === 'colorful' ? resultsMap[result].colorfulColor : resultsMap[result].normalColor}`}>
+          <span>{resultsMap[result].shortName}</span>
+        </div>
       </Popover>
     );
   }
 }
 
-export default ResultBar;
+function mapStateToProps(state) {
+  return {
+    colorSettings: state.settings.color,
+  };
+}
+
+export default connect(mapStateToProps)(ResultBar);

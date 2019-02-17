@@ -20,7 +20,7 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: ITypeObject<ISessionStatus>;
-  theme: ITheme;
+  theme: ISettingsTheme;
 }
 
 interface State {

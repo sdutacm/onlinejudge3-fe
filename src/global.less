@@ -751,18 +751,48 @@ ul {
   .accepted {
     background: #99ff99;
   }
+
   .failed {
     background: #ff9999;
   }
+
   .frozen {
     background: #c8d6fa;
   }
+
   .fb {
-    background-color: #009900;
+    background: #009900;
     color: #fff;
   }
+
   .fb .attempted {
     color: #f0f0f0;
+  }
+}
+
+.colorblind-dp {
+  .bg-green {
+    background-color: @color-blind-dp-green;
+  }
+
+  .problem-result-mark-row {
+    &.accepted {
+      border-left-color: @color-blind-dp-green;
+    }
+  }
+
+  .ranklist {
+    .accepted {
+      background: #33d5f7;
+    }
+
+    .frozen {
+      background: #ffc107;
+    }
+
+    .fb {
+      background: #006daf;
+    }
   }
 }
 

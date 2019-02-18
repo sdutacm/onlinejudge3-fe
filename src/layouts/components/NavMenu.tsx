@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag, Collapse, Divider } from 'antd';
+import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
@@ -9,11 +9,10 @@ import JoinModal from './JoinModal';
 import gStyles from '../../general.less';
 import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import NoteSvg from '@/assets/svg/note.svg';
-import ThemeSvg from '@/assets/svg/theme.svg';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 import router from 'umi/router';
 import MessageList from '@/components/MessageList';
+import SettingsModal from '@/components/SettingsModal';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -22,7 +21,6 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: ISessionStatus;
-  theme: ISettingsTheme;
   unreadMessagesLoading: boolean;
   unreadMessages: IList<IMessage>;
 }
@@ -71,12 +69,12 @@ class NavMenu extends React.Component<Props, State> {
     </div>
   );
 
-  toggleTheme = () => {
-    this.props.dispatch({
-      type: 'settings/setTheme',
-      payload: { theme: this.props.theme === 'dark' ? 'light' : 'dark' },
-    })
-  };
+  // toggleTheme = () => {
+  //   this.props.dispatch({
+  //     type: 'settings/setTheme',
+  //     payload: { theme: this.props.theme === 'dark' ? 'light' : 'dark' },
+  //   })
+  // };
 
   logout = () => {
     const { dispatch } = this.props;
@@ -103,7 +101,7 @@ class NavMenu extends React.Component<Props, State> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session, location, theme, unreadMessages } = this.props;
+    const { mobileVersion, onLinkClick, className, loading, session, location, unreadMessages } = this.props;
     let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
@@ -222,11 +220,14 @@ class NavMenu extends React.Component<Props, State> {
             {/*<a><Icon theme="outlined" component={NoteSvg} /></a>*/}
           {/*</Popover>*/}
         {/*</Menu.Item>}*/}
-        <Menu.Item key="theme" style={{ float: 'right' }} onClick={this.toggleTheme}>
-          <Popover content={theme === 'light' ? 'Go to Deep Dark Fantasy' : 'Back to Real Light World'}
-                   mouseEnterDelay={5}>
-            <a><Icon component={ThemeSvg} /></a>
-          </Popover>
+        <Menu.Item key="settings" style={{ float: 'right' }}>
+          <SettingsModal>
+            <Icon type="setting" />
+          </SettingsModal>
+          {/*<Popover content={theme === 'light' ? 'Go to Deep Dark Fantasy' : 'Back to Real Light World'}*/}
+                   {/*mouseEnterDelay={5}>*/}
+            {/*<a><Icon component={ThemeSvg} /></a>*/}
+          {/*</Popover>*/}
         </Menu.Item>
       </Menu>
     );
@@ -238,7 +239,6 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
     session,
-    theme: state.settings.theme,
     unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,
   };

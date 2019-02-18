@@ -28,6 +28,7 @@ body.dark {
   @import 'styles/dark_antd/input/style/index';
   @import 'styles/dark_antd/select/style/index';
   @import 'styles/dark_antd/checkbox/style/index';
+  @import 'styles/dark_antd/radio/style/index';
   @import 'styles/dark_antd/grid/style/index';
   @import 'styles/dark_antd/form/style/index';
   @import 'styles/dark_antd/card/style/index';
@@ -153,6 +154,18 @@ body.dark {
 
   .ant-input::placeholder {
     color: fade(@text-color, 25%);
+  }
+
+  .ant-radio-group-large .ant-radio-button-wrapper {
+    height: @input-height-lg;
+    line-height: @input-height-lg - 2px;
+    font-size: @font-size-lg;
+  }
+
+  .ant-radio-group-small .ant-radio-button-wrapper {
+    height: @input-height-sm;
+    line-height: @input-height-sm - 2px;
+    padding: 0 @control-padding-horizontal-sm - 1px;
   }
 
   .input-button {

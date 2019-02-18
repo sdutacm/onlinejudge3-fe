@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin, Popover } from 'antd';
+import { Menu, Icon, Spin } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
@@ -10,8 +10,8 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import { matchPath } from 'react-router';
 import router from 'umi/router';
-import ThemeSvg from '@/assets/svg/theme.svg';
 import setStatePromise from '@/utils/setStatePromise';
+import SettingsModal from '@/components/SettingsModal';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -20,7 +20,6 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: ITypeObject<ISessionStatus>;
-  theme: ISettingsTheme;
 }
 
 interface State {
@@ -42,12 +41,12 @@ class NavMenuContest extends React.Component<Props, State> {
 
   setStatePromise = setStatePromise.bind(this);
 
-  toggleTheme = () => {
-    this.props.dispatch({
-      type: 'settings/setTheme',
-      payload: { theme: this.props.theme === 'dark' ? 'light' : 'dark' },
-    })
-  };
+  // toggleTheme = () => {
+  //   this.props.dispatch({
+  //     type: 'settings/setTheme',
+  //     payload: { theme: this.props.theme === 'dark' ? 'light' : 'dark' },
+  //   })
+  // };
 
   getMatchContest = () => {
     return matchPath(this.props.location.pathname, {
@@ -85,7 +84,9 @@ class NavMenuContest extends React.Component<Props, State> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading: sessionEffectsLoading, session: allContestSession, location, theme } = this.props;
+    const {
+      mobileVersion, onLinkClick, className, loading: sessionEffectsLoading, session: allContestSession, location,
+    } = this.props;
     const loading = sessionEffectsLoading || this.state.logoutLoading;
     const matchContest = this.getMatchContest();
     const id = this.getContestId();
@@ -167,11 +168,10 @@ class NavMenuContest extends React.Component<Props, State> {
               </Menu.SubMenu>
         }
 
-        <Menu.Item key="theme" style={{ float: 'right' }} onClick={this.toggleTheme}>
-          <Popover content={theme === 'light' ? 'Go to Deep Dark Fantasy' : 'Back to Real Light World'}
-                   mouseEnterDelay={5}>
-            <a><Icon component={ThemeSvg} /></a>
-          </Popover>
+        <Menu.Item key="settings" style={{ float: 'right' }}>
+          <SettingsModal>
+            <Icon type="setting" />
+          </SettingsModal>
         </Menu.Item>
       </Menu>
     );
@@ -183,7 +183,6 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['contests/getSession'] || !!state.loading.effects['contests/logout'],
     session,
-    theme: state.settings.theme,
   };
 }
 

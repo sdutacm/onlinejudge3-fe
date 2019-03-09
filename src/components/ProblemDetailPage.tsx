@@ -35,16 +35,19 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
     : urlf(pages.solutions.index, { query: { problemId: data.problemId, from: location.query.from } });
   const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
   return (
-    <PageAnimation>
-      <PageTitle title={Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title} loading={loading}>
-        <Row gutter={16} className="content-view">
-          <Col xs={24} md={18} xxl={18}>
+    <PageTitle title={Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}
+               loading={loading}>
+      <Row gutter={16} className="content-view">
+        <Col xs={24} md={18} xxl={18}>
+          <PageAnimation>
             <Card bordered={false}>
               <ProblemContent loading={loading} data={data} problemIndex={problemIndex} />
             </Card>
-          </Col>
-          <Col xs={24} md={6} xxl={6}>
-            <Affix offsetTop={84}>
+          </PageAnimation>
+        </Col>
+        <Col xs={24} md={6} xxl={6}>
+          <Affix offsetTop={84}>
+            <PageAnimation>
               <Card bordered={false} className={styles.buttonSeries}>
                 {loading
                   ? <Button type="primary" block disabled>Submit</Button>
@@ -63,7 +66,7 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
                   <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
                 </Link>
                 {/*<Link to={urlf(pages.problems.index)}>*/}
-                  {/*<Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>*/}
+                {/*<Button block disabled={loading} className={styles.buttonMt}>Discussions</Button>*/}
                 {/*</Link>*/}
                 <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
                   {session.loggedIn ?
@@ -132,11 +135,11 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
                   <Button block>Modify Prop.</Button>
                 </EditProblemPropModal>
               </Card>}
-            </Affix>
-          </Col>
-        </Row>
-      </PageTitle>
-    </PageAnimation>
+            </PageAnimation>
+          </Affix>
+        </Col>
+      </Row>
+    </PageTitle>
   );
 };
 

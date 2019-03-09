@@ -13,6 +13,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps, RouteProps {
   data: IList<ISet>;
@@ -39,46 +40,48 @@ class SetList extends React.Component<Props> {
   render() {
     const { loading, data: { page, count, rows } } = this.props;
     return (
-      <Row gutter={16}>
-        <Col xs={24} md={18} xxl={20}>
-          <Card bordered={false} className="list-card">
-            <Table dataSource={rows}
-                   rowKey="setId"
-                   loading={loading}
-                   pagination={false}
-                   className="responsive-table"
-            >
-              <Table.Column
-                title="Title"
-                key="Title"
-                render={(text, record: ISet) => (
-                  <div>
-                    <Link to={urlf(pages.sets.detail, { param: { id: record.setId } })}>{record.title}</Link>
-                  </div>
-                )}
+      <PageAnimation>
+        <Row gutter={16}>
+          <Col xs={24} md={18} xxl={20}>
+            <Card bordered={false} className="list-card">
+              <Table dataSource={rows}
+                     rowKey="setId"
+                     loading={loading}
+                     pagination={false}
+                     className="responsive-table"
+              >
+                <Table.Column
+                  title="Title"
+                  key="Title"
+                  render={(text, record: ISet) => (
+                    <div>
+                      <Link to={urlf(pages.sets.detail, { param: { id: record.setId } })}>{record.title}</Link>
+                    </div>
+                  )}
+                />
+              </Table>
+              <Pagination
+                className="ant-table-pagination"
+                total={count}
+                current={page}
+                pageSize={limits.sets.list}
+                onChange={this.handlePageChange}
               />
-            </Table>
-            <Pagination
-              className="ant-table-pagination"
-              total={count}
-              current={page}
-              pageSize={limits.sets.list}
-              onChange={this.handlePageChange}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} md={6} xxl={4}>
-          <Card bordered={false}>
-            <ToDetailCard label="Go to Set" placeholder="Set ID"
-                          toDetailLink={id => urlf(pages.sets.detail, { param: { id } })} />
-          </Card>
-          <Card bordered={false}>
-            <FilterCard fields={[
-              { displayName: 'Title', fieldName: 'title' },
-            ]} />
-          </Card>
-        </Col>
-      </Row>
+            </Card>
+          </Col>
+          <Col xs={24} md={6} xxl={4}>
+            <Card bordered={false}>
+              <ToDetailCard label="Go to Set" placeholder="Set ID"
+                            toDetailLink={id => urlf(pages.sets.detail, { param: { id } })} />
+            </Card>
+            <Card bordered={false}>
+              <FilterCard fields={[
+                { displayName: 'Title', fieldName: 'title' },
+              ]} />
+            </Card>
+          </Col>
+        </Row>
+      </PageAnimation>
     );
   }
 }

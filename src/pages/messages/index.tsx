@@ -9,6 +9,7 @@ import router from 'umi/router';
 import limits from '@/configs/limits';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import MessageList from '@/components/MessageList';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps, RouteProps {
   receivedLoading: boolean;
@@ -52,30 +53,32 @@ class MessageListPage extends React.Component<Props, State> {
     const loading = isReceived ? receivedLoading : sentLoading;
     const data = isReceived ? received : sent;
     return (
-      <Row gutter={16}>
-        <Col xs={24}>
-          <Tabs defaultActiveKey={query.type} activeKey={query.type} animated={false} onChange={this.handleTypeChange}>
-            <Tabs.TabPane tab="Received" key="received" />
-            <Tabs.TabPane tab="Sent" key="sent" />
-          </Tabs>
-        </Col>
-        <Col xs={24}>
-          <Card bordered={false} className="list-card">
-            <MessageList count={data.count}
-                         rows={data.rows}
-                         type={isReceived ? 'received' : 'sent'}
-                         dispatch={dispatch}
-                         loading={loading} />
-            <Pagination
-              className="ant-table-pagination"
-              total={data.count}
-              current={data.page}
-              pageSize={limits.messages.list}
-              onChange={this.handlePageChange}
-            />
-          </Card>
-        </Col>
-      </Row>
+      <PageAnimation>
+        <Row gutter={16}>
+          <Col xs={24}>
+            <Tabs defaultActiveKey={query.type} activeKey={query.type} animated={false} onChange={this.handleTypeChange}>
+              <Tabs.TabPane tab="Received" key="received" />
+              <Tabs.TabPane tab="Sent" key="sent" />
+            </Tabs>
+          </Col>
+          <Col xs={24}>
+            <Card bordered={false} className="list-card">
+              <MessageList count={data.count}
+                           rows={data.rows}
+                           type={isReceived ? 'received' : 'sent'}
+                           dispatch={dispatch}
+                           loading={loading} />
+              <Pagination
+                className="ant-table-pagination"
+                total={data.count}
+                current={data.page}
+                pageSize={limits.messages.list}
+                onChange={this.handlePageChange}
+              />
+            </Card>
+          </Col>
+        </Row>
+      </PageAnimation>
     );
   }
 }

@@ -16,6 +16,7 @@ import ToDetailCard from '@/components/ToDetailCard';
 import gStyles from '@/general.less';
 import classNames from 'classnames';
 import SolutionResultStats from '@/components/SolutionResultStats';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -132,114 +133,116 @@ class ProblemList extends React.Component<Props, State> {
     const tagIds = this.getTagIdsFromQuery();
     // let searchInput;
     return (
-      <Row gutter={16}>
-        <Col xs={24} md={18} xxl={20}>
-          <Card bordered={false} className="list-card">
-            <Table dataSource={rows}
-                   rowKey="problemId"
-                   loading={loading}
-                   onChange={this.handleTableChange}
-                   pagination={false}
-                   className="responsive-table"
-                   rowClassName={(record: IProblem) => classNames(
-                     'problem-result-mark-row',
-                     { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                     { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
-                   )}
-            >
-              <Table.Column
-                title="Title"
-                key="Title"
-                // filterDropdown={(
-                //   <div className={styles.customFilterDropdown}>
-                //     <Input.Search
-                //       ref={ele => {
-                //         searchInput = ele;
-                //       }}
-                //       placeholder=""
-                //       enterButton="Search"
-                //       value={this.state.searchTitle}
-                //       onChange={this.onInputChange}
-                //       onPressEnter={this.onSearch}
-                //       onSearch={this.onSearch}
-                //     />
-                //   </div>
-                // )}
-                // filterIcon={(<Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />)}
-                // filterDropdownVisible={this.state.filterDropdownVisible}
-                // onFilterDropdownVisibleChange={(visible) => {
-                //   this.setState({
-                //     filterDropdownVisible: visible,
-                //   }, () => searchInput && searchInput.focus());
-                // }}
-                render={(text, record: IProblem) => (
-                  <div>
-                    <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
-                    {record.tags.length ? <div className="float-right">{record.tags.map(tag =>
-                      <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
-                        <a onClick={() => this.toggleTag(tag.tagId, true)}><Tag>{tag.name.en}</Tag></a>
-                      </Popover>
-                      )}</div> :
-                      <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
-                    }
-                  </div>
-                )}
-              />
-              <Table.Column
-                title="Stats"
-                key="Statistics"
-                className="no-wrap"
-                render={(text, record: IProblem) => (
-                  <SolutionResultStats
-                    accepted={record.accepted}
-                    submitted={record.submitted}
-                    toSolutionsLink={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
-                  />
-                )}
-              />
-              <Table.Column
-                title="Source"
-                key="Source"
-                render={(text, record: IProblem) => (
-                  <span>{record.source}</span>
-                )}
-              />
-            </Table>
-            <Pagination
-              className="ant-table-pagination"
-              total={count}
-              current={page}
-              pageSize={limits.problems.list}
-              onChange={this.handlePageChange}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} md={6} xxl={4}>
-          <Card bordered={false}>
-            <ToDetailCard label="Go to Problem" placeholder="Problem ID"
-                          toDetailLink={id => urlf(pages.problems.detail, { param: { id } })} />
-          </Card>
-          <Card bordered={false}>
-            <FilterCard fields={[
-              { displayName: 'Title', fieldName: 'title' },
-              { displayName: 'Source', fieldName: 'source' },
-            ]} />
-          </Card>
-          <Card bordered={false}>
-            <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-              <Form.Item label="Tags">
-                <div className="tags">
-                  {tagList.rows.map(tag =>
-                    <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
-                      <a onClick={() => this.toggleTag(tag.tagId)}><Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.name.en}</Tag></a>
-                    </Popover>
+      <PageAnimation>
+        <Row gutter={16}>
+          <Col xs={24} md={18} xxl={20}>
+            <Card bordered={false} className="list-card">
+              <Table dataSource={rows}
+                     rowKey="problemId"
+                     loading={loading}
+                     onChange={this.handleTableChange}
+                     pagination={false}
+                     className="responsive-table"
+                     rowClassName={(record: IProblem) => classNames(
+                       'problem-result-mark-row',
+                       { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
+                       { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                     )}
+              >
+                <Table.Column
+                  title="Title"
+                  key="Title"
+                  // filterDropdown={(
+                  //   <div className={styles.customFilterDropdown}>
+                  //     <Input.Search
+                  //       ref={ele => {
+                  //         searchInput = ele;
+                  //       }}
+                  //       placeholder=""
+                  //       enterButton="Search"
+                  //       value={this.state.searchTitle}
+                  //       onChange={this.onInputChange}
+                  //       onPressEnter={this.onSearch}
+                  //       onSearch={this.onSearch}
+                  //     />
+                  //   </div>
+                  // )}
+                  // filterIcon={(<Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />)}
+                  // filterDropdownVisible={this.state.filterDropdownVisible}
+                  // onFilterDropdownVisibleChange={(visible) => {
+                  //   this.setState({
+                  //     filterDropdownVisible: visible,
+                  //   }, () => searchInput && searchInput.focus());
+                  // }}
+                  render={(text, record: IProblem) => (
+                    <div>
+                      <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
+                      {record.tags.length ? <div className="float-right">{record.tags.map(tag =>
+                        <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+                          <a onClick={() => this.toggleTag(tag.tagId, true)}><Tag>{tag.name.en}</Tag></a>
+                        </Popover>
+                        )}</div> :
+                        <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
+                      }
+                    </div>
                   )}
-                </div>
-              </Form.Item>
-            </Form>
-          </Card>
-        </Col>
-      </Row>
+                />
+                <Table.Column
+                  title="Stats"
+                  key="Statistics"
+                  className="no-wrap"
+                  render={(text, record: IProblem) => (
+                    <SolutionResultStats
+                      accepted={record.accepted}
+                      submitted={record.submitted}
+                      toSolutionsLink={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
+                    />
+                  )}
+                />
+                <Table.Column
+                  title="Source"
+                  key="Source"
+                  render={(text, record: IProblem) => (
+                    <span>{record.source}</span>
+                  )}
+                />
+              </Table>
+              <Pagination
+                className="ant-table-pagination"
+                total={count}
+                current={page}
+                pageSize={limits.problems.list}
+                onChange={this.handlePageChange}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} md={6} xxl={4}>
+            <Card bordered={false}>
+              <ToDetailCard label="Go to Problem" placeholder="Problem ID"
+                            toDetailLink={id => urlf(pages.problems.detail, { param: { id } })} />
+            </Card>
+            <Card bordered={false}>
+              <FilterCard fields={[
+                { displayName: 'Title', fieldName: 'title' },
+                { displayName: 'Source', fieldName: 'source' },
+              ]} />
+            </Card>
+            <Card bordered={false}>
+              <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+                <Form.Item label="Tags">
+                  <div className="tags">
+                    {tagList.rows.map(tag =>
+                      <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+                        <a onClick={() => this.toggleTag(tag.tagId)}><Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.name.en}</Tag></a>
+                      </Popover>
+                    )}
+                  </div>
+                </Form.Item>
+              </Form>
+            </Card>
+          </Col>
+        </Row>
+      </PageAnimation>
     );
   }
 }

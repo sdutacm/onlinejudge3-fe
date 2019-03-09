@@ -54,7 +54,7 @@ export default {
           return;
         }
       }
-      const ret: IApiResponse<IFullList<IFavorite>> = yield call(service.getList, userId, formattedQuery);
+      const ret: IApiResponse<IFullList<IFavorite> > = yield call(service.getList, userId, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -66,10 +66,10 @@ export default {
       }
       return ret;
     },
-    * addFavorite({ payload: data }, { call, put }) {
+    * addFavorite({ payload: data }, { call }) {
       return yield call(service.addFavorite, data);
     },
-    * deleteFavorite({ payload: { id } }, { call, put }) {
+    * deleteFavorite({ payload: { id } }, { call }) {
       return yield call(service.deleteFavorite, id);
     },
   },

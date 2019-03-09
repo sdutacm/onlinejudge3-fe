@@ -13,6 +13,7 @@ import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import UserBar from '@/components/UserBar';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps, RouteProps {
   data: IList<IUser>;
@@ -58,74 +59,76 @@ class Standings extends React.Component<Props, State> {
     const orderDirection = query.orderDirection || 'DESC';
     const defaultSortOrder = orderDirection === 'DESC' ? 'descend' : 'ascend';
     return (
-      <Row gutter={16}>
-        <Col xs={24} md={18} xxl={20}>
-          <Card bordered={false} className="list-card">
-            <Table dataSource={rows}
-                   rowKey="userId"
-                   loading={loading}
-                   pagination={false}
-                   className="responsive-table"
-                   onChange={this.handleTableChange}
-            >
-              <Table.Column
-                title="Rank"
-                key="Rank"
-                render={(text, record: IUser, index) => (
-                  <span>{(page - 1) * limit + index + 1}</span>
-                )}
+      <PageAnimation>
+        <Row gutter={16}>
+          <Col xs={24} md={18} xxl={20}>
+            <Card bordered={false} className="list-card">
+              <Table dataSource={rows}
+                     rowKey="userId"
+                     loading={loading}
+                     pagination={false}
+                     className="responsive-table"
+                     onChange={this.handleTableChange}
+              >
+                <Table.Column
+                  title="Rank"
+                  key="Rank"
+                  render={(text, record: IUser, index) => (
+                    <span>{(page - 1) * limit + index + 1}</span>
+                  )}
+                />
+                <Table.Column
+                  title="User"
+                  key="User"
+                  render={(text, record: IUser) => (
+                    <UserBar user={record} />
+                  )}
+                />
+                <Table.Column
+                  title="Accepted"
+                  key="accepted"
+                  sorter
+                  sortOrder={orderBy === 'accepted' ? defaultSortOrder : undefined}
+                  render={(text, record: IUser) => (
+                    <span>{record.accepted}</span>
+                  )}
+                />
+                <Table.Column
+                  title="Rating"
+                  key="rating"
+                  sorter
+                  sortOrder={orderBy === 'rating' ? defaultSortOrder : undefined}
+                  render={(text, record: IUser) => (
+                    <span>{record.rating ? record.rating : ''}</span>
+                  )}
+                />
+              </Table>
+              <Pagination
+                className="ant-table-pagination"
+                total={count}
+                current={page}
+                pageSize={limits.users.list}
+                onChange={this.handlePageChange}
               />
-              <Table.Column
-                title="User"
-                key="User"
-                render={(text, record: IUser) => (
-                  <UserBar user={record} />
-                )}
-              />
-              <Table.Column
-                title="Accepted"
-                key="accepted"
-                sorter
-                sortOrder={orderBy === 'accepted' ? defaultSortOrder : undefined}
-                render={(text, record: IUser) => (
-                  <span>{record.accepted}</span>
-                )}
-              />
-              <Table.Column
-                title="Rating"
-                key="rating"
-                sorter
-                sortOrder={orderBy === 'rating' ? defaultSortOrder : undefined}
-                render={(text, record: IUser) => (
-                  <span>{record.rating ? record.rating : ''}</span>
-                )}
-              />
-            </Table>
-            <Pagination
-              className="ant-table-pagination"
-              total={count}
-              current={page}
-              pageSize={limits.users.list}
-              onChange={this.handlePageChange}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} md={6} xxl={4}>
-          <Card bordered={false}>
-            <ToDetailCard label="Go to User" placeholder="User ID"
-                          toDetailLink={id => urlf(pages.users.detail, { param: { id } })} />
-          </Card>
-          <Card bordered={false}>
-            <FilterCard fields={[
-              { displayName: 'Nickname', fieldName: 'nickname' },
-              { displayName: 'School', fieldName: 'school' },
-              { displayName: 'College', fieldName: 'college' },
-              { displayName: 'Major', fieldName: 'major' },
-              { displayName: 'Class', fieldName: 'class' },
-            ]} />
-          </Card>
-        </Col>
-      </Row>
+            </Card>
+          </Col>
+          <Col xs={24} md={6} xxl={4}>
+            <Card bordered={false}>
+              <ToDetailCard label="Go to User" placeholder="User ID"
+                            toDetailLink={id => urlf(pages.users.detail, { param: { id } })} />
+            </Card>
+            <Card bordered={false}>
+              <FilterCard fields={[
+                { displayName: 'Nickname', fieldName: 'nickname' },
+                { displayName: 'School', fieldName: 'school' },
+                { displayName: 'College', fieldName: 'college' },
+                { displayName: 'Major', fieldName: 'major' },
+                { displayName: 'Class', fieldName: 'class' },
+              ]} />
+            </Card>
+          </Col>
+        </Row>
+      </PageAnimation>
     );
   }
 }

@@ -1,15 +1,14 @@
 import localStorage from '@/utils/localStorage';
+import { merge } from 'lodash';
 
 const initialState = {
   theme: 'light',
   color: 'default',
+  improveAnimation: false,
 } as ISettings;
 
 export default {
-  state: {
-    ...initialState,
-    ...localStorage.get('settings'),
-  },
+  state: merge(initialState, localStorage.get('settings')),
   reducers: {
     setTheme(state, { payload: { theme } }) {
       if (theme === 'dark') {
@@ -30,6 +29,10 @@ export default {
       }
       localStorage.set('settings', { ...state, color });
       state.color = color;
+    },
+    setImproveAnimation(state, { payload: { improveAnimation } }) {
+      localStorage.set('settings', { ...state, improveAnimation });
+      state.improveAnimation = improveAnimation;
     },
   },
   effects: {

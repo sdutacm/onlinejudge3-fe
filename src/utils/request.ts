@@ -16,7 +16,6 @@ function initAxios(): AxiosInstance {
   return axiosInstance;
 }
 
-
 function checkStatus(response: AxiosResponse) {
   if (response.status >= 200 && response.status < 300) {
     return response;

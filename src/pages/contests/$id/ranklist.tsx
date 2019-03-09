@@ -13,6 +13,7 @@ import UserBar from '@/components/UserBar';
 import { ContestTypes } from '@/configs/contestTypes';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -88,31 +89,33 @@ class ContestRanklist extends React.Component<Props, State> {
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     const ranklist = rows || [] as IRanklist;
     return (
-      <PageTitle title="Ranklist">
-        <Row gutter={16}>
-          <Col xs={24}>
-            <Card bordered={false} className="ranklist-header">
-              <h2 className="text-center">{detail.title}</h2>
-              <p className="text-center" style={{ marginBottom: '5px' }}>
-                <span>{moment(startTime).format('YYYY-MM-DD HH:mm')} ~ {moment(endTime).format('YYYY-MM-DD HH:mm')}</span>
-              </p>
-            </Card>
-            <Card bordered={false} className="list-card">
-              <Ranklist id={id}
-                        data={ranklist}
-                        loading={ranklistLoading}
-                        problemNum={problems.count || 0}
-                        session={session}
-                        userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register}/>}
-                        needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
-                        handleUpdate={this.refreshRanklist}
-                        updateInterval={constants.ranklistUpdateInterval}
-                        existedHeaderClassName="ranklist-header"
-              />
-            </Card>
-          </Col>
-        </Row>
-      </PageTitle>
+      <PageAnimation>
+        <PageTitle title="Ranklist">
+          <Row gutter={16}>
+            <Col xs={24}>
+              <Card bordered={false} className="ranklist-header">
+                <h2 className="text-center">{detail.title}</h2>
+                <p className="text-center" style={{ marginBottom: '5px' }}>
+                  <span>{moment(startTime).format('YYYY-MM-DD HH:mm')} ~ {moment(endTime).format('YYYY-MM-DD HH:mm')}</span>
+                </p>
+              </Card>
+              <Card bordered={false} className="list-card">
+                <Ranklist id={id}
+                          data={ranklist}
+                          loading={ranklistLoading}
+                          problemNum={problems.count || 0}
+                          session={session}
+                          userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register}/>}
+                          needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
+                          handleUpdate={this.refreshRanklist}
+                          updateInterval={constants.ranklistUpdateInterval}
+                          existedHeaderClassName="ranklist-header"
+                />
+              </Card>
+            </Col>
+          </Row>
+        </PageTitle>
+      </PageAnimation>
     );
   }
 }

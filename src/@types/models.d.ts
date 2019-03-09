@@ -266,4 +266,5 @@ declare type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';
 declare interface ISettings {
   theme: ISettingsTheme;
   color: ISettingsColor;
+  improveAnimation: boolean;
 }

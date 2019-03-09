@@ -15,6 +15,7 @@ import Countdown from '@/components/Countdown';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import SolutionResultStats from '@/components/SolutionResultStats';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps {
   id: number;
@@ -92,85 +93,87 @@ class ContestOverview extends React.Component<Props, State> {
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
 
     return (
-      <PageTitle title="Overview">
-        <Row gutter={16} className="content-view">
-          <Col xs={24}>
-            <Card bordered={false}>
-              <h2 className="text-center">{detail.title}</h2>
-              <p className="text-center" style={{ marginBottom: '5px' }}>
-                <span>{moment(startTime).format('YYYY-MM-DD HH:mm')} ~ {moment(endTime).format('YYYY-MM-DD HH:mm')}</span>
-              </p>
-              <p className="text-center">
-                <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
-              </p>
-              {timeStatus === 'Pending' ?
-                <Countdown secs={Math.floor((startTime - currentTime) / 1000)}
-                           renderTime={(secs: number) =>
-                             <h1 className="text-center" style={{ margin: '30px 0' }}>{secToTimeStr(secs, true)}</h1>
-                           }
-                           handleRequestTimeSync={() => {
-                             const currentTime = Date.now() - ((window as any)._t_diff || 0);
-                             return Math.floor((startTime - currentTime) / 1000);
-                           }}
-                           timeSyncInterval={30000}
-                /> :
-                <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }}
-                     className="content-area"
-                     style={{ marginTop: '15px' }}
-                />
-              }
-            </Card>
-            {timeStatus !== 'Pending' &&
-            <Card bordered={false} className="list-card">
-              <Table dataSource={problems.rows}
-                     rowKey="problemId"
-                     loading={problemsLoading}
-                     pagination={false}
-                     className="responsive-table"
-                     rowClassName={(record: IProblem) => classNames(
-                       'problem-result-mark-row',
-                       { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                       { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
-                     )}
-              >
-                <Table.Column
-                  title=""
-                  key="Index"
-                  render={(text, record: IProblem, index) => (
-                    <div>{numberToAlphabet(index)}</div>
-                  )}
-                />
-                <Table.Column
-                  title="Title"
-                  key="Title"
-                  render={(text, record: IProblem, index) => (
-                    <div>
-                      <Link to={urlf(pages.contests.problemDetail, { param: { id, index: numberToAlphabet(index) } })}>{record.title}</Link>
-                    </div>
-                  )}
-                />
-                <Table.Column
-                  title="Stats"
-                  key="Statistics"
-                  className="no-wrap"
-                  render={(text, record: IProblem) => {
-                    if (!contestProblemResultStats[record.problemId]) {
-                      return null;
-                    }
-                    return (
-                      <SolutionResultStats
-                        accepted={contestProblemResultStats[record.problemId].accepted}
-                        submitted={contestProblemResultStats[record.problemId].submitted}
-                        toSolutionsLink={urlf(pages.contests.solutions, { param: { id }, query: { problemId: record.problemId } })}
-                      />
-                    );
-                  }}
-                />
-              </Table>
-            </Card>}
-          </Col>
-        </Row>
-      </PageTitle>
+      <PageAnimation>
+        <PageTitle title="Overview">
+          <Row gutter={16} className="content-view">
+            <Col xs={24}>
+              <Card bordered={false}>
+                <h2 className="text-center">{detail.title}</h2>
+                <p className="text-center" style={{ marginBottom: '5px' }}>
+                  <span>{moment(startTime).format('YYYY-MM-DD HH:mm')} ~ {moment(endTime).format('YYYY-MM-DD HH:mm')}</span>
+                </p>
+                <p className="text-center">
+                  <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
+                </p>
+                {timeStatus === 'Pending' ?
+                  <Countdown secs={Math.floor((startTime - currentTime) / 1000)}
+                             renderTime={(secs: number) =>
+                               <h1 className="text-center" style={{ margin: '30px 0' }}>{secToTimeStr(secs, true)}</h1>
+                             }
+                             handleRequestTimeSync={() => {
+                               const currentTime = Date.now() - ((window as any)._t_diff || 0);
+                               return Math.floor((startTime - currentTime) / 1000);
+                             }}
+                             timeSyncInterval={30000}
+                  /> :
+                  <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }}
+                       className="content-area"
+                       style={{ marginTop: '15px' }}
+                  />
+                }
+              </Card>
+              {timeStatus !== 'Pending' &&
+              <Card bordered={false} className="list-card">
+                <Table dataSource={problems.rows}
+                       rowKey="problemId"
+                       loading={problemsLoading}
+                       pagination={false}
+                       className="responsive-table"
+                       rowClassName={(record: IProblem) => classNames(
+                         'problem-result-mark-row',
+                         { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
+                         { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                       )}
+                >
+                  <Table.Column
+                    title=""
+                    key="Index"
+                    render={(text, record: IProblem, index) => (
+                      <div>{numberToAlphabet(index)}</div>
+                    )}
+                  />
+                  <Table.Column
+                    title="Title"
+                    key="Title"
+                    render={(text, record: IProblem, index) => (
+                      <div>
+                        <Link to={urlf(pages.contests.problemDetail, { param: { id, index: numberToAlphabet(index) } })}>{record.title}</Link>
+                      </div>
+                    )}
+                  />
+                  <Table.Column
+                    title="Stats"
+                    key="Statistics"
+                    className="no-wrap"
+                    render={(text, record: IProblem) => {
+                      if (!contestProblemResultStats[record.problemId]) {
+                        return null;
+                      }
+                      return (
+                        <SolutionResultStats
+                          accepted={contestProblemResultStats[record.problemId].accepted}
+                          submitted={contestProblemResultStats[record.problemId].submitted}
+                          toSolutionsLink={urlf(pages.contests.solutions, { param: { id }, query: { problemId: record.problemId } })}
+                        />
+                      );
+                    }}
+                  />
+                </Table>
+              </Card>}
+            </Col>
+          </Row>
+        </PageTitle>
+      </PageAnimation>
     );
   }
 }

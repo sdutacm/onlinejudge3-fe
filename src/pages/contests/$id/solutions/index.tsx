@@ -16,6 +16,7 @@ import { isEqual } from 'lodash';
 import router from 'umi/router';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
+import PageAnimation from '@/components/PageAnimation';
 
 interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -95,60 +96,62 @@ class ContestSolutions extends React.Component<Props, State> {
       index,
     }));
     return (
-      <PageTitle title="Solutions">
-        <Row gutter={16}>
-          <Col xs={24} lg={18} xxl={20}>
-            <Card bordered={false} className="list-card">
-              <SolutionTable loading={loading} data={data} dispatch={dispatch} showPagination
-                             contestId={id} problemList={problemList} />
-            </Card>
-          </Col>
-          <Col xs={24} lg={6} xxl={4}>
-            <Card bordered={false}>
-              <ToDetailCard label="Go to Solution" placeholder="Solution ID"
-                            toDetailLink={sid => urlf(pages.contests.solutionDetail, { param: { id, sid } })} />
-            </Card>
-            <Card bordered={false}>
-              <FilterCard fields={[
-                { displayName: 'Owner User ID', fieldName: 'userId' },
-                {
-                  displayName: 'Problem', fieldName: 'problemId', options: problemList.map(problem => {
-                    return {
-                      fieldName: problem.problemId,
-                      displayName: `${numberToAlphabet(problem.index)} - ${problem.title}`,
-                    };
-                  })
-                },
-                {
-                  displayName: 'Language', fieldName: 'language', options: langs.map(lang => {
-                    return { fieldName: lang.fieldName, displayName: lang.displayShortName };
-                  })
-                },
-                {
-                  displayName: 'Result', fieldName: 'result', options: results.filter(res => {
-                    return res.id !== Results.WT && res.id !== Results.JG
-                  }).map(res => {
-                    return { fieldName: res.id, displayName: res.fullName };
-                  })
-                },
-              ]} />
-            </Card>
-            {session.loggedIn &&
-            <Card bordered={false}>
-              <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-                <Form.Item className="single-form-item" label={
-                  <div>
-                    <span className="title">My Solutions</span>
-                    <div className="float-right">
-                      <Switch checked={this.state.filterOwned} onChange={this.handleOwnedChange} loading={loading} />
+      <PageAnimation>
+        <PageTitle title="Solutions">
+          <Row gutter={16}>
+            <Col xs={24} lg={18} xxl={20}>
+              <Card bordered={false} className="list-card">
+                <SolutionTable loading={loading} data={data} dispatch={dispatch} showPagination
+                               contestId={id} problemList={problemList} />
+              </Card>
+            </Col>
+            <Col xs={24} lg={6} xxl={4}>
+              <Card bordered={false}>
+                <ToDetailCard label="Go to Solution" placeholder="Solution ID"
+                              toDetailLink={sid => urlf(pages.contests.solutionDetail, { param: { id, sid } })} />
+              </Card>
+              <Card bordered={false}>
+                <FilterCard fields={[
+                  { displayName: 'Owner User ID', fieldName: 'userId' },
+                  {
+                    displayName: 'Problem', fieldName: 'problemId', options: problemList.map(problem => {
+                      return {
+                        fieldName: problem.problemId,
+                        displayName: `${numberToAlphabet(problem.index)} - ${problem.title}`,
+                      };
+                    })
+                  },
+                  {
+                    displayName: 'Language', fieldName: 'language', options: langs.map(lang => {
+                      return { fieldName: lang.fieldName, displayName: lang.displayShortName };
+                    })
+                  },
+                  {
+                    displayName: 'Result', fieldName: 'result', options: results.filter(res => {
+                      return res.id !== Results.WT && res.id !== Results.JG
+                    }).map(res => {
+                      return { fieldName: res.id, displayName: res.fullName };
+                    })
+                  },
+                ]} />
+              </Card>
+              {session.loggedIn &&
+              <Card bordered={false}>
+                <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+                  <Form.Item className="single-form-item" label={
+                    <div>
+                      <span className="title">My Solutions</span>
+                      <div className="float-right">
+                        <Switch checked={this.state.filterOwned} onChange={this.handleOwnedChange} loading={loading} />
+                      </div>
                     </div>
-                  </div>
-                } />
-              </Form>
-            </Card>}
-          </Col>
-        </Row>
-      </PageTitle>
+                  } />
+                </Form>
+              </Card>}
+            </Col>
+          </Row>
+        </PageTitle>
+      </PageAnimation>
     );
   }
 }

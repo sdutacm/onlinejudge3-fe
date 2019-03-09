@@ -19,6 +19,7 @@ import OJBK from '@/utils/OJBK';
 import PageLoading from '@/components/PageLoading';
 import { isStateExpired } from '@/utils/misc';
 import PageTitle from '@/components/PageTitle';
+import 'animate.css';
 
 interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -147,7 +148,8 @@ class Index extends React.Component<Props, State> {
           </Row>
         </Header>
         <Content>
-          {this.state.sessionLoaded || location.pathname === '/OJBK' ? children :
+          {this.state.sessionLoaded || location.pathname === '/OJBK' ?
+            children :
             <PageLoading />}
         </Content>
         <Footer className={styles.footer}>

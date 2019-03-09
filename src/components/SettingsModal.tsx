@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Radio, Modal } from 'antd';
+import { Radio, Modal, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 
 interface Props extends ReduxProps, RouteProps {
@@ -44,6 +44,13 @@ class SettingsModal extends React.Component<Props, State> {
     });
   };
 
+  handleImproveAnimationChange = (checked) => {
+    this.props.dispatch({
+      type: 'settings/setImproveAnimation',
+      payload: { improveAnimation: checked },
+    });
+  };
+
   render() {
     const { children, settings } = this.props;
 
@@ -78,6 +85,10 @@ class SettingsModal extends React.Component<Props, State> {
               <Radio.Button value="colorful">Colorful</Radio.Button>
               <Radio.Button value="colorblind-dp">Colorblind</Radio.Button>
             </Radio.Group>
+          </div>
+          <div className="settings-item">
+            <span>Improve Animation</span>
+            <Switch className="float-right" defaultChecked={settings.improveAnimation} onChange={this.handleImproveAnimationChange} />
           </div>
         </Modal>
       </>

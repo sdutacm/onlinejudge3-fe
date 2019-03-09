@@ -5,10 +5,10 @@ export function getPathParams(pathname: string, scheme: string, exact: boolean =
     path: scheme,
     exact,
   });
-  return match ? match.params : {};
+  return match ? match.params : null;
 }
 
 export function getPathParamId(pathname: string, scheme: string, exact: boolean = false): number {
   const params = getPathParams(pathname, scheme, exact);
-  return ~~params.id;
+  return params && params.id ? ~~params.id : 0;
 }

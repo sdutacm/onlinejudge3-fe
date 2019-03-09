@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin } from 'antd';
+import { Menu, Icon, Spin, Popover } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
@@ -12,6 +12,8 @@ import { matchPath } from 'react-router';
 import router from 'umi/router';
 import setStatePromise from '@/utils/setStatePromise';
 import SettingsModal from '@/components/SettingsModal';
+import IdeaNotes from '@/components/IdeaNotes';
+import NoteSvg from '@/assets/svg/note.svg';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -20,6 +22,7 @@ interface Props extends ReduxProps, RouteProps {
   onLinkClick: () => void;
   className: string;
   session: ITypeObject<ISessionStatus>;
+  globalSession: ISessionStatus;
 }
 
 interface State {
@@ -85,7 +88,7 @@ class NavMenuContest extends React.Component<Props, State> {
 
   render() {
     const {
-      mobileVersion, onLinkClick, className, loading: sessionEffectsLoading, session: allContestSession, location,
+      mobileVersion, onLinkClick, className, loading: sessionEffectsLoading, session: allContestSession, location, globalSession,
     } = this.props;
     const loading = sessionEffectsLoading || this.state.logoutLoading;
     const matchContest = this.getMatchContest();
@@ -168,6 +171,13 @@ class NavMenuContest extends React.Component<Props, State> {
               </Menu.SubMenu>
         }
 
+        {!mobileVersion && globalSession.loggedIn &&
+        <Menu.Item key="/idea_note" style={{ float: 'right' }}>
+          <Popover content={<IdeaNotes />} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">
+            <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
+          </Popover>
+        </Menu.Item>}
+
         <Menu.Item key="settings" style={{ float: 'right' }}>
           <SettingsModal>
             <Icon type="setting" />
@@ -183,6 +193,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['contests/getSession'] || !!state.loading.effects['contests/logout'],
     session,
+    globalSession: state.session,
   };
 }
 

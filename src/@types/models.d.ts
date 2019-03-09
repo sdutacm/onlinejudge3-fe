@@ -230,14 +230,32 @@ declare interface IMessage {
   createdAt: ITimestamp,
 }
 
-declare interface IFavorite {
+declare interface IFavoriteBase {
   favoriteId: number;
-  type: 'problem' | 'contest';
+  type: string;
   target: any;
   note: string;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }
+
+declare interface IFavoriteProblem extends IFavoriteBase {
+  type: 'problem';
+  target: {
+    problemId: number;
+    title: string;
+  };
+}
+
+declare interface IFavoriteContest extends IFavoriteBase {
+  type: 'contest';
+  target: {
+    contestId: number;
+    title: string;
+  };
+}
+
+declare type IFavorite = IFavoriteProblem | IFavoriteContest
 
 declare interface ISet {
   setId: number;
@@ -251,6 +269,104 @@ declare interface ISet {
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }
+
+declare interface INoteBase {
+  noteId: number;
+  type: string;
+  target: any;
+  content: string;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
+}
+
+declare interface INoteProblem extends INoteBase {
+  type: 'problem';
+  target: {
+    problemId: number;
+    title: string;
+    contest?: {
+      contestId: number;
+      title: string;
+    };
+  };
+}
+
+declare interface INoteContest extends INoteBase {
+  type: 'contest';
+  target: {
+    contestId: number;
+    title: string;
+  };
+}
+
+declare interface INoteSolution extends INoteBase {
+  type: 'solution';
+  target: {
+    solutionId: number;
+    problem: {
+      problemId: number;
+      title: string;
+    };
+    contest?: {
+      contestId: number;
+      title: string;
+    };
+    result: number;
+  };
+}
+
+declare interface INoteUnknown extends INoteBase {
+  type: '';
+  target: {
+    url: string;
+    location: {
+      pathname: string,
+      search: string,
+      query: any,
+      hash: string,
+    };
+    [x: string]: any,
+  };
+}
+
+declare type INote = INoteProblem | INoteContest | INoteSolution | INoteUnknown
+
+declare interface INoteProblemReq {
+  type: 'problem';
+  target: {
+    problemId: number;
+    contestId?: number;
+  };
+}
+
+declare interface INoteContestReq {
+  type: 'contest';
+  target: {
+    contestId: number;
+  };
+}
+
+declare interface INoteSolutionReq {
+  type: 'solution';
+  target: {
+    solutionId: number;
+  };
+}
+
+declare interface INoteUnknownReq {
+  type: '';
+  target: {
+    url: string;
+    location: {
+      pathname: string,
+      search: string,
+      query: any,
+      hash: string,
+    };
+  };
+}
+
+declare type INoteReq = INoteProblemReq | INoteContestReq | INoteSolutionReq | INoteUnknownReq
 
 declare interface ISetPropsTypeStandard {
   sections: {

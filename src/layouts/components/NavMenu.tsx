@@ -13,6 +13,8 @@ import { formatAvatarUrl, urlf } from '@/utils/format';
 import router from 'umi/router';
 import MessageList from '@/components/MessageList';
 import SettingsModal from '@/components/SettingsModal';
+import IdeaNotes from '@/components/IdeaNotes';
+import NoteSvg from '@/assets/svg/note.svg';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -215,11 +217,11 @@ class NavMenu extends React.Component<Props, State> {
             <a><Badge count={unreadMessages.count}><Icon type="bell" theme="outlined" /></Badge></a>
           </Popover>
         </Menu.Item>}
-        {/*{!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>*/}
-          {/*<Popover content={this.ideaNotes} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">*/}
-            {/*<a><Icon theme="outlined" component={NoteSvg} /></a>*/}
-          {/*</Popover>*/}
-        {/*</Menu.Item>}*/}
+        {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>
+          <Popover content={<IdeaNotes />} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">
+            <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
+          </Popover>
+        </Menu.Item>}
         <Menu.Item key="settings" style={{ float: 'right' }}>
           <SettingsModal>
             <Icon type="setting" />

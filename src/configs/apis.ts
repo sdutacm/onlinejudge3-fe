@@ -21,6 +21,7 @@ const api = {
     solutionStats: '/users/:id/solutionStats',
     ratingHistory: '/users/:id/ratingHistory',
     favorites: '/users/:id/favorites',
+    notes: '/users/:id/notes',
   },
   problems: {
     base: '/problems',
@@ -65,7 +66,11 @@ const api = {
   sets: {
     base: '/sets',
     detail: '/sets/:id',
-  }
+  },
+  notes: {
+    base: '/notes',
+    detail: '/notes/:id',
+  },
 };
 
 export default api;

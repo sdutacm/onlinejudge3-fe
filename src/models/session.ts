@@ -51,6 +51,10 @@ export default {
           type: 'favorites/getList',
           payload: { userId: ret.data.userId },
         });
+        yield put({
+          type: 'notes/getList',
+          payload: { userId: ret.data.userId },
+        });
       }
       endInterception();
       return ret;
@@ -80,6 +84,10 @@ export default {
           type: 'favorites/getList',
           payload: { userId },
         });
+        yield put({
+          type: 'notes/getList',
+          payload: { userId },
+        });
         OJBK.logLogin(ret.data);
       }
       return ret;
@@ -101,6 +109,9 @@ export default {
         });
         yield put({
           type: 'favorites/clearAllFavorites',
+        });
+        yield put({
+          type: 'favorites/clearAllNotes',
         });
       }
       return ret;

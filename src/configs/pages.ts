@@ -31,5 +31,8 @@ export default {
     index: '/sets',
     detail: '/sets/:id',
   },
+  notes: {
+    index: '/notes',
+  },
   OJBK: '/OJBK',
 };

@@ -21,6 +21,9 @@ const limits = {
   sets: {
     list: 20,
   },
+  notes: {
+    list: 10,
+  },
 };
 
 export default limits;

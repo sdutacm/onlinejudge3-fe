@@ -75,7 +75,8 @@ class ResultBar extends React.Component<Props, State> {
     if (this.props.result !== nextProps.result && isFinished(nextProps.result)) {
       // console.log('judged!');
       clearInterval(this.state.timer);
-      if (resultsMap[nextProps.result].shortName === 'AC') {
+      const resultInfo = resultsMap[nextProps.result] || {};
+      if (resultInfo.shortName === 'AC') {
         this.setState({ percent: 100, lockAnim: true });
         setTimeout(() => this.setState({ lockAnim: false }), 400);
       }
@@ -90,10 +91,11 @@ class ResultBar extends React.Component<Props, State> {
     if (!isFinished(result) || this.state.lockAnim) {
       return <div className="progress" style={{ width: this.state.percent + '%' }}>&nbsp;</div>;
     }
+    const resultInfo = resultsMap[result] || {};
     return (
-      <Popover title={resultsMap[result].fullName} content={resultsMap[result].description}>
-        <div className={`result bg-${colorSettings === 'colorful' ? resultsMap[result].colorfulColor : resultsMap[result].normalColor}`}>
-          <span>{resultsMap[result].shortName}</span>
+      <Popover title={resultInfo.fullName} content={resultInfo.description}>
+        <div className={`result bg-${colorSettings === 'colorful' ? resultInfo.colorfulColor : resultInfo.normalColor}`}>
+          <span>{resultInfo.shortName}</span>
         </div>
       </Popover>
     );

@@ -80,9 +80,9 @@ class AddFavorite extends React.Component<Props, State> {
         content={
           <div>
             <Form layout="vertical" hideRequiredMark={true}>
-              <Form.Item label="Note" style={{ marginBottom: '0' }}>
+              <Form.Item style={{ marginBottom: '0' }}>
                 {getFieldDecorator('note')(
-                  <Input.TextArea rows={2} />
+                  <Input.TextArea rows={2} placeholder="Note what you think... (optional)" />
                 )}
               </Form.Item>
             </Form>

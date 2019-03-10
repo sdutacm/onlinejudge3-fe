@@ -1,0 +1,28 @@
+@idea-notes-width: 360px;
+
+.container {
+  width: @idea-notes-width;
+}
+
+.item {
+  :global(.ant-list-item-meta-title), :global(.ant-list-item-meta-description) {
+    overflow-wrap: break-word;
+    max-width: @idea-notes-width;
+  }
+
+  :global(.ant-tag) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: @idea-notes-width;
+  }
+}
+
+.footer {
+  .delete {
+    visibility: hidden;
+  }
+
+  &:hover .delete {
+    visibility: visible;
+  }
+}

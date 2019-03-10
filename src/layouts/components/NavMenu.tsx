@@ -30,6 +30,7 @@ interface Props extends ReduxProps, RouteProps {
 interface State {
   sessionLoaded: boolean;
   messagesVisible: boolean;
+  notesVisible: boolean;
 }
 
 class NavMenu extends React.Component<Props, State> {
@@ -43,33 +44,9 @@ class NavMenu extends React.Component<Props, State> {
     this.state = {
       sessionLoaded: false,
       messagesVisible: false,
+      notesVisible: false,
     };
   }
-
-  ideaNotesList = [
-    { content: '这货可能是个 dp', tmpTag: (<Tag><a>cyk的游戏</a></Tag>), time: 1539733234 },
-    { content: '赛时漏了 12 点的情况，回头补一下', tmpTag: (<Tag><a>2018 年寒假集训选拔 / A - 时间格式转换</a></Tag>), time: 1539733234 },
-  ];
-
-  ideaNotes = (
-    <div>
-      <Input.TextArea rows={2} placeholder="Type new idea..." />
-      <List
-        itemLayout="horizontal"
-        size="small"
-        // loadMore={() => console.log('more')}
-        dataSource={this.ideaNotesList}
-        renderItem={item => (
-          <List.Item>
-            <List.Item.Meta
-              title={<a>{item.content}</a>}
-              description={item.tmpTag}
-            />
-          </List.Item>
-        )}
-      />
-    </div>
-  );
 
   // toggleTheme = () => {
   //   this.props.dispatch({
@@ -218,7 +195,14 @@ class NavMenu extends React.Component<Props, State> {
           </Popover>
         </Menu.Item>}
         {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>
-          <Popover content={<IdeaNotes />} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">
+          <Popover content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
+                   title="Idea Notes"
+                   placement="bottom"
+                   trigger="click"
+                   overlayClassName="menu-popover inner-content-scroll-md"
+                   visible={this.state.notesVisible}
+                   onVisibleChange={notesVisible => this.setState({ notesVisible })}
+          >
             <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>
         </Menu.Item>}

@@ -287,6 +287,7 @@ declare interface INoteProblem extends INoteBase {
     contest?: {
       contestId: number;
       title: string;
+      problemIndex: number;
     };
   };
 }
@@ -310,6 +311,7 @@ declare interface INoteSolution extends INoteBase {
     contest?: {
       contestId: number;
       title: string;
+      problemIndex: number;
     };
     result: number;
   };

@@ -27,6 +27,7 @@ interface Props extends ReduxProps, RouteProps {
 
 interface State {
   logoutLoading: boolean;
+  notesVisible: boolean;
 }
 
 class NavMenuContest extends React.Component<Props, State> {
@@ -39,6 +40,7 @@ class NavMenuContest extends React.Component<Props, State> {
     super(props);
     this.state = {
       logoutLoading: false,
+      notesVisible: false,
     };
   }
 
@@ -173,7 +175,14 @@ class NavMenuContest extends React.Component<Props, State> {
 
         {!mobileVersion && globalSession.loggedIn &&
         <Menu.Item key="/idea_note" style={{ float: 'right' }}>
-          <Popover content={<IdeaNotes />} title="Idea Notes" placement="bottom" trigger="click" overlayClassName="menu-popover">
+          <Popover content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
+                   title="Idea Notes"
+                   placement="bottom"
+                   trigger="click"
+                   overlayClassName="menu-popover inner-content-scroll-md"
+                   visible={this.state.notesVisible}
+                   onVisibleChange={notesVisible => this.setState({ notesVisible })}
+          >
             <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>
         </Menu.Item>}

@@ -111,7 +111,7 @@ export default {
           type: 'favorites/clearAllFavorites',
         });
         yield put({
-          type: 'favorites/clearAllNotes',
+          type: 'notes/clearAllNotes',
         });
       }
       return ret;

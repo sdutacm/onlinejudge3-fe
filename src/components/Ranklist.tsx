@@ -111,11 +111,15 @@ class Ranklist extends React.Component<Props, State> {
 
     const canFixLeft = contentWidth > (infoWidth + width.stat) && contentWidth < widthSum;
 
-    let ranklist = data;
+    const d = [];
+    for (const row of data) {
+      d.unshift(row);
+    }
+    let ranklist = d;
     if (session.loggedIn) {
       for (const row of data) {
         if (row.user && row.user.userId === session.user.userId) {
-          ranklist = [{ ...row, _self: true }, ...data];
+          ranklist = [{ ...row, _self: true }, ...d];
           break;
         }
       }

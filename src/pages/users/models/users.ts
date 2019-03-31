@@ -59,7 +59,7 @@ export default {
       const formattedQuery = {
         ...formatListQuery(query),
         orderBy: query.orderBy || 'accepted',
-        orderDirection: query.orderDirection ? (query.orderDirection === 'DESC' ? 'DESC' : 'ASC') : 'DESC',
+        orderDirection: query.orderDirection ? (query.orderDirection === 'DESC' ? 'DESC' : 'ASC') : 'ASC',
       };
       const savedState = yield select(state => state.users.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {

@@ -3,7 +3,7 @@ import { Spin } from 'antd';
 import constants from '@/configs/constants';
 import PageTitle from '@/components/PageTitle';
 
-interface Props {
+export interface Props {
   delay?: boolean;
 }
 

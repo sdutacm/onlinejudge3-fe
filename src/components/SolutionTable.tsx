@@ -15,7 +15,7 @@ import classNames from 'classnames';
 import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
   data: IList<ISolution>;
   showPagination: boolean;
@@ -83,25 +83,34 @@ class SolutionTable extends React.Component<Props, State> {
     } = this.props;
     return (
       <>
-        <Table dataSource={rows}
-               rowKey="solutionId"
-               loading={loading}
-               pagination={false}
-               className={classNames(
-                 'responsive-table',
-                 {
-                   'click-table': !isDetail,
-                   'single-row-table': isDetail,
-                 }
-               )}
-               onRow={(record) => {
-                 const solutionDetailUrl = contestId
-                   ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: record.solutionId } })
-                   : urlf(pages.solutions.detail, { param: { id: record.solutionId }, query: { from: location.query.from } });
-                 return {
-                   onClick: () => !this.props.isDetail && router.push(solutionDetailUrl)
-                 };
-               }}
+        <Table
+          dataSource={rows}
+          rowKey="solutionId"
+          loading={loading}
+          pagination={false}
+          className={classNames(
+            'responsive-table',
+            {
+              'click-table': !isDetail,
+              'single-row-table': isDetail,
+            }
+          )}
+          onRow={(record) => {
+            const solutionDetailUrl = contestId ?
+              urlf(pages.contests.solutionDetail, {
+                param: {
+                  id: contestId,
+                  sid: record.solutionId,
+                },
+              }) :
+              urlf(pages.solutions.detail, {
+                param: { id: record.solutionId },
+                query: { from: location.query.from },
+              });
+            return {
+              onClick: () => !this.props.isDetail && router.push(solutionDetailUrl),
+            };
+          }}
         >
           {isDetail && <Table.Column
             title="ID"
@@ -196,8 +205,9 @@ class SolutionTable extends React.Component<Props, State> {
                 ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: record.solutionId } })
                 : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
               return (
-                <Link to={solutionDetailUrl}
-                      onClick={e => e.stopPropagation()}>
+                <Link
+                  to={solutionDetailUrl}
+                  onClick={e => e.stopPropagation()}>
                   <Icon type="ellipsis" theme="outlined" />
                 </Link>
               );

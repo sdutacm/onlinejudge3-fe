@@ -4,7 +4,7 @@ import { Row, Col, Card, Spin, Table, Popover, Progress } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import xss from 'xss';
+import { filterXSS as xss } from 'xss';
 import { formatPercentage, numberToAlphabet, secToTimeStr, toLongTs, urlf } from '@/utils/format';
 import moment from 'moment';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
@@ -17,7 +17,7 @@ import PageTitle from '@/components/PageTitle';
 import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps {
+export interface Props extends ReduxProps {
   id: number;
   session: ISessionStatus;
   detailLoading: boolean;
@@ -106,34 +106,37 @@ class ContestOverview extends React.Component<Props, State> {
                   <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
                 </p>
                 {timeStatus === 'Pending' ?
-                  <Countdown secs={Math.floor((startTime - currentTime) / 1000)}
-                             renderTime={(secs: number) =>
-                               <h1 className="text-center" style={{ margin: '30px 0' }}>{secToTimeStr(secs, true)}</h1>
-                             }
-                             handleRequestTimeSync={() => {
-                               const currentTime = Date.now() - ((window as any)._t_diff || 0);
-                               return Math.floor((startTime - currentTime) / 1000);
-                             }}
-                             timeSyncInterval={30000}
+                  <Countdown
+                    secs={Math.floor((startTime - currentTime) / 1000)}
+                    renderTime={(secs: number) =>
+                      <h1 className="text-center" style={{ margin: '30px 0' }}>{secToTimeStr(secs, true)}</h1>
+                    }
+                    handleRequestTimeSync={() => {
+                      const currentTime = Date.now() - ((window as any)._t_diff || 0);
+                      return Math.floor((startTime - currentTime) / 1000);
+                    }}
+                    timeSyncInterval={30000}
                   /> :
-                  <div dangerouslySetInnerHTML={{ __html: xss(detail.description) }}
-                       className="content-area"
-                       style={{ marginTop: '15px' }}
+                  <div
+                    dangerouslySetInnerHTML={{ __html: xss(detail.description) }}
+                    className="content-area"
+                    style={{ marginTop: '15px' }}
                   />
                 }
               </Card>
               {timeStatus !== 'Pending' &&
               <Card bordered={false} className="list-card">
-                <Table dataSource={problems.rows}
-                       rowKey="problemId"
-                       loading={problemsLoading}
-                       pagination={false}
-                       className="responsive-table"
-                       rowClassName={(record: IProblem) => classNames(
-                         'problem-result-mark-row',
-                         { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                         { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
-                       )}
+                <Table
+                  dataSource={problems.rows}
+                  rowKey="problemId"
+                  loading={problemsLoading}
+                  pagination={false}
+                  className="responsive-table"
+                  rowClassName={(record: IProblem) => classNames(
+                    'problem-result-mark-row',
+                    { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
+                    { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                  )}
                 >
                   <Table.Column
                     title=""

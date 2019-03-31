@@ -18,7 +18,7 @@ import constants from '@/configs/constants';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: IList<IContest>;
   session: ISessionStatus;
 }
@@ -74,7 +74,7 @@ class ContestList extends React.Component<Props, State> {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       <PageAnimation>
-        <PageTitle title={query.category == 1 ? 'Experiments' : 'Contests'}>
+        <PageTitle title={+query.category === 1 ? 'Experiments' : 'Contests'}>
           <Row gutter={16}>
             <Col xs={24}>
               <Tabs defaultActiveKey={query.category} activeKey={query.category} animated={false} onChange={this.handleCategoryChange}>
@@ -84,11 +84,12 @@ class ContestList extends React.Component<Props, State> {
             </Col>
             <Col xs={24} md={18} xxl={20}>
               <Card bordered={false} className="list-card">
-                <Table dataSource={rows}
-                       rowKey="contestId"
-                       loading={loading}
-                       pagination={false}
-                       className="responsive-table"
+                <Table
+                  dataSource={rows}
+                  rowKey="contestId"
+                  loading={loading}
+                  pagination={false}
+                  className="responsive-table"
                 >
                   <Table.Column
                     title=""
@@ -115,14 +116,14 @@ class ContestList extends React.Component<Props, State> {
                       <Popover content={(
                         <table>
                           <tbody>
-                          <tr>
-                            <td className={classNames(gStyles.textRight, gStyles.textBold)}>Start:</td>
-                            <td>{moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.startAt)).from(serverTime)})</td>
-                          </tr>
-                          <tr>
-                            <td className={classNames(gStyles.textRight, gStyles.textBold)}>End:</td>
-                            <td>{moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.endAt)).from(serverTime)})</td>
-                          </tr>
+                            <tr>
+                              <td className={classNames(gStyles.textRight, gStyles.textBold)}>Start:</td>
+                              <td>{moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.startAt)).from(serverTime)})</td>
+                            </tr>
+                            <tr>
+                              <td className={classNames(gStyles.textRight, gStyles.textBold)}>End:</td>
+                              <td>{moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.endAt)).from(serverTime)})</td>
+                            </tr>
                           </tbody>
                         </table>
                       )}>
@@ -150,8 +151,10 @@ class ContestList extends React.Component<Props, State> {
             </Col>
             <Col xs={24} md={6} xxl={4}>
               <Card bordered={false}>
-                <ToDetailCard label="Go to Contest" placeholder="Contest ID"
-                              toDetailLink={id => urlf(pages.contests.home, { param: { id } })} />
+                <ToDetailCard
+                  label="Go to Contest" placeholder="Contest ID"
+                  toDetailLink={id => urlf(pages.contests.home, { param: { id } })}
+                />
               </Card>
               <Card bordered={false}>
                 <FilterCard fields={[
@@ -159,7 +162,7 @@ class ContestList extends React.Component<Props, State> {
                   {
                     displayName: 'Type', fieldName: 'type', options: contestTypes.map(res => {
                       return { fieldName: res.id, displayName: res.name };
-                    })
+                    }),
                   },
                 ]} initQuery={{ category: query.category }} />
               </Card>

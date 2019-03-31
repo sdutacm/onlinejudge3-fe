@@ -34,4 +34,4 @@ export default {
   get,
   set,
   remove,
-}
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Spin, Row, Col, Card } from 'antd';
+import { Row, Col, Card } from 'antd';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import constants from '@/configs/constants';
@@ -15,7 +15,7 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
   detailLoading: boolean;
@@ -47,7 +47,7 @@ class ContestRanklist extends React.Component<Props, State> {
     dispatch({
       type: 'contests/getRanklist',
       payload: { id },
-    })
+    });
   };
 
   componentDidMount(): void {
@@ -65,7 +65,7 @@ class ContestRanklist extends React.Component<Props, State> {
     this.props.dispatch({
       type: 'contests/getRanklist',
       payload: { id: this.props.id },
-    })
+    });
   };
 
   render() {
@@ -100,16 +100,17 @@ class ContestRanklist extends React.Component<Props, State> {
                 </p>
               </Card>
               <Card bordered={false} className="list-card">
-                <Ranklist id={id}
-                          data={ranklist}
-                          loading={ranklistLoading}
-                          problemNum={problems.count || 0}
-                          session={session}
-                          userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register}/>}
-                          needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
-                          handleUpdate={this.refreshRanklist}
-                          updateInterval={constants.ranklistUpdateInterval}
-                          existedHeaderClassName="ranklist-header"
+                <Ranklist
+                  id={id}
+                  data={ranklist}
+                  loading={ranklistLoading}
+                  problemNum={problems.count || 0}
+                  session={session}
+                  userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register} />}
+                  needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
+                  handleUpdate={this.refreshRanklist}
+                  updateInterval={constants.ranklistUpdateInterval}
+                  existedHeaderClassName="ranklist-header"
                 />
               </Card>
             </Col>

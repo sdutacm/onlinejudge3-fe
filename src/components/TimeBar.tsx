@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { Popover } from 'antd';
 
-interface Props {
+export interface Props {
   time: number;
 }
 

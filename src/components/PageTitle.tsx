@@ -2,7 +2,7 @@ import React from 'react';
 import DocumentTitle from 'react-document-title';
 import { formatPageTitle } from '@/utils/format';
 
-interface Props {
+export interface Props {
   title: string | null;
   loading?: boolean;
 }

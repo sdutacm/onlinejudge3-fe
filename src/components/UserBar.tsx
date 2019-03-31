@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 
-interface Props {
+export interface Props {
   user: IUser | IUserLite;
   isContestUser?: boolean;
 }
@@ -17,8 +17,9 @@ const UserBar: React.StatelessComponent<Props> = ({ user, isContestUser }) => {
     return inner;
   }
   return (
-    <Link to={urlf(pages.users.detail, { param: { id: user.userId } })}
-          onClick={e => e.stopPropagation()}>
+    <Link
+      to={urlf(pages.users.detail, { param: { id: user.userId } })}
+      onClick={e => e.stopPropagation()}>
       {inner}
     </Link>
   );

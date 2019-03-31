@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 import router from 'umi/router';
 import gStyles from '@/general.less';
 
-interface Props {
+export interface Props {
   label: string;
   placeholder: string;
   toDetailLink: (string) => string;
@@ -38,15 +38,15 @@ class ToDetailCard extends React.Component<Props, State> {
     const { label, placeholder } = this.props;
     return (
       <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-          <Form.Item label={label}>
-            <Input.Search
-              enterButton="Go"
-              placeholder={placeholder}
-              className="input-button"
-              onChange={e => this.setState({ value: e.target.value })}
-              onSearch={this.handleSubmit}
-            />
-          </Form.Item>
+        <Form.Item label={label}>
+          <Input.Search
+            enterButton="Go"
+            placeholder={placeholder}
+            className="input-button"
+            onChange={e => this.setState({ value: e.target.value })}
+            onSearch={this.handleSubmit}
+          />
+        </Form.Item>
       </Form>
     );
   }

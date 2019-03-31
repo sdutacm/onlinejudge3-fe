@@ -20,7 +20,7 @@ const NavContainer: React.StatelessComponent<Props> = ({ location }) => {
       navMenu={matchContest ? NavMenuContest : NavMenu}
       placement="bottom"
     />
-  )
+  );
 };
 
 const component: any = withRouter(NavContainer);

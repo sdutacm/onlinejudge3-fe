@@ -11,7 +11,7 @@ export interface TimeFlag {
 export function genTimeFlag(expires: number): TimeFlag {
   return {
     _t: Date.now(),
-    _et: Date.now() + expires
+    _et: Date.now() + expires,
   };
 }
 

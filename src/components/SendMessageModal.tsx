@@ -4,7 +4,7 @@ import { Form, Input, Select, Modal, Checkbox } from 'antd';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import msg from '@/utils/msg';
 
-interface Props extends ReduxProps, RouteProps, FormProps {
+export interface Props extends ReduxProps, RouteProps, FormProps {
   session: ISessionStatus;
   toUserId: number;
 }

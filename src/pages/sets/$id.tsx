@@ -7,13 +7,13 @@ import pages from '@/configs/pages';
 import NotFound from '@/pages/404';
 import PageTitle from '@/components/PageTitle';
 import PageLoading from '@/components/PageLoading';
-import xss from 'xss';
+import { filterXSS as xss } from 'xss';
 import { Link } from 'react-router-dom';
 import { numberToAlphabet, urlf } from '@/utils/format';
 import classNames from 'classnames';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: ITypeObject<ISet>;
   session: ISessionStatus;
   problemResultStats: IUserProblemResultStats;
@@ -41,13 +41,13 @@ class SetDetail extends React.Component<Props, State> {
           id: getPathParamId(nextProps.location.pathname, pages.sets.detail),
           force: true,
         },
-      })
+      });
     }
   }
 
   render() {
     const {
-      loading, data: allData, session, match, problemResultStats: { acceptedProblemIds, attemptedProblemIds }
+      loading, data: allData, session, match, problemResultStats: { acceptedProblemIds, attemptedProblemIds },
     } = this.props;
     const id = ~~match.params.id;
     const data = allData[id] || {} as ISet;
@@ -67,42 +67,44 @@ class SetDetail extends React.Component<Props, State> {
                 <Col xs={24}>
                   <Card bordered={false}>
                     <h2 className="text-center">{data.title}</h2>
-                    <div dangerouslySetInnerHTML={{ __html: xss(data.description) }}
-                         className="content-area"
-                         style={{ marginTop: '15px' }}
+                    <div
+                      dangerouslySetInnerHTML={{ __html: xss(data.description) }}
+                      className="content-area"
+                      style={{ marginTop: '15px' }}
                     />
                   </Card>
 
                   <Card bordered={false} className="list-card">
                     {props.sections.map((section, sectionIndex) =>
                       <div key={sectionIndex}>
-                        <Table dataSource={section.problems}
-                               rowKey={(record: IProblem) => `${record.problemId}`}
-                               loading={loading}
-                               pagination={false}
-                               className="responsive-table"
-                               rowClassName={(record: IProblem) => classNames(
-                                 'problem-result-mark-row',
-                                 { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                                 { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
-                               )}
+                        <Table
+                          dataSource={section.problems}
+                          rowKey={(record: IProblem) => `${record.problemId}`}
+                          loading={loading}
+                          pagination={false}
+                          className="responsive-table"
+                          rowClassName={(record: IProblem) => classNames(
+                            'problem-result-mark-row',
+                            { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
+                            { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                          )}
                         >
                           <Table.Column
                             title={section.title}
                             key="Title"
                             render={(text, record: IProblem, problemIndex) => (
-                                <span>
-                                  <span style={{ minWidth: '32px', display: 'inline-block' }}>
-                                    {`${sectionIndex + 1}${numberToAlphabet(problemIndex)}`}
-                                  </span>
-                                  {record.problemId && record.title ?
-                                    <Link to={urlf(pages.problems.detail, {
-                                      param: { id: record.problemId },
-                                      query: { from: `/sets/${data.setId}` },
-                                    })}>{record.title}</Link> :
-                                    <span>Unknown Problem</span>
-                                  }
+                              <span>
+                                <span style={{ minWidth: '32px', display: 'inline-block' }}>
+                                  {`${sectionIndex + 1}${numberToAlphabet(problemIndex)}`}
                                 </span>
+                                {record.problemId && record.title ?
+                                  <Link to={urlf(pages.problems.detail, {
+                                    param: { id: record.problemId },
+                                    query: { from: `/sets/${data.setId}` },
+                                  })}>{record.title}</Link> :
+                                  <span>Unknown Problem</span>
+                                }
+                              </span>
                             )}
                           />
                         </Table>

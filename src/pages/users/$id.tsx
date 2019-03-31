@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 import styles from './$id.less';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 import pages from '@/configs/pages';
-import moment from 'moment';
-import xss from 'xss';
+import { filterXSS as xss } from 'xss';
 import { Results } from '@/configs/results';
 import NotFound from '@/pages/404';
 import constants from '@/configs/constants';
@@ -38,10 +37,10 @@ function validateFile(validTypes: UploadFileType[], maxSize: number) {
       msg.error(`File must be smaller than ${maxSize} MiB`);
     }
     return isValidType && isValidSize;
-  }
+  };
 }
 
-interface Props extends RouteProps, ReduxProps {
+export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
   session: ISessionStatus;
 }
@@ -57,6 +56,17 @@ interface State {
 class UserDetail extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
 
+  private validateAvatar = validateFile([
+    { name: 'JPG', type: 'image/jpeg' },
+    { name: 'BMP', type: 'image/bmp' },
+    { name: 'PNG', type: 'image/png' }], 4
+  );
+  private validateBannerImage = validateFile([
+    { name: 'JPG', type: 'image/jpeg' },
+    { name: 'BMP', type: 'image/bmp' },
+    { name: 'PNG', type: 'image/png' }], 12
+  );
+
   constructor(props) {
     super(props);
     this.state = {
@@ -68,28 +78,28 @@ class UserDetail extends React.Component<Props, State> {
     };
   }
 
-  list = [
-    { id: 1, title: '关于商人小鑫的另一种解法', time: 1539838234 },
-    { id: 2, title: 'STL 大全', time: 1539333234 },
-    { id: 3, title: '时间格式转换题解', time: 1539233234 },
-  ];
-
-  listComponent = (
-    <List
-      itemLayout="horizontal"
-      size="small"
-      // loadMore={() => console.log('more')}
-      dataSource={this.list.slice(0, 3)}
-      renderItem={item => (
-        <List.Item>
-          <List.Item.Meta
-            title={<a>{item.title}</a>}
-            description={moment(item.time * 1000).fromNow()}
-          />
-        </List.Item>
-      )}
-    />
-  );
+  // list = [
+  //   { id: 1, title: '关于商人小鑫的另一种解法', time: 1539838234 },
+  //   { id: 2, title: 'STL 大全', time: 1539333234 },
+  //   { id: 3, title: '时间格式转换题解', time: 1539233234 },
+  // ];
+  //
+  // listComponent = (
+  //   <List
+  //     itemLayout="horizontal"
+  //     size="small"
+  //     // loadMore={() => console.log('more')}
+  //     dataSource={this.list.slice(0, 3)}
+  //     renderItem={item => (
+  //       <List.Item>
+  //         <List.Item.Meta
+  //           title={<a>{item.title}</a>}
+  //           description={moment(item.time * 1000).fromNow()}
+  //         />
+  //       </List.Item>
+  //     )}
+  //   />
+  // );
 
   checkBannerImage = (props: Props) => {
     const { data: allData, match } = props;
@@ -148,13 +158,6 @@ class UserDetail extends React.Component<Props, State> {
     }
   }
 
-  validateAvatar = validateFile([
-      { name: 'JPG', type: 'image/jpeg' },
-      { name: 'BMP', type: 'image/bmp' },
-      { name: 'PNG', type: 'image/png' },
-    ], 4
-  );
-
   handleAvatarChange = (info) => {
     if (info.file.status === 'uploading') {
       this.setState({ uploadAvatarLoading: true });
@@ -177,13 +180,6 @@ class UserDetail extends React.Component<Props, State> {
       this.setState({ uploadAvatarLoading: false });
     }
   };
-
-  validateBannerImage = validateFile([
-      { name: 'JPG', type: 'image/jpeg' },
-      { name: 'BMP', type: 'image/bmp' },
-      { name: 'PNG', type: 'image/png' },
-    ], 12
-  );
 
   handleBannerImageChange = (info) => {
     if (info.file.status === 'uploading') {
@@ -234,11 +230,12 @@ class UserDetail extends React.Component<Props, State> {
           }} />
           {self &&
           <div className="banner-edit-btn">
-            <Upload name="bannerImage"
-                    action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
-                    beforeUpload={this.validateBannerImage}
-                    onChange={this.handleBannerImageChange}
-                    showUploadList={false}
+            <Upload
+              name="bannerImage"
+              action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
+              beforeUpload={this.validateBannerImage}
+              onChange={this.handleBannerImageChange}
+              showUploadList={false}
             >
               <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
             </Upload>
@@ -248,12 +245,13 @@ class UserDetail extends React.Component<Props, State> {
               <span className="u-avatar">
                 {!self ?
                   <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} /> :
-                  <Upload name="avatar"
-                          className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
-                          action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
-                          beforeUpload={this.validateAvatar}
-                          onChange={this.handleAvatarChange}
-                          showUploadList={false}
+                  <Upload
+                    name="avatar"
+                    className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
+                    action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
+                    beforeUpload={this.validateAvatar}
+                    onChange={this.handleAvatarChange}
+                    showUploadList={false}
                   >
                     {uploadAvatarLoading || loading ?
                       <Icon type="loading" className="upload-mask-icon" /> :
@@ -280,10 +278,11 @@ class UserDetail extends React.Component<Props, State> {
                     <Card bordered={false}>
                       <h3>
                         AC Calendar
-                        <Select defaultValue={null}
-                                className="float-right"
-                                size="small"
-                                onChange={this.handleSolutionCalendarPeriodChange}
+                        <Select
+                          defaultValue={null}
+                          className="float-right"
+                          size="small"
+                          onChange={this.handleSolutionCalendarPeriodChange}
                         >
                           {Array.from(solutionCalendarYears).map(y =>
                             <Select.Option key={y} value={y}>{y}</Select.Option>
@@ -291,9 +290,10 @@ class UserDetail extends React.Component<Props, State> {
                           <Select.Option value={null}>Recent</Select.Option>
                         </Select>
                       </h3>
-                      <SolutionCalendar data={data.solutionCalendar}
-                                        startDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-01-01` : undefined}
-                                        endDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-12-31` : undefined}
+                      <SolutionCalendar
+                        data={data.solutionCalendar}
+                        startDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-01-01` : undefined}
+                        endDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-12-31` : undefined}
                       />
                     </Card>
 
@@ -302,12 +302,12 @@ class UserDetail extends React.Component<Props, State> {
                     </Card>
 
                     {/*<Card bordered={false}>*/}
-                      {/*<h3>Activities</h3>*/}
-                      {/*<Tabs defaultActiveKey="1">*/}
-                        {/*<Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>*/}
-                        {/*<Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>*/}
-                        {/*<Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>*/}
-                      {/*</Tabs>*/}
+                    {/*<h3>Activities</h3>*/}
+                    {/*<Tabs defaultActiveKey="1">*/}
+                    {/*<Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>*/}
+                    {/*<Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>*/}
+                    {/*<Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>*/}
+                    {/*</Tabs>*/}
                     {/*</Card>*/}
                   </Col>
                   <Col xs={24} md={6} xxl={6}>
@@ -331,27 +331,27 @@ class UserDetail extends React.Component<Props, State> {
                       <Skeleton active loading={loading} paragraph={{ rows: 5, width: '100%' }}>
                         <table>
                           <tbody>
-                          <tr>
-                            <td>School</td>
-                            <td>{xss(data.school)}</td>
-                          </tr>
-                          <tr>
-                            <td>College</td>
-                            <td>{xss(data.college)}</td>
-                          </tr>
-                          <tr>
-                            <td>Major</td>
-                            <td>{xss(data.major)}</td>
-                          </tr>
-                          <tr>
-                            <td>Class</td>
-                            <td>{xss(data.class)}</td>
-                          </tr>
-                          {data.site ?
-                          <tr>
-                            <td>Site</td>
-                            <td><a href={xss(data.site)} target="_blank">{xss(data.site)}</a></td>
-                          </tr> : null}
+                            <tr>
+                              <td>School</td>
+                              <td>{xss(data.school)}</td>
+                            </tr>
+                            <tr>
+                              <td>College</td>
+                              <td>{xss(data.college)}</td>
+                            </tr>
+                            <tr>
+                              <td>Major</td>
+                              <td>{xss(data.major)}</td>
+                            </tr>
+                            <tr>
+                              <td>Class</td>
+                              <td>{xss(data.class)}</td>
+                            </tr>
+                            {data.site ?
+                              <tr>
+                                <td>Site</td>
+                                <td><a href={xss(data.site)} target="_blank">{xss(data.site)}</a></td>
+                              </tr> : null}
                           </tbody>
                         </table>
                       </Skeleton>
@@ -365,7 +365,7 @@ class UserDetail extends React.Component<Props, State> {
                     </Card>}
 
                     {/*<Card bordered={false}>*/}
-                      {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}
+                    {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}
                     {/*</Card>*/}
                   </Col>
                 </Row>

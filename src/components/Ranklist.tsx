@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 
-interface Props {
+export interface Props {
   id: number;
   data: IRanklist;
   loading: boolean;
@@ -16,7 +16,7 @@ interface Props {
   session: ISessionStatus;
   handleUpdate?: () => any;
   updateInterval?: number;
-  existedHeaderClassName?: string,
+  existedHeaderClassName?: string;
 }
 
 interface State {
@@ -26,6 +26,17 @@ interface State {
 
 class Ranklist extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
+
+  private saveViewportDimensions = throttle(() => {
+    let contentWidth = window.innerWidth;
+    const contentDiv = document.querySelector('.ant-layout-content');
+    if (contentDiv) {
+      contentWidth = contentDiv.clientWidth;
+    }
+    this.setState({
+      contentWidth,
+    });
+  }, 3000);
 
   constructor(props) {
     super(props);
@@ -66,17 +77,6 @@ class Ranklist extends React.Component<Props, State> {
     window.removeEventListener('resize', this.saveViewportDimensions);
   }
 
-  saveViewportDimensions = throttle(() => {
-    let contentWidth = window.innerWidth;
-    const contentDiv = document.querySelector('.ant-layout-content');
-    if (contentDiv) {
-      contentWidth = contentDiv.clientWidth;
-    }
-    this.setState({
-      contentWidth,
-    });
-  }, 3000);
-
   render() {
     const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session } = this.props;
     const { contentWidth } = this.state;
@@ -92,7 +92,7 @@ class Ranklist extends React.Component<Props, State> {
       time: 80,
       stat: 80,
     };
-    const infoWidth = width.rank + width.user +  width.solved + width.time;
+    const infoWidth = width.rank + width.user + width.solved + width.time;
     const widthSum = infoWidth + width.stat * problemNum;
 
     // f**k
@@ -122,13 +122,14 @@ class Ranklist extends React.Component<Props, State> {
     }
 
     return (
-      <Table dataSource={ranklist}
-             rowKey={(record, index) => `${record._self ? '_self' : record.user && record.user.userId}`}
-             loading={loading}
-             pagination={false}
-             className="ranklist"
-             rowClassName={(record) => record._self ? 'self-rank-row' : ''}
-             scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
+      <Table
+        dataSource={ranklist}
+        rowKey={(record, index) => `${record._self ? '_self' : record.user && record.user.userId}`}
+        loading={loading}
+        pagination={false}
+        className="ranklist"
+        rowClassName={(record) => record._self ? 'self-rank-row' : ''}
+        scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
       >
         <Table.Column
           title="Rank"
@@ -158,7 +159,7 @@ class Ranklist extends React.Component<Props, State> {
           render={(text, record: IRanklistRow) => (
             <div><Link to={urlf(pages.contests.solutions, {
               param: { id },
-              query: { userId: record.user && record.user.userId }
+              query: { userId: record.user && record.user.userId },
             })}>{record.solved}</Link></div>
           )}
         />

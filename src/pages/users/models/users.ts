@@ -115,8 +115,7 @@ export default {
     * forgotPassword({ payload: data }, { call, put }) {
       return yield call(service.forgotPassword, data);
     },
-    * getProblemResultStats({ payload: { userId, contestId, force = false } = { userId: null, contestId: null } },
-                            { call, put, select }) {
+    * getProblemResultStats({ payload: { userId, contestId, force = false } = { userId: null, contestId: null } }, { call, put, select }) {
       const globalSess = yield select(state => state.session);
       userId = userId || globalSess.user.userId;
       if (!userId) {

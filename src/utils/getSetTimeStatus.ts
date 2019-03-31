@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 /**
  * Parse status wording based on time
  * @param {ITimestamp} startTime

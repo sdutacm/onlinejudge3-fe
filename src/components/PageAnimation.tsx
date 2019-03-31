@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import classNames from 'classnames';
 
-interface Props {
+export interface Props {
   improveAnimation: boolean;
 }
 

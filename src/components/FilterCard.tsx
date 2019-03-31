@@ -11,7 +11,7 @@ export interface FilterCardFieldOption {
   options?: FilterCardFieldOption[];
 }
 
-interface Props extends RouteProps, FormProps {
+export interface Props extends RouteProps, FormProps {
   fields: FilterCardFieldOption[];
   initQuery?: any;
 }
@@ -47,8 +47,12 @@ class FilterCard extends React.Component<Props, any> {
   render() {
     const { location: { query }, fields, form: { getFieldDecorator } } = this.props;
     return (
-      <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit} onReset={this.handleReset}
-            className={gStyles.cardForm}>
+      <Form
+        layout="vertical"
+        hideRequiredMark={true}
+        onSubmit={this.handleSubmit}
+        onReset={this.handleReset}
+        className={gStyles.cardForm}>
         {fields.map((field: FilterCardFieldOption) => (
           <Form.Item label={field.displayName} key={field.fieldName}>
             {getFieldDecorator(field.fieldName, { initialValue: query[field.fieldName] })(
@@ -61,8 +65,9 @@ class FilterCard extends React.Component<Props, any> {
           <Form.Item>
             <Button.Group style={{ width: '100%' }}>
               <Button htmlType="reset" className="text-ellipsis" style={{ width: '50%' }} title="Clear">Clear</Button>
-              <Button htmlType="submit" className="text-ellipsis" style={{ width: '50%' }}
-                      title="Filter">Filter</Button>
+              <Button
+                htmlType="submit" className="text-ellipsis" style={{ width: '50%' }}
+                title="Filter">Filter</Button>
             </Button.Group>
           </Form.Item>
           : <div />

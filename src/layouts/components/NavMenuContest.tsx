@@ -17,7 +17,7 @@ import NoteSvg from '@/assets/svg/note.svg';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   mobileVersion: boolean;
   onLinkClick: () => void;
   className: string;
@@ -36,6 +36,8 @@ class NavMenuContest extends React.Component<Props, State> {
     className: 'nav',
   };
 
+  private setStatePromise = setStatePromise.bind(this);
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,8 +45,6 @@ class NavMenuContest extends React.Component<Props, State> {
       notesVisible: false,
     };
   }
-
-  setStatePromise = setStatePromise.bind(this);
 
   // toggleTheme = () => {
   //   this.props.dispatch({
@@ -161,7 +161,7 @@ class NavMenuContest extends React.Component<Props, State> {
               </Menu.ItemGroup>
           :
           loading ?
-            <Menu.Item key="loading" style={{ float: 'right' }}>
+            <Menu.Item key="loading" className="float-right">
               <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
             </Menu.Item>
             :
@@ -174,20 +174,21 @@ class NavMenuContest extends React.Component<Props, State> {
         }
 
         {!mobileVersion && globalSession.loggedIn &&
-        <Menu.Item key="/idea_note" style={{ float: 'right' }}>
-          <Popover content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
-                   title="Idea Notes"
-                   placement="bottom"
-                   trigger="click"
-                   overlayClassName="menu-popover inner-content-scroll-md"
-                   visible={this.state.notesVisible}
-                   onVisibleChange={notesVisible => this.setState({ notesVisible })}
+        <Menu.Item key="/idea_note" className="float-right">
+          <Popover
+            content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
+            title="Idea Notes"
+            placement="bottom"
+            trigger="click"
+            overlayClassName="menu-popover inner-content-scroll-md"
+            visible={this.state.notesVisible}
+            onVisibleChange={notesVisible => this.setState({ notesVisible })}
           >
             <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>
         </Menu.Item>}
 
-        <Menu.Item key="settings" style={{ float: 'right' }}>
+        <Menu.Item key="settings" className="float-right">
           <SettingsModal>
             <Icon type="setting" />
           </SettingsModal>

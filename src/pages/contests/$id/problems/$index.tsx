@@ -7,7 +7,7 @@ import ProblemDetailPage from '@/components/ProblemDetailPage';
 import PageLoading from '@/components/PageLoading';
 import { alphabetToNumber } from '@/utils/format';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
   detailLoading: boolean;
@@ -63,12 +63,13 @@ class ContestProblem extends React.Component<Props, State> {
     }
     const index = alphabetToNumber(match.params.index);
     const problem = (rows && rows[index]) || {} as IProblem;
-    return <ProblemDetailPage loading={problemsLoading}
-                              data={problem}
-                              session={session}
-                              contestId={id}
-                              problemIndex={index}
-                              favorites={favorites.rows}
+    return <ProblemDetailPage
+      loading={problemsLoading}
+      data={problem}
+      session={session}
+      contestId={id}
+      problemIndex={index}
+      favorites={favorites.rows}
     />;
   }
 }

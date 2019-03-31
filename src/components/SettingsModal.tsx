@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Radio, Modal, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
 }
 
@@ -65,10 +65,11 @@ class SettingsModal extends React.Component<Props, State> {
         >
           <div className="settings-item">
             <span>Theme</span>
-            <Radio.Group onChange={this.handleThemeChange}
-                         defaultValue={settings.theme}
-                         size="small"
-                         className="float-right"
+            <Radio.Group
+              onChange={this.handleThemeChange}
+              defaultValue={settings.theme}
+              size="small"
+              className="float-right"
             >
               <Radio.Button value="light">Light</Radio.Button>
               <Radio.Button value="dark">Dark</Radio.Button>
@@ -76,10 +77,11 @@ class SettingsModal extends React.Component<Props, State> {
           </div>
           <div className="settings-item">
             <span>Color</span>
-            <Radio.Group onChange={this.handleColorChange}
-                         defaultValue={settings.color}
-                         size="small"
-                         className="float-right"
+            <Radio.Group
+              onChange={this.handleColorChange}
+              defaultValue={settings.color}
+              size="small"
+              className="float-right"
             >
               <Radio.Button value="default">Default</Radio.Button>
               <Radio.Button value="colorful">Colorful</Radio.Button>

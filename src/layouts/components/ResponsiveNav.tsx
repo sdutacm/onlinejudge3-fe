@@ -7,7 +7,7 @@ import { RouteLocation } from '@/@types/props';
 
 // Powered by https://github.com/id-kemo/responsive-menu-ant-design
 
-interface Props {
+export interface Props {
   mobileBreakPoint: number;
   applyViewportChange: number;
   location: RouteLocation;
@@ -28,6 +28,12 @@ class ResponsiveNav extends React.Component<Props, any> {
     menuVisible: false,
   };
 
+  private saveViewportDimensions = throttle(() => {
+    this.setState({
+      viewportWidth: window.innerWidth,
+    });
+  }, this.props.applyViewportChange);
+
   componentDidMount() {
     this.saveViewportDimensions();
     window.addEventListener('resize', this.saveViewportDimensions);
@@ -40,12 +46,6 @@ class ResponsiveNav extends React.Component<Props, any> {
   handleMenuVisibility = (menuVisible) => {
     this.setState({ menuVisible });
   };
-
-  saveViewportDimensions = throttle(() => {
-    this.setState({
-      viewportWidth: window.innerWidth,
-    });
-  }, this.props.applyViewportChange);
 
   render() {
     const NavMenu = this.props.navMenu;

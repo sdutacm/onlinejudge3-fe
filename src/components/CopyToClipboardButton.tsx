@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip, Icon } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-interface Props {
+export interface Props {
   text: string; // text to copy
   addNewLine: boolean; // whether auto-add '\n' at the end of the text
 }
@@ -32,10 +32,12 @@ class CopyToClipboardButton extends React.Component<Props, State> {
 
   render() {
     return (
-      <Tooltip title="Copied!" visible={this.state.copied}
-               onVisibleChange={(visible) => !visible && this.setState({ copied: false })}>
-        <CopyToClipboard text={this.state.textToCopy}
-                         onCopy={(text: string, result: boolean) => result && this.setState({ copied: true })}>
+      <Tooltip
+        title="Copied!" visible={this.state.copied}
+        onVisibleChange={(visible) => !visible && this.setState({ copied: false })}>
+        <CopyToClipboard
+          text={this.state.textToCopy}
+          onCopy={(text: string, result: boolean) => result && this.setState({ copied: true })}>
           <Icon type="copy" theme="outlined" className="pointer" />
         </CopyToClipboard>
       </Tooltip>

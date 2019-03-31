@@ -4,14 +4,14 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch } from 'antd';
+import { Pagination, Row, Col, Card, Tabs } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import MessageList from '@/components/MessageList';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   receivedLoading: boolean;
   received: IList<IMessage>;
   sentLoading: boolean;
@@ -63,11 +63,13 @@ class MessageListPage extends React.Component<Props, State> {
           </Col>
           <Col xs={24}>
             <Card bordered={false} className="list-card">
-              <MessageList count={data.count}
-                           rows={data.rows}
-                           type={isReceived ? 'received' : 'sent'}
-                           dispatch={dispatch}
-                           loading={loading} />
+              <MessageList
+                count={data.count}
+                rows={data.rows}
+                type={isReceived ? 'received' : 'sent'}
+                dispatch={dispatch}
+                loading={loading}
+              />
               <Pagination
                 className="ant-table-pagination"
                 total={data.count}

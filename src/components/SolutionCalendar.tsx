@@ -4,7 +4,7 @@ import 'react-calendar-heatmap/dist/styles.css';
 import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 
-interface Props {
+export interface Props {
   data: ISolutionCalendar;
   startDate?: string;
   endDate?: string;

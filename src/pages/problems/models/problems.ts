@@ -17,7 +17,7 @@ const initialState = {
   tagList: {
     count: 0,
     rows: [],
-  }
+  },
 };
 
 export default {
@@ -79,7 +79,7 @@ export default {
       if (detailRet.success) {
         detailRet.data.tags = [];
         try {
-          detailRet.data.tags = [ ...tagsRet.data.rows ];
+          detailRet.data.tags = [...tagsRet.data.rows];
         }
         catch (err) {}
         yield put({

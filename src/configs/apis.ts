@@ -47,7 +47,7 @@ const api = {
   topics: {
     base: '/topics',
     detail: '/topics/:id',
-    replies: '/topics/:id/replies'
+    replies: '/topics/:id/replies',
   },
   replies: {
     base: '/replies',

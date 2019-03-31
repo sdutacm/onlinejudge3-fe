@@ -12,7 +12,7 @@ interface Props extends FormProps, ReduxProps {
 }
 
 interface State {
-  loading: boolean
+  loading: boolean;
 }
 
 class OJBKPre extends React.Component<Props, State> {

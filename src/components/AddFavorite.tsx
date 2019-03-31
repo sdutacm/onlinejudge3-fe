@@ -4,7 +4,7 @@ import { Form, Input, Popover, Button } from 'antd';
 import { FormProps, ReduxProps } from '@/@types/props';
 import msg from '@/utils/msg';
 
-interface Props extends ReduxProps, FormProps {
+export interface Props extends ReduxProps, FormProps {
   type: 'problem' | 'contest';
   id: number;
 }
@@ -81,9 +81,7 @@ class AddFavorite extends React.Component<Props, State> {
           <div>
             <Form layout="vertical" hideRequiredMark={true}>
               <Form.Item style={{ marginBottom: '0' }}>
-                {getFieldDecorator('note')(
-                  <Input.TextArea rows={2} placeholder="Note what you think... (optional)" />
-                )}
+                {getFieldDecorator('note')(<Input.TextArea rows={2} placeholder="Note what you think... (optional)" />)}
               </Form.Item>
             </Form>
             <Button type="primary" block loading={loading} onClick={this.handleAdd}>Add</Button>

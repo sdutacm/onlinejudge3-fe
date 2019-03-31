@@ -80,7 +80,7 @@ export default {
               hasChange = true;
               return ret.data[row.solutionId];
             }
-            return row
+            return row;
           });
           hasChange && (yield put({
             type: 'updateList',
@@ -137,7 +137,7 @@ export default {
             id,
             data: { shared },
           },
-        })
+        });
       }
       return ret;
     },

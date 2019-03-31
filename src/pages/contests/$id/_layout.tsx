@@ -11,7 +11,7 @@ import { floor } from 'math-precision';
 import setStatePromise from '@/utils/setStatePromise';
 import PageLoading from '@/components/PageLoading';
 
-interface Props extends RouteProps, ReduxProps {
+export interface Props extends RouteProps, ReduxProps {
   id: number;
   session: ISessionStatus;
   detail: IContest;
@@ -103,7 +103,7 @@ class ContestBase extends React.Component<Props, State> {
     // 进入到比赛内部页面，但未获得比赛 session，强制拉回到比赛守卫
     if (nextProps.location.pathname !== pages.contests.home &&
       !this.props.session && nextProps.session && !nextProps.session.loggedIn) {
-      router.replace(urlf(pages.contests.home, { param: { id }}));
+      router.replace(urlf(pages.contests.home, { param: { id } }));
     }
     // 用户态变成已登录
     if (!(this.props.session && this.props.session.loggedIn) && (nextProps.session && nextProps.session.loggedIn)) {
@@ -128,7 +128,7 @@ class ContestBase extends React.Component<Props, State> {
         type: 'contests/getSession',
         payload: { id },
       });
-      router.replace(urlf(pages.contests.home, { param: { id }}));
+      router.replace(urlf(pages.contests.home, { param: { id } }));
     }
   }
 

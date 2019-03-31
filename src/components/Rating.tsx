@@ -1,6 +1,6 @@
 import React from 'react';
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import { Skeleton } from 'antd';
 
 const levelMap = {
@@ -10,7 +10,7 @@ const levelMap = {
   'epic': '史诗',
   'rare': '罕见',
   'excellent': '优秀',
-  'common': '普通'
+  'common': '普通',
 };
 
 const levels = [
@@ -90,10 +90,10 @@ const levels = [
         color: '#ffffff',
       },
     },
-  }
+  },
 ];
 
-interface Props {
+export interface Props {
   rating: number;
   ratingHistory: IRatingHistory;
   loading: boolean;
@@ -105,14 +105,14 @@ interface State {
 class Rating extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
 
+  private chartInput = [];
+  private selectedLevels = [];
+  private positions = [];
+
   constructor(props) {
     super(props);
     this.state = {};
   }
-
-  chartInput = [];
-  selectedLevels = [];
-  positions = [];
 
   // old
   prepareData(ratingHistory: IRatingHistory) {
@@ -129,7 +129,7 @@ class Rating extends React.Component<Props, State> {
       for (let i = 0; i < ratingHistory.length; ++i) {
         minRating = Math.min(minRating, ratingHistory[i]['rating']);
         maxRating = Math.max(maxRating, ratingHistory[i]['rating']);
-        this.chartInput.push([new Date(ratingHistory[i]['date']).getTime(), ratingHistory[i]['rating']])
+        this.chartInput.push([new Date(ratingHistory[i]['date']).getTime(), ratingHistory[i]['rating']]);
         // if(ratingHistory[i]['rating_change'] >= 0)
         //   ratingHistory[i]['rating_change'] = '+' + ratingHistory[i]['rating_change'];
       }
@@ -156,10 +156,10 @@ class Rating extends React.Component<Props, State> {
       this.positions.push(this.selectedLevels[i].from);
     }
     this.positions.push(this.selectedLevels[this.selectedLevels.length - 1].to);
-    if (this.positions[0] == levels[0].from) {
+    if (this.positions[0] === levels[0].from) {
       this.positions[0] = minRating - 400;
     }
-    if (this.positions[this.positions.length - 1] == levels[levels.length - 1].to) {
+    if (this.positions[this.positions.length - 1] === levels[levels.length - 1].to) {
       this.positions[this.positions.length - 1] = maxRating + 400;
     }
   }
@@ -196,18 +196,18 @@ class Rating extends React.Component<Props, State> {
           overflow: 'justify',
           style: {
             color: '#999',
-          }
+          },
         },
         lineColor: 'transparent',
       },
       yAxis: {
         title: {
-          text: null
+          text: null,
         },
         labels: {
           style: {
             color: '#999',
-          }
+          },
         },
         tickPositions: this.positions,
         minorGridLineWidth: 0,
@@ -237,9 +237,9 @@ class Rating extends React.Component<Props, State> {
           marker: {
             fillColor: '#FFFFFF',
             lineWidth: 3,
-            lineColor: null // inherit from series
-          }
-        }
+            lineColor: null, // inherit from series
+          },
+        },
       },
       series: [{
         name: 'Rating',
@@ -248,12 +248,12 @@ class Rating extends React.Component<Props, State> {
       }],
       navigation: {
         menuItemStyle: {
-          fontSize: '10px'
-        }
+          fontSize: '10px',
+        },
       },
       credits: {
-        enabled: false
-      }
+        enabled: false,
+      },
     };
     let level = '';
     let color = 'inherit';
@@ -267,6 +267,8 @@ class Rating extends React.Component<Props, State> {
     return (
       <div className="rating-history">
         <h3 className="name-rating" style={{ color, fontSize: '1rem' }}>【{level}】{rating}</h3>
+        {/*
+          // @ts-ignore */}
         <HighchartsReact highcharts={Highcharts} options={options} />
       </div>
     );

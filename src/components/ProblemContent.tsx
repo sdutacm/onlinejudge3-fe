@@ -1,6 +1,6 @@
 import React from 'react';
 import { Skeleton } from 'antd';
-import xss from 'xss';
+import { filterXSS as xss } from 'xss';
 import styles from './ProblemContent.less';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { numberToAlphabet } from '@/utils/format';
@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import 'katex/dist/katex.min.css';
 import AutoLaTeX from 'react-autolatex';
 
-interface Props {
+export interface Props {
   loading: boolean;
   data: IProblem;
   problemIndex?: number;
@@ -18,8 +18,10 @@ const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, proble
   if (loading) {
     return (
       <div>
-        <Skeleton active paragraph={{ rows: 0 }} title={{ width: '100%' }}
-                  className={styles.problemContentSkeletonTitle} />
+        <Skeleton
+          active
+          paragraph={{ rows: 0 }} title={{ width: '100%' }}
+          className={styles.problemContentSkeletonTitle} />
         <Skeleton active paragraph={{ rows: 4 }} title={{ width: '31.5%' }} />
         <Skeleton active paragraph={{ rows: 3 }} title={{ width: '14%' }} />
         <Skeleton active paragraph={{ rows: 3 }} title={{ width: '19%' }} />

@@ -4,7 +4,7 @@ import { Popconfirm } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import msg from '@/utils/msg';
 
-interface Props extends ReduxProps {
+export interface Props extends ReduxProps {
   favoriteId: number;
 }
 

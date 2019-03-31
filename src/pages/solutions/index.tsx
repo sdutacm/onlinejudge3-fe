@@ -19,7 +19,7 @@ import router from 'umi/router';
 import constants from '@/configs/constants';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: IList<ISolution>;
   session: ISessionStatus;
 }
@@ -72,8 +72,11 @@ class SolutionList extends React.Component<Props, State> {
           </Col>
           <Col xs={24} lg={6} xxl={4}>
             <Card bordered={false}>
-              <ToDetailCard label="Go to Solution" placeholder="Solution ID"
-                            toDetailLink={id => urlf(pages.solutions.detail, { param: { id } })} />
+              <ToDetailCard
+                label="Go to Solution"
+                placeholder="Solution ID"
+                toDetailLink={id => urlf(pages.solutions.detail, { param: { id } })}
+              />
             </Card>
             <Card bordered={false}>
               <FilterCard fields={[
@@ -82,14 +85,14 @@ class SolutionList extends React.Component<Props, State> {
                 {
                   displayName: 'Language', fieldName: 'language', options: langs.map(lang => {
                     return { fieldName: lang.fieldName, displayName: lang.displayShortName };
-                  })
+                  }),
                 },
                 {
                   displayName: 'Result', fieldName: 'result', options: results.filter(res => {
-                    return res.id !== Results.WT && res.id !== Results.JG
+                    return res.id !== Results.WT && res.id !== Results.JG;
                   }).map(res => {
                     return { fieldName: res.id, displayName: res.fullName };
-                  })
+                  }),
                 },
               ]} />
             </Card>

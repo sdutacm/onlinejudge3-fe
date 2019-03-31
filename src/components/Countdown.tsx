@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface Props {
+export interface Props {
   secs: number;
   renderTime: (secs: number) => React.ReactNode;
   handleRequestTimeSync?: () => any;
@@ -25,6 +25,25 @@ class Countdown extends React.Component<Props, State> {
     };
   }
 
+  componentDidMount(): void {
+    if (this.state.secs <= 0) {
+      return;
+    }
+    const { handleRequestTimeSync, timeSyncInterval } = this.props;
+    this.setState({
+      timer: setInterval(this.updateTime, 1000) as any,
+    });
+    if (typeof handleRequestTimeSync === 'function' && timeSyncInterval) {
+      this.setState({
+        requestSyncTimer: setInterval(this.syncTime, timeSyncInterval) as any,
+      });
+    }
+  }
+
+  componentWillUnmount(): void {
+    this.clearTimers();
+  }
+
   updateTime = () => {
     const { secs } = this.state;
     if (secs <= 0) {
@@ -44,25 +63,6 @@ class Countdown extends React.Component<Props, State> {
     clearInterval(this.state.timer);
     clearInterval(this.state.requestSyncTimer);
   };
-
-  componentDidMount(): void {
-    if (this.state.secs <= 0) {
-      return;
-    }
-    const { handleRequestTimeSync, timeSyncInterval } = this.props;
-    this.setState({
-      timer: setInterval(this.updateTime, 1000) as any,
-    });
-    if (typeof handleRequestTimeSync === 'function' && timeSyncInterval) {
-      this.setState({
-        requestSyncTimer: setInterval(this.syncTime, timeSyncInterval) as any,
-      });
-    }
-  }
-
-  componentWillUnmount(): void {
-    this.clearTimers();
-  }
 
   render() {
     return this.props.renderTime(this.state.secs);

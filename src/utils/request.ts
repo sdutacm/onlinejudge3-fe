@@ -8,9 +8,10 @@ function initAxios(): AxiosInstance {
     timeout: constants.requestTimeout,
   });
   axiosInstance.interceptors.request.use(function(config) {
-    config.params = Object.assign({}, config.params, {
+    config.params = {
+      ...config.params,
       _t: new Date().getTime(),
-    });
+    };
     return config;
   });
   return axiosInstance;
@@ -47,12 +48,12 @@ export async function get(url: string, minDuration?: number): Promise<IApiRespon
   const startTime = Date.now();
   const res = await request(url);
   if (minDuration > 0) {
-      const duration = Date.now() - startTime;
-      if (duration < minDuration) {
-        return new Promise<IApiResponse<any> >((resolve, reject) => {
-          setTimeout(() => resolve(res), minDuration - duration);
-        });
-      }
+    const duration = Date.now() - startTime;
+    if (duration < minDuration) {
+      return new Promise<IApiResponse<any>>((resolve, reject) => {
+        setTimeout(() => resolve(res), minDuration - duration);
+      });
+    }
   }
   return res;
 }

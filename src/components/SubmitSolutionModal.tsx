@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Form, Input, Select, Modal } from 'antd';
-import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
+import { FormProps, ReduxProps, RouteLocation } from '@/@types/props';
 import langs from '@/configs/solutionLanguages';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import router from 'umi/router';
 import pages from '@/configs/pages';
 import { numberToAlphabet, urlf } from '@/utils/format';
-import { RouteLocation } from '@/@types/props';
 
-interface Props extends ReduxProps, FormProps {
+export interface Props extends ReduxProps, FormProps {
   problemId: number;
   problemIndex?: number;
   contestId?: number;
@@ -39,7 +38,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
       if (!err) {
         dispatch({
           type: 'solutions/submit',
-          payload: { ...values, contestId, },
+          payload: { ...values, contestId },
         }).then(ret => {
           msg.auto(ret);
           if (ret.success) {

@@ -12,24 +12,8 @@ import 'csshake';
 import { Codes } from '@/configs/codes/codes';
 
 class JoinModal extends React.Component<any, any> {
-  setStatePromise = setStatePromise.bind(this);
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-      shake: false,
-      shakeTimer: null,
-      firstShow: true,
-      contentVisible: true,
-      tab: 'login',
-      confirmDirty: false,
-      verificationCodeRetry: null,
-      verificationCodeRetryTimer: null,
-    };
-  }
-
-  tabs = {
+  private setStatePromise = setStatePromise.bind(this);
+  private tabs = {
     login: {
       title: 'Login',
       body: () => {
@@ -52,7 +36,7 @@ class JoinModal extends React.Component<any, any> {
 
             <Form.Item>
               <a onClick={e => this.switchTab(e, 'forgotPassword')}>Forgot Password</a> or <a
-              onClick={e => this.switchTab(e, 'register')}>Register</a>
+                onClick={e => this.switchTab(e, 'register')}>Register</a>
             </Form.Item>
 
             <Form.Item className="display-none">
@@ -214,6 +198,21 @@ class JoinModal extends React.Component<any, any> {
     },
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+      shake: false,
+      shakeTimer: null,
+      firstShow: true,
+      contentVisible: true,
+      tab: 'login',
+      confirmDirty: false,
+      verificationCodeRetry: null,
+      verificationCodeRetryTimer: null,
+    };
+  }
+
   // funTransitionHeight reference: @zhangxinxu
   funTransitionHeight(element) {
     if (typeof window.getComputedStyle === 'undefined') {
@@ -364,7 +363,7 @@ class JoinModal extends React.Component<any, any> {
       msg.auto(ret);
       if (ret.success) {
         msg.success('Your password has been reset successfully');
-        this.switchTab(null, 'login')
+        this.switchTab(null, 'login');
       }
       else if (ret.result === 'error') {
         setFormErrors(form, ret.errors);

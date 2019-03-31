@@ -5,7 +5,7 @@ import ProblemDetailPage from '@/components/ProblemDetailPage';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: ITypeObject<IProblem>;
   session: ISessionStatus;
   favorites: IFullList<IFavorite>;
@@ -33,7 +33,7 @@ class ProblemDetail extends React.Component<Props, State> {
           id: getPathParamId(nextProps.location.pathname, pages.problems.detail),
           force: true,
         },
-      })
+      });
     }
   }
 

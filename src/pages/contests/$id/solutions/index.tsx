@@ -18,7 +18,7 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
   detailLoading: boolean;
@@ -48,7 +48,7 @@ class ContestSolutions extends React.Component<Props, State> {
         ...query,
         contestId: this.props.id,
       },
-    })
+    });
   };
 
   componentDidMount(): void {
@@ -101,14 +101,23 @@ class ContestSolutions extends React.Component<Props, State> {
           <Row gutter={16}>
             <Col xs={24} lg={18} xxl={20}>
               <Card bordered={false} className="list-card">
-                <SolutionTable loading={loading} data={data} dispatch={dispatch} showPagination
-                               contestId={id} problemList={problemList} />
+                <SolutionTable
+                  loading={loading}
+                  data={data}
+                  dispatch={dispatch}
+                  showPagination
+                  contestId={id}
+                  problemList={problemList}
+                />
               </Card>
             </Col>
             <Col xs={24} lg={6} xxl={4}>
               <Card bordered={false}>
-                <ToDetailCard label="Go to Solution" placeholder="Solution ID"
-                              toDetailLink={sid => urlf(pages.contests.solutionDetail, { param: { id, sid } })} />
+                <ToDetailCard
+                  label="Go to Solution"
+                  placeholder="Solution ID"
+                  toDetailLink={sid => urlf(pages.contests.solutionDetail, { param: { id, sid } })}
+                />
               </Card>
               <Card bordered={false}>
                 <FilterCard fields={[
@@ -119,19 +128,19 @@ class ContestSolutions extends React.Component<Props, State> {
                         fieldName: problem.problemId,
                         displayName: `${numberToAlphabet(problem.index)} - ${problem.title}`,
                       };
-                    })
+                    }),
                   },
                   {
                     displayName: 'Language', fieldName: 'language', options: langs.map(lang => {
                       return { fieldName: lang.fieldName, displayName: lang.displayShortName };
-                    })
+                    }),
                   },
                   {
                     displayName: 'Result', fieldName: 'result', options: results.filter(res => {
-                      return res.id !== Results.WT && res.id !== Results.JG
+                      return res.id !== Results.WT && res.id !== Results.JG;
                     }).map(res => {
                       return { fieldName: res.id, displayName: res.fullName };
-                    })
+                    }),
                   },
                 ]} />
               </Card>

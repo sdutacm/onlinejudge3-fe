@@ -18,7 +18,7 @@ import classNames from 'classnames';
 import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
   tagList: IFullList<ITag>;
   problemResultStats: IUserProblemResultStats;
@@ -128,7 +128,7 @@ class ProblemList extends React.Component<Props, State> {
 
   render() {
     const {
-      loading, data: { page, count, rows }, tagList, problemResultStats: { acceptedProblemIds, attemptedProblemIds }
+      loading, data: { page, count, rows }, tagList, problemResultStats: { acceptedProblemIds, attemptedProblemIds },
     } = this.props;
     const tagIds = this.getTagIdsFromQuery();
     // let searchInput;
@@ -137,17 +137,18 @@ class ProblemList extends React.Component<Props, State> {
         <Row gutter={16}>
           <Col xs={24} md={18} xxl={20}>
             <Card bordered={false} className="list-card">
-              <Table dataSource={rows}
-                     rowKey="problemId"
-                     loading={loading}
-                     onChange={this.handleTableChange}
-                     pagination={false}
-                     className="responsive-table"
-                     rowClassName={(record: IProblem) => classNames(
-                       'problem-result-mark-row',
-                       { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                       { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
-                     )}
+              <Table
+                dataSource={rows}
+                rowKey="problemId"
+                loading={loading}
+                onChange={this.handleTableChange}
+                pagination={false}
+                className="responsive-table"
+                rowClassName={(record: IProblem) => classNames(
+                  'problem-result-mark-row',
+                  { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
+                  { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                )}
               >
                 <Table.Column
                   title="Title"
@@ -177,11 +178,19 @@ class ProblemList extends React.Component<Props, State> {
                   render={(text, record: IProblem) => (
                     <div>
                       <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
-                      {record.tags.length ? <div className="float-right">{record.tags.map(tag =>
-                        <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
-                          <a onClick={() => this.toggleTag(tag.tagId, true)}><Tag>{tag.name.en}</Tag></a>
-                        </Popover>
-                        )}</div> :
+                      {record.tags.length ?
+                        <div className="float-right">
+                          {record.tags.map(tag =>
+                            <Popover
+                              key={tag.tagId}
+                              content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
+                            >
+                              <a onClick={() => this.toggleTag(tag.tagId, true)}>
+                                <Tag>{tag.name.en}</Tag>
+                              </a>
+                            </Popover>
+                          )}
+                        </div> :
                         <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
                       }
                     </div>
@@ -218,8 +227,11 @@ class ProblemList extends React.Component<Props, State> {
           </Col>
           <Col xs={24} md={6} xxl={4}>
             <Card bordered={false}>
-              <ToDetailCard label="Go to Problem" placeholder="Problem ID"
-                            toDetailLink={id => urlf(pages.problems.detail, { param: { id } })} />
+              <ToDetailCard
+                label="Go to Problem"
+                placeholder="Problem ID"
+                toDetailLink={id => urlf(pages.problems.detail, { param: { id } })}
+              />
             </Card>
             <Card bordered={false}>
               <FilterCard fields={[

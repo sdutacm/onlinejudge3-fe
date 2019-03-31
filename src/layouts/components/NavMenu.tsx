@@ -18,7 +18,7 @@ import NoteSvg from '@/assets/svg/note.svg';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   mobileVersion: boolean;
   onLinkClick: () => void;
   className: string;
@@ -70,8 +70,10 @@ class NavMenu extends React.Component<Props, State> {
       <div>
         <MessageList count={count} rows={rows} dispatch={dispatch} loading={unreadMessagesLoading} />
         <div className="text-center" style={{ lineHeight: '45px' }}>
-          <Link to={urlf(pages.messages.index, { query: { type: 'received' } })}
-                onClick={() => this.setState({ messagesVisible: false })}>
+          <Link
+            to={urlf(pages.messages.index, { query: { type: 'received' } })}
+            onClick={() => this.setState({ messagesVisible: false })}
+          >
             View All
           </Link>
         </div>
@@ -115,10 +117,6 @@ class NavMenu extends React.Component<Props, State> {
           <Link to={pages.users.index} onClick={onLinkClick}>Standings</Link>
         </Menu.Item>
 
-        {/*<Menu.Item key="/Forum">*/}
-          {/*<Link to={pages.index} onClick={onLinkClick}>Forum</Link>*/}
-        {/*</Menu.Item>*/}
-
         {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
           <Link to={pages.index} onClick={onLinkClick}>Idea Notes</Link>
         </Menu.Item>}
@@ -133,15 +131,22 @@ class NavMenu extends React.Component<Props, State> {
             </Menu.Item>
             :
             session.loggedIn ?
-              <Menu.ItemGroup title={<span><Avatar icon="user"
-                                                   src={formatAvatarUrl(session.user.avatar)}
-                                                   className={styles.avatarDefault} /><span style={{ marginLeft: '8px' }}>{session.user.nickname}</span></span>}>
+              <Menu.ItemGroup
+                title={<span>
+                  <Avatar
+                    icon="user"
+                    src={formatAvatarUrl(session.user.avatar)}
+                    className={styles.avatarDefault}
+                  />
+                  <span style={{ marginLeft: '8px' }}>{session.user.nickname}</span>
+                </span>}
+              >
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
                 </Menu.Item>
-                {/*<Menu.Item key="favorites">*/}
-                  {/*<Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>*/}
-                {/*</Menu.Item>*/}
+                {/* <Menu.Item key="favorites"> */}
+                {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
+                {/* </Menu.Item> */}
                 <Menu.Item key="logout" onClick={() => {
                   onLinkClick();
                   this.logout();
@@ -153,67 +158,66 @@ class NavMenu extends React.Component<Props, State> {
               </Menu.Item>
           :
           loading ?
-            <Menu.Item key="loading" style={{ float: 'right' }}>
+            <Menu.Item key="loading" className="float-right">
               <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
             </Menu.Item>
             :
             session.loggedIn ?
-              <Menu.SubMenu title={<span>
+              <Menu.SubMenu
+                title={<span>
                   <Avatar icon="user" src={formatAvatarUrl(session.user.avatar)} className={styles.avatarDefault} />
                   <Icon type="down" className={gStyles.iconRight} />
                 </span>}
-                            onTitleClick={() => router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))}
-                            style={{ float: 'right' }}>
+                onTitleClick={() => router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))}
+                className="float-right">
                 <Menu.Item key="nickname" disabled>
                   <span>{session.user.nickname}</span>
                 </Menu.Item>
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
                 </Menu.Item>
-                {/*<Menu.Item key="favorites">*/}
-                  {/*<Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link>*/}
-                {/*</Menu.Item>*/}
+                {/* <Menu.Item key="favorites"> */}
+                {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
+                {/* </Menu.Item> */}
                 <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
               </Menu.SubMenu>
               :
-              <Menu.Item key="join" style={{ float: 'right' }}>
+              <Menu.Item key="join" className="float-right">
                 <JoinModal>Join</JoinModal>
               </Menu.Item>
         }
 
-        {!mobileVersion && session.loggedIn && <Menu.Item key="unreadMessages" style={{ float: 'right' }}>
-          <Popover content={this.messagesComponent()}
-                   title="Messages"
-                   placement="bottom"
-                   trigger="click"
-                   overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
-                   overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
-                   visible={this.state.messagesVisible}
-                   onVisibleChange={messagesVisible => this.setState({ messagesVisible })}
+        {!mobileVersion && session.loggedIn && <Menu.Item key="unreadMessages" className="float-right">
+          <Popover
+            content={this.messagesComponent()}
+            title="Messages"
+            placement="bottom"
+            trigger="click"
+            overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
+            overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
+            visible={this.state.messagesVisible}
+            onVisibleChange={messagesVisible => this.setState({ messagesVisible })}
           >
             <a><Badge count={unreadMessages.count}><Icon type="bell" theme="outlined" /></Badge></a>
           </Popover>
         </Menu.Item>}
-        {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" style={{ float: 'right' }}>
-          <Popover content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
-                   title="Idea Notes"
-                   placement="bottom"
-                   trigger="click"
-                   overlayClassName="menu-popover inner-content-scroll-md"
-                   visible={this.state.notesVisible}
-                   onVisibleChange={notesVisible => this.setState({ notesVisible })}
+        {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" className="float-right">
+          <Popover
+            content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
+            title="Idea Notes"
+            placement="bottom"
+            trigger="click"
+            overlayClassName="menu-popover inner-content-scroll-md"
+            visible={this.state.notesVisible}
+            onVisibleChange={notesVisible => this.setState({ notesVisible })}
           >
             <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>
         </Menu.Item>}
-        <Menu.Item key="settings" style={{ float: 'right' }}>
+        <Menu.Item key="settings" className="float-right">
           <SettingsModal>
             <Icon type="setting" />
           </SettingsModal>
-          {/*<Popover content={theme === 'light' ? 'Go to Deep Dark Fantasy' : 'Back to Real Light World'}*/}
-                   {/*mouseEnterDelay={5}>*/}
-            {/*<a><Icon component={ThemeSvg} /></a>*/}
-          {/*</Popover>*/}
         </Menu.Item>
       </Menu>
     );

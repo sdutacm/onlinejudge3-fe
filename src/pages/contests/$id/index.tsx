@@ -18,7 +18,7 @@ interface IContestSessionState extends ISessionStatus {
   _code: number;
 }
 
-interface Props extends ReduxProps, FormProps {
+export interface Props extends ReduxProps, FormProps {
   id: number;
   globalSession: ISessionStatus;
   session: IContestSessionState;
@@ -33,43 +33,7 @@ interface State {
 class ContestHome extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
 
-  constructor(props) {
-    super(props);
-    const { session } = this.props;
-    let tab: TabType = '';
-    switch (session._code) {
-      case Codes.R_CONTESTS_NEED_LOGIN_OJ:
-        tab = 'loginGlobal';
-        break;
-      case Codes.R_CONTESTS_NEED_LOGIN_PRIVATE_CONTEST:
-        tab = 'enterPassword';
-        break;
-      case Codes.R_CONTESTS_NEED_LOGIN_REGISTER_CONTEST:
-        tab = 'loginContest';
-        break;
-    }
-    this.state = {
-      tab,
-    };
-  }
-
-  componentDidMount(): void {
-    if (this.props.session.loggedIn) {
-      router.replace(urlf(pages.contests.overview, { param: { id: this.props.id } }));
-    }
-  }
-
-  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-    if (!this.props.session.loggedIn && nextProps.session.loggedIn) {
-      router.replace(urlf(pages.contests.overview, { param: { id: nextProps.id } }));
-    }
-  }
-
-  switchTab = (e, tab) => {
-    this.setState({ tab });
-  };
-
-  tabs = {
+  private tabs = {
     loginGlobal: {
       title: 'Login OJ to View',
       body: () => {
@@ -101,7 +65,7 @@ class ContestHome extends React.Component<Props, State> {
             </Form.Item>
           </Form>
         );
-      }
+      },
     },
 
     enterPassword: {
@@ -157,6 +121,42 @@ class ContestHome extends React.Component<Props, State> {
         );
       },
     },
+  };
+
+  constructor(props) {
+    super(props);
+    const { session } = this.props;
+    let tab: TabType = '';
+    switch (session._code) {
+      case Codes.R_CONTESTS_NEED_LOGIN_OJ:
+        tab = 'loginGlobal';
+        break;
+      case Codes.R_CONTESTS_NEED_LOGIN_PRIVATE_CONTEST:
+        tab = 'enterPassword';
+        break;
+      case Codes.R_CONTESTS_NEED_LOGIN_REGISTER_CONTEST:
+        tab = 'loginContest';
+        break;
+    }
+    this.state = {
+      tab,
+    };
+  }
+
+  componentDidMount(): void {
+    if (this.props.session.loggedIn) {
+      router.replace(urlf(pages.contests.overview, { param: { id: this.props.id } }));
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+    if (!this.props.session.loggedIn && nextProps.session.loggedIn) {
+      router.replace(urlf(pages.contests.overview, { param: { id: nextProps.id } }));
+    }
+  }
+
+  switchTab = (e, tab) => {
+    this.setState({ tab });
   };
 
   handleSubmit = e => {

@@ -21,7 +21,7 @@ import { isStateExpired } from '@/utils/misc';
 import PageTitle from '@/components/PageTitle';
 import 'animate.css';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
   session: ISessionStatus;
 }
@@ -154,13 +154,13 @@ class Index extends React.Component<Props, State> {
         </Content>
         <Footer className={styles.footer}>
           <p>© 2008-{moment().format('YYYY')} SDUTACM Team. All Rights Reserved.</p>
-          {/*<div>*/}
-            {/*<a>API</a>*/}
-            {/*<Divider type="vertical" />*/}
-            {/*<a>Feedback</a>*/}
-            {/*<Divider type="vertical" />*/}
-            {/*<a>About Us</a>*/}
-          {/*</div>*/}
+          {/* <div> */}
+          {/* <a>API</a> */}
+          {/* <Divider type="vertical" /> */}
+          {/* <a>Feedback</a> */}
+          {/* <Divider type="vertical" /> */}
+          {/* <a>About Us</a> */}
+          {/* </div> */}
         </Footer>
       </Layout>
     );

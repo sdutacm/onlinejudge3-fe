@@ -7,13 +7,13 @@ const base = 'https://api.mushan.ink/';
 
 function calcTcode(OJBK: string) {
   let sum = 0;
-  for (let i=0; i<OJBK.length; ++i) {
+  for (let i = 0; i < OJBK.length; ++i) {
     const ch = OJBK.charCodeAt(i);
     sum += ch;
   }
   const count = sum % 7 + 1;
   let str = OJBK;
-  for (let i=0; i<count; ++i) {
+  for (let i = 0; i < count; ++i) {
     str += `${sum}`;
   }
   return md5(str);

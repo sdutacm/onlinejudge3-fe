@@ -1,4 +1,4 @@
-declare interface ISession {
+interface ISession {
   userId: number;
   username: string;
   nickname: string;
@@ -6,12 +6,12 @@ declare interface ISession {
   permission: number;
 }
 
-declare interface ISessionStatus {
+interface ISessionStatus {
   loggedIn: boolean;
   user: ISession;
 }
 
-declare interface IUser {
+interface IUser {
   userId: number;
   username: string;
   nickname: string;
@@ -33,7 +33,7 @@ declare interface IUser {
   solutionCalendar?: ISolutionCalendar;
 }
 
-declare interface IUserLite {
+interface IUserLite {
   userId: number;
   username: string;
   nickname: string;
@@ -41,24 +41,24 @@ declare interface IUserLite {
   bannerImage: string;
 }
 
-declare interface IUserProblemResultStats {
+interface IUserProblemResultStats {
   acceptedProblemIds: number[];
   attemptedProblemIds: number[];
 }
 
-declare interface IUserSolutionStats {
+interface IUserSolutionStats {
   accepted: number;
   submitted: number;
 }
 
-declare interface IDateCount {
+interface IDateCount {
   date: string;
   count: number;
 }
 
-declare type ISolutionCalendar = IDateCount[];
+type ISolutionCalendar = IDateCount[];
 
-declare interface IRatingHistoryItem {
+interface IRatingHistoryItem {
   contest: {
     contestId: number;
     title: number;
@@ -69,9 +69,9 @@ declare interface IRatingHistoryItem {
   date: string;
 }
 
-declare type IRatingHistory = IRatingHistoryItem[];
+type IRatingHistory = IRatingHistoryItem[];
 
-declare interface IProblem {
+interface IProblem {
   problemId: number;
   title: string;
   description?: string;
@@ -92,7 +92,7 @@ declare interface IProblem {
   updatedAt: ITimestamp;
 }
 
-declare interface ISolution {
+interface ISolution {
   solutionId: number;
   user: IUserLite;
   problem: {
@@ -116,13 +116,13 @@ declare interface ISolution {
   compileInfo?: string;
 }
 
-declare interface IContest {
+interface IContest {
   contestId: number;
   title: string;
   type: number;
   category: number;
   intro: string;
-  description?: string,
+  description?: string;
   password?: string;
   startAt: number;
   endAt: number;
@@ -136,14 +136,14 @@ declare interface IContest {
   updatedAt: ITimestamp;
 }
 
-declare interface IContestProblemResultStats {
+interface IContestProblemResultStats {
   [key: number]: {
     accepted: number;
     submitted: number;
   };
 }
 
-declare interface IContestUser {
+interface IContestUser {
   contestUserId: number;
   username: string;
   nickname: string;
@@ -168,13 +168,13 @@ declare interface IContestUser {
   updatedAt: ITimestamp;
 }
 
-declare interface IRanklistProblemResultStat {
+interface IRanklistProblemResultStat {
   result: 'FB' | 'AC' | 'X' | '-' | '?';
   attempted: number;
   time: number;
 }
 
-declare interface IRanklistRow {
+interface IRanklistRow {
   rank: number;
   user: IUserLite;
   solved: number;
@@ -183,9 +183,9 @@ declare interface IRanklistRow {
   _self?: boolean;
 }
 
-declare type IRanklist = IRanklistRow[];
+type IRanklist = IRanklistRow[];
 
-declare interface ITopic {
+interface ITopic {
   topicId: number;
   user: IUserLite;
   problem: {
@@ -198,7 +198,7 @@ declare interface ITopic {
   createdAt: ITimestamp;
 }
 
-declare interface IReply {
+interface IReply {
   replyId: number;
   user?: IUserLite;
   topic?: {
@@ -209,7 +209,7 @@ declare interface IReply {
   createdAt: ITimestamp;
 }
 
-declare interface ITag {
+interface ITag {
   tagId: number;
   name: {
     en: string;
@@ -219,7 +219,7 @@ declare interface ITag {
   createdAt: ITimestamp;
 }
 
-declare interface IMessage {
+interface IMessage {
   messageId: number;
   from: IUserLite;
   to: IUserLite;
@@ -227,10 +227,10 @@ declare interface IMessage {
   content: string;
   read?: boolean;
   anonymous: boolean;
-  createdAt: ITimestamp,
+  createdAt: ITimestamp;
 }
 
-declare interface IFavoriteBase {
+interface IFavoriteBase {
   favoriteId: number;
   type: string;
   target: any;
@@ -239,7 +239,7 @@ declare interface IFavoriteBase {
   updatedAt: ITimestamp;
 }
 
-declare interface IFavoriteProblem extends IFavoriteBase {
+interface IFavoriteProblem extends IFavoriteBase {
   type: 'problem';
   target: {
     problemId: number;
@@ -247,7 +247,7 @@ declare interface IFavoriteProblem extends IFavoriteBase {
   };
 }
 
-declare interface IFavoriteContest extends IFavoriteBase {
+interface IFavoriteContest extends IFavoriteBase {
   type: 'contest';
   target: {
     contestId: number;
@@ -255,9 +255,9 @@ declare interface IFavoriteContest extends IFavoriteBase {
   };
 }
 
-declare type IFavorite = IFavoriteProblem | IFavoriteContest
+type IFavorite = IFavoriteProblem | IFavoriteContest
 
-declare interface ISet {
+interface ISet {
   setId: number;
   title: string;
   description: string;
@@ -270,7 +270,7 @@ declare interface ISet {
   updatedAt: ITimestamp;
 }
 
-declare interface INoteBase {
+interface INoteBase {
   noteId: number;
   type: string;
   target: any;
@@ -279,7 +279,7 @@ declare interface INoteBase {
   updatedAt: ITimestamp;
 }
 
-declare interface INoteProblem extends INoteBase {
+interface INoteProblem extends INoteBase {
   type: 'problem';
   target: {
     problemId: number;
@@ -292,7 +292,7 @@ declare interface INoteProblem extends INoteBase {
   };
 }
 
-declare interface INoteContest extends INoteBase {
+interface INoteContest extends INoteBase {
   type: 'contest';
   target: {
     contestId: number;
@@ -300,7 +300,7 @@ declare interface INoteContest extends INoteBase {
   };
 }
 
-declare interface INoteSolution extends INoteBase {
+interface INoteSolution extends INoteBase {
   type: 'solution';
   target: {
     solutionId: number;
@@ -317,23 +317,23 @@ declare interface INoteSolution extends INoteBase {
   };
 }
 
-declare interface INoteUnknown extends INoteBase {
+interface INoteUnknown extends INoteBase {
   type: '';
   target: {
     url: string;
     location: {
-      pathname: string,
-      search: string,
-      query: any,
-      hash: string,
+      pathname: string;
+      search: string;
+      query: any;
+      hash: string;
     };
-    [x: string]: any,
+    [x: string]: any;
   };
 }
 
-declare type INote = INoteProblem | INoteContest | INoteSolution | INoteUnknown
+type INote = INoteProblem | INoteContest | INoteSolution | INoteUnknown
 
-declare interface INoteProblemReq {
+interface INoteProblemReq {
   type: 'problem';
   target: {
     problemId: number;
@@ -341,47 +341,47 @@ declare interface INoteProblemReq {
   };
 }
 
-declare interface INoteContestReq {
+interface INoteContestReq {
   type: 'contest';
   target: {
     contestId: number;
   };
 }
 
-declare interface INoteSolutionReq {
+interface INoteSolutionReq {
   type: 'solution';
   target: {
     solutionId: number;
   };
 }
 
-declare interface INoteUnknownReq {
+interface INoteUnknownReq {
   type: '';
   target: {
     url: string;
     location: {
-      pathname: string,
-      search: string,
-      query: any,
-      hash: string,
+      pathname: string;
+      search: string;
+      query: any;
+      hash: string;
     };
   };
 }
 
-declare type INoteReq = INoteProblemReq | INoteContestReq | INoteSolutionReq | INoteUnknownReq
+type INoteReq = INoteProblemReq | INoteContestReq | INoteSolutionReq | INoteUnknownReq
 
-declare interface ISetPropsTypeStandard {
+interface ISetPropsTypeStandard {
   sections: {
     title: string;
     problems: IProblem[];
   }[];
 }
 
-declare type ISettingsTheme = 'light' | 'dark';
+type ISettingsTheme = 'light' | 'dark';
 
-declare type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';
+type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';
 
-declare interface ISettings {
+interface ISettings {
   theme: ISettingsTheme;
   color: ISettingsColor;
   improveAnimation: boolean;

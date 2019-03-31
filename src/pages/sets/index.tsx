@@ -15,7 +15,7 @@ import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: IList<ISet>;
 }
 
@@ -44,11 +44,12 @@ class SetList extends React.Component<Props> {
         <Row gutter={16}>
           <Col xs={24} md={18} xxl={20}>
             <Card bordered={false} className="list-card">
-              <Table dataSource={rows}
-                     rowKey="setId"
-                     loading={loading}
-                     pagination={false}
-                     className="responsive-table"
+              <Table
+                dataSource={rows}
+                rowKey="setId"
+                loading={loading}
+                pagination={false}
+                className="responsive-table"
               >
                 <Table.Column
                   title="Title"
@@ -71,8 +72,11 @@ class SetList extends React.Component<Props> {
           </Col>
           <Col xs={24} md={6} xxl={4}>
             <Card bordered={false}>
-              <ToDetailCard label="Go to Set" placeholder="Set ID"
-                            toDetailLink={id => urlf(pages.sets.detail, { param: { id } })} />
+              <ToDetailCard
+                label="Go to Set"
+                placeholder="Set ID"
+                toDetailLink={id => urlf(pages.sets.detail, { param: { id } })}
+              />
             </Card>
             <Card bordered={false}>
               <FilterCard fields={[

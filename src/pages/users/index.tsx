@@ -15,7 +15,7 @@ import ToDetailCard from '@/components/ToDetailCard';
 import UserBar from '@/components/UserBar';
 import PageAnimation from '@/components/PageAnimation';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   data: IList<IUser>;
 }
 
@@ -63,12 +63,13 @@ class Standings extends React.Component<Props, State> {
         <Row gutter={16}>
           <Col xs={24} md={18} xxl={20}>
             <Card bordered={false} className="list-card">
-              <Table dataSource={rows}
-                     rowKey="userId"
-                     loading={loading}
-                     pagination={false}
-                     className="responsive-table"
-                     onChange={this.handleTableChange}
+              <Table
+                dataSource={rows}
+                rowKey="userId"
+                loading={loading}
+                pagination={false}
+                className="responsive-table"
+                onChange={this.handleTableChange}
               >
                 <Table.Column
                   title="Rank"
@@ -114,8 +115,11 @@ class Standings extends React.Component<Props, State> {
           </Col>
           <Col xs={24} md={6} xxl={4}>
             <Card bordered={false}>
-              <ToDetailCard label="Go to User" placeholder="User ID"
-                            toDetailLink={id => urlf(pages.users.detail, { param: { id } })} />
+              <ToDetailCard
+                label="Go to User"
+                placeholder="User ID"
+                toDetailLink={id => urlf(pages.users.detail, { param: { id } })}
+              />
             </Card>
             <Card bordered={false}>
               <FilterCard fields={[

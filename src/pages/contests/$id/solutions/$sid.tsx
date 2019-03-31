@@ -7,7 +7,7 @@ import { isEqual } from 'lodash';
 import SolutionDetailPage from '@/components/SolutionDetailPage';
 import PageLoading from '@/components/PageLoading';
 
-interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
   detailLoading: boolean;
@@ -36,7 +36,7 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     props.dispatch({
       type: 'solutions/getDetail',
       payload: ~~props.match.params.sid,
-    })
+    });
   };
 
   componentDidMount(): void {
@@ -77,8 +77,14 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     }));
     const sid = ~~match.params.sid;
     const data = allData[sid] || {} as ISolution;
-    return <SolutionDetailPage loading={loading} data={data} session={session} changeSharedLoading={changeSharedLoading}
-                               dispatch={dispatch} contestId={id} problemList={problemList}
+    return <SolutionDetailPage
+      loading={loading}
+      data={data}
+      session={session}
+      changeSharedLoading={changeSharedLoading}
+      dispatch={dispatch}
+      contestId={id}
+      problemList={problemList}
     />;
   }
 }

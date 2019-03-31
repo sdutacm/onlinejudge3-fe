@@ -4,7 +4,7 @@ import { Form, Input, Select, Modal } from 'antd';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import msg from '@/utils/msg';
 
-interface Props extends ReduxProps, RouteProps, FormProps {
+export interface Props extends ReduxProps, RouteProps, FormProps {
   data: IProblem;
   tagList: IFullList<ITag>;
 }
@@ -14,14 +14,7 @@ interface State {
 }
 
 class EditProblemPropModal extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: false,
-    };
-  }
-
-  difficulty = [
+  private difficulty = [
     '未设置难度',
     '1 - 入门（无脑输入输出或 RP 题）',
     '2 - 基础（程设 I、II）',
@@ -34,6 +27,13 @@ class EditProblemPropModal extends React.Component<Props, State> {
     '9 - WF',
     '10 - WF/WTF？',
   ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
 
   componentDidMount(): void {
     this.props.dispatch({

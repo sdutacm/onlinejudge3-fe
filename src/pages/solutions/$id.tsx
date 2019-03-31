@@ -3,7 +3,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import { connect } from 'dva';
 import SolutionDetailPage from '@/components/SolutionDetailPage';
 
-interface Props extends RouteProps, ReduxProps {
+export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
   data: ITypeObject<ISolution>;
   changeSharedLoading: boolean;
@@ -28,8 +28,12 @@ class SolutionDetail extends React.Component<Props, State> {
     const { loading, data: allData, changeSharedLoading, session, match, dispatch } = this.props;
     const id = ~~match.params.id;
     const data = allData[id] || {} as ISolution;
-    return <SolutionDetailPage loading={loading} data={data} changeSharedLoading={changeSharedLoading}
-                               session={session} dispatch={dispatch}
+    return <SolutionDetailPage
+      loading={loading}
+      data={data}
+      changeSharedLoading={changeSharedLoading}
+      session={session}
+      dispatch={dispatch}
     />;
   }
 }

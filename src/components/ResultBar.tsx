@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Popover } from 'antd';
 import { Results, resultsMap } from '@/configs/results';
 
-interface Props {
+export interface Props {
   percent: number;
   timeLimit: number;
   result: number;

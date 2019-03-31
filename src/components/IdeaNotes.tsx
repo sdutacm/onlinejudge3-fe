@@ -5,7 +5,6 @@ import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import pages from '@/configs/pages';
 import { getPathParams, getPathParamId } from '@/utils/getPathParams';
 import { alphabetToNumber, numberToAlphabet, urlf } from '@/utils/format';
-import { isEqual } from 'lodash';
 import { Link } from 'react-router-dom';
 import styles from './IdeaNotes.less';
 import { resultsMap } from '@/configs/results';
@@ -14,7 +13,7 @@ import { Codes } from '@/configs/codes/codes';
 import TimeBar from '@/components/TimeBar';
 import classNames from 'classnames';
 
-interface Props extends ReduxProps, RouteProps, FormProps {
+export interface Props extends ReduxProps, RouteProps, FormProps {
   notes: IFullList<INote>;
   contestProblems: IFullList<IProblem>;
   onLinkClick(): void;
@@ -107,7 +106,7 @@ class IdeaNotes extends React.Component<Props> {
           payload: postData,
         }).then(ret => {
           if (ret.code === Codes.R_NOTES_NO_PERMISSION) {
-            msg.error('Save Failed. You don\'t have view permission in this page')
+            msg.error('Save Failed. You don\'t have view permission in this page');
           }
           else {
             msg.auto(ret);
@@ -156,16 +155,15 @@ class IdeaNotes extends React.Component<Props> {
           <Form.Item style={{ marginBottom: '0' }}>
             {getFieldDecorator('content', {
               rules: [{ required: true, message: 'Please input idea' }],
-            })(
-              <Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} placeholder="Type new idea..." />
-            )}
+            })(<Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} placeholder="Type new idea..." />)}
           </Form.Item>
         </Form>
-        <Button type="primary"
-                block
-                style={{ marginTop: '4px', marginBottom: '12px' }}
-                onClick={this.addNote}
-                loading={loading}
+        <Button
+          type="primary"
+          block
+          style={{ marginTop: '4px', marginBottom: '12px' }}
+          onClick={this.addNote}
+          loading={loading}
         >
           Save <Icon type="bulb" />
         </Button>
@@ -244,8 +242,9 @@ class IdeaNotes extends React.Component<Props> {
                     {title ? <Link to={url} onClick={onLinkClick}><Tag>{title}</Tag></Link> : null}
                     <p className={styles.footer}>
                       <TimeBar time={item.createdAt * 1000} />
-                      <a className={classNames('ml-md-lg', styles.delete)}
-                         onClick={() => this.deleteNote(item.noteId)}
+                      <a
+                        className={classNames('ml-md-lg', styles.delete)}
+                        onClick={() => this.deleteNote(item.noteId)}
                       >Delete</a>
                     </p>
                   </div>}

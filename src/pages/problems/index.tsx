@@ -146,8 +146,8 @@ class ProblemList extends React.Component<Props, State> {
                 className="responsive-table"
                 rowClassName={(record: IProblem) => classNames(
                   'problem-result-mark-row',
-                  { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                  { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
+                  { 'accepted': ~attemptedProblemIds.indexOf(record.problemId) },
+                  { 'attempted': ~acceptedProblemIds.indexOf(record.problemId) }
                 )}
               >
                 <Table.Column

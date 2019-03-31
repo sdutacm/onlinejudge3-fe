@@ -12,7 +12,7 @@ export interface Props {
 
 const SolutionResultStats: React.StatelessComponent<Props> = ({ accepted, submitted, toSolutionsLink }) => (
   <Popover
-    title="AC / Total"
+    title="WA / Total"
     content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}>
     <Link
       to={toSolutionsLink}

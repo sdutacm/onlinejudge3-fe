@@ -77,8 +77,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
         <Modal
           title="Submit a Solution"
           visible={this.state.visible}
-          okText="Cancel"
-          cancelText="Submit"
+          okText="Submit"
           confirmLoading={loading}
           onOk={this.handleOk}
           onCancel={this.handleHideModel}
@@ -89,10 +88,10 @@ class SubmitSolutionModal extends React.Component<Props, State> {
                 className="ant-form-text">{problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}</span>)}
             </Form.Item>
 
-            <Form.Item label="Language (all statements below are true)">
+            <Form.Item label="Language">
               {getFieldDecorator('language', {
                 rules: [{ required: true, message: 'Please select language' }],
-                // initialValue: 'g++', // TODO 判断用户默认语言设置
+                initialValue: 'g++', // TODO 判断用户默认语言设置
               })(
                 <Select placeholder="Select a language">
                   {langs.map(lang => (<Select.Option key={lang.fieldName}>{lang.displayFullName}</Select.Option>))}

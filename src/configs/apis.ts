@@ -71,6 +71,14 @@ const api = {
     base: '/notes',
     detail: '/notes/:id',
   },
+  groups: {
+    base: '/groups',
+    detail: '/groups/:id',
+    members: {
+      base: '/groups/:id/members',
+      detail: '/groups/:id/members/:uid',
+    },
+  },
 };
 
 export default api;

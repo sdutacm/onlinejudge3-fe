@@ -24,6 +24,9 @@ const limits = {
   notes: {
     list: 10,
   },
+  groups: {
+    list: 20,
+  },
 };
 
 export default limits;

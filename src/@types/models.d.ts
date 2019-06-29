@@ -270,6 +270,13 @@ interface ISet {
   updatedAt: ITimestamp;
 }
 
+interface ISetPropsTypeStandard {
+  sections: {
+    title: string;
+    problems: IProblem[];
+  }[];
+}
+
 interface INoteBase {
   noteId: number;
   type: string;
@@ -370,11 +377,18 @@ interface INoteUnknownReq {
 
 type INoteReq = INoteProblemReq | INoteContestReq | INoteSolutionReq | INoteUnknownReq
 
-interface ISetPropsTypeStandard {
-  sections: {
-    title: string;
-    problems: IProblem[];
-  }[];
+interface IGroupMember extends IUserLite {
+  permission?: number;
+  joinedAt?: ITimestamp;
+}
+
+interface IGroup {
+  groupId: string;
+  name: string;
+  verified: boolean;
+  members?: IGroupMember[];
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
 }
 
 type ISettingsTheme = 'light' | 'dark';

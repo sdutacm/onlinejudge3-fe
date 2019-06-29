@@ -34,5 +34,9 @@ export default {
   notes: {
     index: '/notes',
   },
+  groups: {
+    index: '/groups',
+    detail: '/groups/:id',
+  },
   OJBK: '/OJBK',
 };

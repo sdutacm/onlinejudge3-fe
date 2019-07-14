@@ -9,9 +9,11 @@ export interface Props {
   isContestUser?: boolean;
 }
 
-const UserBar: React.StatelessComponent<Props> = ({ user, isContestUser }) => {
+const UserBar: React.FC<Props> = ({ user, isContestUser }) => {
   const inner = <span>
-    <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} /><span style={{ marginLeft: '8px' }}>{user.nickname}</span>
+    <span className="no-wrap">
+      <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} /><span style={{ marginLeft: '8px' }}>{user.nickname}</span>
+    </span>
   </span>;
   if (isContestUser) {
     return inner;

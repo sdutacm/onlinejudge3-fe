@@ -36,7 +36,7 @@ class TimeBar extends React.Component<Props, State> {
     const { time } = this.props;
     return (
       <Popover content={moment(time).format('YYYY-MM-DD HH:mm:ss Z')}>
-        <span>{moment(time).fromNow()}</span>
+        <span className="no-wrap">{moment(time).fromNow()}</span>
       </Popover>
     );
   }

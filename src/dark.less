@@ -9,6 +9,7 @@ body.dark {
   @font-color: rgb(223, 223, 223); // dark
   @component-bg: #222222; // dark
 
+  @high-text-color: fade(#fff, 75%);
 
   //@import 'variables_dark';
 
@@ -151,6 +152,14 @@ body.dark {
     &:last-of-type {
       padding-right: 16px;
     }
+
+    //a {
+    //  color: @high-text-color;
+    //
+    //  &:hover {
+    //    color: #fff;
+    //  }
+    //}
   }
 
   .ant-input::placeholder {
@@ -435,5 +444,13 @@ body.dark {
   .rating-history {
     opacity: .7;
   }
+
+  //// solution result stats
+  //
+  //.stats-progress {
+  //  .ant-progress-circle-path {
+  //    stroke: @high-text-color !important;
+  //  }
+  //}
 
 }

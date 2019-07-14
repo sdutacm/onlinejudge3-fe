@@ -10,7 +10,7 @@ import { matchPath } from 'react-router';
 interface Props extends RouteProps {
 }
 
-const NavContainer: React.StatelessComponent<Props> = ({ location }) => {
+const NavContainer: React.FC<Props> = ({ location }) => {
   const matchContest = matchPath(location.pathname, {
     path: pages.contests.home,
   });

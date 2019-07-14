@@ -11,6 +11,14 @@ const limits = {
   contests: {
     list: 20,
   },
+  topics: {
+    list: 20,
+    replies: 10,
+    inUserDetailList: 3,
+  },
+  replies: {
+    inUserDetailList: 3,
+  },
   messages: {
     unread: 100,
     list: 10,

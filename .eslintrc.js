@@ -66,5 +66,6 @@ module.exports = {
     'react/jsx-indent-props': 'off',
     'react/jsx-closing-bracket-location': 'off',
     'react/sort-comp': 'off',
+    'react/jsx-curly-newline': 'off',
   },
 };

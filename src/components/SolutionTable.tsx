@@ -4,16 +4,17 @@ import pages from '@/configs/pages';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { numberToAlphabet, urlf } from '@/utils/format';
+import { urlf } from '@/utils/format';
 import UserBar from '@/components/UserBar';
 import ResultBar from '@/components/ResultBar';
 import { langsMap } from '@/configs/solutionLanguages';
 import TimeBar from '@/components/TimeBar';
 import limits from '@/configs/limits';
-import { Table, Popover, Pagination, Icon } from 'antd';
+import { Table, Pagination, Icon } from 'antd';
 import classNames from 'classnames';
 import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
+import ProblemBar from '@/components/ProblemBar';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -127,7 +128,7 @@ class SolutionTable extends React.Component<Props, State> {
             )}
           />
           <Table.Column
-            title={'Prob.'}
+            title="Prob."
             key="Problem"
             render={(text, record: ISolution) => {
               let contestProblem = null;
@@ -139,16 +140,11 @@ class SolutionTable extends React.Component<Props, State> {
                   }
                 }
               }
-              const problemDetailUrl = contestId && contestProblem
-                ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: numberToAlphabet(contestProblem.index) } })
-                : urlf(pages.problems.detail, { param: { id: record.problem.problemId }, query: { from: location.query.from } });
-              return (
-                <Popover content={contestProblem ? contestProblem.title : record.problem.title}>
-                  <Link to={problemDetailUrl} onClick={e => e.stopPropagation()}>
-                    {contestProblem ? numberToAlphabet(contestProblem.index) : record.problem.problemId}
-                  </Link>
-                </Popover>
-              );
+              return <ProblemBar
+                problem={contestProblem || record.problem}
+                contestId={contestId}
+                index={contestProblem ? contestProblem.index : undefined}
+              />;
             }}
           />
           <Table.Column
@@ -169,21 +165,21 @@ class SolutionTable extends React.Component<Props, State> {
             )}
           />
           <Table.Column
-            title={'Mem.'}
+            title="Mem."
             key="Memory"
             render={(text, record: ISolution) => (
               <span>{record.memory}</span>
             )}
           />
           <Table.Column
-            title={'Len.'}
+            title="Len."
             key="Length"
             render={(text, record: ISolution) => (
               <span>{record.codeLength}</span>
             )}
           />
           <Table.Column
-            title={'Lang.'}
+            title="Lang."
             key="Language"
             render={(text, record: ISolution) => (
               <span>{langsMap[record.language] ? langsMap[record.language].displayShortName : record.language}</span>

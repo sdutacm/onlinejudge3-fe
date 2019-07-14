@@ -6,6 +6,7 @@
     "start": "umi dev",
     "build": "umi build",
     "line-count": "cloc src/ --exclude-dir=.umi,.umi-production --fullpath --not-match-f='/(styles/dark_antd|assets|configs/codes)/'",
+    "submodule": "git submodule foreach git pull origin master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +23,7 @@
     "antd": "3.11.6",
     "axios": "^0.18.0",
     "csshake": "^1.5.3",
+    "dva": "~2.5.0-beta.2",
     "highcharts": "^7.0.1",
     "highcharts-react-official": "^2.0.0",
     "image-promise": "^5.0.1",
@@ -32,20 +34,23 @@
     "lodash.throttle": "^4.1.1",
     "math-precision": "^1.0.5",
     "md5": "^2.2.1",
+    "react": "^16.8.6",
     "react-autolatex": "^1.1.2",
     "react-calendar-heatmap": "^1.8.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",
+    "react-dom": "^16.8.6",
     "react-markdown": "^3.6.0",
     "react-syntax-highlighter": "^9.0.0",
     "react-tooltip": "^3.9.2",
     "short-number": "^1.0.6",
-    "umi": "~2.2.8",
     "url-assembler": "^1.2.10",
     "xss": "^1.0.3"
   },
   "devDependencies": {
     "@svgr/webpack": "^3.1.0",
+    "@types/react": "^16.7.18",
+    "@types/react-dom": "^16.0.11",
     "@typescript-eslint/eslint-plugin": "^1.5.0",
     "@typescript-eslint/parser": "^1.5.0",
     "babel-eslint": "^9.0.0",
@@ -55,6 +60,8 @@
     "eslint-plugin-react": "^7.12.4",
     "roadhog-api-doc": "^1.1.2",
     "typescript": "^3.3.3333",
-    "umi-plugin-react": "~1.2.3"
+    "umi": "^2.7.0",
+    "umi-plugin-react": "^1.8.0",
+    "umi-types": "^0.2.0"
   }
 }

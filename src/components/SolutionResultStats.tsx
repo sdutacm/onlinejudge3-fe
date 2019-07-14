@@ -10,7 +10,7 @@ export interface Props {
   toSolutionsLink: string;
 }
 
-const SolutionResultStats: React.StatelessComponent<Props> = ({ accepted, submitted, toSolutionsLink }) => (
+const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutionsLink }) => (
   <Popover
     title="AC / Total"
     content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}>
@@ -19,7 +19,7 @@ const SolutionResultStats: React.StatelessComponent<Props> = ({ accepted, submit
       onClick={e => e.stopPropagation()}
     >
       <Progress
-        className="mini-ratio-progress"
+        className="mini-ratio-progress stats-progress"
         type="circle"
         percent={accepted / submitted * 100 || 0}
         width={12}

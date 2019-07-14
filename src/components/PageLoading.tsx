@@ -7,7 +7,7 @@ export interface Props {
   delay?: boolean;
 }
 
-const PageLoading: React.StatelessComponent<Props> = ({ delay = false }) => (
+const PageLoading: React.FC<Props> = ({ delay = false }) => (
   <PageTitle title={null} loading={true}>
     <div className="center-view">
       <Spin delay={delay ? constants.indicatorDisplayDelay : undefined} />

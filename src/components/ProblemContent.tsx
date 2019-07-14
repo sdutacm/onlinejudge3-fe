@@ -14,7 +14,7 @@ export interface Props {
   problemIndex?: number;
 }
 
-const ProblemContent: React.StatelessComponent<Props> = ({ loading, data, problemIndex }) => {
+const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
   if (loading) {
     return (
       <div>

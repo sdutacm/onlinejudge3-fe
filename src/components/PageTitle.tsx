@@ -7,7 +7,7 @@ export interface Props {
   loading?: boolean;
 }
 
-const PageTitle: React.StatelessComponent<Props> = ({ title, loading = false, children }) => (
+const PageTitle: React.FC<Props> = ({ title, loading = false, children }) => (
   <DocumentTitle title={formatPageTitle(title, loading)}>
     {children}
   </DocumentTitle>

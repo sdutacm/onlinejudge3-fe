@@ -12,7 +12,6 @@ export default {
       routes: {
         exclude: [/models\//],
       },
-      hardSource: true,
       title: {
         defaultTitle: 'SDUT OnlineJudge',
         separator: '|',

@@ -92,6 +92,11 @@ interface IProblem {
   updatedAt: ITimestamp;
 }
 
+interface IProblemLite {
+  problemId: number;
+  title: string;
+}
+
 interface ISolution {
   solutionId: number;
   user: IUserLite;
@@ -188,10 +193,7 @@ type IRanklist = IRanklistRow[];
 interface ITopic {
   topicId: number;
   user: IUserLite;
-  problem: {
-    problemId: number;
-    title: string;
-  };
+  problem: IProblemLite;
   title: string;
   content?: string;
   replyCount: number;
@@ -311,10 +313,7 @@ interface INoteSolution extends INoteBase {
   type: 'solution';
   target: {
     solutionId: number;
-    problem: {
-      problemId: number;
-      title: string;
-    };
+    problem: IProblemLite;
     contest?: {
       contestId: number;
       title: string;

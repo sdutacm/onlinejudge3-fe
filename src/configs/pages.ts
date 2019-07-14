@@ -21,6 +21,10 @@ export default {
     solutionDetail: '/contests/:id/solutions/:sid',
     ranklist: '/contests/:id/ranklist',
   },
+  topics: {
+    index: '/topics',
+    detail: '/topics/:id',
+  },
   messages: {
     index: '/messages',
   },

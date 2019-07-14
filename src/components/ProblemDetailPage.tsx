@@ -26,13 +26,16 @@ export interface Props extends RouteProps {
   favorites: IFavorite[];
 }
 
-const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location }) => {
+const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location }) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
   const solutionsUrl = contestId
     ? urlf(pages.contests.solutions, { param: { id: contestId }, query: { problemId: data.problemId } })
     : urlf(pages.solutions.index, { query: { problemId: data.problemId, from: location.query.from } });
+  const topicsUrl = contestId
+    ? ''
+    : urlf(pages.topics.index, { query: { problemId: data.problemId, from: location.query.from } });
   const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
   return (
     <PageTitle
@@ -68,6 +71,9 @@ const ProblemDetailPage: React.StatelessComponent<Props> = ({ loading, data, ses
                 <Link to={solutionsUrl}>
                   <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
                 </Link>
+                {topicsUrl && <Link to={topicsUrl}>
+                  <Button block disabled={loading} className={styles.buttonMt}>Topics</Button>
+                </Link>}
                 <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
                   {session.loggedIn ?
                     (!favorite ?

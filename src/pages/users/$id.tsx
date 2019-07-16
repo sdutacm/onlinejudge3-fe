@@ -284,8 +284,8 @@ class UserDetail extends React.Component<Props, State> {
                           size="small"
                           onChange={this.handleSolutionCalendarPeriodChange}
                         >
-                          {Array.from(solutionCalendarYears).map(y =>
-                            <Select.Option key={y} value={y}>{y}</Select.Option>
+                          {(Array.from(solutionCalendarYears) as number[]).map(y =>
+                            <Select.Option key={`${y}`} value={y}>{y}</Select.Option>
                           )}
                           <Select.Option value={null}>Recent</Select.Option>
                         </Select>
@@ -322,7 +322,7 @@ class UserDetail extends React.Component<Props, State> {
                         <Link to={urlf(pages.solutions.index, { query: { userId: data.userId } })} className="normal-text-link">
                           <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }} className="card-block-divider">
                             <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
-                            <p style={{ fontSize: '12px' }}>Total</p>
+                            <p style={{ fontSize: '12px' }}>Submitted</p>
                           </div>
                         </Link>
                       </div>

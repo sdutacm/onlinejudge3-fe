@@ -6,18 +6,25 @@ import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 
-const initialState = {
-  list: {
-    page: 1,
-    count: 0,
-    rows: [],
-    _query: {},
-  },
-  detail: {},
-};
+function getInitialState() {
+  return {
+    list: {
+      page: 1,
+      count: 0,
+      rows: [],
+      _query: {},
+    },
+    detail: {},
+    topicReplies: {
+      page: 1,
+      count: 0,
+      rows: [],
+    },
+  };
+}
 
 export default {
-  state: initialState,
+  state: getInitialState(),
   reducers: {
     setList(state, { payload: { data, query } }) {
       state.list = {
@@ -34,6 +41,14 @@ export default {
     },
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
+    },
+    setTopicReplies(state, { payload: { data } }) {
+      state.topicReplies = {
+        ...data,
+      };
+    },
+    clearTopicReplies(state) {
+      state.topicReplies = getInitialState().topicReplies;
     },
   },
   effects: {
@@ -81,6 +96,26 @@ export default {
       }
       return ret;
     },
+    * getTopicReplies({ payload: { id, query = {} as any } }, { call, put, select }) {
+      yield put({
+        type: 'clearTopicReplies',
+      });
+      const formattedQuery = {
+        ...formatListQuery(query),
+        orderBy: 'replyId',
+        orderDirection: query.orderDirection || 'ASC',
+      };
+      const ret: IApiResponse<IList<IReply> > = yield call(service.getTopicReplies, id, formattedQuery);
+      if (ret.success) {
+        yield put({
+          type: 'setTopicReplies',
+          payload: {
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -94,7 +129,7 @@ export default {
         });
         if (matchDetail) {
           requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
-          // requestEffect(dispatch, { type: 'users/getProblemResultStats' });
+          requestEffect(dispatch, { type: 'getTopicReplies', payload: { id: matchDetail.params['id'] } });
         }
       });
     },

@@ -1,9 +1,11 @@
 import React from 'react';
 import moment from 'moment';
 import { Popover } from 'antd';
+import classNames from 'classnames';
 
 export interface Props {
   time: number;
+  className?: string;
 }
 
 interface State {
@@ -33,10 +35,10 @@ class TimeBar extends React.Component<Props, State> {
   }
 
   render() {
-    const { time } = this.props;
+    const { time, className } = this.props;
     return (
       <Popover content={moment(time).format('YYYY-MM-DD HH:mm:ss Z')}>
-        <span className="no-wrap">{moment(time).fromNow()}</span>
+        <span className={classNames('no-wrap', className)}>{moment(time).fromNow()}</span>
       </Popover>
     );
   }

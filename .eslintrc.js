@@ -42,6 +42,7 @@ module.exports = {
     'no-implicit-coercion': 'off',
     'guard-for-in': 'off',
     'spaced-comment': 'off',
+    'complexity': 'off',
 
     // TypeScript
     '@typescript-eslint/indent': [

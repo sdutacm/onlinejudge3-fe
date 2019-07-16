@@ -5,11 +5,11 @@ export default ({ start, end, cur }) => {
   const status = getSetTimeStatus(start, end, cur);
   return (
     status === 'Pending' ?
-      <Badge status="processing" text={status} />
+      <Badge status="processing" text={status} className="no-wrap" />
       :
       status === 'Running' ?
-        <Badge status="error" text={status} />
+        <Badge status="error" text={status} className="no-wrap" />
         :
-        <Badge status="success" text={status} />
+        <Badge status="success" text={status} className="no-wrap" />
   );
 };

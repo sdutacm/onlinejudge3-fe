@@ -1,5 +1,9 @@
 const initialState = {};
 
+const scrollToTopIgnoreList = [
+  /^\/topics\/\d/,
+];
+
 export default {
   state: initialState,
   reducers: {
@@ -9,7 +13,14 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen((location, action) => {
-        if (action === 'PUSH' || action === 'REPLACE') {
+        let ignored = false;
+        for (const r of scrollToTopIgnoreList) {
+          if (r.test(location.pathname)) {
+            ignored = true;
+            break;
+          }
+        }
+        if (!ignored && (action === 'PUSH' || action === 'REPLACE')) {
           window.scrollTo(0, 0);
         }
       });

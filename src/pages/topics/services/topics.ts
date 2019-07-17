@@ -16,7 +16,7 @@ export function getList(query) {
 
 export function getDetail(id) {
   const url = urlf(api.topics.detail, { param: { id } });
-  return get(url);
+  return get(url, 1000);
 }
 
 export function getTopicReplies(id, query) {

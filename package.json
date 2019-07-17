@@ -41,6 +41,7 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.6",
     "react-markdown": "^3.6.0",
+    "react-scroll": "^1.7.12",
     "react-syntax-highlighter": "^9.0.0",
     "react-tooltip": "^3.9.2",
     "short-number": "^1.0.6",

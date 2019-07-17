@@ -19,6 +19,7 @@ function getInitialState() {
       page: 1,
       count: 0,
       rows: [],
+      _topicId: 0,
     },
   };
 }
@@ -42,9 +43,10 @@ export default {
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
     },
-    setTopicReplies(state, { payload: { data } }) {
+    setTopicReplies(state, { payload: { id, data } }) {
       state.topicReplies = {
         ...data,
+        _topicId: id,
       };
     },
     clearTopicReplies(state) {
@@ -97,9 +99,12 @@ export default {
       return ret;
     },
     * getTopicReplies({ payload: { id, query = {} as any } }, { call, put, select }) {
-      yield put({
-        type: 'clearTopicReplies',
-      });
+      const savedState = yield select(state => state.topics.topicReplies);
+      if (id !== savedState._topicId) {
+        yield put({
+          type: 'clearTopicReplies',
+        });
+      }
       const formattedQuery = {
         ...formatListQuery(query),
         orderBy: 'replyId',
@@ -110,6 +115,7 @@ export default {
         yield put({
           type: 'setTopicReplies',
           payload: {
+            id,
             data: ret.data,
           },
         });
@@ -128,8 +134,8 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
-          requestEffect(dispatch, { type: 'getTopicReplies', payload: { id: matchDetail.params['id'] } });
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
+          requestEffect(dispatch, { type: 'getTopicReplies', payload: { id: +matchDetail.params['id'], query } });
         }
       });
     },

@@ -13,6 +13,8 @@ import limits from '@/configs/limits';
 import router from 'umi/router';
 import { scroller } from 'react-scroll';
 import PageAnimation from '@/components/PageAnimation';
+import BraftEditor from 'braft-editor';
+import 'braft-editor/dist/index.css';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   data: ITypeObject<ITopic>;
@@ -60,25 +62,36 @@ class TopicDetail extends React.Component<Props, State> {
   };
 
   handleSubmit = () => {
-    const { form, match, dispatch, location } = this.props;
-    const postId = ~~match.params.id;
+    const { form, match, dispatch } = this.props;
+    const topicId = ~~match.params.id;
     form.validateFields((err, values) => {
       if (!err) {
+        const v = {
+          ...values,
+          content: values.content.toHTML(),
+        };
         dispatch({
-          type: 'topics/createReply',
-          payload: { ...values, postId },
+          type: 'topics/addReply',
+          payload: {
+            id: topicId,
+            data: v,
+          },
         }).then(ret => {
           msg.auto(ret);
           if (ret.success) {
             msg.success('Reply successfully');
             dispatch({
-              type: 'topics/getReplies',
+              type: 'topics/getTopicReplies',
               payload: {
-                id: postId,
-                query: location.query,
+                id: topicId,
+                // query: location.query,
+                getLast: true,
               },
             });
-            form.resetFields();
+            // form.resetFields();
+            form.setFieldsValue({
+              content: BraftEditor.createEditorState(null),
+            });
           }
         });
       }
@@ -113,9 +126,10 @@ class TopicDetail extends React.Component<Props, State> {
                 header={replies.count === 1 ? `${replies.count} reply` : `${replies.count} replies`}
                 itemLayout="horizontal"
                 loading={repliesLoading}
+                locale={{ emptyText: 'Void' }}
                 dataSource={replies.rows}
                 renderItem={item => (
-                  <li>
+                  <List.Item>
                     <Comment
                       author={<UserBar user={item.user} hideAvatar />}
                       avatar={<Avatar size="small" icon="user" src={formatAvatarUrl(item.user.avatar)} />}
@@ -125,7 +139,7 @@ class TopicDetail extends React.Component<Props, State> {
                       />}
                       datetime={<TimeBar time={item.createdAt * 1000} />}
                     />
-                  </li>
+                  </List.Item>
                 )}
                 pagination={{
                   className: 'ant-table-pagination',
@@ -139,12 +153,36 @@ class TopicDetail extends React.Component<Props, State> {
             </div>
 
             <Form layout="vertical" hideRequiredMark={true}>
-              <Form.Item label="Reply your thoughts...">
+              <Form.Item label="Write your thoughts...">
                 {getFieldDecorator('content', {
-                  rules: [{ required: true, message: 'Please enter content' }],
-                })(<Input.TextArea rows={4} disabled={!session.loggedIn} />)}
+                  validateTrigger: 'onBlur',
+                  rules: [{
+                    required: true,
+                    validator: (_, value, callback) => {
+                      if (value.isEmpty()) {
+                        callback('Please enter content');
+                      } else {
+                        callback();
+                      }
+                    },
+                  }],
+                })(
+                  // @ts-ignore
+                  <BraftEditor
+                    controls={[
+                      'headings', 'bold', 'italic', 'underline', 'list-ul', 'list-ol',
+                      'emoji', 'code', 'link', 'separator',
+                      'undo', 'redo',
+                    ]}
+                    className="rt-editor"
+                    language="en"
+                    disabled={!session.loggedIn}
+                    contentStyle={{ height: 220 }}
+                  />
+                )}
               </Form.Item>
             </Form>
+
             <Button type="primary" onClick={this.handleSubmit} disabled={!session.loggedIn}>{session.loggedIn ? 'Reply' : 'Login to Reply'}</Button>
           </Skeleton>
         </Card>

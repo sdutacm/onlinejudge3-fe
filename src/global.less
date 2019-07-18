@@ -294,6 +294,14 @@ ul {
   }
 }
 
+.ant-avatar {
+  color: fade(#fff, 80%) !important;
+}
+
+.ant-list-item .ant-comment-inner {
+  padding: 0;
+}
+
 .message-list {
   background: transparent;
 
@@ -916,5 +924,38 @@ ul {
 
   .ant-switch {
     top: 2px;
+  }
+}
+
+// rich text editor
+
+.rt-editor {
+  border: @border-width-base @border-style-base @input-border-color;
+  border-radius: @border-radius-base;
+  transition: all 0.3s;
+
+  .active(@color: @outline-color) {
+    border-color: ~`colorPalette('@{color}', 5) `;
+    outline: 0;
+    box-shadow: @input-outline-offset @outline-blur-size @outline-width fade(@color, 20%);
+    border-right-width: @border-width-base !important;
+  }
+
+  // == when hoverd
+  .hover(@color: @input-hover-border-color) {
+    border-color: ~`colorPalette('@{color}', 5) `;
+    border-right-width: @border-width-base !important;
+  }
+
+  &:hover {
+    .hover();
+  }
+
+  &:focus {
+    .active();
+  }
+
+  .bf-controlbar {
+    box-shadow: inset 0 -1px 0 0 @input-border-color;
   }
 }

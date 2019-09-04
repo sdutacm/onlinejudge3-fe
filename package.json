@@ -6,7 +6,7 @@
     "start": "umi dev",
     "build": "umi build",
     "line-count": "cloc src/ --exclude-dir=.umi,.umi-production --fullpath --not-match-f='/(styles/dark_antd|assets|configs/codes)/'",
-    "submodule": "git submodule foreach git pull origin master",
+    "pull-submodule": "git submodule foreach git pull origin master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

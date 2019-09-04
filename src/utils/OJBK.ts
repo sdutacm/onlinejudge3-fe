@@ -20,6 +20,7 @@ function calcTcode(OJBK: string) {
 }
 
 async function checkOJBK() {
+  return true;
   const OJBK = jscookie.get('OJBK');
   if (!OJBK) {
     return false;
@@ -39,6 +40,7 @@ async function checkOJBK() {
 }
 
 function setOJBK(OJBK) {
+  return;
   jscookie.set({
     name: 'OJBK',
     value: OJBK,
@@ -48,6 +50,7 @@ function setOJBK(OJBK) {
 }
 
 function logLogin(session) {
+  return;
   const OJBK = jscookie.get('OJBK') || '!EMPTY';
   post(urlf(base, { query: { OJBK } }), {
     userId: session.userId,

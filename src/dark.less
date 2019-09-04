@@ -1,13 +1,13 @@
 body.dark {
-  background-color: rgb(45, 46, 48); // dark
+  background-color: rgb(25, 25, 25); // dark
   color: rgb(223, 223, 223); // dark
 }
 
 .dark {
   //@primary-color: #1e66d5; // dark
-  @bg-color: rgb(45, 46, 48); // dark
+  @bg-color: rgb(25, 25, 25); // dark
   @font-color: rgb(223, 223, 223); // dark
-  @component-bg: #222222; // dark
+  @component-deep-bg: darken(@component-background, 10%); // dark
 
   @high-text-color: fade(#fff, 75%);
 
@@ -216,9 +216,9 @@ body.dark {
     }
   }
 
-  .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
-    background: @component-bg;
-  }
+  // .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
+  //   background: @component-deep-bg;
+  // }
 
   .ant-form-item-required::before {
     content: none;

@@ -30,7 +30,7 @@ const api = {
     difficulty: '/problems/:id/difficulty',
   },
   solutions: {
-    base: '/solutions',
+base: '/solutions',
     detail: '/solutions/:id',
     shared: '/solutions/:id/shared',
   },
@@ -78,6 +78,10 @@ const api = {
       base: '/groups/:id/members',
       detail: '/groups/:id/members/:uid',
     },
+  },
+  common: {
+    base: '/common',
+    media: '/common/media',
   },
 };
 

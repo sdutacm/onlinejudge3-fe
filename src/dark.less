@@ -51,6 +51,7 @@ body.dark {
   @import 'styles/dark_antd/modal/style/index';
   @import 'styles/dark_antd/message/style/index';
   @import 'styles/dark_antd/notification/style/index';
+  @import 'styles/dark_antd/upload/style/index';
 
   @import (multiple) 'margin';
 
@@ -256,6 +257,10 @@ body.dark {
     .ant-collapse-borderless > .ant-collapse-item {
       border-bottom-color: @border-color-base;
     }
+  }
+
+  .ant-upload-list-item:hover .ant-upload-list-item-info {
+    background-color: @item-hover-bg;
   }
 
   .message-list {
@@ -487,6 +492,16 @@ body.dark {
 
       .separator-line {
         box-shadow: inset -1px 0 0 0 @border-color-split;
+      }
+
+      .ant-upload-list-item.ant-upload-list-item-uploading {
+        &:first-of-type {
+          margin-top: 0;
+        }
+
+        &:last-of-type {
+          margin-bottom: 16px;
+        }
       }
     }
   }

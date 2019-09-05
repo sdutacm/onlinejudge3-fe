@@ -20,25 +20,7 @@ import Rating from '@/components/Rating';
 import SendMessageModal from '@/components/SendMessageModal';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
-
-interface UploadFileType {
-  name: string;
-  type: string;
-}
-
-function validateFile(validTypes: UploadFileType[], maxSize: number) {
-  return function (file) {
-    const isValidType = validTypes.filter(v => v.type === file.type).length > 0;
-    if (!isValidType) {
-      msg.error(`Invalid file format. Only ${validTypes.map(v => v.name).join(', ')} allowed`);
-    }
-    const isValidSize = file.size / 1024 / 1024 < maxSize;
-    if (!isValidSize) {
-      msg.error(`File must be smaller than ${maxSize} MiB`);
-    }
-    return isValidType && isValidSize;
-  };
-}
+import { validateFile } from '@/utils/validate';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -59,12 +41,14 @@ class UserDetail extends React.Component<Props, State> {
   private validateAvatar = validateFile([
     { name: 'JPG', type: 'image/jpeg' },
     { name: 'BMP', type: 'image/bmp' },
-    { name: 'PNG', type: 'image/png' }], 4
+    { name: 'PNG', type: 'image/png' }],
+    4
   );
   private validateBannerImage = validateFile([
     { name: 'JPG', type: 'image/jpeg' },
     { name: 'BMP', type: 'image/bmp' },
-    { name: 'PNG', type: 'image/png' }], 12
+    { name: 'PNG', type: 'image/png' }],
+    12
   );
 
   constructor(props) {
@@ -232,6 +216,7 @@ class UserDetail extends React.Component<Props, State> {
           <div className="banner-edit-btn">
             <Upload
               name="bannerImage"
+              accept="image/jpeg,image/bmp,image/png"
               action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
               beforeUpload={this.validateBannerImage}
               onChange={this.handleBannerImageChange}
@@ -247,6 +232,7 @@ class UserDetail extends React.Component<Props, State> {
                   <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} /> :
                   <Upload
                     name="avatar"
+                    accept="image/jpeg,image/bmp,image/png"
                     className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
                     action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
                     beforeUpload={this.validateAvatar}

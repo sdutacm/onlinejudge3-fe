@@ -13,6 +13,7 @@ import limits from '@/configs/limits';
 import router from 'umi/router';
 import { scroller } from 'react-scroll';
 import PageAnimation from '@/components/PageAnimation';
+import ProblemBar from '@/components/ProblemBar';
 import BraftEditor from 'braft-editor';
 import 'braft-editor/dist/index.css';
 
@@ -106,9 +107,12 @@ class TopicDetail extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <Card bordered={false} className="content-view-sm">
-          <Skeleton active loading={loading} paragraph={{ rows: 8, width: '100%' }}>
+          <Skeleton active loading={loading} paragraph={{ rows: 6, width: '100%' }}>
             <div>
               <h2>{data.title}</h2>
+              {data.problem && <h4 style={{ marginBottom: '12px'}}>
+                <ProblemBar problem={data.problem} display="id-title" />
+              </h4>}
               <p>
                 <UserBar user={data.user} className="ant-comment-content-author-name" />
                 <span className="ml-md" />
@@ -132,7 +136,7 @@ class TopicDetail extends React.Component<Props, State> {
                   <List.Item>
                     <Comment
                       author={<UserBar user={item.user} hideAvatar />}
-                      avatar={<Avatar size="small" icon="user" src={formatAvatarUrl(item.user.avatar)} />}
+                      avatar={<UserBar user={item.user} hideUsername />}
                       content={<div
                         dangerouslySetInnerHTML={{ __html: xss(item.content) }}
                         style={{ wordWrap: 'break-word', marginTop: '8px' }}

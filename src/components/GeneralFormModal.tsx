@@ -22,7 +22,7 @@ export interface IGeneralFormItem {
   }[];
 }
 
-export interface Props extends ReduxProps, FormProps {
+export interface IGeneralFormModalProps extends ReduxProps, FormProps {
   loadings: {
     [x: string]: boolean;
   };
@@ -44,8 +44,8 @@ interface State {
   visible: boolean;
 }
 
-class GeneralFormModal extends React.Component<Props, State> {
-  constructor(props) {
+class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
+  constructor(props: IGeneralFormModalProps) {
     super(props);
     this.state = {
       visible: false,

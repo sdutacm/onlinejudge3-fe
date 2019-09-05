@@ -9,13 +9,16 @@ export interface Props {
   user: IUser | IUserLite;
   isContestUser?: boolean;
   hideAvatar?: boolean;
+  hideUsername?: boolean;
   className?: string;
 }
 
-const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = false, className }) => {
-  const inner = !hideAvatar ? <span className={classNames('no-wrap', className)}>
-    <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} /><span style={{ marginLeft: '8px' }}>{user.nickname}</span>
-  </span> : <span className={classNames('no-wrap', className)}>{user.nickname}</span>;
+const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = false, hideUsername = false, className }) => {
+  const avatar = !hideAvatar ? <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} /> : null;
+  const username = !hideUsername ? <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{user.nickname}</span> : null;
+  const inner = <span className={classNames('no-wrap', className)}>
+    {avatar}{username}
+  </span>;
   if (isContestUser) {
     return inner;
   }

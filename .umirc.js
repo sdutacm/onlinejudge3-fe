@@ -32,6 +32,13 @@ export default {
       target: 'http://localhost:8848/index.php/API_ng/',
       changeOrigin: true,
       pathRewrite: { '^/onlinejudge2/index.php/API_ng/' : '' }
+    },
+    '/image/': {
+      target: 'http://localhost:8848/dev_images/',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/image/': ''
+      }
     }
   },
   urlLoaderExcludes: [/\.svg$/],

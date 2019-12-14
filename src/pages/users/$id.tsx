@@ -21,6 +21,10 @@ import SendMessageModal from '@/components/SendMessageModal';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import { validateFile } from '@/utils/validate';
+import styles1 from '@/components/ProblemDetailPage.less';
+import GeneralFormModal from '../../components/GeneralFormModal'
+import router from 'umi/router';
+import langs from '@/configs/solutionLanguages';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -132,11 +136,11 @@ class UserDetail extends React.Component<Props, State> {
     try {
       oldBannerImage = this.props.data[oldId].bannerImage;
     }
-    catch (e) {}
+    catch (e) { }
     try {
       newBannerImage = nextProps.data[newId].bannerImage;
     }
-    catch (e) {}
+    catch (e) { }
     if (oldBannerImage !== newBannerImage) {
       this.checkBannerImage(nextProps);
     }
@@ -189,6 +193,30 @@ class UserDetail extends React.Component<Props, State> {
     this.setState({ solutionCalendarPeriod: value });
   };
 
+  formItems = [
+    {
+      name: '请输入原密码',
+      field: 'oldPassword',
+      component: 'input',
+      type: 'password',
+      rules: [{ required: true, message: 'please enter old password' }]
+    },
+    {
+      name: '请输入新密码',
+      field: 'password',
+      component: 'input',
+      type: 'password',
+      rules: [{ required: true, message: 'please enter old new password' }]
+    },
+    {
+      name: '请再次输入新密码',
+      field: 'password_new',
+      component: 'input',
+      type: 'password',
+      rules: [{ required: true, message: 'please enter old new password' }]
+    }
+  ]
+
   render() {
     const { loading, data: allData, session, match } = this.props;
     const {
@@ -206,6 +234,55 @@ class UserDetail extends React.Component<Props, State> {
       const year = +d.date.split('-')[0];
       solutionCalendarYears.add(year);
     });
+    let formItems1 = [
+      {
+        name: 'School',
+        field: 'school',
+        component: 'input',
+        initialValue: data.school,
+        rules: [{ required: true, message: 'please enter school' }]
+      },
+      {
+        name: 'College',
+        field: 'college',
+        component: 'input',
+        initialValue: data.college,
+        rules: [{ required: true, message: 'please enter college' }]
+      },
+      {
+        name: 'Major',
+        field: 'major',
+        component: 'input',
+        initialValue: data.major,
+        rules: [{ required: true, message: 'please enter major' }]
+      },
+      {
+        name: 'Class',
+        field: 'class',
+        component: 'input',
+        initialValue: data.class,
+        rules: [{ required: true, message: 'please enter class' }]
+      },
+      {
+        name: 'Site',
+        field: 'site',
+        component: 'input',
+        initialValue: data.site,
+      },
+      {
+        name: 'DefaultLanguage',
+        field: 'defaultLanguage',
+        component: 'select',
+        initialValue: data.defaultLanguage,
+        options: langs.map(item => {
+          return {
+            value: item.fieldName,
+            name: item.displayShortName
+          }
+        }),
+        rules: [{ required: true, message: 'please enter defaultLanguage' }]
+      }
+    ]
     return (
       <PageTitle title={data.nickname} loading={loading}>
         <div>
@@ -213,18 +290,18 @@ class UserDetail extends React.Component<Props, State> {
             backgroundImage: data.bannerImage ? `url(${bannerImageUrl})` : undefined,
           }} />
           {self &&
-          <div className="banner-edit-btn">
-            <Upload
-              name="bannerImage"
-              accept="image/jpeg,image/bmp,image/png"
-              action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
-              beforeUpload={this.validateBannerImage}
-              onChange={this.handleBannerImageChange}
-              showUploadList={false}
-            >
-              <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
-            </Upload>
-          </div>}
+            <div className="banner-edit-btn">
+              <Upload
+                name="bannerImage"
+                accept="image/jpeg,image/bmp,image/png"
+                action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
+                beforeUpload={this.validateBannerImage}
+                onChange={this.handleBannerImageChange}
+                showUploadList={false}
+              >
+                <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
+              </Upload>
+            </div>}
           <div className="content-view" style={{ position: 'relative' }}>
             <div className="u-header" style={{ height: '60px' }}>
               <span className="u-avatar">
@@ -343,12 +420,72 @@ class UserDetail extends React.Component<Props, State> {
                       </Skeleton>
                     </Card>
 
+                    <Card bordered={false} className={styles.infoBoard}>
+                      <GeneralFormModal
+                        loadingEffect="user/edit_password"
+                        title="Edit Password"
+                        autoMsg
+                        items={this.formItems}
+                        submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          if (values.password !== values.password_new) {
+                            msg.error('Two passwords are inconsistent')
+                            return;
+                          }
+                          else {
+                            return dispatch({
+                              type: 'users/edit_password',
+                              payload: {
+                                userId: session.user.userId, 
+                                data: {
+                                  oldPassword: values.oldPassword,
+                                  password: values.password
+                                }
+                              },
+                            });
+                          }
+                        }}
+                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          msg.success('Password has been updated');
+                        }}
+                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                        }}
+                      >
+                        <Button block className={styles1.buttonMt}>Edit Password</Button>
+                      </GeneralFormModal>
+                      <GeneralFormModal
+                        loadingEffect="users/edit_profile"
+                        title="Edit Profile"
+                        autoMsg
+                        items={formItems1}
+                        submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          return dispatch({
+                            type: 'users/edit_profile',
+                            payload: { userId: session.user.userId, data: values },
+                          });
+                        }}
+                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          msg.success('Personal information updated successfully');
+                        }}
+                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          dispatch({
+                            type: 'users/getDetail',
+                            payload: {
+                              id: session.user.userId,
+                              force: true,
+                            },
+                          });
+                        }}
+                      >
+                        <Button block className={styles1.buttonMt}>Edit Profile</Button>
+                      </GeneralFormModal>
+                    </Card>
+
                     {!loading && session.loggedIn && !isSelf(session, data.userId) &&
-                    <Card bordered={false}>
-                      <SendMessageModal toUserId={data.userId}>
-                        <Button block>Send Message</Button>
-                      </SendMessageModal>
-                    </Card>}
+                      <Card bordered={false}>
+                        <SendMessageModal toUserId={data.userId}>
+                          <Button block>Send Message</Button>
+                        </SendMessageModal>
+                      </Card>}
 
                     {/*<Card bordered={false}>*/}
                     {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}

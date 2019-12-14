@@ -56,7 +56,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
     const { dispatch, form, hiddenValues, submit, onSuccess, onSuccessModalClosed, onFail, autoMsg } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
-        console.log('form ok', values);
+        // console.log('form ok', values);
         submit(dispatch, { ...values, ...hiddenValues }).then(ret => {
           autoMsg && msg.auto(ret);
           if (ret.success) {
@@ -89,7 +89,6 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
     let { initialValues } = this.props;
     initialValues = initialValues || {};
     const { getFieldDecorator } = form;
-
     return (
       <>
         <a onClick={this.handleShowModel}>{children}</a>

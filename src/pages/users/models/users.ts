@@ -143,6 +143,16 @@ export default {
       }
       return ret;
     },
+    * edit_password({ payload: {userId, data} }, { call, put, select }) {
+      const globalSess = yield select(state => state.session);
+      userId = userId || globalSess.user.userId;
+      return yield call(service.edit_password, userId, data);
+    },
+    * edit_profile({ payload: {userId, data} }, { call, put, select }) {
+      const globalSess = yield select(state => state.session);
+      userId = userId || globalSess.user.userId;
+      return yield call(service.edit_profile, userId, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

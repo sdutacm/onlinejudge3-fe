@@ -143,6 +143,22 @@ export default {
       }
       return ret;
     },
+    * changePassword({ payload: { userId, data } }, { call, select }) {
+      const globalSess = yield select(state => state.session);
+      userId = userId || globalSess.user.userId;
+      if (!userId) {
+        return;
+      }
+      return yield call(service.changePassword, userId, data);
+    },
+    * editProfile({ payload: { userId, data } }, { call, select }) {
+      const globalSess = yield select(state => state.session);
+      userId = userId || globalSess.user.userId;
+      if (!userId) {
+        return;
+      }
+      return yield call(service.editProfile, userId, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

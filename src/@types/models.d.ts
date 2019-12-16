@@ -31,6 +31,7 @@ interface IUser {
   verified?: boolean;
   coin?: number;
   solutionCalendar?: ISolutionCalendar;
+  defaultLanguage?: string;
 }
 
 interface IUserLite {

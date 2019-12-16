@@ -29,7 +29,7 @@ export default {
   },
   proxy: {
     '/onlinejudge2/index.php/API_ng/': {
-      target: 'http://localhost:8848/index.php/API_ng/',
+      target: 'http://127.0.0.1:8848/index.php/API_ng/',
       changeOrigin: true,
       pathRewrite: { '^/onlinejudge2/index.php/API_ng/' : '' }
     },

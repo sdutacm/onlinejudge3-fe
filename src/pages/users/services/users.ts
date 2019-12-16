@@ -72,3 +72,19 @@ export function getRatingHistory(id) {
   });
   return get(url);
 }
+
+export function changePassword(id, data){
+  return patch(urlf(api.users.password, {
+    param: {
+      id,
+    },
+  }), data);
+}
+
+export function editProfile(id, data){
+  return patch(urlf(api.users.detail, {
+    param: {
+      id,
+    },
+  }), data);
+}

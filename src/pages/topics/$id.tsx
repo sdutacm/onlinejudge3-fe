@@ -170,31 +170,35 @@ class TopicDetail extends React.Component<Props, State> {
 
     return (
       <PageAnimation>
-        <Card bordered={false} className="content-view-sm">
-          <Skeleton active loading={loading} paragraph={{ rows: 6, width: '100%' }}>
-            <div>
-              <h2>{data.title}</h2>
-              {data.problem && <h4 style={{ marginBottom: '12px'}}>
-                <ProblemBar problem={data.problem} display="id-title" />
-              </h4>}
-              <p>
-                <UserBar user={data.user} className="ant-comment-content-author-name" />
-                <span className="ml-md" />
-                <TimeBar time={data.createdAt * 1000} className="ant-comment-content-author-time" />
-              </p>
-              <div
-                dangerouslySetInnerHTML={{ __html: xss(data.content) }}
-                style={{ wordWrap: 'break-word', marginTop: '15px', marginBottom: '15px' }}
-              />
-            </div>
+        <div className="content-view">
+          <Card bordered={false} className="content-view">
+            <Skeleton active loading={loading} paragraph={{ rows: 6, width: '100%' }}>
+              <div>
+                <h2>{data.title}</h2>
+                {data.problem && <h4 style={{ marginBottom: '12px'}}>
+                  <ProblemBar problem={data.problem} display="id-title" />
+                </h4>}
+                <p>
+                  <UserBar user={data.user} className="ant-comment-content-author-name" />
+                  <span className="ml-md" />
+                  <TimeBar time={data.createdAt * 1000} className="ant-comment-content-author-time" />
+                </p>
+                <div
+                  dangerouslySetInnerHTML={{ __html: xss(data.content) }}
+                  style={{ wordWrap: 'break-word', marginTop: '15px', marginBottom: '15px' }}
+                />
+              </div>
+            </Skeleton>
+          </Card>
 
+          {!loading && <Card bordered={false}>
             <div id="replies">
               <List
                 className="comment-list"
                 header={replies.count === 1 ? `${replies.count} reply` : `${replies.count} replies`}
                 itemLayout="horizontal"
                 loading={repliesLoading}
-                locale={{ emptyText: 'Void' }}
+                locale={{ emptyText: 'Be the first to reply!' }}
                 dataSource={replies.rows}
                 renderItem={item => (
                   <List.Item>
@@ -253,8 +257,8 @@ class TopicDetail extends React.Component<Props, State> {
             </Form>
 
             <Button type="primary" onClick={this.handleSubmit} disabled={!session.loggedIn}>{session.loggedIn ? 'Reply' : 'Login to Reply'}</Button>
-          </Skeleton>
-        </Card>
+          </Card>}
+        </div>
       </PageAnimation>
     );
   }

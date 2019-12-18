@@ -14,12 +14,8 @@ import router from 'umi/router';
 import { scroller } from 'react-scroll';
 import PageAnimation from '@/components/PageAnimation';
 import ProblemBar from '@/components/ProblemBar';
-import api from '@/configs/apis';
-import constants from '@/configs/constants';
 import { validateFile } from '@/utils/validate';
-import BraftEditor from 'braft-editor';
-import { ContentUtils } from 'braft-utils'
-import 'braft-editor/dist/index.css';
+import RtEditor from '@/components/RtEditor';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   data: ITypeObject<ITopic>;
@@ -47,13 +43,7 @@ class TopicDetail extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount(): void {
-    this.props.form.setFieldsValue({
-      content: BraftEditor.createEditorState(null),
-    });
-  }
-
-  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
+  componentWillReceiveProps(nextProps: Readonly<Props>): void {
     // 当用户态显现
     if (!this.props.session.loggedIn && nextProps.session.loggedIn) {
       nextProps.dispatch({
@@ -75,29 +65,6 @@ class TopicDetail extends React.Component<Props, State> {
       duration: 500,
       smooth: true,
       offset: -64,
-    });
-  };
-
-  handleUploadMediaChange = (info) => {
-    const { form } = this.props;
-    const { file, fileList } = info;
-    if (file.status === 'done') {
-      const resp = file.response;
-      msg.auto(resp);
-      if (resp.success) {
-        const editorStateBefore = form.getFieldValue('content');
-        const editorState = ContentUtils.insertMedias(editorStateBefore, [{
-          type: 'IMAGE',
-          url: `${constants.mediaUrlPrefix}${resp.data.url}`,
-        }]);
-        form.setFieldsValue({
-          content: editorState
-        });
-      }
-    }
-    const newFileList = fileList.filter(f => f.status === 'uploading');
-    this.setState({
-      fileList: newFileList,
     });
   };
 
@@ -130,7 +97,7 @@ class TopicDetail extends React.Component<Props, State> {
             });
             // form.resetFields();
             form.setFieldsValue({
-              content: BraftEditor.createEditorState(null),
+              content: RtEditor.genEmptyContent(),
             });
           }
         });
@@ -143,30 +110,6 @@ class TopicDetail extends React.Component<Props, State> {
     const { getFieldDecorator } = form;
     const id = ~~match.params.id;
     const data = allData[id] || {} as ITopic;
-    const editorExtendControls = [
-      {
-        key: 'media-uploader',
-        type: 'component',
-        component: (
-          <Upload
-            name="image"
-            accept="image/jpeg,image/bmp,image/png"
-            action={`${api.base}${api.common.media}`}
-            beforeUpload={this.validateMedia}
-            onChange={this.handleUploadMediaChange}
-            fileList={this.state.fileList}
-          >
-            <button type="button" className="control-item button upload-button" data-title="Insert Image">
-              <Icon type="picture" theme="filled" />
-            </button>
-          </Upload>
-        ),
-      },
-    ] as {
-      key: string;
-      type: 'component';
-      component: React.ReactNode;
-    }[];
 
     return (
       <PageAnimation>
@@ -240,15 +183,8 @@ class TopicDetail extends React.Component<Props, State> {
                     },
                   }],
                 })(
-                  // @ts-ignore
-                  <BraftEditor
-                    controls={[
-                      'headings', 'bold', 'italic', 'underline', 'list-ul', 'list-ol',
-                      'link', 'emoji', 'code',
-                    ]}
-                    extendControls={editorExtendControls}
-                    className="rt-editor"
-                    language="en"
+                  <RtEditor
+                    form={form}
                     disabled={!session.loggedIn}
                     contentStyle={{ height: 220 }}
                   />

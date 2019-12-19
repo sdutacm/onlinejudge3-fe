@@ -30,9 +30,6 @@ class SubmitSolutionModal extends React.Component<Props, State> {
   }
 
   handleOk = () => {
-    this.props.form.setFieldsValue({
-      problemId: this.props.problemId,
-    });
     const { dispatch, contestId, location } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -84,7 +81,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
         >
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Problem">
-              {getFieldDecorator('problemId')(<span
+              {getFieldDecorator('problemId', { initialValue: problemId })(<span
                 className="ant-form-text">{problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}</span>)}
             </Form.Item>
 

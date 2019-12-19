@@ -14,6 +14,9 @@ export interface Props extends RouteProps {
 }
 
 const ProblemBar: React.FC<Props> = ({ problem, contestId, index, display = 'id', location }) => {
+  if (!problem) {
+    return <span>--</span>;
+  }
   const problemDetailUrl = contestId
     ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: numberToAlphabet(index) } })
     : urlf(pages.problems.detail, { param: { id: problem.problemId }, query: { from: location.query.from } });

@@ -176,7 +176,7 @@ class TopicDetail extends React.Component<Props, State> {
                     required: true,
                     validator: (_, value, callback) => {
                       if (value.isEmpty()) {
-                        callback('Please enter content');
+                        callback('Please input content');
                       } else {
                         callback();
                       }

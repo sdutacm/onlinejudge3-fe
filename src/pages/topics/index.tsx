@@ -4,20 +4,22 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card } from 'antd';
+import { Table, Pagination, Row, Col, Card, Form, Button, Input } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
-import { ReduxProps, RouteProps } from '@/@types/props';
+import { ReduxProps, RouteProps, FormProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import UserBar from '@/components/UserBar';
 import TimeBar from '@/components/TimeBar';
 import ProblemBar from '@/components/ProblemBar';
 import PageAnimation from '@/components/PageAnimation';
+import RtEditor from '@/components/RtEditor';
+import msg from '@/utils/msg';
 
-export interface Props extends ReduxProps, RouteProps {
+export interface Props extends ReduxProps, RouteProps, FormProps {
   data: IList<ITopic>;
   session: ISessionStatus;
 }
@@ -49,10 +51,42 @@ class TopicList extends React.Component<Props, State> {
     console.log(e);
   };
 
+  handleSubmit = () => {
+    const { form, dispatch } = this.props;
+    form.validateFields((err, values) => {
+      if (!err) {
+        const v = {
+          ...values,
+          title: values.topicTitle,
+          content: values.content.toHTML(),
+        };
+        delete v.topicTitle;
+        dispatch({
+          type: 'topics/addTopic',
+          payload: {
+            data: v,
+          },
+        }).then(ret => {
+          msg.auto(ret);
+          if (ret.success) {
+            dispatch({
+              type: 'topics/setListExpired',
+            });
+            form.setFieldsValue({
+              content: RtEditor.genEmptyContent(),
+            });
+            router.push(urlf(pages.topics.detail, { param: { id: ret.data.topicId } }))
+          }
+        });
+      }
+    });
+  };
+
   render() {
     const {
-      loading, data: { page, count, rows }, session, location: { query },
+      loading, data: { page, count, rows }, session, location: { query }, form,
     } = this.props;
+    const { getFieldDecorator } = form;
     return (
       <PageAnimation>
         <Row gutter={16}>
@@ -77,14 +111,21 @@ class TopicList extends React.Component<Props, State> {
                   title="Problem"
                   key="Problem"
                   render={(text, record: ITopic) => (
-                    record.problem ? <ProblemBar problem={record.problem} /> : null
+                    <ProblemBar problem={record.problem} />
                   )}
                 />}
                 <Table.Column
                   title="Author"
                   key="Author"
                   render={(text, record: ITopic) => (
-                    record.user ? <UserBar user={record.user} /> : null
+                    <UserBar user={record.user} />
+                  )}
+                />
+                <Table.Column
+                  title="Re."
+                  key="Replies"
+                  render={(text, record: ITopic) => (
+                    record.replyCount
                   )}
                 />
                 <Table.Column
@@ -103,7 +144,46 @@ class TopicList extends React.Component<Props, State> {
                 onChange={this.handlePageChange}
               />
             </Card>
+
+            <Card bordered={false}>
+              <Form layout="vertical" hideRequiredMark={true}>
+                {query.problemId ? <Form.Item label="Problem">
+                  {getFieldDecorator('problemId', { initialValue: +query.problemId })(<span
+                    className="ant-form-text">{query.problemId}</span>)}
+                </Form.Item> : null}
+
+                <Form.Item label="Title">
+                  {getFieldDecorator('topicTitle', {
+                    rules: [{ required: true, message: 'Please input title' }],
+                  })(<Input disabled={!session.loggedIn} />)}
+                </Form.Item>
+
+                <Form.Item label="Content">
+                  {getFieldDecorator('content', {
+                    validateTrigger: 'onBlur',
+                    rules: [{
+                      required: true,
+                      validator: (_, value, callback) => {
+                        if (value.isEmpty()) {
+                          callback('Please input content');
+                        } else {
+                          callback();
+                        }
+                      },
+                    }],
+                  })(
+                    <RtEditor
+                      form={form}
+                      disabled={!session.loggedIn}
+                      contentStyle={{ height: 220 }}
+                    />
+                  )}
+                </Form.Item>
+              </Form>
+              <Button type="primary" onClick={this.handleSubmit} disabled={!session.loggedIn}>{session.loggedIn ? 'Post' : 'Login to Post'}</Button>
+            </Card>
           </Col>
+
           <Col xs={24} md={6} xxl={4}>
             {/*<Card bordered={false}>*/}
             {/*  {!session.loggedIn*/}
@@ -139,4 +219,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(TopicList);
+export default connect(mapStateToProps)(Form.create()(TopicList));

@@ -14,6 +14,9 @@ export interface Props {
 }
 
 const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = false, hideUsername = false, className }) => {
+  if (!user) {
+    return <span>--</span>;
+  }
   const avatar = !hideAvatar ? <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} /> : null;
   const username = !hideUsername ? <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{user.nickname}</span> : null;
   const inner = <span className={classNames('no-wrap', className)}>

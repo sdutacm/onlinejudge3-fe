@@ -34,6 +34,12 @@ export default {
         ...genTimeFlag(5 * 60 * 1000),
       };
     },
+    setListExpired(state) {
+      state.list = {
+        ...state.list,
+        _et: -1,
+      };
+    },
     setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
         ...data,
@@ -138,7 +144,7 @@ export default {
       return ret;
     },
     * addTopic({ payload: { data } }, { call }) {
-      return yield call(service.addTopicReply, data);
+      return yield call(service.addTopic, data);
     },
     * addReply({ payload: { id, data } }, { call }) {
       return yield call(service.addTopicReply, id, data);

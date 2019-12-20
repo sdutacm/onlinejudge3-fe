@@ -19,6 +19,10 @@ const limits = {
   replies: {
     inUserDetailList: 3,
   },
+  posts: {
+    list: 20,
+    inUserDetailList: 3,
+  },
   messages: {
     unread: 100,
     list: 10,

@@ -52,6 +52,10 @@ base: '/solutions',
   replies: {
     base: '/replies',
   },
+  posts: {
+    base: '/posts',
+    detail: '/posts/:id',
+  },
   tags: {
     base: '/tags',
   },

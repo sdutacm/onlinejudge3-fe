@@ -122,6 +122,10 @@ class NavMenu extends React.Component<Props, State> {
           <Link to={pages.topics.index} onClick={onLinkClick}>Topics</Link>
         </Menu.Item>
 
+        <Menu.Item key={pages.posts.index}>
+          <Link to={pages.posts.index} onClick={onLinkClick}>Posts</Link>
+        </Menu.Item>
+
         {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
           <Link to={pages.index} onClick={onLinkClick}>Idea Notes</Link>
         </Menu.Item>}

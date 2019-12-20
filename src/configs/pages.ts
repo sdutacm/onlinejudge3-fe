@@ -25,6 +25,10 @@ export default {
     index: '/topics',
     detail: '/topics/:id',
   },
+  posts: {
+    index: '/posts',
+    detail: '/posts/:id',
+  },
   messages: {
     index: '/messages',
   },

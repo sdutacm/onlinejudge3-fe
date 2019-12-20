@@ -201,7 +201,7 @@ class TopicList extends React.Component<Props, State> {
                 fields={[
                   { displayName: 'Title', fieldName: 'title' },
                 ]}
-                initQuery={{ type: query.type, problemId: query.problemId }}
+                initQuery={{ problemId: query.problemId }}
               />
             </Card>
           </Col>

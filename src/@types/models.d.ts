@@ -212,6 +212,15 @@ interface IReply {
   createdAt: ITimestamp;
 }
 
+interface IPost {
+  postId: number;
+  user?: IUserLite;
+  title: string;
+  content?: string;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
+}
+
 interface ITag {
   tagId: number;
   name: {

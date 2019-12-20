@@ -12,10 +12,8 @@ import FavoriteList from '@/components/MessageList';
 import PageAnimation from '@/components/PageAnimation';
 
 export interface Props extends ReduxProps, RouteProps {
-  receivedLoading: boolean;
-  received: IList<IFavorite>;
-  sentLoading: boolean;
-  sent: IList<IFavorite>;
+  loading: boolean;
+  data: IList<IFavorite>;
 }
 
 interface State {
@@ -24,7 +22,6 @@ interface State {
 class FavoriteListPage extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {};
   }
 
   // componentDidUpdate(prevProps) {
@@ -48,17 +45,13 @@ class FavoriteListPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { receivedLoading, received, sentLoading, sent, location: { query }, dispatch } = this.props;
-    const isReceived = query.type === 'received';
-    const loading = isReceived ? receivedLoading : sentLoading;
-    const data = isReceived ? received : sent;
+    const { loading, data, location: { query }, dispatch } = this.props;
     return (
       <PageAnimation>
         <Row gutter={16}>
           <Col xs={24}>
             <Tabs defaultActiveKey={query.type} activeKey={query.type} animated={false} onChange={this.handleTypeChange}>
-              <Tabs.TabPane tab="Received" key="received" />
-              <Tabs.TabPane tab="Sent" key="sent" />
+              <Tabs.TabPane tab="Problems" key="problems" />
             </Tabs>
           </Col>
           <Col xs={24}>
@@ -68,7 +61,7 @@ class FavoriteListPage extends React.Component<Props, State> {
                 className="ant-table-pagination"
                 total={data.count}
                 current={data.page}
-                pageSize={limits.messages.list}
+                pageSize={limits.favorites.list}
                 onChange={this.handlePageChange}
               />
             </Card>
@@ -81,10 +74,8 @@ class FavoriteListPage extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    receivedLoading: !!state.loading.effects['messages/getReceivedList'],
-    received: state.messages.received,
-    sentLoading: !!state.loading.effects['messages/getSentList'],
-    sent: state.messages.sent,
+    loading: !!state.loading.effects['favorites/getList'],
+    data: state.favorites.list,
   };
 }
 

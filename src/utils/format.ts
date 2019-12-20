@@ -55,8 +55,8 @@ export function formatPercentage(a: number, b: number, precision: number = 2): s
  * @param {IListQuery} query
  * @returns {IListQuery}
  */
-export function formatListQuery(query: IListQuery): IListQuery {
-  const formattedQuery: IListQuery = {
+export function formatListQuery(query: IListQuery, ignorePagination = false): IListQuery {
+  const formattedQuery: IListQuery = ignorePagination ? { ...query } : {
     ...query,
     page: +query.page || 1,
   };

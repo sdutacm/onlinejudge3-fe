@@ -43,10 +43,10 @@ export default {
         userId = session.user.userId;
       }
       const formattedQuery = {
-        ...formatListQuery(query),
+        ...formatListQuery(query, true),
         orderBy: 'favoriteId',
         orderDirection: 'DESC',
-        limit: limits.favorites.list,
+        // limit: limits.favorites.list,
       };
       if (!force) {
         const savedState = yield select(state => state.favorites.list);

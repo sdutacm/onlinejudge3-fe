@@ -9,7 +9,7 @@ export function getList(userId, query) {
     },
     query: {
       ...query,
-      page: query.page || 1,
+      // page: query.page || 1,
     },
   });
   return get(url);

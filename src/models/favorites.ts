@@ -2,7 +2,6 @@ import * as service from '../services/favorites';
 import { genTimeFlag, isStateExpired } from '@/utils/misc';
 import { formatListQuery } from '@/utils/format';
 import { isEqual } from 'lodash';
-import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
 

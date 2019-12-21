@@ -4,12 +4,15 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch } from 'antd';
+import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch, List } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import FavoriteList from '@/components/MessageList';
 import PageAnimation from '@/components/PageAnimation';
+import ProblemBar from '@/components/ProblemBar';
+import TimeBar from '@/components/TimeBar';
+import DeleteFavorite from '@/components/DeleteFavorite';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -49,20 +52,45 @@ class FavoriteListPage extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <Row gutter={16}>
-          <Col xs={24}>
+          {/* <Col xs={24}>
             <Tabs defaultActiveKey={query.type} activeKey={query.type} animated={false} onChange={this.handleTypeChange}>
               <Tabs.TabPane tab="Problems" key="problems" />
             </Tabs>
-          </Col>
+          </Col> */}
           <Col xs={24}>
-            <Card bordered={false} className="list-card">
-
-              <Pagination
-                className="ant-table-pagination"
-                total={data.count}
-                current={data.page}
-                pageSize={limits.favorites.list}
-                onChange={this.handlePageChange}
+            <Card bordered={false} className="">
+              <List
+                className="favorite-list"
+                itemLayout="horizontal"
+                loading={loading}
+                locale={{ emptyText: 'No Favorites' }}
+                dataSource={data.rows}
+                renderItem={(item: IFavorite) => {
+                  if (item.type === 'problem') {
+                    return (
+                      <List.Item
+                        className="hover-visible-container"
+                        actions={[<DeleteFavorite favoriteId={item.favoriteId}>
+                          <a key="action-delete" className="hover-visible"><Icon type="delete" /></a>
+                        </DeleteFavorite>]}
+                      >
+                        <List.Item.Meta
+                          title={<ProblemBar problem={item.target} display="id-title" />}
+                          description={<pre>{item.note}</pre>}
+                        />
+                        <TimeBar time={item.createdAt * 1000} />
+                      </List.Item>
+                    );
+                  }
+                  return null;
+                }}
+                pagination={{
+                  className: 'ant-table-pagination',
+                  total: data.count,
+                  current: query.page || 1,
+                  pageSize: limits.topics.replies,
+                  onChange: this.handlePageChange,
+                }}
               />
             </Card>
           </Col>

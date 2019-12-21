@@ -90,6 +90,12 @@ class NavMenu extends React.Component<Props, State> {
     if (activeLinkKey.startsWith(pages.sets.index)) {
       activeLinkKey = pages.sets.index;
     }
+    if (activeLinkKey.startsWith(pages.topics.index)) {
+      activeLinkKey = pages.topics.index;
+    }
+    if (activeLinkKey.startsWith(pages.posts.index)) {
+      activeLinkKey = pages.posts.index;
+    }
     const from = location.query.from;
     return (
       <Menu
@@ -184,6 +190,9 @@ class NavMenu extends React.Component<Props, State> {
                 </Menu.Item>
                 <Menu.Item key="profile">
                   <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
+                </Menu.Item>
+                <Menu.Item key="favorites">
+                  <Link to={urlf(pages.favorites.index)}>Favorites</Link>
                 </Menu.Item>
                 {/* <Menu.Item key="favorites"> */}
                 {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}

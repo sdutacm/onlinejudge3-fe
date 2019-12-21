@@ -974,3 +974,33 @@ ul {
     font-size: 16px;
   }
 }
+
+// hover-visible util
+
+.hover-visible-container {
+  .hover-visible {
+    visibility: hidden;
+  }
+
+  &:hover .hover-visible {
+    visibility: visible;
+  }
+}
+
+// favorite list
+
+.favorite-list {
+  .ant-list-item-meta-content {
+    .ant-list-item-meta-title {
+      margin-bottom: 0;
+    }
+
+    .ant-list-item-meta-description {
+      margin-top: 4px;
+    }
+  }
+
+  .ant-list-item-action {
+    margin-left: 25px;
+  }
+}

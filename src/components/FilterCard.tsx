@@ -14,17 +14,22 @@ export interface FilterCardFieldOption {
 export interface Props extends RouteProps, FormProps {
   fields: FilterCardFieldOption[];
   initQuery?: any;
+  disableActionTrigger?: boolean;
 }
 
 class FilterCard extends React.Component<Props, any> {
   static defaultProps: Partial<Props> = {
     fields: [],
+    disableActionTrigger: false,
   };
 
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        if (this.props.disableActionTrigger) {
+          return;
+        }
         const { pathname, query } = this.props.location;
         router.replace({
           pathname,
@@ -41,6 +46,9 @@ class FilterCard extends React.Component<Props, any> {
   handleReset = e => {
     e.preventDefault();
     this.props.form.resetFields();
+    if (this.props.disableActionTrigger) {
+      return;
+    }
     router.replace({ pathname: this.props.location.pathname, query: this.props.initQuery });
   };
 

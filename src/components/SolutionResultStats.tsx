@@ -7,17 +7,12 @@ import shortNumber from 'short-number';
 export interface Props {
   accepted: number;
   submitted: number;
-  toSolutionsLink: string;
+  toSolutionsLink?: string;
 }
 
-const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutionsLink }) => (
-  <Popover
-    title="AC / Total"
-    content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}>
-    <Link
-      to={toSolutionsLink}
-      onClick={e => e.stopPropagation()}
-    >
+const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutionsLink }) => {
+  const inner = (
+    <>
       <Progress
         className="mini-ratio-progress stats-progress"
         type="circle"
@@ -27,8 +22,17 @@ const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutions
         showInfo={false}
       />
       <span className="ml-sm-md">{shortNumber(accepted)}</span>
-    </Link>
-  </Popover>
-);
+    </>
+  );
+  return (
+    <Popover
+      title="AC / Total"
+      content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}>
+      {toSolutionsLink ?
+        <Link to={toSolutionsLink} onClick={e => e.stopPropagation()}>{inner}</Link> :
+        <a>{inner}</a>}
+    </Popover>
+  );
+}
 
 export default SolutionResultStats;

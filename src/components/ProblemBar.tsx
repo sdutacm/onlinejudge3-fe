@@ -11,9 +11,10 @@ export interface Props extends RouteProps {
   contestId?: IContest['contestId'];
   index?: number;
   display?: 'id' | 'title' | 'id-title';
+  disableJump?: boolean;
 }
 
-const ProblemBar: React.FC<Props> = ({ problem, contestId, index, display = 'id', location }) => {
+const ProblemBar: React.FC<Props> = ({ problem, contestId, index, display = 'id', disableJump = false, location }) => {
   if (!problem) {
     return <span>--</span>;
   }
@@ -34,15 +35,17 @@ const ProblemBar: React.FC<Props> = ({ problem, contestId, index, display = 'id'
       displayText = `${id} - ${title}`;
       break;
   }
-  const link = <Link to={problemDetailUrl} onClick={e => e.stopPropagation()} className="no-wrap">
-    {displayText}
-  </Link>;
+  const inner = disableJump ?
+    <a>{displayText}</a> :
+    <Link to={problemDetailUrl} onClick={e => e.stopPropagation()} className="no-wrap">
+      {displayText}
+    </Link>;
   if (display === 'id') {
     return <Popover content={problem.title}>
-      {link}
+      {inner}
     </Popover>;
   }
-  return link;
+  return inner;
 };
 
 export default withRouter(ProblemBar);

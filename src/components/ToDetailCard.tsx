@@ -6,7 +6,8 @@ import gStyles from '@/general.less';
 export interface Props {
   label: string;
   placeholder: string;
-  toDetailLink: (string) => string;
+  disableActionTrigger?: boolean;
+  toDetailLink?: (string) => string;
 }
 
 interface State {
@@ -17,6 +18,7 @@ class ToDetailCard extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     label: '',
     placeholder: '',
+    disableActionTrigger: false,
     toDetailLink: () => '',
   };
 
@@ -28,6 +30,9 @@ class ToDetailCard extends React.Component<Props, State> {
   }
 
   handleSubmit = () => {
+    if (this.props.disableActionTrigger) {
+      return;
+    }
     const { toDetailLink } = this.props;
     if (this.state.value) {
       router.push(toDetailLink(this.state.value));

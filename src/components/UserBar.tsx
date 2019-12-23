@@ -11,9 +11,10 @@ export interface Props {
   hideAvatar?: boolean;
   hideUsername?: boolean;
   className?: string;
+  disableJump?: boolean;
 }
 
-const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = false, hideUsername = false, className }) => {
+const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = false, hideUsername = false, disableJump = false, className }) => {
   if (!user) {
     return <span>--</span>;
   }
@@ -24,6 +25,11 @@ const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = fa
   </span>;
   if (isContestUser) {
     return inner;
+  }
+  if (disableJump) {
+    return (
+      <a>{inner}</a>
+    );
   }
   return (
     <Link

@@ -129,6 +129,14 @@ class Index extends React.Component<Props, State> {
         </PageTitle>
       );
     }
+
+    const inBetaPage = matchPath(location.pathname, {
+      path: pages.beta,
+    });
+    if (inBetaPage) {
+      return children;
+    }
+
     const inUserDetailPage = matchPath(location.pathname, {
       path: pages.users.detail,
       exact: true,

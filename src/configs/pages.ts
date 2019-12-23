@@ -46,5 +46,6 @@ export default {
     index: '/groups',
     detail: '/groups/:id',
   },
+  beta: '/beta',
   OJBK: '/OJBK',
 };

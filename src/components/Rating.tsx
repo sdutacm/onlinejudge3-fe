@@ -188,7 +188,7 @@ class Rating extends React.Component<Props, State> {
       },
       chart: {
         backgroundColor: 'transparent',
-        height: 320,
+        height: 300,
       },
       xAxis: {
         type: 'datetime',

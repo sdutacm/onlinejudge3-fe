@@ -1,7 +1,7 @@
 import React from 'react';
 import withRouter from 'umi/withRouter';
 import NavMenu from './NavMenu';
-import NavMenuContest from '@/layouts/components/NavMenuContest';
+import NavMenuContest from './NavMenuContest';
 import ResponsiveNav from './ResponsiveNav';
 import { RouteProps } from '@/@types/props';
 import pages from '@/configs/pages';

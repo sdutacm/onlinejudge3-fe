@@ -817,6 +817,7 @@ interface Props extends FormProps, ReduxProps {
 interface State {
   submitting: boolean;
   viewportWidth: number;
+  viewportHeight: number;
 }
 
 class Beta extends React.Component<Props, State> {
@@ -829,6 +830,7 @@ class Beta extends React.Component<Props, State> {
     this.state = {
       submitting: false,
       viewportWidth: 0,
+      viewportHeight: 0,
     };
   }
 
@@ -836,15 +838,18 @@ class Beta extends React.Component<Props, State> {
     this._mountedAt = Date.now();
     this.saveViewportDimensions();
     window.addEventListener('resize', this.saveViewportDimensions);
+    window.addEventListener('orientationchange', this.saveViewportDimensions);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.saveViewportDimensions);
+    window.removeEventListener('orientationchange', this.saveViewportDimensions);
   }
 
   private saveViewportDimensions = throttle(() => {
     this.setState({
       viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
     });
   }, 250);
 
@@ -929,14 +934,15 @@ class Beta extends React.Component<Props, State> {
   render() {
     const { settings } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { submitting, viewportWidth } = this.state;
-    const isUnsupportedMobile = viewportWidth < 736;
+    const { submitting, viewportWidth, viewportHeight } = this.state;
+    const isUnsupportedMobile = viewportWidth < 724;
 
     if (isUnsupportedMobile) {
       return (
         <PageTitle title="OnlineJudge 3">
           <div className="beta" style={{ padding: '100px 30px 30px' }}>
-            <h3 style={{ marginBottom: '45px' }}>很抱歉，你的设备的分辨率暂未支持</h3>
+            <h3>很抱歉，你的设备的分辨率暂未支持</h3>
+            <p style={{ marginBottom: '45px' }}>not supported: {viewportWidth}x{viewportHeight}</p>
             <p>如果是移动设备，请尝试横屏或使用桌面设备。</p>
             <p>如果是桌面设备，请尝试将浏览器窗口放大。</p>
           </div>

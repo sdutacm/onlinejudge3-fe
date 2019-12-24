@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { connect } from 'dva';
 import { Form, Button, Row, Col, Card, Icon, Carousel, Table, Pagination, Avatar, Select, Radio, Popover, Tag, Switch, Input } from 'antd';
@@ -31,6 +32,10 @@ import userStyles from './users/$id.less';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
+import request from '@/utils/request';
+import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
+import throttle from 'lodash.throttle';
 
 const NAME = 'OnlineJudge 3';
 const loading = false;
@@ -61,7 +66,7 @@ const demoData = {
     ratingHistory: [{ "contest": { "contestId": 2401, "title": "SDUT Round #4 - 2018 \u65b0\u6625\u5927\u4f5c\u6218" }, "rank": 21, "rating": 1568, "ratingChange": 68, "date": "2018-02-15" }, { "contest": { "contestId": 2481, "title": "SDUT Round #5 - 2018 \u611a\u4eba\u8282\u4e13\u573a" }, "rank": 24, "rating": 1625, "ratingChange": 57, "date": "2018-04-01" }, { "contest": { "contestId": 2627, "title": "SDUT Round #6 [\u91cd\u805a--SDUTACM\u5341\u5468\u5e74\u5e86\u5178\u4e13\u573a\u8d5b--\u73b0\u573a\u8d5b]" }, "rank": 7, "rating": 1702, "ratingChange": 77, "date": "2018-10-14" }, { "contest": { "contestId": 2764, "title": "SDUT Round #7 2019-\u65b0\u6625\u5927\u4f5c\u6218" }, "rank": 10, "rating": 1709, "ratingChange": 7, "date": "2019-02-04" }, { "contest": { "contestId": 2913, "title": "SDUT Round #8 2019 \u611a\u4eba\u8282\u4e13\u573a\u8d5b" }, "rank": 2, "rating": 1806, "ratingChange": 97, "date": "2019-04-01" }]
   },
   tags: { "count": 14, "rows": [{ "tagId": 6, "hidden": false, "createdAt": 1545753600, "name": { "en": "Sortings", "zhHans": "排序", "zhHant": "排序" } }, { "tagId": 10, "hidden": false, "createdAt": 1545753600, "name": { "en": "Greedy", "zhHans": "贪心", "zhHant": "貪婪" } }, { "tagId": 11, "hidden": false, "createdAt": 1545753600, "name": { "en": "DP", "zhHans": "动态规划", "zhHant": "動態規劃" } }, { "tagId": 13, "hidden": false, "createdAt": 1545753600, "name": { "en": "Data Structures", "zhHans": "数据结构", "zhHant": "資料結構" } }, { "tagId": 15, "hidden": false, "createdAt": 1545753600, "name": { "en": "Linked List", "zhHans": "链表", "zhHant": "連結串列" } }, { "tagId": 18, "hidden": false, "createdAt": 1545753600, "name": { "en": "Binary Tree", "zhHans": "二叉树", "zhHant": "二元樹" } }, { "tagId": 25, "hidden": false, "createdAt": 1545753600, "name": { "en": "DFS", "zhHans": "深度优先搜索", "zhHant": "深度優先搜尋" } }, { "tagId": 26, "hidden": false, "createdAt": 1545753600, "name": { "en": "BFS", "zhHans": "广度优先搜索", "zhHant": "廣度優先搜尋" } }, { "tagId": 23, "hidden": false, "createdAt": 1545753600, "name": { "en": "Brute Force", "zhHans": "暴力", "zhHant": "暴力" } }, { "tagId": 27, "hidden": false, "createdAt": 1545753600, "name": { "en": "Math", "zhHans": "数学", "zhHant": "數學" } }, { "tagId": 32, "hidden": false, "createdAt": 1545753600, "name": { "en": "Hashing", "zhHans": "哈希", "zhHant": "哈希" } }, { "tagId": 33, "hidden": false, "createdAt": 1545753600, "name": { "en": "Graphs", "zhHans": "图论", "zhHant": "圖論" } }, { "tagId": 37, "hidden": false, "createdAt": 1545753600, "name": { "en": "Games", "zhHans": "博弈", "zhHant": "博弈" } }, { "tagId": 49, "hidden": false, "createdAt": 1545753600, "name": { "en": "FFT", "zhHans": "快速傅里叶变换", "zhHant": "快速傅立葉變換" } }] },
-  notes: { "count": 4, "rows": [{ "noteId": 27, "type": "", "target": { "url": "https:\/\/acm.sdut.edu.cn\/onlinejudge3_beta\/", "location": { "pathname": "\/", "search": "", "query": [], "hash": "" } }, "content": "\u56de\u53bb\u770b\u9a6c\u8001\u5e08\u7b2c\u516d\u7ae0", "createdAt": 1577148845, "updatedAt": 1577148845 }, { "noteId": 25, "type": "problem", "target": { "problemId": 1018, "title": "\u9aa8\u724c\u94fa\u65b9\u683c" }, "content": "\u76ee\u524d\u60f3\u5230\u5e94\u8be5\u7528\u9012\u63a8\uff0c\u5403\u5b8c\u996d\u56de\u53bb\u63a8\u4e00\u4e0b", "createdAt": 1577148602, "updatedAt": 1577148602 }, { "noteId": 24, "type": "solution", "target": { "solutionId": 2491137, "problem": { "problemId": 3864, "title": "Legion Commander" }, "contest": { "contestId": 2100, "title": "SDUT Round #3 - 2017 \u611a\u4eba\u8282\u4e13\u573a", "type": 2, "problemIndex": 3 }, "result": 1 }, "content": "\u8fd9\u9898\u7684\u552f\u4e00\u6b63\u786e\u89e3\u6cd5\uff0c\u5b66\u4e60\u4e86", "createdAt": 1577148516, "updatedAt": 1577148516 }, { "noteId": 23, "type": "problem", "target": { "problemId": 3860, "title": "\u7b80\u5355\u65f6\u95f4\u8f6c\u6362", "contest": { "contestId": 2100, "title": "SDUT Round #3 - 2017 \u611a\u4eba\u8282\u4e13\u573a", "problemIndex": 1 } }, "content": "\u8fd9\u9898\u8f93\u5165\u8f93\u51fa\u5f88\u5751", "createdAt": 1577148457, "updatedAt": 1577148457 }] },
+  notes: { "count": 4, "rows": [{ "noteId": 27, "type": "", "target": { "url": "https:\/\/acm.sdut.edu.cn\/onlinejudge3\/", "location": { "pathname": "\/", "search": "", "query": [], "hash": "" } }, "content": "\u56de\u53bb\u770b\u9a6c\u8001\u5e08\u7b2c\u516d\u7ae0", "createdAt": 1577148845, "updatedAt": 1577148845 }, { "noteId": 25, "type": "problem", "target": { "problemId": 1018, "title": "\u9aa8\u724c\u94fa\u65b9\u683c" }, "content": "\u76ee\u524d\u60f3\u5230\u5e94\u8be5\u7528\u9012\u63a8\uff0c\u5403\u5b8c\u996d\u56de\u53bb\u63a8\u4e00\u4e0b", "createdAt": 1577148602, "updatedAt": 1577148602 }, { "noteId": 24, "type": "solution", "target": { "solutionId": 2491137, "problem": { "problemId": 3864, "title": "Legion Commander" }, "contest": { "contestId": 2100, "title": "SDUT Round #3 - 2017 \u611a\u4eba\u8282\u4e13\u573a", "type": 2, "problemIndex": 3 }, "result": 1 }, "content": "\u8fd9\u9898\u7684\u552f\u4e00\u6b63\u786e\u89e3\u6cd5\uff0c\u5b66\u4e60\u4e86", "createdAt": 1577148516, "updatedAt": 1577148516 }, { "noteId": 23, "type": "problem", "target": { "problemId": 3860, "title": "\u7b80\u5355\u65f6\u95f4\u8f6c\u6362", "contest": { "contestId": 2100, "title": "SDUT Round #3 - 2017 \u611a\u4eba\u8282\u4e13\u573a", "problemIndex": 1 } }, "content": "\u8fd9\u9898\u8f93\u5165\u8f93\u51fa\u5f88\u5751", "createdAt": 1577148457, "updatedAt": 1577148457 }] },
   solutionDetail: { "solutionId": 5253918, "result": 1, "time": 0, "memory": 152, "language": "g++", "codeLength": 134, "createdAt": 1546229131, "shared": true, "user": { "userId": 1, "username": "root", "nickname": "hack", "avatar": "", "bannerImage": "" }, "problem": { "problemId": 1000, "title": "A+B Problem", "timeLimit": 1000 }, "code": "#include <bits\/stdc++.h>\nusing namespace std;\nint main()\n{\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << endl;\n    return 0;\n}" },
 }
 
@@ -778,39 +783,129 @@ interface Props extends FormProps, ReduxProps {
 }
 
 interface State {
-  loading: boolean;
+  submitting: boolean;
+  viewportWidth: number;
 }
 
 class Beta extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
+  private _mountedAt: number = 0;
   setStatePromise = setStatePromise.bind(this);
 
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      submitting: false,
+      viewportWidth: 0,
     };
   }
+
+  componentDidMount() {
+    this._mountedAt = Date.now();
+    this.saveViewportDimensions();
+    window.addEventListener('resize', this.saveViewportDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.saveViewportDimensions);
+  }
+
+  private saveViewportDimensions = throttle(() => {
+    this.setState({
+      viewportWidth: window.innerWidth,
+    });
+  }, 250);
 
   handleThemeChange = (theme: ISettingsTheme) => {
     this.props.dispatch({
       type: 'settings/setTheme',
       payload: { theme },
     });
+    tracker.event({
+      category: 'beta',
+      action: 'setTheme',
+      label: theme,
+    })
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        console.log('v', values);
+        tracker.event({
+          category: 'beta',
+          action: 'preorder',
+        });
+        tracker.timing({
+          category: 'beta',
+          variable: 'viewToPreorder',
+          value: Date.now() - this._mountedAt,
+        });
+        try {
+          this.setState({
+            submitting: true,
+          });
+          await request('https://acm.sdut.edu.cn/web-activities/oj3-intro/join', {
+            method: 'post',
+            data: values,
+          });
+          tracker.event({
+            category: 'beta',
+            action: 'preorderDone',
+          });
+        } catch (e) {
+          console.error('preorder error.', e);
+          msg.error('请求发生错误，请重试');
+          tracker.event({
+            category: 'beta',
+            action: 'preorderError',
+          });
+          tracker.exception({
+            description: e.toString(),
+          });
+        } finally {
+          this.setState({
+            submitting: false,
+          });
+        }
       }
     });
+  }
+
+  renderExtLink = (href: string, inner: React.ReactNode) => {
+    return (
+      <a
+        className="normal-text-link"
+        href={href}
+        target="_blank"
+        onClick={() => {
+          tracker.event({
+            category: 'beta',
+            action: 'extLink',
+            label: href,
+          });
+        }}
+      >{inner}</a>
+    );
   }
 
   render() {
     const { settings } = this.props;
     const { getFieldDecorator } = this.props.form;
+    const { submitting, viewportWidth } = this.state;
+    const isUnsupportedMobile = viewportWidth < 736;
+
+    if (isUnsupportedMobile) {
+      return (
+        <PageTitle title="OnlineJudge 3">
+          <div className="beta" style={{ padding: '100px 30px 30px' }}>
+            <h3 style={{ marginBottom: '45px' }}>很抱歉，你的设备的分辨率暂未支持</h3>
+            <p>如果是移动设备，请尝试横屏或使用桌面设备。</p>
+            <p>如果是桌面设备，请尝试将浏览器窗口放大。</p>
+          </div>
+        </PageTitle>
+      );
+    }
 
     return (
       <PageTitle title="OnlineJudge 3">
@@ -859,7 +954,7 @@ class Beta extends React.Component<Props, State> {
                   </Form.Item>
 
                   <Form.Item>
-                    <Button type="primary" block htmlType="submit">提交</Button>
+                    <Button type="primary" block htmlType="submit" loading={submitting}>提交</Button>
                   </Form.Item>
                 </Form>
               </div>
@@ -869,10 +964,10 @@ class Beta extends React.Component<Props, State> {
               <div className="block">
               <div className="header">资源</div>
                 <p className="item">
-                  <a className="normal-text-link" href={`https://acm.sdut.edu.cn/sdutacm_files/onlinejudge3/OnlineJudge3_poster_${settings.theme}_1080p.png`} target="_blank"><Icon type="download" /> {NAME} 主题壁纸</a>
+                  {this.renderExtLink(`https://acm.sdut.edu.cn/sdutacm_files/onlinejudge3/OnlineJudge3_poster_${settings.theme}_1080p.png`, <span><Icon type="download" /> {NAME} 主题壁纸</span>)}
                 </p>
                 <p className="item">
-                  <a className="normal-text-link" href="https://acm.sdut.edu.cn/sdutacm_files/onlinejudge3/OnlineJudge%203%20%E5%8F%91%E5%B8%83%E4%BC%9A%E4%B8%BB%E9%A2%98%E6%BC%94%E8%AE%B2%E5%9B%9E%E9%A1%BE.pdf" target="_blank"><Icon type="download" /> 2018 年 10 月 18 日 / {NAME} 发布会主题演讲幻灯片</a>
+                  {this.renderExtLink('https://acm.sdut.edu.cn/sdutacm_files/onlinejudge3/OnlineJudge%203%20%E5%8F%91%E5%B8%83%E4%BC%9A%E4%B8%BB%E9%A2%98%E6%BC%94%E8%AE%B2%E5%9B%9E%E9%A1%BE.pdf', <span><Icon type="download" /> 2018 年 10 月 18 日 / {NAME} 发布会主题演讲幻灯片</span>)}
                 </p>
               </div>
             </div>

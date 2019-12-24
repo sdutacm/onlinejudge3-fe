@@ -42,6 +42,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.6",
+    "react-ga": "^2.7.0",
     "react-markdown": "^3.6.0",
     "react-scroll": "^1.7.12",
     "react-syntax-highlighter": "^9.0.0",
@@ -62,7 +63,7 @@
     "eslint-config-alloy": "^2.0.0-alpha.2",
     "eslint-plugin-react": "^7.12.4",
     "roadhog-api-doc": "^1.1.2",
-    "typescript": "^3.3.3333",
+    "typescript": "3.5.3",
     "umi": "^2.7.0",
     "umi-plugin-react": "^1.8.0",
     "umi-types": "^0.2.0"

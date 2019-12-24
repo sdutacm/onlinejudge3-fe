@@ -34,7 +34,7 @@ function checkStatus(response: AxiosResponse) {
  * @param {AxiosRequestConfig} options
  * @returns {Promise<IApiResponse<any>>}
  */
-async function request(url: string, initOptions: AxiosRequestConfig = {}, options: AxiosRequestConfig = {}): Promise<IApiResponse<any> > {
+async function request(url: string, options: AxiosRequestConfig = {}, initOptions: AxiosRequestConfig = {}): Promise<IApiResponse<any> > {
   const axiosInstance = initAxios(initOptions);
   const response = await axiosInstance({
     url,

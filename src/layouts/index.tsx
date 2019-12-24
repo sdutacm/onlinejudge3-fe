@@ -137,6 +137,10 @@ class Index extends React.Component<Props, State> {
       return children;
     }
 
+    if (!inBetaPage) {
+      router.replace(pages.beta);
+    }
+
     const inUserDetailPage = matchPath(location.pathname, {
       path: pages.users.detail,
       exact: true,

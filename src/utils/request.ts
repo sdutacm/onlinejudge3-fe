@@ -2,10 +2,11 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import constants from '@/configs/constants';
 import api from '@/configs/apis';
 
-function initAxios(): AxiosInstance {
+function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: api.base,
     timeout: constants.requestTimeout,
+    ...options,
   });
   axiosInstance.interceptors.request.use(function(config) {
     config.params = {
@@ -33,8 +34,8 @@ function checkStatus(response: AxiosResponse) {
  * @param {AxiosRequestConfig} options
  * @returns {Promise<IApiResponse<any>>}
  */
-async function request(url: string, options: AxiosRequestConfig = {}): Promise<IApiResponse<any> > {
-  const axiosInstance = initAxios();
+async function request(url: string, initOptions: AxiosRequestConfig = {}, options: AxiosRequestConfig = {}): Promise<IApiResponse<any> > {
+  const axiosInstance = initAxios(initOptions);
   const response = await axiosInstance({
     url,
     ...options,

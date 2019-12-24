@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Button, Row, Col, Card, Icon, Carousel, Table, Pagination, Avatar, Select } from 'antd';
+import { Form, Button, Row, Col, Card, Icon, Carousel, Table, Pagination, Avatar, Select, Radio, Popover, Tag, Switch, Input } from 'antd';
 import { FormProps, ReduxProps } from '@/@types/props';
 import setStatePromise from '@/utils/setStatePromise';
 import PageTitle from '@/components/PageTitle';
@@ -28,6 +28,9 @@ import constants from '@/configs/constants';
 import SolutionCalendar from '@/components/SolutionCalendar';
 import Rating from '@/components/Rating';
 import userStyles from './users/$id.less';
+import CopyToClipboardButton from '@/components/CopyToClipboardButton';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
 
 const NAME = 'OnlineJudge 3';
 const loading = false;
@@ -57,26 +60,39 @@ const demoData = {
     solutionCalendar: [{ "date": "2018-09-26", "count": 10 }, { "date": "2018-09-27", "count": 2 }, { "date": "2018-10-06", "count": 12 }, { "date": "2018-10-07", "count": 8 }, { "date": "2018-10-08", "count": 4 }, { "date": "2018-10-09", "count": 3 }, { "date": "2018-10-11", "count": 2 }, { "date": "2018-10-12", "count": 6 }, { "date": "2018-10-14", "count": 5 }, { "date": "2018-10-15", "count": 1 }, { "date": "2018-10-16", "count": 10 }, { "date": "2018-10-17", "count": 3 }, { "date": "2018-10-18", "count": 2 }, { "date": "2018-10-19", "count": 4 }, { "date": "2018-10-24", "count": 2 }, { "date": "2018-10-28", "count": 5 }, { "date": "2018-10-29", "count": 6 }, { "date": "2018-10-31", "count": 7 }, { "date": "2018-11-02", "count": 2 }, { "date": "2018-11-04", "count": 4 }, { "date": "2018-11-05", "count": 3 }, { "date": "2018-11-06", "count": 3 }, { "date": "2018-11-07", "count": 6 }, { "date": "2018-11-10", "count": 4 }, { "date": "2018-11-11", "count": 6 }, { "date": "2018-11-14", "count": 1 }, { "date": "2018-11-18", "count": 10 }, { "date": "2018-11-19", "count": 10 }, { "date": "2018-11-20", "count": 2 }, { "date": "2018-11-21", "count": 9 }, { "date": "2018-11-26", "count": 2 }, { "date": "2018-11-27", "count": 1 }, { "date": "2018-11-28", "count": 9 }, { "date": "2018-12-05", "count": 2 }, { "date": "2018-12-09", "count": 3 }, { "date": "2018-12-11", "count": 2 }, { "date": "2018-12-12", "count": 4 }, { "date": "2018-12-15", "count": 1 }, { "date": "2018-12-17", "count": 2 }, { "date": "2018-12-18", "count": 4 }, { "date": "2018-12-19", "count": 1 }, { "date": "2018-12-22", "count": 1 }, { "date": "2018-12-24", "count": 8 }, { "date": "2018-12-25", "count": 4 }, { "date": "2018-12-26", "count": 5 }, { "date": "2018-12-27", "count": 2 }, { "date": "2018-12-28", "count": 1 }, { "date": "2019-01-02", "count": 2 }, { "date": "2019-01-03", "count": 2 }, { "date": "2019-01-04", "count": 3 }, { "date": "2019-01-07", "count": 2 }, { "date": "2019-01-08", "count": 4 }, { "date": "2019-01-09", "count": 4 }, { "date": "2019-01-10", "count": 7 }, { "date": "2019-01-11", "count": 2 }, { "date": "2019-01-15", "count": 1 }, { "date": "2019-01-17", "count": 13 }, { "date": "2019-01-18", "count": 9 }, { "date": "2019-01-19", "count": 10 }, { "date": "2019-01-20", "count": 5 }, { "date": "2019-01-21", "count": 3 }, { "date": "2019-01-22", "count": 9 }, { "date": "2019-01-23", "count": 9 }, { "date": "2019-01-24", "count": 1 }, { "date": "2019-02-15", "count": 3 }, { "date": "2019-02-16", "count": 6 }, { "date": "2019-02-17", "count": 7 }, { "date": "2019-02-18", "count": 3 }, { "date": "2019-02-19", "count": 1 }, { "date": "2019-02-20", "count": 7 }, { "date": "2019-02-21", "count": 6 }, { "date": "2019-02-26", "count": 2 }, { "date": "2019-03-06", "count": 1 }, { "date": "2019-03-07", "count": 2 }, { "date": "2019-03-14", "count": 1 }, { "date": "2019-04-01", "count": 2 }, { "date": "2019-04-03", "count": 1 }, { "date": "2019-04-04", "count": 1 }, { "date": "2019-04-21", "count": 1 }, { "date": "2019-04-22", "count": 4 }, { "date": "2019-04-23", "count": 2 }, { "date": "2019-04-25", "count": 1 }, { "date": "2019-04-26", "count": 5 }, { "date": "2019-04-28", "count": 4 }, { "date": "2019-04-29", "count": 1 }, { "date": "2019-05-11", "count": 4 }, { "date": "2019-05-16", "count": 1 }, { "date": "2019-05-17", "count": 5 }, { "date": "2019-05-18", "count": 3 }, { "date": "2019-05-19", "count": 4 }, { "date": "2019-05-25", "count": 4 }, { "date": "2019-07-23", "count": 14 }, { "date": "2019-07-24", "count": 6 }, { "date": "2019-07-25", "count": 2 }, { "date": "2019-07-27", "count": 12 }, { "date": "2019-07-28", "count": 4 }, { "date": "2019-08-27", "count": 1 }, { "date": "2019-09-01", "count": 4 }, { "date": "2019-09-02", "count": 4 }, { "date": "2019-09-04", "count": 1 }, { "date": "2019-09-05", "count": 1 }, { "date": "2019-09-11", "count": 3 }, { "date": "2019-09-12", "count": 1 }, { "date": "2019-09-15", "count": 1 }, { "date": "2019-09-19", "count": 4 }, { "date": "2019-09-20", "count": 6 }, { "date": "2019-09-22", "count": 1 }, { "date": "2019-09-24", "count": 1 }, { "date": "2019-09-26", "count": 1 }, { "date": "2019-09-27", "count": 2 }, { "date": "2019-09-28", "count": 5 }, { "date": "2019-10-10", "count": 1 }, { "date": "2019-10-19", "count": 3 }, { "date": "2019-10-20", "count": 5 }, { "date": "2019-10-22", "count": 1 }, { "date": "2019-10-23", "count": 2 }, { "date": "2019-10-25", "count": 9 }, { "date": "2019-11-04", "count": 2 }, { "date": "2019-11-12", "count": 1 }, { "date": "2019-11-14", "count": 7 }, { "date": "2019-11-15", "count": 9 }, { "date": "2019-11-18", "count": 2 }, { "date": "2019-12-09", "count": 2 }],
     ratingHistory: [{ "contest": { "contestId": 2401, "title": "SDUT Round #4 - 2018 \u65b0\u6625\u5927\u4f5c\u6218" }, "rank": 21, "rating": 1568, "ratingChange": 68, "date": "2018-02-15" }, { "contest": { "contestId": 2481, "title": "SDUT Round #5 - 2018 \u611a\u4eba\u8282\u4e13\u573a" }, "rank": 24, "rating": 1625, "ratingChange": 57, "date": "2018-04-01" }, { "contest": { "contestId": 2627, "title": "SDUT Round #6 [\u91cd\u805a--SDUTACM\u5341\u5468\u5e74\u5e86\u5178\u4e13\u573a\u8d5b--\u73b0\u573a\u8d5b]" }, "rank": 7, "rating": 1702, "ratingChange": 77, "date": "2018-10-14" }, { "contest": { "contestId": 2764, "title": "SDUT Round #7 2019-\u65b0\u6625\u5927\u4f5c\u6218" }, "rank": 10, "rating": 1709, "ratingChange": 7, "date": "2019-02-04" }, { "contest": { "contestId": 2913, "title": "SDUT Round #8 2019 \u611a\u4eba\u8282\u4e13\u573a\u8d5b" }, "rank": 2, "rating": 1806, "ratingChange": 97, "date": "2019-04-01" }]
   },
+  tags: { "count": 14, "rows": [{ "tagId": 6, "hidden": false, "createdAt": 1545753600, "name": { "en": "Sortings", "zhHans": "排序", "zhHant": "排序" } }, { "tagId": 10, "hidden": false, "createdAt": 1545753600, "name": { "en": "Greedy", "zhHans": "贪心", "zhHant": "貪婪" } }, { "tagId": 11, "hidden": false, "createdAt": 1545753600, "name": { "en": "DP", "zhHans": "动态规划", "zhHant": "動態規劃" } }, { "tagId": 13, "hidden": false, "createdAt": 1545753600, "name": { "en": "Data Structures", "zhHans": "数据结构", "zhHant": "資料結構" } }, { "tagId": 15, "hidden": false, "createdAt": 1545753600, "name": { "en": "Linked List", "zhHans": "链表", "zhHant": "連結串列" } }, { "tagId": 18, "hidden": false, "createdAt": 1545753600, "name": { "en": "Binary Tree", "zhHans": "二叉树", "zhHant": "二元樹" } }, { "tagId": 25, "hidden": false, "createdAt": 1545753600, "name": { "en": "DFS", "zhHans": "深度优先搜索", "zhHant": "深度優先搜尋" } }, { "tagId": 26, "hidden": false, "createdAt": 1545753600, "name": { "en": "BFS", "zhHans": "广度优先搜索", "zhHant": "廣度優先搜尋" } }, { "tagId": 23, "hidden": false, "createdAt": 1545753600, "name": { "en": "Brute Force", "zhHans": "暴力", "zhHant": "暴力" } }, { "tagId": 27, "hidden": false, "createdAt": 1545753600, "name": { "en": "Math", "zhHans": "数学", "zhHant": "數學" } }, { "tagId": 32, "hidden": false, "createdAt": 1545753600, "name": { "en": "Hashing", "zhHans": "哈希", "zhHant": "哈希" } }, { "tagId": 33, "hidden": false, "createdAt": 1545753600, "name": { "en": "Graphs", "zhHans": "图论", "zhHant": "圖論" } }, { "tagId": 37, "hidden": false, "createdAt": 1545753600, "name": { "en": "Games", "zhHans": "博弈", "zhHant": "博弈" } }, { "tagId": 49, "hidden": false, "createdAt": 1545753600, "name": { "en": "FFT", "zhHans": "快速傅里叶变换", "zhHant": "快速傅立葉變換" } }] },
+  notes: { "count": 4, "rows": [{ "noteId": 27, "type": "", "target": { "url": "https:\/\/acm.sdut.edu.cn\/onlinejudge3_beta\/", "location": { "pathname": "\/", "search": "", "query": [], "hash": "" } }, "content": "\u56de\u53bb\u770b\u9a6c\u8001\u5e08\u7b2c\u516d\u7ae0", "createdAt": 1577148845, "updatedAt": 1577148845 }, { "noteId": 25, "type": "problem", "target": { "problemId": 1018, "title": "\u9aa8\u724c\u94fa\u65b9\u683c" }, "content": "\u76ee\u524d\u60f3\u5230\u5e94\u8be5\u7528\u9012\u63a8\uff0c\u5403\u5b8c\u996d\u56de\u53bb\u63a8\u4e00\u4e0b", "createdAt": 1577148602, "updatedAt": 1577148602 }, { "noteId": 24, "type": "solution", "target": { "solutionId": 2491137, "problem": { "problemId": 3864, "title": "Legion Commander" }, "contest": { "contestId": 2100, "title": "SDUT Round #3 - 2017 \u611a\u4eba\u8282\u4e13\u573a", "type": 2, "problemIndex": 3 }, "result": 1 }, "content": "\u8fd9\u9898\u7684\u552f\u4e00\u6b63\u786e\u89e3\u6cd5\uff0c\u5b66\u4e60\u4e86", "createdAt": 1577148516, "updatedAt": 1577148516 }, { "noteId": 23, "type": "problem", "target": { "problemId": 3860, "title": "\u7b80\u5355\u65f6\u95f4\u8f6c\u6362", "contest": { "contestId": 2100, "title": "SDUT Round #3 - 2017 \u611a\u4eba\u8282\u4e13\u573a", "problemIndex": 1 } }, "content": "\u8fd9\u9898\u8f93\u5165\u8f93\u51fa\u5f88\u5751", "createdAt": 1577148457, "updatedAt": 1577148457 }] },
+  solutionDetail: { "solutionId": 5253918, "result": 1, "time": 0, "memory": 152, "language": "g++", "codeLength": 134, "createdAt": 1546229131, "shared": true, "user": { "userId": 1, "username": "root", "nickname": "hack", "avatar": "", "bannerImage": "" }, "problem": { "problemId": 1000, "title": "A+B Problem", "timeLimit": 1000 }, "code": "#include <bits\/stdc++.h>\nusing namespace std;\nint main()\n{\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << endl;\n    return 0;\n}" },
 }
 
-interface Props extends FormProps, ReduxProps {
+interface IntroProps {
+  theme: ISettingsTheme;
+  requestThemeChange: (theme: ISettingsTheme) => void;
 }
 
-interface State {
-  loading: boolean;
+interface IntroState {
   solutionCalendarPeriod: number | null;
 }
 
-class Beta extends React.Component<Props, State> {
-  static defaultProps: Partial<Props> = {};
-  setStatePromise = setStatePromise.bind(this);
-
+class Intro extends React.Component<IntroProps, IntroState> {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
       solutionCalendarPeriod: null,
-    };
+    }
+  }
+
+  shouldComponentUpdate(nextProps: Readonly<IntroProps>, nextState: Readonly<IntroState>) {
+    if (nextProps.theme !== this.props.theme) {
+      return true;
+    }
+    if (nextProps.requestThemeChange !== this.props.requestThemeChange) {
+      return true;
+    }
+    if (nextState.solutionCalendarPeriod !== this.state.solutionCalendarPeriod) {
+      return true;
+    }
+    return false;
   }
 
   renderProblemDetailDemo = () => {
@@ -117,22 +133,6 @@ class Beta extends React.Component<Props, State> {
                 </tbody>
               </table>
             </Card>
-            {/* {!loading && data.tags && !!data.tags.length && <Card bordered={false}>
-              <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-                <Form.Item label="Tags">
-                  <div className="tags">
-                    {data.tags.map(tag =>
-                      <Popover
-                        key={tag.tagId}
-                        content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
-                      >
-                        <Link to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}><Tag>{tag.name.en}</Tag></Link>
-                      </Popover>
-                    )}
-                  </div>
-                </Form.Item>
-              </Form>
-            </Card>} */}
           </Col>
         </Row>
       </div>
@@ -491,11 +491,331 @@ class Beta extends React.Component<Props, State> {
     );
   }
 
+  handleThemeChange = (e) => {
+    this.props.requestThemeChange(e.target.value);
+  }
+
+  renderFavorite = () => {
+    return (
+      <div style={{ maxWidth: '270px' }}>
+        <Card bordered={false} className={styles.buttonSeries}>
+          <Button disabled type="primary" block>Submit</Button>
+          <Button disabled block className={styles.buttonMt}>Solutions</Button>
+          <Button disabled block className={styles.buttonMt}>Topics</Button>
+          <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
+            <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+              <Icon type="star" theme="outlined" />
+            </Button>
+            <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
+              <Icon type="share-alt" theme="outlined" />
+            </Button>
+          </Button.Group>
+        </Card>
+      </div>
+    );
+  }
+
+  renderTagList = () => {
+    const tagList = demoData.tags;
+    return (
+      <Card bordered={false} style={{ maxWidth: '250px' }}>
+        <div className="tags">
+          {tagList.rows.map(tag =>
+            <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
+              <a><Tag color={null}>{tag.name.en}</Tag></a>
+            </Popover>
+          )}
+        </div>
+      </Card>
+    );
+  }
+
+  renderIdeaNotes = () => {
+    return (
+      <div className="ant-popover menu-popover inner-content-scroll-md ant-popover-placement-bottom" style={{ position: 'relative' }}>
+        <div className="ant-popover-content">
+          <div className="ant-popover-arrow"></div>
+          <div className="ant-popover-inner" role="tooltip">
+            <div>
+              <div className="ant-popover-title">Idea Notes</div>
+              <div className="ant-popover-inner-content">
+                <div className="IdeaNotes__container___-DK-A">
+                  <form className="ant-form ant-form-vertical ant-form-hide-required-mark">
+                    <div className="ant-row ant-form-item" style={{ marginBottom: '0px' }}>
+                      <div className="ant-form-item-control-wrapper">
+                        <div className="ant-form-item-control">
+                          <span className="ant-form-item-children">
+                            <textarea
+                              placeholder="Type new idea..." id="content" className="ant-input"
+                              style={{ height: '52px', minHeight: '52px', maxHeight: '136px', overflowY: 'hidden' }}></textarea>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </form><button type="button" className="ant-btn ant-btn-primary ant-btn-block"
+                    style={{ marginTop: '4px', marginBottom: '12px' }}>
+                    <span>Save </span><i className="anticon anticon-bulb"><svg
+                      viewBox="64 64 896 896" className="" data-icon="bulb" width="1em" height="1em" fill="currentColor"
+                      aria-hidden="true" focusable="false">
+                      <path
+                        d="M632 888H392c-4.4 0-8 3.6-8 8v32c0 17.7 14.3 32 32 32h192c17.7 0 32-14.3 32-32v-32c0-4.4-3.6-8-8-8zM512 64c-181.1 0-328 146.9-328 328 0 121.4 66 227.4 164 284.1V792c0 17.7 14.3 32 32 32h264c17.7 0 32-14.3 32-32V676.1c98-56.7 164-162.7 164-284.1 0-181.1-146.9-328-328-328zm127.9 549.8L604 634.6V752H420V634.6l-35.9-20.8C305.4 568.3 256 484.5 256 392c0-141.4 114.6-256 256-256s256 114.6 256 256c0 92.5-49.4 176.3-128.1 221.8z">
+                      </path>
+                    </svg></i></button>
+                  <div className="ant-list ant-list-sm ant-list-split">
+                    <div className="ant-spin-nested-loading">
+                      <div className="ant-spin-container">
+                        <div className="ant-list-item IdeaNotes__item___bx5b3">
+                          <div className="ant-list-item-meta">
+                            <div className="ant-list-item-meta-content">
+                              <h4 className="ant-list-item-meta-title">
+                                <pre>回去看马老师第六章</pre>
+                              </h4>
+                              <div className="ant-list-item-meta-description">
+                                <div>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">2 minutes ago</span><a
+                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="ant-list-item IdeaNotes__item___bx5b3">
+                          <div className="ant-list-item-meta">
+                            <div className="ant-list-item-meta-content">
+                              <h4 className="ant-list-item-meta-title">
+                                <pre>目前想到应该用递推，吃完饭回去推一下</pre>
+                              </h4>
+                              <div className="ant-list-item-meta-description">
+                                <div><a>
+                                  <div className="ant-tag">骨牌铺方格</div>
+                                </a>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">9 minutes ago</span><a
+                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="ant-list-item IdeaNotes__item___bx5b3">
+                          <div className="ant-list-item-meta">
+                            <div className="ant-list-item-meta-content">
+                              <h4 className="ant-list-item-meta-title">
+                                <pre>这题的唯一正确解法，学习了</pre>
+                              </h4>
+                              <div className="ant-list-item-meta-description">
+                                <div><a>
+                                  <div className="ant-tag">AC / SDUT Round #3 - 2017... / D - Legion Commander</div>
+                                </a>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">21 minutes ago</span><a
+                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="ant-list-item IdeaNotes__item___bx5b3">
+                          <div className="ant-list-item-meta">
+                            <div className="ant-list-item-meta-content">
+                              <h4 className="ant-list-item-meta-title">
+                                <pre>这题输入输出很坑</pre>
+                              </h4>
+                              <div className="ant-list-item-meta-description">
+                                <div><a>
+                                  <div className="ant-tag">SDUT Round #3 - 2017... / B - 简单时间转换</div>
+                                </a>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">50 minutes ago</span><a
+                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderCodeShare = () => {
+    const theme = this.props.theme;
+    const data = demoData.solutionDetail;
+    const langsMap4Hljs = {
+      'gcc': 'cpp',
+      'g++': 'cpp',
+      'java': 'java',
+      'python2': 'python',
+      'python3': 'python',
+      'c#': 'cs',
+    };
+
+    const highlighterLineNumberStyle = {
+      float: 'left',
+      paddingRight: '20px',
+      textAlign: 'right',
+      opacity: '.5',
+    };
+
+    return (
+      <Card bordered={false}>
+        <div style={{ width: '360px' }}>
+          <div style={{ height: '32px' }}>
+            <div className="float-left">
+              <span>Share Code</span>
+              <Switch
+                checked={data.shared} disabled={loading} loading={false}
+                className="ml-lg" />
+            </div>
+            <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
+          </div>
+          <SyntaxHighlighter
+            language={langsMap4Hljs[data.language]}
+            showLineNumbers
+            style={theme === 'dark' ? atomOneDark : atomOneLight}
+            lineNumberContainerStyle={highlighterLineNumberStyle}
+          >
+            {data.code}
+          </SyntaxHighlighter>
+        </div>
+      </Card>
+    );
+  }
+
   render() {
+    const { theme } = this.props;
+
+    return (
+      <>
+        <div className="block full-block">
+          <div className="header">全新，焕然一新</div>
+          <p className="desc">{NAME} 带来了全新的视觉改动。仅是初见，秩序和动感的结合，已跃然屏上。</p>
+
+          <Card bordered={false} className="demo">
+            <Carousel autoplay autoplaySpeed={3000}>
+              {this.renderProblemDetailDemo()}
+              {this.renderSolutionListDemo()}
+              {this.renderContestOverviewDemo()}
+            </Carousel>
+          </Card>
+        </div>
+
+        <div className="block full-block">
+          <div className="header">你的主页，本应由你定制</div>
+          <p className="desc">自制头像以及极具冲击力的巨幅，配合 Rating 和 AC 日历，个性从未如此释放。</p>
+          <Card bordered={false} className="demo">
+            {this.renderUserDetailDemo()}
+          </Card>
+        </div>
+
+        <div className="block full-block">
+          <div className="header">黑，真的黑</div>
+          <p className="desc">作为可能是*最早支持 Dark Mode 的 OJ，反复调整的配色设计，深邃，而不失优雅。</p>
+          <div className="flex-center" style={{ marginBottom: '45px' }}>
+            <Radio.Group
+              onChange={this.handleThemeChange}
+              defaultValue={theme}
+            >
+              <Radio.Button value="light">Light Mode</Radio.Button>
+              <Radio.Button value="dark">Dark Mode</Radio.Button>
+            </Radio.Group>
+          </div>
+        </div>
+
+        <div className="block side-block">
+          <div className="intro">
+            <div className="header">收藏夹，存你所好</div>
+            <p className="desc">遇到有价值的内容，只需轻点，即可存储到个人收藏。</p>
+          </div>
+          <div className="demo">
+            {this.renderFavorite()}
+          </div>
+        </div>
+
+        <div className="block side-block">
+          <div className="intro">
+            <div className="header">题目标签，选你所想</div>
+            <p className="desc">现在，按知识点查找题目从未如此轻松。</p>
+          </div>
+          <div className="demo">
+            {this.renderTagList()}
+          </div>
+        </div>
+
+        <div className="block side-block">
+          <div className="intro">
+            <div className="header">闪念笔记</div>
+            <div className="desc">
+              <p>无论何时何地，记录即刻想法。</p>
+              <p>闪念笔记会在记录时智慧关联你正在浏览的题目、提交或比赛，需要回看时，轻点即可返回保存点。</p>
+            </div>
+          </div>
+          <div className="demo">
+            {this.renderIdeaNotes()}
+          </div>
+        </div>
+
+        <div className="block side-block">
+          <div className="intro">
+            <div className="header">代码共享</div>
+            <p className="desc">公开代码分享你的见解，或是从他人身上学习。</p>
+          </div>
+          <div className="demo">
+            {this.renderCodeShare()}
+          </div>
+        </div>
+      </>
+    );
+  }
+}
+
+interface Props extends FormProps, ReduxProps {
+  settings: ISettings;
+}
+
+interface State {
+  loading: boolean;
+}
+
+class Beta extends React.Component<Props, State> {
+  static defaultProps: Partial<Props> = {};
+  setStatePromise = setStatePromise.bind(this);
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+    };
+  }
+
+  handleThemeChange = (theme: ISettingsTheme) => {
+    this.props.dispatch({
+      type: 'settings/setTheme',
+      payload: { theme },
+    });
+  }
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('v', values);
+      }
+    });
+  }
+
+  render() {
+    const { settings } = this.props;
+    const { getFieldDecorator } = this.props.form;
+
     return (
       <PageTitle title="OnlineJudge 3">
         <div className="beta">
-          <div style={{ position: 'fixed' }}>
+          {/* <div style={{ position: 'fixed' }}>
             <Button onClick={() => {
               this.props.dispatch({
                 type: 'settings/setTheme',
@@ -508,33 +828,53 @@ class Beta extends React.Component<Props, State> {
                 payload: { theme: 'dark' },
               })
             }}>Dark</Button>
-          </div>
+          </div> */}
 
           <div className="ultra-banner">
             <p className="title">{NAME}</p>
           </div>
 
           <div className="content">
-            <div className="block full-block">
-              <div className="header">全新，焕然一新</div>
-              <p className="desc">{NAME} 带来了全新的视觉改动。仅是初见，秩序和动感的结合，已跃然屏上。</p>
+            <Intro theme={settings.theme} requestThemeChange={this.handleThemeChange} />
 
-              <Card bordered={false} className="demo">
-                <Carousel autoplay autoplaySpeed={4000}>
-                  {this.renderProblemDetailDemo()}
-                  {this.renderSolutionListDemo()}
-                  {this.renderContestOverviewDemo()}
-                </Carousel>
-              </Card>
+            <div className="block full-block" style={{ marginTop: '60px' }}>
+              <div className="header">公测在即，即刻预约</div>
+              <p className="desc">{NAME} 即将正式开启公测，现在预约，提前获知最新动态。</p>
+              <div className="center-form" style={{ marginBottom: '60px' }}>
+                <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
+                  <Form.Item label="电子邮箱">
+                    {getFieldDecorator('email', {
+                      rules: [{
+                        type: 'email', message: '请输入有效的电子邮箱地址',
+                      }, {
+                        required: true, message: '请输入电子邮箱',
+                      }],
+                    })(<Input />)}
+                  </Form.Item>
+
+                  <Form.Item label="OJ 用户名（选填）">
+                    {getFieldDecorator('username', {
+                      rules: [{ required: false }],
+                    })(<Input />)}
+                  </Form.Item>
+
+                  <Form.Item>
+                    <Button type="primary" block htmlType="submit">提交</Button>
+                  </Form.Item>
+                </Form>
+              </div>
             </div>
 
-            <div className="block full-block">
-              <div className="header">你的主页，由你定制</div>
-              <p className="desc">自制头像以及极具冲击力的巨幅，配合 Rating 和 AC 日历，个性从未如此释放。</p>
-
-              <Card bordered={false} className="demo">
-                {this.renderUserDetailDemo()}
-              </Card>
+            <div className="footer">
+              <div className="block">
+              <div className="header">资源</div>
+                <p className="item">
+                  <a className="normal-text-link" href={`https://acm.sdut.edu.cn/sdutacm_files/onlinejudge3/OnlineJudge3_poster_${settings.theme}_1080p.png`} target="_blank"><Icon type="download" /> {NAME} 主题壁纸</a>
+                </p>
+                <p className="item">
+                  <a className="normal-text-link" href="https://acm.sdut.edu.cn/sdutacm_files/onlinejudge3/OnlineJudge%203%20%E5%8F%91%E5%B8%83%E4%BC%9A%E4%B8%BB%E9%A2%98%E6%BC%94%E8%AE%B2%E5%9B%9E%E9%A1%BE.pdf" target="_blank"><Icon type="download" /> 2018 年 10 月 18 日 / {NAME} 发布会主题演讲幻灯片</a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -543,4 +883,10 @@ class Beta extends React.Component<Props, State> {
   }
 }
 
-export default connect()(Form.create()(Beta));
+function mapStateToProps(state) {
+  return {
+    settings: state.settings,
+  };
+}
+
+export default connect(mapStateToProps)(Form.create()(Beta));

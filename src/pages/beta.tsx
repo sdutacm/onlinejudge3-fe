@@ -609,8 +609,7 @@ class Intro extends React.Component<IntroProps, IntroState> {
                               </h4>
                               <div className="ant-list-item-meta-description">
                                 <div>
-                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">2 minutes ago</span><a
-                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">2 minutes ago</span></p>
                                 </div>
                               </div>
                             </div>
@@ -626,8 +625,7 @@ class Intro extends React.Component<IntroProps, IntroState> {
                                 <div><a>
                                   <div className="ant-tag">骨牌铺方格</div>
                                 </a>
-                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">9 minutes ago</span><a
-                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">9 minutes ago</span></p>
                                 </div>
                               </div>
                             </div>
@@ -643,8 +641,7 @@ class Intro extends React.Component<IntroProps, IntroState> {
                                 <div><a>
                                   <div className="ant-tag">AC / SDUT Round #3 - 2017... / D - Legion Commander</div>
                                 </a>
-                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">21 minutes ago</span><a
-                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">21 minutes ago</span></p>
                                 </div>
                               </div>
                             </div>
@@ -660,8 +657,7 @@ class Intro extends React.Component<IntroProps, IntroState> {
                                 <div><a>
                                   <div className="ant-tag">SDUT Round #3 - 2017... / B - 简单时间转换</div>
                                 </a>
-                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">50 minutes ago</span><a
-                                    className="ml-md-lg IdeaNotes__delete___3eOLU">Delete</a></p>
+                                  <p className="IdeaNotes__footer___h6Ray"><span className="no-wrap">50 minutes ago</span></p>
                                 </div>
                               </div>
                             </div>

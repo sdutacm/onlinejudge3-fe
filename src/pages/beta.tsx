@@ -576,7 +576,7 @@ class Intro extends React.Component<IntroProps, IntroState> {
             <div>
               <div className="ant-popover-title">Idea Notes</div>
               <div className="ant-popover-inner-content">
-                <div className="IdeaNotes__container___-DK-A">
+                <div className="IdeaNotes__container___-DK-A" style={{ width: '330px' }}>
                   <form className="ant-form ant-form-vertical ant-form-hide-required-mark">
                     <div className="ant-row ant-form-item" style={{ marginBottom: '0px' }}>
                       <div className="ant-form-item-control-wrapper">
@@ -931,7 +931,7 @@ class Beta extends React.Component<Props, State> {
     const { settings } = this.props;
     const { getFieldDecorator } = this.props.form;
     const { submitting, viewportWidth, viewportHeight } = this.state;
-    const isUnsupportedMobile = viewportWidth < 724;
+    const isUnsupportedMobile = viewportWidth < 667;
 
     if (isUnsupportedMobile) {
       return (

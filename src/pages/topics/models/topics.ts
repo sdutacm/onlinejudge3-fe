@@ -6,7 +6,7 @@ import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 
-function getInitialState() {
+function genInitialState() {
   return {
     list: {
       page: 1,
@@ -25,7 +25,7 @@ function getInitialState() {
 }
 
 export default {
-  state: getInitialState(),
+  state: genInitialState(),
   reducers: {
     setList(state, { payload: { data, query } }) {
       state.list = {
@@ -56,7 +56,7 @@ export default {
       };
     },
     clearTopicReplies(state) {
-      state.topicReplies = getInitialState().topicReplies;
+      state.topicReplies = genInitialState().topicReplies;
     },
   },
   effects: {

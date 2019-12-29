@@ -8,7 +8,7 @@ export function getList(query) {
     query: {
       ...query,
       page: query.page || 1,
-      limit: limits.contests.list,
+      limit: query.limit || limits.contests.list,
     },
   });
   return get(url);

@@ -405,6 +405,12 @@ ul {
       width: 650px;
     }
   }
+
+  @media only screen and (max-width: 425px) {
+    :global(.ant-table-body) {
+      width: auto;
+    }
+  }
 }
 
 .center-view {
@@ -1139,4 +1145,8 @@ ul {
       }
     }
   }
+}
+
+.text-para {
+  color: @text-color;
 }

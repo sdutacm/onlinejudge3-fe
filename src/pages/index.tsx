@@ -1,45 +1,200 @@
-// export default () => (
-//   <div className="x">
-//     <div className="x-header">OnlineJudge <span className="x-ver">3</span></div>
-//     <div className="x-section">
-//       <span className="x-sub" style={{ textAlign: 'right', visibility: 'hidden' }}>Dynamic</span> • <span className="x-sub" style={{ textAlign: 'left' }}>Humanized</span>
-//     </div>
-//   </div>
-// );
-import Markdown from 'react-markdown';
-import PageTitle from '@/components/PageTitle';
+/**
+ * title: Home
+ */
 
-const content = `
-# 欢迎来到 Online Judge 3 内测
+import React from 'react';
+import { connect } from 'dva';
+import { ReduxProps, RouteProps } from '@/@types/props';
+import PageAnimation from '@/components/PageAnimation';
+import { Row, Col, Card, Table, Icon, Popover } from 'antd';
+import UserBar from '@/components/UserBar';
+import constants from '@/configs/constants';
+// @ts-ignore
+import pkg from '../../package.json';
+import { Link } from 'react-router-dom';
+import pages from '@/configs/pages';
+import moment from 'moment';
+import { toLongTs, urlf } from '@/utils/format';
+import classNames from 'classnames';
+import { ContestTypes } from '@/configs/contestTypes';
+import TimeStatusBadge from '@/components/TimeStatusBadge';
+import gStyles from '@/general.less';
 
-## 内测守则
+const TOP_NUM = 5;
+let cachedState = {
+  recentContests: {
+    page: 1,
+    count: 0,
+    limit: 0,
+    rows: [],
+  }
+};
 
-请遵守以下 OJ 守则。SDUTACM 有权在违反守则时注销 OJBK 并拉入黑名单。
+interface Props extends ReduxProps, RouteProps {
+  userACRank: {
+    day: IStatsUserACRank;
+    week: IStatsUserACRank;
+    month: IStatsUserACRank;
+  };
+  userACRankloading: boolean;
+  recentContestsLoading: boolean;
+}
 
-- 禁止任何形式的租借、买卖、赠送以及分享 OJBK
-- 允许在多台自己的设备上激活 OJBK。但禁止在激活 OJBK 的设备上向他人提供内测体验
-- 禁止对外公开界面截图、功能等。小范围的轻量「剧透」是允许的，但请帮助我们保持 OJ 3 的神秘感
-- 禁止使用 OJ 3 参与任何比赛或测验（如选拔赛、训练赛、课程周测等），公开比赛或实验是允许的
-- 禁止利用 OJ 3 的漏洞进行非法操作
+interface State {
+  recentContests: IList<IContest>;
+}
 
-## 反馈与建议
+class Index extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      ...cachedState,
+    };
+  }
 
-在内测期间，你可以随时体验 OJ 3。我们设置了内测的问题反馈与跟进平台。如果你发现任何问题或建议，欢迎随时提出，让我们一起打造全新的 OJ。
+  async componentDidMount() {
+    const ret = await this.props.dispatch({
+      type: 'contests/getListData',
+      payload: {
+        limit: 3,
+        category: '0',
+      }
+    });
+    if (ret.success) {
+      this.setState({
+        recentContests: ret.data,
+      });
+    }
+  }
 
-问题反馈与跟进：[点击进入](https://github.com/sdutacm/onlinejudge3-issues)
+  componentWillUnmount() {
+    cachedState = {
+      ...this.state,
+    };
+  }
 
-请至少拥有一个 GitHub 帐号，按照上方链接中的指引参与问题反馈。
+  render() {
+    const { userACRank, userACRankloading, recentContestsLoading } = this.props;
+    const { recentContests } = this.state;
+    const serverTime = Date.now() - ((window as any)._t_diff || 0);
 
-## 更新日志
+    return <PageAnimation>
+      <Row gutter={16} className="content-view mb-lg">
+        <Col xs={24} className="mt-lg">
+          <h1 className="mb-sm">{constants.siteTitle}</h1>
+          <p className="text-para" style={{ fontSize: '20px' }}>Practice coding, compete with players, and become a master.</p>
+        </Col>
 
-[CHANGELOG](https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md)
+        <Col xs={24} className="mt-xl">
+          <h3>Recent Contests</h3>
+          <Card bordered={false} className="list-card">
+            <Table
+              dataSource={recentContests.rows}
+              rowKey={(record: IContest) => `${record.contestId}`}
+              loading={recentContestsLoading}
+              pagination={false}
+              className="responsive-table"
+            >
+              <Table.Column
+                title=""
+                key="Type"
+                className="text-right td-icon"
+                render={(text, record: IContest) => (
+                  <span>
+                    {record.type === ContestTypes.Private && <Icon type="lock" />}
+                    {record.type === ContestTypes.Register && <Icon type="team" />}
+                  </span>
+                )}
+              />
+              <Table.Column
+                title="Title"
+                key="Title"
+                render={(text, record: IContest) => (
+                  <Link to={urlf(pages.contests.home, { param: { id: record.contestId } })}>{record.title}</Link>
+                )}
+              />
+              <Table.Column
+                title="Time"
+                key="Time"
+                render={(text, record: any) => (
+                  <Popover content={(
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td className={classNames(gStyles.textRight, gStyles.textBold)}>Start:</td>
+                          <td>{moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.startAt)).from(serverTime)})</td>
+                        </tr>
+                        <tr>
+                          <td className={classNames(gStyles.textRight, gStyles.textBold)}>End:</td>
+                          <td>{moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.endAt)).from(serverTime)})</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  )}>
+                    <span>{moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm')} ~ {moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm')}</span>
+                  </Popover>
+                )}
+              />
+              <Table.Column
+                title="Status"
+                key="status"
+                render={(text, record: any) => (
+                  <TimeStatusBadge start={toLongTs(record.startAt)} end={toLongTs(record.endAt)} cur={serverTime} />
+                )}
+              >
+              </Table.Column>
+            </Table>
+          </Card>
+        </Col>
 
-`;
+        {['month', 'week', 'day'].map(type => {
+          const data = userACRank[type];
+          const rankNameMap = {
+            'day': `DAILY TOP ${TOP_NUM}`,
+            'week': `WEEKLY TOP ${TOP_NUM}`,
+            'month': `MONTHLY TOP ${TOP_NUM}`,
+          };
+          return (
+            <Col xs={24} md={8} key={type} className="mt-xl">
+              <h3>{rankNameMap[type]}</h3>
+              <Card bordered={false} className="list-card">
+                <Table
+                  dataSource={data.rows.slice(0, TOP_NUM)}
+                  rowKey={(record: IStatsUserACRankUserStatus) => `${record.user.userId}`}
+                  loading={userACRankloading}
+                  pagination={false}
+                  className="responsive-table"
+                >
+                  <Table.Column
+                    title="User"
+                    key="User"
+                    render={(text, record: IStatsUserACRankUserStatus) => (
+                      <UserBar user={record.user} />
+                    )}
+                  />
+                  <Table.Column
+                    title="AC"
+                    key="Accepted"
+                    render={(text, record: IStatsUserACRankUserStatus) => (
+                      <span>{record.accepted}</span>
+                    )}
+                  />
+                </Table>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+    </PageAnimation>;
+  }
+}
 
-export default () => (
-  <PageTitle title={null}>
-    <div className="content-view-sm" style={{ marginTop: '60px' }}>
-      <Markdown source={content} linkTarget="_blank" />
-    </div>
-  </PageTitle>
-);
+function mapStateToProps(state) {
+  return {
+    userACRank: state.stats.userACRank,
+    userACRankloading: !!state.loading.effects['stats/getAllUserACRank'],
+    recentContestsLoading: !!state.loading.effects['contests/getListData'],
+  };
+}
+
+export default connect(mapStateToProps)(Index);

@@ -400,6 +400,20 @@ interface IGroup {
   updatedAt: ITimestamp;
 }
 
+interface IStatsUserACRankUserStatus {
+  user: IUserLite;
+  accepted: number;
+}
+
+interface IStatsUserACRank {
+  count: number;
+  rows: IStatsUserACRankUserStatus[];
+  truncated: number;
+  startAt: string;
+  _updateEvery: number;
+  _updatedAt: number;
+}
+
 type ISettingsTheme = 'light' | 'dark';
 
 type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';

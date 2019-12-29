@@ -87,6 +87,10 @@ base: '/solutions',
     base: '/common',
     media: '/common/media',
   },
+  stats: {
+    base: '/stats',
+    userACRank: '/stats/userACRank',
+  },
 };
 
 export default api;

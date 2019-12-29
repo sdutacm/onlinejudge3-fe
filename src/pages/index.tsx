@@ -150,9 +150,9 @@ class Index extends React.Component<Props, State> {
         {['month', 'week', 'day'].map((type: 'day' | 'week' | 'month') => {
           const data = userACRank[type];
           const rankNameMap = {
-            'day': `DAILY TOP ${TOP_NUM}`,
-            'week': `WEEKLY TOP ${TOP_NUM}`,
-            'month': `MONTHLY TOP ${TOP_NUM}`,
+            'day': <span><Icon type="crown" theme="filled" /> DAILY TOP {TOP_NUM}</span>,
+            'week': <span><Icon type="crown" theme="filled" /> WEEKLY TOP {TOP_NUM}</span>,
+            'month': <span><Icon type="crown" theme="filled" /> MONTHLY TOP {TOP_NUM}</span>,
           };
           return (
             <Col xs={24} md={8} key={type} className="mt-xl">

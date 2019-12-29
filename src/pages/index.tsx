@@ -79,7 +79,7 @@ class Index extends React.Component<Props, State> {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
 
     return <PageAnimation>
-      <Row gutter={16} className="content-view mb-lg">
+      <Row gutter={16} className="content-view-lg mb-lg">
         <Col xs={24} className="mt-lg">
           <h1 className="mb-sm">{constants.siteTitle}</h1>
           <p className="text-para" style={{ fontSize: '20px' }}>Practice coding, compete with players, and become a master.</p>
@@ -147,7 +147,7 @@ class Index extends React.Component<Props, State> {
           </Card>
         </Col>
 
-        {['month', 'week', 'day'].map(type => {
+        {['month', 'week', 'day'].map((type: 'day' | 'week' | 'month') => {
           const data = userACRank[type];
           const rankNameMap = {
             'day': `DAILY TOP ${TOP_NUM}`,
@@ -181,6 +181,7 @@ class Index extends React.Component<Props, State> {
                   />
                 </Table>
               </Card>
+              {data._updatedAt > 0 && <p className="text-secondary text-right mt-sm-md" style={{ fontSize: '12px' }}>updated {moment(data._updatedAt).fromNow()}</p>}
             </Col>
           );
         })}

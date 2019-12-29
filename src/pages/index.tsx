@@ -9,8 +9,6 @@ import PageAnimation from '@/components/PageAnimation';
 import { Row, Col, Card, Table, Icon, Popover } from 'antd';
 import UserBar from '@/components/UserBar';
 import constants from '@/configs/constants';
-// @ts-ignore
-import pkg from '../../package.json';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import moment from 'moment';
@@ -79,14 +77,14 @@ class Index extends React.Component<Props, State> {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
 
     return <PageAnimation>
-      <Row gutter={16} className="content-view-lg mb-lg">
+      <Row gutter={16} className="content-view-lg mb-xl">
         <Col xs={24} className="mt-lg">
-          <h1 className="mb-sm">{constants.siteTitle}</h1>
-          <p className="text-para" style={{ fontSize: '20px' }}>Practice coding, compete with players, and become a master.</p>
+          <h1 className="full-width-inner-content mb-sm">{constants.siteTitle}</h1>
+          <p className="full-width-inner-content text-para" style={{ fontSize: '20px' }}>Practice coding, compete with players, and become a master.</p>
         </Col>
 
         <Col xs={24} className="mt-xl">
-          <h3>Recent Contests</h3>
+          <h3 className="full-width-inner-content">Recent Contests</h3>
           <Card bordered={false} className="list-card">
             <Table
               dataSource={recentContests.rows}
@@ -156,7 +154,7 @@ class Index extends React.Component<Props, State> {
           };
           return (
             <Col xs={24} md={8} key={type} className="mt-xl">
-              <h3>{rankNameMap[type]}</h3>
+              <h3 className="full-width-inner-content">{rankNameMap[type]}</h3>
               <Card bordered={false} className="list-card">
                 <Table
                   dataSource={data.rows.slice(0, TOP_NUM)}
@@ -181,7 +179,7 @@ class Index extends React.Component<Props, State> {
                   />
                 </Table>
               </Card>
-              {data._updatedAt > 0 && <p className="text-secondary text-right mt-sm-md" style={{ fontSize: '12px' }}>updated {moment(data._updatedAt).fromNow()}</p>}
+              {data._updatedAt > 0 && <p className="full-width-inner-content text-secondary text-right mt-sm-md" style={{ fontSize: '12px' }}>updated {moment(data._updatedAt).fromNow()}</p>}
             </Col>
           );
         })}

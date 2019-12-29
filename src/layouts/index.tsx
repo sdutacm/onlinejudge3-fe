@@ -20,6 +20,8 @@ import PageLoading from '@/components/PageLoading';
 import { isStateExpired } from '@/utils/misc';
 import PageTitle from '@/components/PageTitle';
 import 'animate.css';
+// @ts-ignore
+import pkg from '../../package.json';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -164,8 +166,31 @@ class Index extends React.Component<Props, State> {
             children :
             <PageLoading />}
         </Content>
-        <Footer className={styles.footer}>
-          <p>© 2008-{moment().format('YYYY')} SDUTACM Team. All Rights Reserved.</p>
+        <Footer className={styles.footer} style={{ paddingTop:  '30px', paddingBottom: '30px' }}>
+          <Row gutter={20}>
+            <Col xs={24} md={8} className="mb-md-lg">
+              <h3>About</h3>
+              <p>SDUT OJ v{pkg.version}</p>
+              <p><a className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues" target="_blank">Feedback</a></p>
+              <p><a className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md" target="_blank">Changelog</a></p>
+              <p><a className="normal-text-link" href="https://github.com/sdutacm" target="_blank">GitHub</a></p>
+            </Col>
+
+            <Col xs={24} md={8} className="mb-md-lg">
+              <h3>Our Apps</h3>
+              <p><a className="normal-text-link" href="https://stepbystep.sdutacm.cn/" target="_blank">StepByStep</a></p>
+              <p><a className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/" target="_blank">ACM Contests Collection</a></p>
+              <p><a className="normal-text-link" href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html" target="_blank">Recent Contests</a></p>
+              <p><a className="normal-text-link" href="http://suyu.red/" target="_blank">Typing System</a></p>
+            </Col>
+
+            <Col xs={24} md={8} className="mb-md-lg">
+              <h3>Recommends</h3>
+              <p><a className="normal-text-link" href="https://ab.algoux.org?from=sdutoj" target="_blank">Algo Bootstrap - The New Coding Experience</a></p>
+              <p><a className="normal-text-link" href="https://contests.sdutacm.cn/" target="_blank">Contests API</a></p>
+            </Col>
+          </Row>
+          <p className="mt-lg" style={{ fontWeight: 600 }}>© 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.</p>
           {/* <div> */}
           {/* <a>API</a> */}
           {/* <Divider type="vertical" /> */}

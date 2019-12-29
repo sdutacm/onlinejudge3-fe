@@ -108,6 +108,7 @@ class ContestSolutions extends React.Component<Props, State> {
                   showPagination
                   contestId={id}
                   problemList={problemList}
+                  session={session}
                 />
               </Card>
             </Col>

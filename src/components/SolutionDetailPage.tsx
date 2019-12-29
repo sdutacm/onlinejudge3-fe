@@ -113,7 +113,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
                             <span>Share Code
                               <Popover title="Shared code will be disabled in one of these cases" content={<div>
                                 <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
-                                  <li>The user viewing code has not solved the problem</li>
+                                  {/* <li>The user viewing code has not solved the problem</li> */}
                                   <li>The problem exists in some running contests</li>
                                 </ul>
                               </div>}>

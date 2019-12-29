@@ -15,6 +15,7 @@ import classNames from 'classnames';
 import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
 import ProblemBar from '@/components/ProblemBar';
+import { isPermissionDog } from '@/utils/permission';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -23,6 +24,7 @@ export interface Props extends ReduxProps, RouteProps {
   isDetail: boolean;
   contestId?: number;
   problemList?: any[];
+  session?: ISessionStatus;
 }
 
 interface State {
@@ -71,6 +73,17 @@ class SolutionTable extends React.Component<Props, State> {
       query: { ...this.props.location.query, page },
     });
   };
+
+  canViewDetail = (solution: ISolution) => {
+    const { isDetail, session } = this.props;
+    if (isDetail || !session || !session.loggedIn) {
+      return false;
+    }
+    if (solution.shared || solution.user.userId === session.user.userId || isPermissionDog(session)) {
+      return true;
+    }
+    return false;
+  }
 
   render() {
     const {
@@ -203,7 +216,9 @@ class SolutionTable extends React.Component<Props, State> {
               return (
                 <Link
                   to={solutionDetailUrl}
-                  onClick={e => e.stopPropagation()}>
+                  onClick={e => e.stopPropagation()}
+                  className={this.canViewDetail(record) ? 'show' : ''}
+                >
                   <Icon type="ellipsis" theme="outlined" />
                 </Link>
               );

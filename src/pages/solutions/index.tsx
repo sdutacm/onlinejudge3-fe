@@ -67,7 +67,13 @@ class SolutionList extends React.Component<Props, State> {
         <Row gutter={16}>
           <Col xs={24} lg={18} xxl={20}>
             <Card bordered={false} className="list-card">
-              <SolutionTable loading={loading} data={data} dispatch={dispatch} showPagination />
+              <SolutionTable
+                loading={loading}
+                data={data}
+                dispatch={dispatch}
+                showPagination
+                session={session}
+              />
             </Card>
           </Col>
           <Col xs={24} lg={6} xxl={4}>

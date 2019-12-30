@@ -20,6 +20,8 @@ export default {
     solutions: '/contests/:id/solutions',
     solutionDetail: '/contests/:id/solutions/:sid',
     ranklist: '/contests/:id/ranklist',
+    users: '/contests/:id/users',
+    userDetail: '/contests/:id/users/:uid',
   },
   topics: {
     index: '/topics',

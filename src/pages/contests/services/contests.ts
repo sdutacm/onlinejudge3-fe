@@ -14,6 +14,18 @@ export function getList(query) {
   return get(url);
 }
 
+export function getUserList(query, id) {
+  const url = urlf(api.contests.users, {
+    param: { id },
+    query: {
+      ...query,
+      page: query.page || 1,
+      limit: limits.contests.list,
+    },
+  });
+  return get(url);
+}
+
 export function getSession(id) {
   const url = urlf(api.contests.session, { param: { id } });
   return get(url);
@@ -67,4 +79,19 @@ export function modifyUser(id, uid, data) {
 export function getRanklist(id) {
   const url = urlf(api.contests.ranklist, { param: { id } });
   return get(url);
+}
+
+export function addContestUser(id, data) {  
+  const url = urlf(api.contests.users, { param: { id } });
+  return post(url, data);
+}
+
+export function getContestUser(id, uid) {  
+  const url = urlf(api.contests.userDetail, { param: { id, uid } });
+  return get(url);
+}
+
+export function updateContestUser(id, uid, data) {  
+  const url = urlf(api.contests.userDetail, { param: { id, uid} });
+  return patch(url, data);
 }

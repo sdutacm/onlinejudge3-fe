@@ -159,6 +159,14 @@ export default {
       }
       return yield call(service.editProfile, userId, data);
     },
+    * changeEmail({ payload: { userId, data } }, { call, select }) {
+      const globalSess = yield select(state => state.session);
+      userId = userId || globalSess.user.userId;
+      if (!userId) {
+        return;
+      }
+      return yield call(service.changeEmail, userId, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

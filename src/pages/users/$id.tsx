@@ -23,6 +23,7 @@ import PageAnimation from '@/components/PageAnimation';
 import { validateFile } from '@/utils/validate';
 import GeneralFormModal from '@/components/GeneralFormModal'
 import langs from '@/configs/solutionLanguages';
+import ChangeEmailModal from '@/components/ChangeEmailModal';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -449,6 +450,10 @@ class UserDetail extends React.Component<Props, State> {
                         <Button block>Edit Profile</Button>
                       </GeneralFormModal>
 
+                      <ChangeEmailModal type={data.verified ? 'change' : 'bind'}>
+                        <Button block className="mt-md">{data.verified ? 'Change Email' : 'Bind Email'}</Button>
+                      </ChangeEmailModal>
+
                       <GeneralFormModal
                         loadingEffect="users/changePassword"
                         title="Change Password"
@@ -466,8 +471,8 @@ class UserDetail extends React.Component<Props, State> {
                                 userId: session.user.userId,
                                 data: {
                                   oldPassword: values.oldPassword,
-                                  password: values.password
-                                }
+                                  password: values.password,
+                                },
                               },
                             });
                           }

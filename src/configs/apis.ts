@@ -14,6 +14,7 @@ const api = {
     base: '/users',
     detail: '/users/:id',
     password: '/users/:id/password',
+    email: '/users/:id/email',
     avatar: '/users/:id/avatar',
     bannerImage: '/users/:id/bannerImage',
     problemResultStats: '/users/:id/problemResultStats',
@@ -30,7 +31,7 @@ const api = {
     difficulty: '/problems/:id/difficulty',
   },
   solutions: {
-base: '/solutions',
+    base: '/solutions',
     detail: '/solutions/:id',
     shared: '/solutions/:id/shared',
   },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch } from 'antd';
+import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch, Button } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
@@ -17,6 +17,8 @@ import moment from 'moment';
 import constants from '@/configs/constants';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
+import GeneralFormModal from '@/components/GeneralFormModal';
+import msg from '@/utils/msg';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IContest>;
@@ -69,7 +71,266 @@ class ContestList extends React.Component<Props, State> {
     }), constants.switchAnimationDuration);
   };
 
+  clothesSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  formList = ['schoolNo', 'name', 'school', 'college', 'major', 'class', 'tel', 'email', 'clothing']
+
   render() {
+    let addUserFormItems = [
+
+      {
+        name: 'Nickname',
+        field: 'nickname',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input nickname' }]
+      },
+      {
+        name: 'Password',
+        field: 'password',
+        component: 'input',
+        type: 'password',
+        rules: [{ required: true, message: 'Please input password' }]
+      },
+      {
+        name: '友情参赛',
+        field: 'unofficial',
+        component: 'select',
+        initialValue: 'false',
+        options: [{ name: '是', value: true }, { name: '否', value: false }],
+      },
+      {
+        name: 'Name',
+        field: 'name1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input name' }]
+      },
+      {
+        name: 'SchoolNo',
+        field: 'schoolNo1',
+        component: 'input',
+      },
+      {
+        name: 'School',
+        field: 'school1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input school' }]
+      },
+      {
+        name: 'College',
+        field: 'college1',
+        component: 'input',
+      },
+      {
+        name: 'Major',
+        field: 'major1',
+        component: 'input',
+      },
+      {
+        name: 'Class',
+        field: 'class1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input class' }]
+      },
+      {
+        name: 'Tel',
+        field: 'tel1',
+        component: 'input',
+      },
+      {
+        name: 'Email',
+        field: 'email1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input email' }]
+      },
+      {
+        name: 'Clothes',
+        field: 'clothing1',
+        component: 'select',
+        options: this.clothesSize.map(item => ({
+          value: item,
+          name: item,
+        })),
+      }
+    ]
+    let addTeamUserFormItems = [
+
+      {
+        name: 'Nickname',
+        field: 'nickname',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input nickname' }]
+      },
+      {
+        name: 'Password',
+        field: 'password',
+        component: 'input',
+        type: 'password',
+        rules: [{ required: true, message: 'Please input password' }]
+      },
+      {
+        name: '友情参赛',
+        field: 'unofficial',
+        component: 'select',
+        initialValue: 'false',
+        options: [{ name: '是', value: true }, { name: '否', value: false }],
+      },
+      {
+        name: 'Name of Member 1',
+        field: 'name1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input name' }]
+      },
+      {
+        name: 'SchoolNo of Member 1',
+        field: 'schoolNo1',
+        component: 'input',
+      },
+      {
+        name: 'School of Member 1',
+        field: 'school1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input school' }]
+      },
+      {
+        name: 'College of Member 1',
+        field: 'college1',
+        component: 'input',
+      },
+      {
+        name: 'Major of Member 1',
+        field: 'major1',
+        component: 'input',
+      },
+      {
+        name: 'Class of Member 1',
+        field: 'class1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input class' }]
+      },
+      {
+        name: 'Tel of Member 1',
+        field: 'tel1',
+        component: 'input',
+      },
+      {
+        name: 'Email of Member 1',
+        field: 'email1',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input email' }]
+      },
+      {
+        name: 'Clothes of Member 1',
+        field: 'clothing1',
+        component: 'select',
+        options: this.clothesSize.map(item => ({
+          value: item,
+          name: item,
+        })),
+      },
+      {
+        name: 'Name of Member 2',
+        field: 'name2',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input name' }]
+      },
+      {
+        name: 'SchoolNo of Member 2',
+        field: 'schoolNo2',
+        component: 'input',
+      },
+      {
+        name: 'School of Member 2',
+        field: 'school2',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input school' }]
+      },
+      {
+        name: 'College of Member 2',
+        field: 'college2',
+        component: 'input',
+      },
+      {
+        name: 'Major of Member 2',
+        field: 'major2',
+        component: 'input',
+      },
+      {
+        name: 'Class of Member 2',
+        field: 'class2',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input class' }]
+      },
+      {
+        name: 'Tel of Member 2',
+        field: 'tel2',
+        component: 'input',
+      },
+      {
+        name: 'Email of Member 2',
+        field: 'email2',
+        component: 'input',
+      },
+      {
+        name: 'Clothes of Member 2',
+        field: 'clothing2',
+        component: 'select',
+        options: this.clothesSize.map(item => ({
+          value: item,
+          name: item,
+        })),
+      },
+      {
+        name: 'Name of Member 3',
+        field: 'name3',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input name' }]
+      },
+      {
+        name: 'SchoolNo of Member 3',
+        field: 'schoolNo3',
+        component: 'input',
+      },
+      {
+        name: 'School of Member 3',
+        field: 'school3',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input school' }]
+      },
+      {
+        name: 'College  of Member 3',
+        field: 'college3',
+        component: 'input',
+      },
+      {
+        name: 'Major  of Member 3',
+        field: 'major3',
+        component: 'input',
+      },
+      {
+        name: 'Class of Member 3',
+        field: 'class3',
+        component: 'input',
+        rules: [{ required: true, message: 'Please input class' }]
+      },
+      {
+        name: 'Tel of Member 3',
+        field: 'tel3',
+        component: 'input',
+      },
+      {
+        name: 'Email of Member 3',
+        field: 'email3',
+        component: 'input',
+      },
+      {
+        name: 'Clothes  of Member 3',
+        field: 'clothing3',
+        component: 'select',
+        options: this.clothesSize.map(item => ({
+          value: item,
+          name: item,
+        })),
+      }
+    ]
     const { loading, data: { page, count, rows }, location: { query }, session } = this.props;
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
@@ -133,6 +394,57 @@ class ContestList extends React.Component<Props, State> {
                   />
                   <Table.Column
                     title="Status"
+                    key="type"
+                    render={(text, record: any) => {
+                      return <span><GeneralFormModal
+                        loadingEffect="contests/addContestUser"
+                        title="Join Contest"
+                        autoMsg
+                        items={record.team ? addTeamUserFormItems : addUserFormItems}
+                        submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          let data = {};
+                          data['nickname'] = values['nickname'];
+                          data['password'] = values['password'];
+                          data['unofficial'] = values['unofficial'] === "false" ? false : true;
+                          let members = [];
+                          if (record.team) {
+                            members = [{}, {}, {}];
+                            for (let i = 0; i < 3; i++) {
+                              for (let j = 0; j < this.formList.length; j++) {
+                                members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
+                              }
+                            }
+                          }
+                          else {
+                            members = [{}];
+                            for (let j = 0; j < this.formList.length; j++) {
+                              members[0][this.formList[j]] = values[this.formList[j] + 1]
+                            }
+                          }
+                          data['members'] = members;
+
+                          return dispatch({
+                            type: 'contests/addContestUser',
+                            payload: {
+                              id: record.contestId,
+                              data: data,
+                            },
+                          });
+                        }}
+                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          msg.success('Join Contest successfully');
+                        }}
+                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                        }}
+                      >
+
+                        <span style={{ color: '#33ccff' }} >Register</span>
+                      </GeneralFormModal><span>{' | '}<Link to={urlf(pages.contests.users, { param: { id: record.contestId } })}>报名表</Link></span></span>
+                    }}
+                  >
+                  </Table.Column>
+                  <Table.Column
+                    title="Status"
                     key="status"
                     render={(text, record: any) => (
                       <TimeStatusBadge start={toLongTs(record.startAt)} end={toLongTs(record.endAt)} cur={serverTime} />
@@ -167,22 +479,22 @@ class ContestList extends React.Component<Props, State> {
                 ]} initQuery={{ category: query.category }} />
               </Card>
               {session.loggedIn &&
-              <Card bordered={false}>
-                <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-                  <Form.Item className="single-form-item" label={
-                    <div>
-                      <span className="title">My Joined Contests</span>
-                      <div className="float-right">
-                        <Switch defaultChecked={!!query.joined} onChange={this.handleJoinedChange} loading={loading} />
+                <Card bordered={false}>
+                  <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+                    <Form.Item className="single-form-item" label={
+                      <div>
+                        <span className="title">My Joined Contests</span>
+                        <div className="float-right">
+                          <Switch defaultChecked={!!query.joined} onChange={this.handleJoinedChange} loading={loading} />
+                        </div>
                       </div>
-                    </div>
-                  } />
-                </Form>
-              </Card>}
+                    } />
+                  </Form>
+                </Card>}
             </Col>
           </Row>
         </PageTitle>
-      </PageAnimation>
+      </PageAnimation >
     );
   }
 }

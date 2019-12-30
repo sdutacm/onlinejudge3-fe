@@ -29,12 +29,12 @@ export default {
   },
   proxy: {
     '/onlinejudge2/index.php/API_ng/': {
-      target: 'http://127.0.0.1:8848/index.php/API_ng/',
+      target: 'https://acm.sdut.edu.cn/onlinejudge2/index.php/API_ng/',
       changeOrigin: true,
       pathRewrite: { '^/onlinejudge2/index.php/API_ng/' : '' }
     },
     '/image/': {
-      target: 'http://localhost:8848/dev_images/',
+      target: 'https://acm.sdut.edu.cn/onlinejudge2/dev_images/',
       changeOrigin: true,
       pathRewrite: {
         '^/image/': ''

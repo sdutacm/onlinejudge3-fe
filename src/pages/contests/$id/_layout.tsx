@@ -10,6 +10,7 @@ import getSetTimeStatus, { ContestTimeStatus } from '@/utils/getSetTimeStatus';
 import { floor } from 'math-precision';
 import setStatePromise from '@/utils/setStatePromise';
 import PageLoading from '@/components/PageLoading';
+import { matchPath } from 'react-router';
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -100,8 +101,12 @@ class ContestBase extends React.Component<Props, State> {
     if (!id) {
       return;
     }
+    const matchPage = matchPath(nextProps.location.pathname, {
+      path: pages.contests.users,
+      exact: true,
+    });
     // 进入到比赛内部页面，但未获得比赛 session，强制拉回到比赛守卫
-    if (nextProps.location.pathname !== pages.contests.home &&
+    if (nextProps.location.pathname !== pages.contests.home && !matchPage &&
       !this.props.session && nextProps.session && !nextProps.session.loggedIn) {
       router.replace(urlf(pages.contests.home, { param: { id } }));
     }

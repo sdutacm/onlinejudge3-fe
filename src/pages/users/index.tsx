@@ -14,6 +14,7 @@ import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import UserBar from '@/components/UserBar';
 import PageAnimation from '@/components/PageAnimation';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IUser>;
@@ -42,6 +43,11 @@ class Standings extends React.Component<Props, State> {
   };
 
   handleTableChange = (pagination, filters, sorter) => {
+    tracker.event({
+      category: 'users',
+      action: 'setListSorter',
+      label: `${sorter.columnKey} ${sorter.order}`,
+    });
     router.push({
       pathname: pages.users.index,
       query: {

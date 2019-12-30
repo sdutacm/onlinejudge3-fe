@@ -4,6 +4,7 @@ import { FormProps, RouteProps } from '@/@types/props';
 import { Form, Input, Select, Button } from 'antd';
 import router from 'umi/router';
 import gStyles from '@/general.less';
+import tracker from '@/utils/tracker';
 
 export interface FilterCardFieldOption {
   displayName: string;
@@ -31,6 +32,10 @@ class FilterCard extends React.Component<Props, any> {
           return;
         }
         const { pathname, query } = this.props.location;
+        tracker.event({
+          category: 'component',
+          action: 'FilterCard',
+        });
         router.replace({
           pathname,
           query: {

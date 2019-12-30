@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import constants from '../configs/constants';
+import tracker from '@/utils/tracker';
 
 export default {
   onError(e) {
@@ -17,6 +18,20 @@ export default {
     }
     catch (err) {
       message.error('Network error', constants.msgDuration.error);
+    }
+
+    try {
+      tracker.exception({
+        description: JSON.stringify({
+          error: e.toString(),
+          method: e.response.config.method,
+          url: e.request.responseURL,
+        }),
+      });
+    } catch (err) {
+      tracker.exception({
+        description: `${e}`,
+      });
     }
   },
 };

@@ -4,6 +4,7 @@ import { Form, Input, Modal } from 'antd';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import msg from '@/utils/msg';
 import { Codes } from '@/configs/codes/codes';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   type: 'bind' | 'change';
@@ -80,6 +81,10 @@ class ChangeEmailModal extends React.Component<Props, State> {
               },
             });
           }
+        });
+        tracker.event({
+          category: 'users',
+          action: type === 'bind' ? 'bindEmail' : 'changeEmail',
         });
       }
     });

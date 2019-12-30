@@ -22,6 +22,7 @@ import PageTitle from '@/components/PageTitle';
 import 'animate.css';
 // @ts-ignore
 import pkg from '../../package.json';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -114,6 +115,10 @@ class Index extends React.Component<Props, State> {
     this.setState({
       error,
       errorStack: errorInfo.componentStack,
+    });
+    tracker.exception({
+      description: error.message + '\n' + errorInfo.componentStack,
+      fatal: true,
     });
   }
 

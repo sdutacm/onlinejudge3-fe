@@ -17,6 +17,7 @@ import gStyles from '@/general.less';
 import classNames from 'classnames';
 import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -116,6 +117,10 @@ class ProblemList extends React.Component<Props, State> {
         tagIds.push(tagId);
       }
     }
+    tracker.event({
+      category: 'problems',
+      action: 'toggleTag',
+    });
     router.replace({
       pathname: this.props.location.pathname,
       query: {

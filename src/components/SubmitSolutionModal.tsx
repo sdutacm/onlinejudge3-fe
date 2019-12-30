@@ -8,6 +8,7 @@ import constants from '@/configs/constants';
 import router from 'umi/router';
 import pages from '@/configs/pages';
 import { numberToAlphabet, urlf } from '@/utils/format';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -41,6 +42,11 @@ class SubmitSolutionModal extends React.Component<Props, State> {
           if (ret.success) {
             msg.success('Submit successfully');
             this.handleHideModel();
+            tracker.event({
+              category: 'solutions',
+              action: 'submit',
+              label: values.language,
+            });
             const url = contestId
               ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: ret.data.solutionId } })
               : urlf(pages.solutions.detail, { param: { id: ret.data.solutionId }, query: { from: location.query.from } });

@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import router from 'umi/router';
 import gStyles from '@/general.less';
+import tracker from '@/utils/tracker';
 
 export interface Props {
   label: string;
@@ -33,8 +34,13 @@ class ToDetailCard extends React.Component<Props, State> {
     if (this.props.disableActionTrigger) {
       return;
     }
-    const { toDetailLink } = this.props;
+    const { toDetailLink, label } = this.props;
     if (this.state.value) {
+      tracker.event({
+        category: 'component',
+        action: 'ToDetailCard',
+        label,
+      });
       router.push(toDetailLink(this.state.value));
     }
   };

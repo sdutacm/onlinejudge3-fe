@@ -24,6 +24,7 @@ import { validateFile } from '@/utils/validate';
 import GeneralFormModal from '@/components/GeneralFormModal'
 import langs from '@/configs/solutionLanguages';
 import ChangeEmailModal from '@/components/ChangeEmailModal';
+import tracker from '@/utils/tracker';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -101,6 +102,7 @@ class UserDetail extends React.Component<Props, State> {
       bannerImageLoading: true,
       bannerImageUrl: thumbUrl,
     });
+    const _start = Date.now();
     loadImage(fullUrl).then(() => {
       try {
         setTimeout(() => {
@@ -113,6 +115,11 @@ class UserDetail extends React.Component<Props, State> {
       catch (err) {
         console.error(err);
       }
+      tracker.timing({
+        category: 'users',
+        variable: 'downloadFullBanner',
+        value: Date.now() - _start,
+      });
     }).catch(err => {
       console.error(err);
       this && this.setState && this.setState({
@@ -147,6 +154,12 @@ class UserDetail extends React.Component<Props, State> {
 
   handleAvatarChange = (info) => {
     if (info.file.status === 'uploading') {
+      if (!this.state.uploadAvatarLoading) {
+        tracker.event({
+          category: 'users',
+          action: 'uploadAvatar',
+        });
+      }
       this.setState({ uploadAvatarLoading: true });
     }
     else if (info.file.status === 'done') {
@@ -170,6 +183,12 @@ class UserDetail extends React.Component<Props, State> {
 
   handleBannerImageChange = (info) => {
     if (info.file.status === 'uploading') {
+      if (!this.state.uploadBannerImageLoading) {
+        tracker.event({
+          category: 'users',
+          action: 'uploadBanner',
+        });
+      }
       this.setState({ uploadBannerImageLoading: true });
     }
     else if (info.file.status === 'done') {
@@ -190,6 +209,11 @@ class UserDetail extends React.Component<Props, State> {
 
   handleSolutionCalendarPeriodChange = value => {
     this.setState({ solutionCalendarPeriod: value });
+    tracker.event({
+      category: 'users',
+      action: 'switchSolutionCalendarPeriod',
+      label: value,
+    });
   };
 
   changePasswordFormItems = [
@@ -375,13 +399,33 @@ class UserDetail extends React.Component<Props, State> {
                   <Col xs={24} md={6} xxl={6}>
                     <Card bordered={false}>
                       <div style={{ width: '100%' }}>
-                        <Link to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })} className="normal-text-link">
+                        <Link
+                          to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })}
+                          className="normal-text-link"
+                          onClick={() => {
+                            tracker.event({
+                              category: 'users',
+                              action: 'toSolution',
+                              label: 'AC',
+                            });
+                          }}
+                        >
                           <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }}>
                             <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.accepted}</strong></p>
                             <p style={{ fontSize: '12px' }}>AC</p>
                           </div>
                         </Link>
-                        <Link to={urlf(pages.solutions.index, { query: { userId: data.userId } })} className="normal-text-link">
+                        <Link
+                          to={urlf(pages.solutions.index, { query: { userId: data.userId } })}
+                          className="normal-text-link"
+                          onClick={() => {
+                            tracker.event({
+                              category: 'users',
+                              action: 'toSolution',
+                              label: 'Total',
+                            });
+                          }}
+                        >
                           <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }} className="card-block-divider">
                             <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
                             <p style={{ fontSize: '12px' }}>Submitted</p>
@@ -412,7 +456,18 @@ class UserDetail extends React.Component<Props, State> {
                             {data.site ?
                               <tr>
                                 <td>Site</td>
-                                <td><a href={xss(data.site)} target="_blank">{xss(data.site)}</a></td>
+                                <td>
+                                  <a
+                                    href={xss(data.site)}
+                                    target="_blank"
+                                    onClick={() => {
+                                      tracker.event({
+                                        category: 'users',
+                                        action: 'toSite',
+                                      });
+                                    }}
+                                  >{xss(data.site)}</a>
+                                </td>
                               </tr> : null}
                           </tbody>
                         </table>
@@ -426,6 +481,10 @@ class UserDetail extends React.Component<Props, State> {
                         autoMsg
                         items={editProfileFormItems}
                         submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          tracker.event({
+                            category: 'users',
+                            action: 'editProfile',
+                          });
                           return dispatch({
                             type: 'users/editProfile',
                             payload: {
@@ -461,10 +520,14 @@ class UserDetail extends React.Component<Props, State> {
                         items={this.changePasswordFormItems}
                         submit={(dispatch: ReduxProps['dispatch'], values) => {
                           if (values.password !== values.confirmPassword) {
-                            msg.error('Two passwords are inconsistent')
+                            msg.error('Two passwords are inconsistent');
                             return;
                           }
                           else {
+                            tracker.event({
+                              category: 'users',
+                              action: 'changePassword',
+                            });
                             return dispatch({
                               type: 'users/changePassword',
                               payload: {

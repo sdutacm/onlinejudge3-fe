@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Input, Popover, Button } from 'antd';
 import { FormProps, ReduxProps } from '@/@types/props';
 import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, FormProps {
   type: 'problem' | 'contest';
@@ -59,6 +60,10 @@ class AddFavorite extends React.Component<Props, State> {
             msg.success('Added to favorites');
             form.resetFields();
             this.handleHide();
+            tracker.event({
+              category: 'favorites',
+              action: 'add',
+            });
           }
         });
       }

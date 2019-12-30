@@ -17,6 +17,7 @@ import router from 'umi/router';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -64,6 +65,10 @@ class ContestSolutions extends React.Component<Props, State> {
 
   handleOwnedChange = owned => {
     this.setState({ filterOwned: owned });
+    tracker.event({
+      category: 'solutions',
+      action: 'switchOwn',
+    });
     setTimeout(() => router.replace({
       pathname: this.props.location.pathname,
       query: {

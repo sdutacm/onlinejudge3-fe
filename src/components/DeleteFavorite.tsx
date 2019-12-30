@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Popconfirm } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps {
   favoriteId: number;
@@ -44,6 +45,10 @@ class DeleteFavorite extends React.Component<Props, State> {
         });
         msg.success('Deleted from favorites');
         this.handleHide();
+        tracker.event({
+          category: 'favorites',
+          action: 'delete',
+        });
       }
     });
   };

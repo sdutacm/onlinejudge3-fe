@@ -18,6 +18,7 @@ import ProblemBar from '@/components/ProblemBar';
 import PageAnimation from '@/components/PageAnimation';
 import RtEditor from '@/components/RtEditor';
 import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   data: IList<ITopic>;
@@ -74,6 +75,10 @@ class TopicList extends React.Component<Props, State> {
             });
             form.setFieldsValue({
               content: RtEditor.genEmptyContent(),
+            });
+            tracker.event({
+              category: 'topics',
+              action: 'add',
             });
             router.push(urlf(pages.topics.detail, { param: { id: ret.data.topicId } }))
           }

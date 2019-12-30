@@ -23,6 +23,7 @@ import 'animate.css';
 // @ts-ignore
 import pkg from '../../package.json';
 import tracker from '@/utils/tracker';
+import ExtLink from '@/components/ExtLink';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -176,23 +177,23 @@ class Index extends React.Component<Props, State> {
             <Col xs={24} md={8} className="mb-md-lg">
               <h3>About</h3>
               <p>SDUT OJ v{pkg.version}</p>
-              <p><a className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues" target="_blank">Feedback</a></p>
-              <p><a className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md" target="_blank">Changelog</a></p>
-              <p><a className="normal-text-link" href="https://github.com/sdutacm" target="_blank">GitHub</a></p>
+              <p><ExtLink className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues">Feedback</ExtLink></p>
+              <p><ExtLink className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md">Changelog</ExtLink></p>
+              <p><ExtLink className="normal-text-link" href="https://github.com/sdutacm">GitHub</ExtLink></p>
             </Col>
 
             <Col xs={24} md={8} className="mb-md-lg">
               <h3>Our Apps</h3>
-              <p><a className="normal-text-link" href="https://stepbystep.sdutacm.cn/" target="_blank">StepByStep</a></p>
-              <p><a className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/" target="_blank">ACM Contests Collection</a></p>
-              <p><a className="normal-text-link" href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html" target="_blank">Recent Contests</a></p>
-              <p><a className="normal-text-link" href="http://suyu.red/" target="_blank">Typing System</a></p>
+              <p><ExtLink className="normal-text-link" href="https://stepbystep.sdutacm.cn/">StepByStep</ExtLink></p>
+              <p><ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/">ACM Contests Collection</ExtLink></p>
+              <p><ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html">Recent Contests</ExtLink></p>
+              <p><ExtLink className="normal-text-link" href="http://suyu.red/">Typing System</ExtLink></p>
             </Col>
 
             <Col xs={24} md={8} className="mb-md-lg">
               <h3>Recommends</h3>
-              <p><a className="normal-text-link" href="https://ab.algoux.org?from=sdutoj" target="_blank">Algo Bootstrap - The New Coding Experience</a></p>
-              <p><a className="normal-text-link" href="https://contests.sdutacm.cn/" target="_blank">Contests API</a></p>
+              <p><ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">Algo Bootstrap - The New Coding Experience</ExtLink></p>
+              <p><ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">Contests API</ExtLink></p>
             </Col>
           </Row>
           <p className="mt-lg" style={{ fontWeight: 600 }}>© 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.</p>

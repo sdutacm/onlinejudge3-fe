@@ -16,6 +16,7 @@ import ProblemBar from '@/components/ProblemBar';
 import RtEditor from '@/components/RtEditor';
 import PageTitle from '@/components/PageTitle';
 import NotFound from '@/pages/404';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   data: ITypeObject<ITopic>;
@@ -89,6 +90,10 @@ class TopicDetail extends React.Component<Props, State> {
             // form.resetFields();
             form.setFieldsValue({
               content: RtEditor.genEmptyContent(),
+            });
+            tracker.event({
+              category: 'replies',
+              action: 'add',
             });
           }
         });

@@ -37,8 +37,8 @@ class ToDetailCard extends React.Component<Props, State> {
     const { toDetailLink, label } = this.props;
     if (this.state.value) {
       tracker.event({
-        category: 'component',
-        action: 'ToDetailCard',
+        category: 'component.ToDetailCard',
+        action: 'submit',
         label,
       });
       router.push(toDetailLink(this.state.value));

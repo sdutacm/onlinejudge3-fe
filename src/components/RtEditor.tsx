@@ -9,6 +9,7 @@ import { ContentUtils } from 'braft-utils'
 import 'braft-editor/dist/index.css';
 import api from '@/configs/apis';
 import constants from '@/configs/constants';
+import tracker from '@/utils/tracker';
 
 interface Props {
   form: WrappedFormUtils;
@@ -67,6 +68,10 @@ class RtEditor extends React.Component<Props, State> {
         }]);
         form.setFieldsValue({
           [fieldName]: editorState
+        });
+        tracker.event({
+          category: 'component.RtEditor',
+          action: 'uploadMedia',
         });
       }
     }

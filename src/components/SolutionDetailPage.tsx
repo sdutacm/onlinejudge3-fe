@@ -11,6 +11,7 @@ import NotFound from '@/pages/404';
 import msg from '@/utils/msg';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps {
   loading: boolean;
@@ -58,6 +59,10 @@ class SolutionDetailPage extends React.Component<Props, State> {
       },
     }).then(ret => {
       msg.auto(ret);
+      tracker.event({
+        category: 'solutions',
+        action: 'switchCodeShare',
+      });
     });
   };
 

@@ -33,8 +33,8 @@ class FilterCard extends React.Component<Props, any> {
         }
         const { pathname, query } = this.props.location;
         tracker.event({
-          category: 'component',
-          action: 'FilterCard',
+          category: 'component.FilterCard',
+          action: 'submit',
         });
         router.replace({
           pathname,

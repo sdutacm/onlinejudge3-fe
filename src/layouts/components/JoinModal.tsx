@@ -10,6 +10,7 @@ import styles from './JoinModal.less';
 import gStyles from '../../general.less';
 import 'csshake';
 import { Codes } from '@/configs/codes/codes';
+import tracker from '@/utils/tracker';
 
 class JoinModal extends React.Component<any, any> {
   private setStatePromise = setStatePromise.bind(this);
@@ -252,6 +253,11 @@ class JoinModal extends React.Component<any, any> {
     this.funTransitionOpacity(modalHeader);
     this.funTransitionHeight(modalBody);
     setTimeout(() => this.setState({ contentVisible: true }), constants.modalAnimationDurationSwitch / 2);
+    tracker.event({
+      category: 'component.JoinModal',
+      action: 'switchTab',
+      label: selectedTab,
+    });
   };
 
   handleConfirmBlur = e => {
@@ -299,6 +305,10 @@ class JoinModal extends React.Component<any, any> {
             });
           }.bind(this), 1000);
           this.setState({ verificationCodeRetryTimer: timer });
+          tracker.event({
+            category: 'component.JoinModal',
+            action: 'getVerificationCode',
+          });
         } else {
           msg.auto(ret);
         }
@@ -321,6 +331,10 @@ class JoinModal extends React.Component<any, any> {
         setTimeout(() => dispatch({
           type: 'session/fetch',
         }), constants.modalAnimationDurationFade);
+        tracker.event({
+          category: 'component.JoinModal',
+          action: 'register',
+        });
       }
       else if (ret.result === 'error') {
         setFormErrors(form, ret.errors);
@@ -342,6 +356,10 @@ class JoinModal extends React.Component<any, any> {
           type: 'session/setSession',
           payload: { user: ret.data },
         }), constants.modalAnimationDurationFade);
+        tracker.event({
+          category: 'component.JoinModal',
+          action: 'login',
+        });
       }
       else {
         if (this.state.shakeTimer) {
@@ -364,6 +382,10 @@ class JoinModal extends React.Component<any, any> {
       if (ret.success) {
         msg.success('Your password has been reset successfully');
         this.switchTab(null, 'login');
+        tracker.event({
+          category: 'component.JoinModal',
+          action: 'forgotPassword',
+        });
       }
       else if (ret.result === 'error') {
         setFormErrors(form, ret.errors);

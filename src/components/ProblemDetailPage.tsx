@@ -16,6 +16,7 @@ import PageTitle from '@/components/PageTitle';
 import { withRouter } from 'react-router';
 import { RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
+import tracker from '@/utils/tracker';
 
 export interface Props extends RouteProps {
   loading: boolean;
@@ -68,12 +69,29 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
                       <Button type="primary" block>Submit</Button>
                     </SubmissionModal>)
                 }
-                <Link to={solutionsUrl}>
+                <Link
+                  to={solutionsUrl}
+                  onClick={() => {
+                    tracker.event({
+                      category: 'problems',
+                      action: 'toSolutions',
+                    });
+                  }}
+                >
                   <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
                 </Link>
-                {topicsUrl && <Link to={topicsUrl}>
-                  <Button block disabled={loading} className={styles.buttonMt}>Topics</Button>
-                </Link>}
+                {topicsUrl &&
+                  <Link
+                    to={topicsUrl}
+                    onClick={() => {
+                      tracker.event({
+                        category: 'problems',
+                        action: 'toTopics',
+                      });
+                    }}
+                  >
+                    <Button block disabled={loading} className={styles.buttonMt}>Topics</Button>
+                  </Link>}
                 <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
                   {session.loggedIn ?
                     (!favorite ?
@@ -112,9 +130,18 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
                       <tr>
                         <td>Source</td>
                         <td>
-                          {!contestId
-                            ? <Link to={urlf(pages.problems.index, { query: { source: data.source } })}>{data.source}</Link>
-                            : <span>{data.source}</span>
+                          {!contestId ?
+                            <Link
+                              to={urlf(pages.problems.index, { query: { source: data.source } })}
+                              onClick={() => {
+                                tracker.event({
+                                  category: 'problems',
+                                  action: 'viewListBySource',
+                                  label: data.source,
+                                });
+                              }}
+                            >{data.source}</Link> :
+                            <span>{data.source}</span>
                           }
                         </td>
                       </tr>}
@@ -131,7 +158,17 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
                           key={tag.tagId}
                           content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
                         >
-                          <Link to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}><Tag>{tag.name.en}</Tag></Link>
+                          <Link
+                            to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
+                            onClick={() => {
+                              tracker.event({
+                                category: 'problems',
+                                action: 'viewListByTag',
+                              });
+                            }}
+                          >
+                            <Tag>{tag.name.en}</Tag>
+                          </Link>
                         </Popover>
                       )}
                     </div>

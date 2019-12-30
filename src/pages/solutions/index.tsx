@@ -18,6 +18,7 @@ import { isEqual } from 'lodash';
 import router from 'umi/router';
 import constants from '@/configs/constants';
 import PageAnimation from '@/components/PageAnimation';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<ISolution>;
@@ -50,6 +51,10 @@ class SolutionList extends React.Component<Props, State> {
 
   handleOwnedChange = owned => {
     this.setState({ filterOwned: owned });
+    tracker.event({
+      category: 'solutions',
+      action: 'switchOwn',
+    });
     setTimeout(() => router.replace({
       pathname: this.props.location.pathname,
       query: {

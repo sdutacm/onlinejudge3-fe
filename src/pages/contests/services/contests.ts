@@ -81,17 +81,17 @@ export function getRanklist(id) {
   return get(url);
 }
 
-export function addContestUser(id, data) {  
+export function addContestUser(id, data) {
   const url = urlf(api.contests.users, { param: { id } });
   return post(url, data);
 }
 
-export function getContestUser(id, uid) {  
+export function getContestUser(id, uid) {
   const url = urlf(api.contests.userDetail, { param: { id, uid } });
   return get(url);
 }
 
-export function updateContestUser(id, uid, data) {  
-  const url = urlf(api.contests.userDetail, { param: { id, uid} });
+export function updateContestUser(id, uid, data) {
+  const url = urlf(api.contests.userDetail, { param: { id, uid } });
   return patch(url, data);
 }

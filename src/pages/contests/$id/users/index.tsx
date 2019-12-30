@@ -1,19 +1,15 @@
 /**
- * title: Posts
+ * title: Contest Users
  */
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card } from 'antd';
+import { Table, Pagination, Row, Col, Card, Icon } from 'antd';
 import router from 'umi/router';
-import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
-import UserBar from '@/components/UserBar';
-import TimeBar from '@/components/TimeBar';
 import PageAnimation from '@/components/PageAnimation';
 import { isAdminDog } from '@/utils/permission'
 import GeneralFormModal from '@/components/GeneralFormModal';
@@ -21,11 +17,14 @@ import msg from '@/utils/msg';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { matchPath } from 'react-router';
 import { get as safeGet } from 'lodash';
+import { getPathParamId } from '@/utils/getPathParams';
 
 export interface Props extends ReduxProps, RouteProps {
+  id: number;
   data: IList<IContestUser>;
   session: ISessionStatus;
-  contestuser: IContestUser
+  contestUser: IContestUser;
+  contestDetail: IContest;
 }
 
 interface State {
@@ -50,34 +49,40 @@ class ContestUserList extends React.Component<Props, State> {
   };
 
   editContestUser = (uid) => {
-    
-    const { dispatch } = this.props;
+    const { dispatch, id } = this.props;
     const matchDetail = matchPath(this.props.location.pathname, {
       path: pages.contests.users,
       exact: true,
     });
-    if (matchDetail){
-      
-      requestEffect(dispatch, { type: 'contests/getContestUser', payload: {id: this.props.location.pathname.split('/')[2], uid: uid}});
+    if (matchDetail) {
+      dispatch({
+        type: 'contests/getContestUser',
+        payload: {
+          id,
+          uid,
+        },
+      });
     }
   };
 
-  clothesSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   formList = ['schoolNo', 'name', 'school', 'college', 'major', 'class', 'tel', 'email', 'clothing']
 
   render() {
-    
     const {
-      loading, contestuser ,data: { page, count, rows }, 
+      loading, contestUser, data: { page, count, rows }, id, contestDetail, session, location: { query },
     } = this.props;
-    
+
+    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const regInProgress = contestDetail.registerStartAt * 1000 <= serverTime && serverTime < contestDetail.registerEndAt * 1000;
+
     let addUserFormItems = [
 
       {
         name: 'Nickname',
         field: 'nickname',
         component: 'input',
-        initialValue: contestuser.nickname,
+        initialValue: contestUser.nickname,
         rules: [{ required: true, message: 'Please input nickname' }]
       },
       {
@@ -85,74 +90,74 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'password',
         component: 'input',
         type: 'password',
-        initialValue: contestuser.password,
+        initialValue: contestUser.password,
         rules: [{ required: true, message: 'Please input password' }]
       },
       {
-        name: '友情参赛',
+        name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
-        initialValue: String(contestuser.unofficial),
-        options: [{ name: '是', value: true }, { name: '否', value: false }],
+        initialValue: String(contestUser.unofficial),
+        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
       },
       {
         name: 'Name',
         field: 'name1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].name'),
+        initialValue: safeGet(contestUser, 'members[0].name'),
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo',
+        name: 'School No.',
         field: 'schoolNo1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].schoolNo'),
+        initialValue: safeGet(contestUser, 'members[0].schoolNo'),
       },
       {
         name: 'School',
         field: 'school1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].school'),
+        initialValue: safeGet(contestUser, 'members[0].school'),
         rules: [{ required: true, message: 'Please input school' }]
       },
       {
         name: 'College',
         field: 'college1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].college'),
+        initialValue: safeGet(contestUser, 'members[0].college'),
       },
       {
         name: 'Major',
         field: 'major1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].major'),
+        initialValue: safeGet(contestUser, 'members[0].major'),
       },
       {
         name: 'Class',
         field: 'class1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].class'),
+        initialValue: safeGet(contestUser, 'members[0].class'),
         rules: [{ required: true, message: 'Please input class' }]
       },
       {
         name: 'Tel',
         field: 'tel1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].tel'),
+        initialValue: safeGet(contestUser, 'members[0].tel'),
       },
       {
         name: 'Email',
         field: 'email1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].email'),
+        initialValue: safeGet(contestUser, 'members[0].email'),
         rules: [{ required: true, message: 'Please input email' }]
       },
       {
-        name: 'Clothes',
+        name: 'Clothing',
         field: 'clothing1',
         component: 'select',
-        initialValue: safeGet(contestuser, 'members[0].clothing'),
-        options: this.clothesSize.map(item => ({
+        initialValue: safeGet(contestUser, 'members[0].clothing'),
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -164,7 +169,7 @@ class ContestUserList extends React.Component<Props, State> {
         name: 'Nickname',
         field: 'nickname',
         component: 'input',
-        initialValue: contestuser.nickname,
+        initialValue: contestUser.nickname,
         rules: [{ required: true, message: 'Please input nickname' }]
       },
       {
@@ -172,74 +177,74 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'password',
         component: 'input',
         type: 'password',
-        initialValue: contestuser.password,
+        initialValue: contestUser.password,
         rules: [{ required: true, message: 'Please input password' }]
       },
       {
-        name: '友情参赛',
+        name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
-        initialValue: String(contestuser.unofficial),
-        options: [{ name: '是', value: true }, { name: '否', value: false }],
+        initialValue: String(contestUser.unofficial),
+        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
       },
       {
         name: 'Name of Member 1',
         field: 'name1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].name'),
+        initialValue: safeGet(contestUser, 'members[0].name'),
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo of Member 1',
+        name: 'School No. of Member 1',
         field: 'schoolNo1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].schoolNo'),
+        initialValue: safeGet(contestUser, 'members[0].schoolNo'),
       },
       {
         name: 'School of Member 1',
         field: 'school1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].school'),
+        initialValue: safeGet(contestUser, 'members[0].school'),
         rules: [{ required: true, message: 'Please input school' }]
       },
       {
         name: 'College of Member 1',
         field: 'college1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].college'),
+        initialValue: safeGet(contestUser, 'members[0].college'),
       },
       {
         name: 'Major of Member 1',
         field: 'major1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].major'),
+        initialValue: safeGet(contestUser, 'members[0].major'),
       },
       {
         name: 'Class of Member 1',
         field: 'class1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].class'),
+        initialValue: safeGet(contestUser, 'members[0].class'),
         rules: [{ required: true, message: 'Please input class' }]
       },
       {
         name: 'Tel of Member 1',
         field: 'tel1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].tel'),
+        initialValue: safeGet(contestUser, 'members[0].tel'),
       },
       {
         name: 'Email of Member 1',
         field: 'email1',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[0].email'),
+        initialValue: safeGet(contestUser, 'members[0].email'),
         rules: [{ required: true, message: 'Please input email' }]
       },
       {
-        name: 'Clothes of Member 1',
+        name: 'Clothing of Member 1',
         field: 'clothing1',
         component: 'select',
-        initialValue: safeGet(contestuser, 'members[0].clothing'),
-        options: this.clothesSize.map(item => ({
+        initialValue: safeGet(contestUser, 'members[0].clothing'),
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -248,59 +253,59 @@ class ContestUserList extends React.Component<Props, State> {
         name: 'Name of Member 2',
         field: 'name2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].name'),
+        initialValue: safeGet(contestUser, 'members[1].name'),
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo of Member 2',
+        name: 'School No. of Member 2',
         field: 'schoolNo2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].schoolNo'),
+        initialValue: safeGet(contestUser, 'members[1].schoolNo'),
       },
       {
         name: 'School of Member 2',
         field: 'school2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].school'),
+        initialValue: safeGet(contestUser, 'members[1].school'),
         rules: [{ required: true, message: 'Please input school' }]
       },
       {
         name: 'College of Member 2',
         field: 'college2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].college'),
+        initialValue: safeGet(contestUser, 'members[1].college'),
       },
       {
         name: 'Major of Member 2',
         field: 'major2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].major'),
+        initialValue: safeGet(contestUser, 'members[1].major'),
       },
       {
         name: 'Class of Member 2',
         field: 'class2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].class'),
+        initialValue: safeGet(contestUser, 'members[1].class'),
         rules: [{ required: true, message: 'Please input class' }]
       },
       {
         name: 'Tel of Member 2',
         field: 'tel2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].tel'),
+        initialValue: safeGet(contestUser, 'members[1].tel'),
       },
       {
         name: 'Email of Member 2',
         field: 'email2',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[1].email'),
+        initialValue: safeGet(contestUser, 'members[1].email'),
       },
       {
-        name: 'Clothes of Member 2',
+        name: 'Clothing of Member 2',
         field: 'clothing2',
         component: 'select',
-        initialValue: safeGet(contestuser, 'members[1].clothing'),
-        options: this.clothesSize.map(item => ({
+        initialValue: safeGet(contestUser, 'members[1].clothing'),
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -309,59 +314,59 @@ class ContestUserList extends React.Component<Props, State> {
         name: 'Name of Member 3',
         field: 'name3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].name'),
+        initialValue: safeGet(contestUser, 'members[2].name'),
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo of Member 3',
+        name: 'School No. of Member 3',
         field: 'schoolNo3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].schoolNo'),
+        initialValue: safeGet(contestUser, 'members[2].schoolNo'),
       },
       {
         name: 'School of Member 3',
         field: 'school3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].school'),
+        initialValue: safeGet(contestUser, 'members[2].school'),
         rules: [{ required: true, message: 'Please input school' }]
       },
       {
-        name: 'College  of Member 3',
+        name: 'College of Member 3',
         field: 'college3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].college'),
+        initialValue: safeGet(contestUser, 'members[2].college'),
       },
       {
-        name: 'Major  of Member 3',
+        name: 'Major of Member 3',
         field: 'major3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].major'),
+        initialValue: safeGet(contestUser, 'members[2].major'),
       },
       {
         name: 'Class of Member 3',
         field: 'class3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].class'),
+        initialValue: safeGet(contestUser, 'members[2].class'),
         rules: [{ required: true, message: 'Please input class' }]
       },
       {
         name: 'Tel of Member 3',
         field: 'tel3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].tel'),
+        initialValue: safeGet(contestUser, 'members[2].tel'),
       },
       {
         name: 'Email of Member 3',
         field: 'email3',
         component: 'input',
-        initialValue: safeGet(contestuser, 'members[2].email'),
+        initialValue: safeGet(contestUser, 'members[2].email'),
       },
       {
-        name: 'Clothes  of Member 3',
+        name: 'Clothing of Member 3',
         field: 'clothing3',
         component: 'select',
-        initialValue: safeGet(contestuser, 'members[2].clothing'),
-        options: this.clothesSize.map(item => ({
+        initialValue: safeGet(contestUser, 'members[2].clothing'),
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -375,7 +380,7 @@ class ContestUserList extends React.Component<Props, State> {
             <Card bordered={false} className="list-card">
               <Table
                 dataSource={rows}
-                rowKey="postId"
+                rowKey="contestUserId"
                 loading={loading}
                 onChange={this.handleTableChange}
                 pagination={false}
@@ -385,10 +390,10 @@ class ContestUserList extends React.Component<Props, State> {
                   title=""
                   key="unofficial"
                   render={(text, user: IContestUser) => {
-                    if (user.unofficial){
+                    if (user.unofficial) {
                       return '*'
                     }
-                    else{
+                    else {
                       return ''
                     }
                   }}
@@ -414,82 +419,87 @@ class ContestUserList extends React.Component<Props, State> {
                   render={(text, user: IContestUser) => {
                     return user.members.map((item) => {
                       let str = [item.name, item.school, item.class].filter(item => item).join(' | ')
-                    return <span>{str}<br></br></span>
+                      return <span key={str}>{str}<br></br></span>
                     })
                   }}
                 />
-                
                 <Table.Column
                   title="Status"
                   key="status"
-                  render={(text, user: IContestUser)=>{
-                    if(user.status === 0){
-                      return <span style={{color: 'blue'}}>等待确认</span>
+                  render={(text, user: IContestUser) => {
+                    if (user.status === 0) {
+                      return <span><Icon type="question" /> Pending</span>
                     }
-                    if(user.status === 1){
-                      return <span style={{color: 'green'}}>接受</span>
+                    if (user.status === 1) {
+                      return <span><Icon type="check" /> Accepted</span>
                     }
-                    if(user.status === 2){
-                      return <span style={{color: 'yellow'}}>等待修改</span>
+                    if (user.status === 2) {
+                      return <span><Icon type="exclamation" /> Modification Required</span>
                     }
-                    if(user.status === 3){
-                      return <span style={{color: 'red'}}>已拒绝</span>
+                    if (user.status === 3) {
+                      return <span><Icon type="close" /> Rejected</span>
                     }
                   }}
                 />
                 <Table.Column
-                  title="Edit"
-                  key="edit"
+                  title=""
+                  key="actions"
                   render={(text, user: IContestUser) => {
-                    if ((this.props.session.loggedIn && user.username === this.props.session.user.username) || isAdminDog(this.props.session)){
+                    if ((regInProgress && this.props.session.loggedIn && user.username === session.user.username) || isAdminDog(session)) {
                       return <span><GeneralFormModal
-                      loadingEffect="contests/addContestUser"
-                      title="Join Contest"
-                      autoMsg
-                      items={text.members.length === 3 ? addTeamUserFormItems : addUserFormItems}
-                      submit={(dispatch: ReduxProps['dispatch'], values) => {
-                        let data = {};
-                        data['nickname'] = values['nickname'];
-                        data['password'] = values['password'];
-                        data['unofficial'] = values['unofficial'] === "false" ? false : true;
-                        let members = [];
-                        if (text.members.length === 3 ) {
-                          members = [{}, {}, {}];
-                          for (let i = 0; i < 3; i++) {
-                            for (let j = 0; j < this.formList.length; j++) {
-                              members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
+                        loadingEffect="contests/updateContestUser"
+                        title="Edit Register Info"
+                        autoMsg
+                        items={text.members.length === 3 ? addTeamUserFormItems : addUserFormItems}
+                        submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          let data = {};
+                          data['nickname'] = values['nickname'];
+                          data['password'] = values['password'];
+                          data['unofficial'] = values['unofficial'] === "false" ? false : true;
+                          let members = [];
+                          if (text.members.length === 3) {
+                            members = [{}, {}, {}];
+                            for (let i = 0; i < 3; i++) {
+                              for (let j = 0; j < this.formList.length; j++) {
+                                members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
+                              }
                             }
                           }
-                        }
-                        else {
-                          members = [{}];
-                          for (let j = 0; j < this.formList.length; j++) {
-                            members[0][this.formList[j]] = values[this.formList[j] + 1]
+                          else {
+                            members = [{}];
+                            for (let j = 0; j < this.formList.length; j++) {
+                              members[0][this.formList[j]] = values[this.formList[j] + 1]
+                            }
                           }
-                        }
-                        data['members'] = members;
+                          data['members'] = members;
 
-                        return dispatch({
-                          type: 'contests/updateContestUser',
-                          payload: {
-                            id: this_.props.location.pathname.split('/')[2],
-                            uid: user.contestUserId,
-                            data: data,
-                          },
-                        });
-                      }}
-                      onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                        msg.success('Join Contest successfully');
-                      }}
-                      onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                      }}
-                    >
-
-                      <span style={{ color: '#33ccff' }} onClick={() => this.editContestUser(text.contestUserId)}>Edit</span>
-                    </GeneralFormModal></span>
+                          return dispatch({
+                            type: 'contests/updateContestUser',
+                            payload: {
+                              id,
+                              uid: user.contestUserId,
+                              data: data,
+                            },
+                          });
+                        }}
+                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          msg.success('Edit register info successfully');
+                        }}
+                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          dispatch({
+                            type: 'contests/getUserList',
+                            payload: {
+                              cid: id,
+                              query,
+                            },
+                          })
+                        }}
+                      >
+                        <span onClick={() => this.editContestUser(text.contestUserId)}><Icon type="edit" /></span>
+                      </GeneralFormModal></span>
                     }
-                    else{
-                      return ''
+                    else {
+                      return '';
                     }
                   }}
                 />
@@ -522,11 +532,14 @@ class ContestUserList extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
+  const id = getPathParamId(state.routing.location.pathname, pages.contests.home);
   return {
+    id,
     loading: !!state.loading.effects['contests/getUserList'],
     data: state.contests.userlist,
     session: state.session,
-    contestuser: state.contests.contestuser
+    contestUser: state.contests.contestUserDetail,
+    contestDetail: state.contests.detail[id] || {},
   };
 }
 

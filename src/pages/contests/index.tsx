@@ -71,12 +71,16 @@ class ContestList extends React.Component<Props, State> {
     }), constants.switchAnimationDuration);
   };
 
-  clothesSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  canRegister = (registerStartAt: ITimestamp, registerEndAt: ITimestamp) => {
+    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    return registerStartAt * 1000 <= serverTime && serverTime < registerEndAt * 1000;
+  }
+
+  clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
   formList = ['schoolNo', 'name', 'school', 'college', 'major', 'class', 'tel', 'email', 'clothing']
 
   render() {
     let addUserFormItems = [
-
       {
         name: 'Nickname',
         field: 'nickname',
@@ -91,11 +95,11 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input password' }]
       },
       {
-        name: '友情参赛',
+        name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
         initialValue: 'false',
-        options: [{ name: '是', value: true }, { name: '否', value: false }],
+        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
       },
       {
         name: 'Name',
@@ -104,7 +108,7 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo',
+        name: 'School No.',
         field: 'schoolNo1',
         component: 'input',
       },
@@ -142,10 +146,10 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input email' }]
       },
       {
-        name: 'Clothes',
+        name: 'Clothing Size',
         field: 'clothing1',
         component: 'select',
-        options: this.clothesSize.map(item => ({
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -167,11 +171,11 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input password' }]
       },
       {
-        name: '友情参赛',
+        name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
         initialValue: 'false',
-        options: [{ name: '是', value: true }, { name: '否', value: false }],
+        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
       },
       {
         name: 'Name of Member 1',
@@ -180,7 +184,7 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo of Member 1',
+        name: 'School No. of Member 1',
         field: 'schoolNo1',
         component: 'input',
       },
@@ -218,10 +222,10 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input email' }]
       },
       {
-        name: 'Clothes of Member 1',
+        name: 'Clothing Size of Member 1',
         field: 'clothing1',
         component: 'select',
-        options: this.clothesSize.map(item => ({
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -233,7 +237,7 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo of Member 2',
+        name: 'School No. of Member 2',
         field: 'schoolNo2',
         component: 'input',
       },
@@ -270,10 +274,10 @@ class ContestList extends React.Component<Props, State> {
         component: 'input',
       },
       {
-        name: 'Clothes of Member 2',
+        name: 'Clothing Size of Member 2',
         field: 'clothing2',
         component: 'select',
-        options: this.clothesSize.map(item => ({
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -285,7 +289,7 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }]
       },
       {
-        name: 'SchoolNo of Member 3',
+        name: 'School No. of Member 3',
         field: 'schoolNo3',
         component: 'input',
       },
@@ -296,12 +300,12 @@ class ContestList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input school' }]
       },
       {
-        name: 'College  of Member 3',
+        name: 'College of Member 3',
         field: 'college3',
         component: 'input',
       },
       {
-        name: 'Major  of Member 3',
+        name: 'Major of Member 3',
         field: 'major3',
         component: 'input',
       },
@@ -322,10 +326,10 @@ class ContestList extends React.Component<Props, State> {
         component: 'input',
       },
       {
-        name: 'Clothes  of Member 3',
+        name: 'Clothing Size of Member 3',
         field: 'clothing3',
         component: 'select',
-        options: this.clothesSize.map(item => ({
+        options: this.clothingSize.map(item => ({
           value: item,
           name: item,
         })),
@@ -394,63 +398,72 @@ class ContestList extends React.Component<Props, State> {
                   />
                   <Table.Column
                     title="Status"
-                    key="type"
-                    render={(text, record: any) => {
-                      return <span><GeneralFormModal
-                        loadingEffect="contests/addContestUser"
-                        title="Join Contest"
-                        autoMsg
-                        items={record.team ? addTeamUserFormItems : addUserFormItems}
-                        submit={(dispatch: ReduxProps['dispatch'], values) => {
-                          let data = {};
-                          data['nickname'] = values['nickname'];
-                          data['password'] = values['password'];
-                          data['unofficial'] = values['unofficial'] === "false" ? false : true;
-                          let members = [];
-                          if (record.team) {
-                            members = [{}, {}, {}];
-                            for (let i = 0; i < 3; i++) {
-                              for (let j = 0; j < this.formList.length; j++) {
-                                members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
-                              }
-                            }
-                          }
-                          else {
-                            members = [{}];
-                            for (let j = 0; j < this.formList.length; j++) {
-                              members[0][this.formList[j]] = values[this.formList[j] + 1]
-                            }
-                          }
-                          data['members'] = members;
-
-                          return dispatch({
-                            type: 'contests/addContestUser',
-                            payload: {
-                              id: record.contestId,
-                              data: data,
-                            },
-                          });
-                        }}
-                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                          msg.success('Join Contest successfully');
-                        }}
-                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                        }}
-                      >
-
-                        <span style={{ color: '#33ccff' }} >Register</span>
-                      </GeneralFormModal><span>{' | '}<Link to={urlf(pages.contests.users, { param: { id: record.contestId } })}>报名表</Link></span></span>
-                    }}
-                  >
-                  </Table.Column>
-                  <Table.Column
-                    title="Status"
                     key="status"
+                    className="no-wrap"
                     render={(text, record: any) => (
                       <TimeStatusBadge start={toLongTs(record.startAt)} end={toLongTs(record.endAt)} cur={serverTime} />
                     )}
                   >
                   </Table.Column>
+
+                  <Table.Column
+                    title=""
+                    key="actions"
+                    className="no-wrap"
+                    render={(text, record: any) => {
+                      if (record.type !== ContestTypes.Register) {
+                        return null;
+                      }
+                      return (
+                        <>
+                          {this.canRegister(record.registerStartAt, record.registerEndAt) ?
+                            <GeneralFormModal
+                              loadingEffect="contests/addContestUser"
+                              title="Register Contest"
+                              autoMsg
+                              items={record.team ? addTeamUserFormItems : addUserFormItems}
+                              submit={(dispatch: ReduxProps['dispatch'], values) => {
+                                let data = {};
+                                data['nickname'] = values['nickname'];
+                                data['password'] = values['password'];
+                                data['unofficial'] = values['unofficial'] === "false" ? false : true;
+                                let members = [];
+                                if (record.team) {
+                                  members = [{}, {}, {}];
+                                  for (let i = 0; i < 3; i++) {
+                                    for (let j = 0; j < this.formList.length; j++) {
+                                      members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
+                                    }
+                                  }
+                                }
+                                else {
+                                  members = [{}];
+                                  for (let j = 0; j < this.formList.length; j++) {
+                                    members[0][this.formList[j]] = values[this.formList[j] + 1]
+                                  }
+                                }
+                                data['members'] = members;
+
+                                return dispatch({
+                                  type: 'contests/addContestUser',
+                                  payload: {
+                                    id: record.contestId,
+                                    data: data,
+                                  },
+                                });
+                              }}
+                              onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                                msg.success('Register contest successfully');
+                              }}
+                            >
+                              <span title="Register Contest"><Icon type="plus" /></span>
+                            </GeneralFormModal> :
+                            <span className="visibility-hidden"><Icon type="plus" /></span>}
+                          <span title="Contest Users" className="ml-sm-md"><Link to={urlf(pages.contests.users, { param: { id: record.contestId } })}><Icon type="unordered-list" /></Link></span>
+                        </>
+                      );
+                    }}
+                  />
                 </Table>
                 <Pagination
                   className="ant-table-pagination"
@@ -494,7 +507,7 @@ class ContestList extends React.Component<Props, State> {
             </Col>
           </Row>
         </PageTitle>
-      </PageAnimation >
+      </PageAnimation>
     );
   }
 }

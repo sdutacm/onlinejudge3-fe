@@ -20,7 +20,7 @@ const initialState = {
   problemResultStats: {},
   ranklist: {},
   userlist: {},
-  contestuser: {}
+  contestUserDetail: {} // only one user，之后再改
 };
 
 export default {
@@ -87,17 +87,16 @@ export default {
     clearExpiredRanklist(state) {
       state.ranklist = clearExpiredStateProperties(state.ranklist);
     },
-    setUserList(state, { payload: { data, query } }) {      
+    setUserList(state, { payload: { data, query } }) {
       state.userlist = {
         ...data,
         _query: query,
         ...genTimeFlag(25 * 1000),
       };
     },
-    setContestUser(state, { payload: { data } }) {      
-      state.contestuser = {
+    setContestUser(state, { payload: { data } }) {
+      state.contestUserDetail = {
         ...data,
-        ...genTimeFlag(25 * 1000),
       };
     },
   },
@@ -294,7 +293,7 @@ export default {
         orderBy: 'contestUserId',
         orderDirection: 'DESC',
       };
-      const ret: IApiResponse<IList<IContest> > = yield call(service.getUserList, formattedQuery, prams.cid);      
+      const ret: IApiResponse<IList<IContest> > = yield call(service.getUserList, formattedQuery, prams.cid);
       if (ret.success) {
         yield put({
           type: 'setUserList',
@@ -308,14 +307,11 @@ export default {
     },
     * addContestUser({ payload: { id, data } }, { call, put }) {
       const ret = yield call(service.addContestUser, id, data);
-      if (ret.success) {
-        
-      }
       return ret;
     },
 
     * getContestUser({ payload: { id, uid } }, { call, put }) {
-      const ret: IApiResponse<IContestUser > = yield call(service.getContestUser, id, uid);
+      const ret: IApiResponse<IContestUser> = yield call(service.getContestUser, id, uid);
       if (ret.success) {
         yield put({
           type: 'setContestUser',
@@ -329,9 +325,6 @@ export default {
 
     * updateContestUser({ payload: { id, uid, data } }, { call, put }) {
       const ret = yield call(service.updateContestUser, id, uid, data);
-      if (ret.success) {
-        
-      }
       return ret;
     },
   },
@@ -341,13 +334,12 @@ export default {
         if (pathname === pages.contests.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
         }
-        const matchDetail = matchPath(pathname, {
+        const matchContestUserDetail = matchPath(pathname, {
           path: pages.contests.users,
           exact: true,
         });
-        if (matchDetail){
-
-          requestEffect(dispatch, { type: 'getUserList', payload: {query, cid: pathname.split('/')[2] }});
+        if (matchContestUserDetail) {
+          requestEffect(dispatch, { type: 'getUserList', payload: { query, cid: matchContestUserDetail.params['id'] }});
         }
         // const matchContest = matchPath(pathname, {
         //   path: pages.contests.home,

@@ -133,7 +133,7 @@ interface IContest {
   startAt: number;
   endAt: number;
   frozenLength: number;
-  registerStartEndAt?: number;
+  registerStartAt?: number;
   registerEndAt?: number;
   team?: boolean;
   hidden?: boolean;

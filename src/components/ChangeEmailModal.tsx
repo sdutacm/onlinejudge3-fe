@@ -66,7 +66,10 @@ class ChangeEmailModal extends React.Component<Props, State> {
           type: 'users/changeEmail',
           payload: {
             userId,
-            data: values,
+            data: {
+              ...values,
+              code: +values.code,
+            },
           },
         }).then(ret => {
           msg.auto(ret);

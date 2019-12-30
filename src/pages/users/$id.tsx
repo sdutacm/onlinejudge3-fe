@@ -469,6 +469,11 @@ class UserDetail extends React.Component<Props, State> {
                                   >{xss(data.site)}</a>
                                 </td>
                               </tr> : null}
+                            {data.email ?
+                              <tr>
+                                <td>Email</td>
+                                <td>{xss(data.email)}</td>
+                              </tr> : null}
                           </tbody>
                         </table>
                       </Skeleton>
@@ -509,7 +514,7 @@ class UserDetail extends React.Component<Props, State> {
                         <Button block>Edit Profile</Button>
                       </GeneralFormModal>
 
-                      <ChangeEmailModal type={data.verified ? 'change' : 'bind'}>
+                      <ChangeEmailModal type={data.verified ? 'change' : 'bind'} userId={data.userId}>
                         <Button block className="mt-md">{data.verified ? 'Change Email' : 'Bind Email'}</Button>
                       </ChangeEmailModal>
 

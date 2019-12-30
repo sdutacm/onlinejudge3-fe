@@ -10,6 +10,7 @@ const limits = {
   },
   contests: {
     list: 20,
+    ranklist: 50,
   },
   topics: {
     list: 20,

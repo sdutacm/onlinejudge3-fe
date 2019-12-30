@@ -5,8 +5,12 @@ import throttle from 'lodash.throttle';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
+import limits from '@/configs/limits';
+import router from 'umi/router';
+import { withRouter } from 'react-router';
+import { RouteProps } from '@/@types/props';
 
-export interface Props {
+export interface Props extends RouteProps {
   id: number;
   data: IRanklist;
   loading: boolean;
@@ -77,8 +81,19 @@ class Ranklist extends React.Component<Props, State> {
     window.removeEventListener('resize', this.saveViewportDimensions);
   }
 
+  handlePageChange = page => {
+    router.push({
+      pathname: this.props.location.pathname,
+      query: { ...this.props.location.query, page },
+    });
+    const tbody = document.querySelector('.ant-table-scroll>.ant-table-body');
+    if (tbody) {
+      tbody.scrollTo(0, 0);
+    }
+  };
+
   render() {
-    const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session } = this.props;
+    const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session, location: { query } } = this.props;
     const { contentWidth } = this.state;
     // const contentWidth = 0;
     if (!data || !problemNum) {
@@ -128,10 +143,17 @@ class Ranklist extends React.Component<Props, State> {
         dataSource={ranklist}
         rowKey={(record, index) => `${record._self ? '_self' : record.user && record.user.userId}`}
         loading={loading}
-        pagination={false}
+        // pagination={false}
         className="ranklist"
         rowClassName={(record) => record._self ? 'self-rank-row' : ''}
         scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
+        pagination={{
+          // className: 'ant-table-pagination',
+          total: ranklist.length,
+          current: query.page || 1,
+          pageSize: limits.contests.ranklist,
+          onChange: this.handlePageChange,
+        }}
       >
         <Table.Column
           title="Rank"
@@ -256,4 +278,4 @@ class Ranklist extends React.Component<Props, State> {
   }
 }
 
-export default Ranklist;
+export default withRouter(Ranklist);

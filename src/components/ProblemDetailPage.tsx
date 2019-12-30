@@ -42,7 +42,7 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
       title={Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}
       loading={loading}
     >
-      <Row gutter={16} className="content-view">
+      <Row gutter={16} className="content-view list-view">
         <Col xs={24} md={18} xxl={18}>
           <PageAnimation>
             <Card bordered={false}>

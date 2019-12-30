@@ -1174,3 +1174,19 @@ ul {
     padding-right: 20px;
   }
 }
+
+.media-min(@min) {
+  @query: ~"@media only screen and (min-width: @{min})";
+}
+
+.media-max(@max) {
+  @query: ~"@media only screen and (max-width: @{max})";
+}
+
+.list-view {
+  .ant-col-xs-24:not(:first-of-type) {
+    @media only screen and (max-width: 767px) {
+      margin-top: 16px;
+    }
+  }
+}

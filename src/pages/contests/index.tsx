@@ -75,7 +75,7 @@ class ContestList extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <PageTitle title={+query.category === 1 ? 'Experiments' : 'Contests'}>
-          <Row gutter={16}>
+          <Row gutter={16} className="list-view">
             <Col xs={24}>
               <Tabs defaultActiveKey={query.category} activeKey={query.category} animated={false} onChange={this.handleCategoryChange}>
                 <Tabs.TabPane tab="Contests" key="0" />

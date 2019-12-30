@@ -329,7 +329,7 @@ class UserDetail extends React.Component<Props, State> {
 
             <PageAnimation>
               <div className="u-content">
-                <Row gutter={16}>
+                <Row gutter={16} className="list-view">
                   <Col xs={24} md={18} xxl={18}>
                     <Card bordered={false}>
                       <h3>Rating</h3>
@@ -358,9 +358,9 @@ class UserDetail extends React.Component<Props, State> {
                       />
                     </Card>
 
-                    <Card bordered={false}>
+                    {/* <Card bordered={false}>
                       <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能</h3>
-                    </Card>
+                    </Card> */}
 
                     {/*<Card bordered={false}>*/}
                     {/*<h3>Activities</h3>*/}

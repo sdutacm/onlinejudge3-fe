@@ -64,7 +64,7 @@ class SolutionList extends React.Component<Props, State> {
     const { loading, data, dispatch, session } = this.props;
     return (
       <PageAnimation>
-        <Row gutter={16}>
+        <Row gutter={16} className="list-view">
           <Col xs={24} lg={18} xxl={20}>
             <Card bordered={false} className="list-card">
               <SolutionTable

@@ -6,6 +6,7 @@ import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
+  onClickShowModal?: React.MouseEventHandler;
 }
 
 interface State {
@@ -25,6 +26,7 @@ class SettingsModal extends React.Component<Props, State> {
       e.stopPropagation();
     }
     this.setState({ visible: true });
+    this.props.onClickShowModal && this.props.onClickShowModal(e);
     tracker.event({
       category: 'component.NavMenu',
       action: 'showSettings',

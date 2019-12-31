@@ -156,7 +156,7 @@ class NavMenuContest extends React.Component<Props, State> {
             session.loggedIn &&
               <Menu.ItemGroup title={<span><span>{session.user.nickname}</span></span>}>
                 <Menu.Item key="logout" onClick={() => {
-                  onLinkClick();
+                  onLinkClick && onLinkClick();
                   this.logout();
                 }}>Logout</Menu.Item>
               </Menu.ItemGroup>

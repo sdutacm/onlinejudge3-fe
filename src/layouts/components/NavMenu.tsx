@@ -21,7 +21,7 @@ import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   mobileVersion: boolean;
-  onLinkClick: () => void;
+  onLinkClick?: React.MouseEventHandler;
   className: string;
   session: ISessionStatus;
   unreadMessagesLoading: boolean;
@@ -139,11 +139,20 @@ class NavMenu extends React.Component<Props, State> {
           <Link to={pages.posts.index} onClick={onLinkClick}>Posts</Link>
         </Menu.Item>
 
-        {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
+        {/* {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
           <Link to={pages.index} onClick={onLinkClick}>Idea Notes</Link>
-        </Menu.Item>}
-        {mobileVersion && session.loggedIn && <Menu.Item key="/notifications">
-          <Link to={pages.index} onClick={onLinkClick}>Notifications</Link>
+        </Menu.Item>} */}
+        {mobileVersion && session.loggedIn && <Menu.Item key={pages.messages.index}>
+          <Link
+            to={pages.messages.index}
+            onClick={(e) => {
+              onLinkClick && onLinkClick(e);
+              tracker.event({
+                category: 'component.NavMenu',
+                action: 'toMessages',
+              });
+            }}
+          >Notifications</Link>
         </Menu.Item>}
 
         {mobileVersion ?
@@ -169,8 +178,8 @@ class NavMenu extends React.Component<Props, State> {
                 {/* <Menu.Item key="favorites"> */}
                 {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
                 {/* </Menu.Item> */}
-                <Menu.Item key="logout" onClick={() => {
-                  onLinkClick();
+                <Menu.Item key="logout" onClick={(e) => {
+                  onLinkClick && onLinkClick(e.domEvent);
                   this.logout();
                 }}>Logout</Menu.Item>
               </Menu.ItemGroup>
@@ -256,7 +265,13 @@ class NavMenu extends React.Component<Props, State> {
           </Popover>
         </Menu.Item>}
         <Menu.Item key="settings" className="float-right">
-          <SettingsModal>
+          <SettingsModal
+            onClickShowModal={e => {
+              if (mobileVersion && onLinkClick) {
+                onLinkClick(e);
+              }
+            }}
+          >
             <Icon type="setting" />
           </SettingsModal>
         </Menu.Item>

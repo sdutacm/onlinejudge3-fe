@@ -257,7 +257,7 @@ class IdeaNotes extends React.Component<Props> {
                           action: 'toUrl',
                           label: url,
                         });
-                        onLinkClick(e);
+                        onLinkClick && onLinkClick(e);
                       }}
                     >
                       <Tag>{title}</Tag>

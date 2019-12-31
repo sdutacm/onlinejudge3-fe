@@ -1,7 +1,7 @@
 export default {
-  base: '/onlinejudge3/',
-  publicPath: '/onlinejudge3/',
-  outputPath: './onlinejudge3',
+  base: '/onlinejudge3_barkalways/',
+  publicPath: '/onlinejudge3_barkalways/',
+  outputPath: './onlinejudge3_barkalways',
   hash: true,
   plugins: [
     ['umi-plugin-react', {

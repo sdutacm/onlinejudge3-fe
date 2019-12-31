@@ -19,6 +19,7 @@ import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IContest>;
@@ -65,6 +66,10 @@ class ContestList extends React.Component<Props, State> {
   };
 
   handleJoinedChange = joined => {
+    tracker.event({
+      category: 'contests',
+      action: 'switchOwn',
+    });
     setTimeout(() => router.replace({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, joined: joined || undefined, page: 1 },
@@ -454,12 +459,26 @@ class ContestList extends React.Component<Props, State> {
                               }}
                               onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
                                 msg.success('Register contest successfully');
+                                tracker.event({
+                                  category: 'contests',
+                                  action: 'registerContest',
+                                });
                               }}
                             >
                               <span title="Register Contest"><Icon type="plus" /></span>
                             </GeneralFormModal> :
                             <span className="visibility-hidden"><Icon type="plus" /></span>}
-                          <span title="Contest Users" className="ml-sm-md"><Link to={urlf(pages.contests.users, { param: { id: record.contestId } })}><Icon type="unordered-list" /></Link></span>
+                          <span title="Contest Users" className="ml-sm-md">
+                            <Link
+                              to={urlf(pages.contests.users, { param: { id: record.contestId } })}
+                              onClick={() => {
+                                tracker.event({
+                                  category: 'contests',
+                                  action: 'toContestUsers',
+                                });
+                              }}
+                            ><Icon type="unordered-list" /></Link>
+                          </span>
                         </>
                       );
                     }}

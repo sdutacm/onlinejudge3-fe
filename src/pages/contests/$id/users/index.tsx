@@ -18,6 +18,7 @@ import { requestEffect } from '@/utils/effectInterceptor';
 import { matchPath } from 'react-router';
 import { get as safeGet } from 'lodash';
 import { getPathParamId } from '@/utils/getPathParams';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -484,6 +485,10 @@ class ContestUserList extends React.Component<Props, State> {
                         }}
                         onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
                           msg.success('Edit register info successfully');
+                          tracker.event({
+                            category: 'contests',
+                            action: 'modifyRegisterInfo',
+                          });
                         }}
                         onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
                           dispatch({

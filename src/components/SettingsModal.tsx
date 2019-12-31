@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Radio, Modal, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -24,6 +25,10 @@ class SettingsModal extends React.Component<Props, State> {
       e.stopPropagation();
     }
     this.setState({ visible: true });
+    tracker.event({
+      category: 'component.NavMenu',
+      action: 'showSettings',
+    });
   };
 
   handleHideModel = () => {
@@ -35,6 +40,11 @@ class SettingsModal extends React.Component<Props, State> {
       type: 'settings/setTheme',
       payload: { theme: e.target.value },
     });
+    tracker.event({
+      category: 'settings',
+      action: 'changeTheme',
+      label: e.target.value,
+    });
   };
 
   handleColorChange = (e) => {
@@ -42,12 +52,22 @@ class SettingsModal extends React.Component<Props, State> {
       type: 'settings/setColor',
       payload: { color: e.target.value },
     });
+    tracker.event({
+      category: 'settings',
+      action: 'changeColor',
+      label: e.target.value,
+    });
   };
 
   handleImproveAnimationChange = (checked) => {
     this.props.dispatch({
       type: 'settings/setImproveAnimation',
       payload: { improveAnimation: checked },
+    });
+    tracker.event({
+      category: 'settings',
+      action: 'changeImproveAnimation',
+      label: checked ? 'true' : 'false',
     });
   };
 

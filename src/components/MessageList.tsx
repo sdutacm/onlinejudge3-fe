@@ -8,6 +8,7 @@ import msg from '@/utils/msg';
 import { filterXSS as xss } from 'xss';
 import { ReduxProps } from '@/@types/props';
 import SendMessageModal from '@/components/SendMessageModal';
+import tracker from '@/utils/tracker';
 
 interface Props extends ReduxProps {
   count: number;
@@ -40,7 +41,19 @@ class MessageList extends React.Component<Props, State> {
     }
     return (
       <Spin spinning={loading}>
-        <Collapse bordered={false} className="message-list">
+        <Collapse bordered={false} className="message-list" onChange={(panels) => {
+          if (panels.length) {
+            tracker.event({
+              category: 'messages',
+              action: 'expand',
+            });
+          } else {
+            tracker.event({
+              category: 'messages',
+              action: 'fold',
+            });
+          }
+        }}>
           {rows.map(m => <Collapse.Panel
             showArrow={false}
             key={`${m.messageId}`}
@@ -75,7 +88,13 @@ class MessageList extends React.Component<Props, State> {
                       id: m.messageId,
                       read: true,
                     },
-                  }).then(ret => msg.auto(ret));
+                  }).then(ret => {
+                    msg.auto(ret);
+                    tracker.event({
+                      category: 'messages',
+                      action: 'markAsRead',
+                    });
+                  });
                 }}>Mark as read</a>}
                 {type === 'received' && m.from && m.from.userId &&
                 <SendMessageModal toUserId={m.from.userId}>

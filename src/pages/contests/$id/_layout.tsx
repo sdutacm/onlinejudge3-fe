@@ -11,6 +11,7 @@ import { floor } from 'math-precision';
 import setStatePromise from '@/utils/setStatePromise';
 import PageLoading from '@/components/PageLoading';
 import { matchPath } from 'react-router';
+import tracker from '@/utils/tracker';
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -163,12 +164,23 @@ class ContestBase extends React.Component<Props, State> {
     const timeRemainingSecs = Math.floor((endTime - startTime) / 1000) - timeElapsedSecs;
     return (
       <div>
-        <Popover placement="bottom" content={
-          <div className="text-right">
-            <div><span className="text-bold">Time Elapsed</span>: {secToTimeStr(timeElapsedSecs, true)}</div>
-            <div><span className="text-bold">Time Remaining</span>: {secToTimeStr(timeRemainingSecs, true)}</div>
-          </div>
-        }>
+        <Popover
+          placement="bottom"
+          content={
+            <div className="text-right">
+              <div><span className="text-bold">Time Elapsed</span>: {secToTimeStr(timeElapsedSecs, true)}</div>
+              <div><span className="text-bold">Time Remaining</span>: {secToTimeStr(timeRemainingSecs, true)}</div>
+            </div>
+          }
+          onVisibleChange={(visible) => {
+            if (visible) {
+              tracker.event({
+                category: 'contests',
+                action: 'showTimeProgressPopover',
+              });
+            }
+          }}
+        >
           <div className="top-progress">
             <Progress strokeLinecap="square" percent={percent} showInfo={false} />
           </div>

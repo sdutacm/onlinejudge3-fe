@@ -12,11 +12,12 @@ import msg from '@/utils/msg';
 import { Codes } from '@/configs/codes/codes';
 import TimeBar from '@/components/TimeBar';
 import classNames from 'classnames';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   notes: IFullList<INote>;
   contestProblems: IFullList<IProblem>;
-  onLinkClick(): void;
+  onLinkClick?: React.MouseEventHandler;
 }
 
 class IdeaNotes extends React.Component<Props> {
@@ -120,6 +121,11 @@ class IdeaNotes extends React.Component<Props> {
             });
             msg.success('Idea Saved');
             form.resetFields();
+            tracker.event({
+              category: 'component.IdeaNotes',
+              action: 'add',
+              label: urlData.type,
+            });
           }
         });
       }
@@ -143,6 +149,10 @@ class IdeaNotes extends React.Component<Props> {
           },
         });
         msg.success('Deleted');
+        tracker.event({
+          category: 'component.IdeaNotes',
+          action: 'delete',
+        });
       }
     });
   };
@@ -239,7 +249,19 @@ class IdeaNotes extends React.Component<Props> {
                 <List.Item.Meta
                   title={<pre>{item.content}</pre>}
                   description={<div>
-                    {title ? <Link to={url} onClick={onLinkClick}><Tag>{title}</Tag></Link> : null}
+                    {title ? <Link
+                      to={url}
+                      onClick={(e) => {
+                        tracker.event({
+                          category: 'component.IdeaNotes',
+                          action: 'toUrl',
+                          label: url,
+                        });
+                        onLinkClick(e);
+                      }}
+                    >
+                      <Tag>{title}</Tag>
+                    </Link> : null}
                     <p className={styles.footer}>
                       <TimeBar time={item.createdAt * 1000} />
                       <a

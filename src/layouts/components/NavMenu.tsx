@@ -15,6 +15,7 @@ import MessageList from '@/components/MessageList';
 import SettingsModal from '@/components/SettingsModal';
 import IdeaNotes from '@/components/IdeaNotes';
 import NoteSvg from '@/assets/svg/note.svg';
+import tracker from '@/utils/tracker';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -72,7 +73,13 @@ class NavMenu extends React.Component<Props, State> {
         <div className="text-center" style={{ lineHeight: '45px' }}>
           <Link
             to={urlf(pages.messages.index, { query: { type: 'received' } })}
-            onClick={() => this.setState({ messagesVisible: false })}
+            onClick={() => {
+              this.setState({ messagesVisible: false });
+              tracker.event({
+                category: 'component.NavMenu',
+                action: 'toMessages',
+              });
+            }}
           >
             View All
           </Link>
@@ -214,7 +221,15 @@ class NavMenu extends React.Component<Props, State> {
             overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
             overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
             visible={this.state.messagesVisible}
-            onVisibleChange={messagesVisible => this.setState({ messagesVisible })}
+            onVisibleChange={messagesVisible => {
+              this.setState({ messagesVisible });
+              if (messagesVisible) {
+                tracker.event({
+                  category: 'component.NavMenu',
+                  action: 'showMessages',
+                });
+              }
+            }}
           >
             <a><Badge count={unreadMessages.count}><Icon type="bell" theme="outlined" /></Badge></a>
           </Popover>
@@ -227,7 +242,15 @@ class NavMenu extends React.Component<Props, State> {
             trigger="click"
             overlayClassName="menu-popover inner-content-scroll-md"
             visible={this.state.notesVisible}
-            onVisibleChange={notesVisible => this.setState({ notesVisible })}
+            onVisibleChange={notesVisible => {
+              this.setState({ notesVisible });
+              if (notesVisible) {
+                tracker.event({
+                  category: 'component.NavMenu',
+                  action: 'showIdeaNotes',
+                });
+              }
+            }}
           >
             <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>

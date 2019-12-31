@@ -14,6 +14,7 @@ import setStatePromise from '@/utils/setStatePromise';
 import SettingsModal from '@/components/SettingsModal';
 import IdeaNotes from '@/components/IdeaNotes';
 import NoteSvg from '@/assets/svg/note.svg';
+import tracker from '@/utils/tracker';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -182,7 +183,15 @@ class NavMenuContest extends React.Component<Props, State> {
             trigger="click"
             overlayClassName="menu-popover inner-content-scroll-md"
             visible={this.state.notesVisible}
-            onVisibleChange={notesVisible => this.setState({ notesVisible })}
+            onVisibleChange={notesVisible => {
+              this.setState({ notesVisible });
+              if (notesVisible) {
+                tracker.event({
+                  category: 'component.NavMenu',
+                  action: 'showIdeaNotes',
+                });
+              }
+            }}
           >
             <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
           </Popover>

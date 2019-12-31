@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Form, Input, Select, Modal, Checkbox } from 'antd';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   session: ISessionStatus;
@@ -38,6 +39,10 @@ class SendMessageModal extends React.Component<Props, State> {
             this.handleHideModel();
             form.resetFields();
           }
+          tracker.event({
+            category: 'messages',
+            action: 'send',
+          });
         });
       }
     });

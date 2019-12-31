@@ -13,6 +13,7 @@ import styles from './index.less';
 import msg from '@/utils/msg';
 import router from 'umi/router';
 import { urlf } from '@/utils/format';
+import tracker from '@/utils/tracker';
 
 interface IContestSessionState extends ISessionStatus {
   _code: number;
@@ -157,6 +158,11 @@ class ContestHome extends React.Component<Props, State> {
 
   switchTab = (e, tab) => {
     this.setState({ tab });
+    tracker.event({
+      category: 'contests',
+      action: 'switchLoginTab',
+      label: tab,
+    });
   };
 
   handleSubmit = e => {
@@ -173,6 +179,11 @@ class ContestHome extends React.Component<Props, State> {
               msg.auto(ret);
               if (ret.success) {
                 msg.success(`Welcome back, ${ret.data.nickname}`);
+                tracker.event({
+                  category: 'contests',
+                  action: 'loginContest',
+                  label: this.state.tab,
+                });
                 dispatch({
                   type: 'session/setSession',
                   payload: { user: ret.data },
@@ -198,6 +209,11 @@ class ContestHome extends React.Component<Props, State> {
               msg.auto(ret);
               if (ret.success) {
                 msg.success(`Login Success`);
+                tracker.event({
+                  category: 'contests',
+                  action: 'loginContest',
+                  label: this.state.tab,
+                });
                 dispatch({
                   type: 'contests/getSession',
                   payload: {
@@ -219,6 +235,11 @@ class ContestHome extends React.Component<Props, State> {
               msg.auto(ret);
               if (ret.success) {
                 msg.success(`Login Success`);
+                tracker.event({
+                  category: 'contests',
+                  action: 'loginContest',
+                  label: this.state.tab,
+                });
                 dispatch({
                   type: 'contests/getSession',
                   payload: {

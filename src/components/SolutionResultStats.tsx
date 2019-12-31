@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Popover, Progress } from 'antd';
 import { formatPercentage } from '@/utils/format';
 import shortNumber from 'short-number';
+import tracker from '@/utils/tracker';
 
 export interface Props {
   accepted: number;
@@ -27,7 +28,16 @@ const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutions
   return (
     <Popover
       title="AC / Total"
-      content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}>
+      content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}
+      onVisibleChange={(visible) => {
+        if (visible) {
+          tracker.event({
+            category: 'component.SolutionResultStats',
+            action: 'showPopover',
+          });
+        }
+      }}
+    >
       {toSolutionsLink ?
         <Link to={toSolutionsLink} onClick={e => e.stopPropagation()}>{inner}</Link> :
         <a>{inner}</a>}

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Popover } from 'antd';
 import { Results, resultsMap } from '@/configs/results';
+import tracker from '@/utils/tracker';
 
 export interface Props {
   percent: number;
@@ -93,7 +94,18 @@ class ResultBar extends React.Component<Props, State> {
     }
     const resultInfo = resultsMap[result] || {};
     return (
-      <Popover title={resultInfo.fullName} content={resultInfo.description}>
+      <Popover
+        title={resultInfo.fullName}
+        content={resultInfo.description}
+        onVisibleChange={(visible) => {
+          if (visible) {
+            tracker.event({
+              category: 'component.ResultBar',
+              action: 'showPopover',
+            });
+          }
+        }}
+      >
         <div className={`result bg-${colorSettings === 'colorful' ? resultInfo.colorfulColor : resultInfo.normalColor}`}>
           <span>{resultInfo.shortName}</span>
         </div>

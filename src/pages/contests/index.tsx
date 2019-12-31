@@ -78,7 +78,7 @@ class ContestList extends React.Component<Props, State> {
 
   canRegister = (registerStartAt: ITimestamp, registerEndAt: ITimestamp) => {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
-    return registerStartAt * 1000 <= serverTime && serverTime < registerEndAt * 1000;
+    return this.props.session.loggedIn && (registerStartAt * 1000 <= serverTime && serverTime < registerEndAt * 1000);
   }
 
   clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];

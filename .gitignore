@@ -8,3 +8,5 @@ yarn.lock
 .umi
 .umi-production
 /onlinejudge3
+/onlinejudge3_exp
+/onlinejudge3_barkalways

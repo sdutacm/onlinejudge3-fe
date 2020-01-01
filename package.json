@@ -5,6 +5,8 @@
   "scripts": {
     "start": "umi dev",
     "build": "umi build",
+    "build:exp": "cross-env OJ3_BUILD4=exp umi build",
+    "build:test": "cross-env OJ3_BUILD4=test umi build",
     "build-analyze": "ANALYZE=1 umi build",
     "line-count": "cloc src/ --exclude-dir=.umi,.umi-production --fullpath --not-match-f='/(styles/dark_antd|assets|configs/codes)/'",
     "pull-submodule": "git submodule foreach git pull origin master",
@@ -59,6 +61,7 @@
     "@typescript-eslint/parser": "^1.5.0",
     "babel-eslint": "^9.0.0",
     "cloc": "^2.4.0",
+    "cross-env": "^6.0.3",
     "eslint": "^5.15.3",
     "eslint-config-alloy": "^2.0.0-alpha.2",
     "eslint-plugin-react": "^7.12.4",

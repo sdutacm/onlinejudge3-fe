@@ -93,6 +93,7 @@ class UserDetail extends React.Component<Props, State> {
     const { data: allData, match } = props;
     const id = ~~match.params.id;
     const data = allData[id] || {} as IUser;
+    console.warn('data');
     if (!data.bannerImage) {
       return;
     }
@@ -115,6 +116,7 @@ class UserDetail extends React.Component<Props, State> {
       catch (err) {
         console.error(err);
       }
+      console.warn('cost', Date.now() - _start);
       tracker.timing({
         category: 'users',
         variable: 'downloadFullBanner',
@@ -129,10 +131,9 @@ class UserDetail extends React.Component<Props, State> {
     });
   };
 
-  // componentDidMount(): void {
-  //   window.scrollTo(0, 0);
-  //   this.checkBannerImage(this.props);
-  // }
+  componentDidMount() {
+    this.checkBannerImage(this.props);
+  }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
     const oldId = ~~this.props.match.params.id;

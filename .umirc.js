@@ -1,7 +1,26 @@
+const buildTarget = (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
+console.log('Using build target:', buildTarget);
+
+const buildConfig = {
+  release: {
+    base: '/onlinejudge3/',
+    publicPath: '/onlinejudge3/',
+    outputPath: './onlinejudge3',
+  },
+  exp: {
+    base: '/onlinejudge3_exp/',
+    publicPath: '/onlinejudge3_exp/',
+    outputPath: './onlinejudge3_exp',
+  },
+  test: {
+    base: '/onlinejudge3_barkalways/',
+    publicPath: '/onlinejudge3_barkalways/',
+    outputPath: './onlinejudge3_barkalways',
+  },
+};
+
 export default {
-  base: '/onlinejudge3/',
-  publicPath: '/onlinejudge3/',
-  outputPath: './onlinejudge3',
+  ...buildConfig[buildTarget],
   hash: true,
   plugins: [
     ['umi-plugin-react', {
@@ -35,7 +54,7 @@ export default {
       pathRewrite: { '^/onlinejudge2/index.php/API_ng/' : '' }
     },
     '/image/': {
-      target: 'http://localhost:8848/dev_images/',
+      target: 'http://127.0.0.1:8848/dev_images/',
       // target: 'https://acm.sdut.edu.cn/image/',
       changeOrigin: true,
       pathRewrite: {

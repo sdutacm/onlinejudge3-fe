@@ -655,10 +655,11 @@ ul {
   background-repeat: no-repeat;
   background-position: center center;
   margin-top: -84px;
-  transition: all 2s;
+  transition: filter 2s;
 
   &.thumb {
     filter: blur(20px);
+    transition: filter 0s;
   }
 
   &.no-banner::before {

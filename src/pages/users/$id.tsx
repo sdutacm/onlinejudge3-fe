@@ -89,46 +89,54 @@ class UserDetail extends React.Component<Props, State> {
   //   />
   // );
 
-  checkBannerImage = (props: Props) => {
+  checkBannerImage = async (props: Props) => {
     const { data: allData, match } = props;
     const id = ~~match.params.id;
     const data = allData[id] || {} as IUser;
-    console.warn('data');
     if (!data.bannerImage) {
       return;
     }
-    const thumbUrl = `${constants.bannerImageUrlPrefix}xs_${data.bannerImage}`;
+    const imageExtIndex = data.bannerImage.lastIndexOf('.');
+    const thumbUrl = `${constants.bannerImageUrlPrefix}min_${data.bannerImage.substring(0, imageExtIndex)}.jpg`;
     const fullUrl = `${constants.bannerImageUrlPrefix}${data.bannerImage}`;
-    this.setState({
-      bannerImageLoading: true,
-      bannerImageUrl: thumbUrl,
-    });
-    const _start = Date.now();
-    loadImage(fullUrl).then(() => {
-      try {
-        setTimeout(() => {
-          this.setState({
-            bannerImageLoading: false,
-            bannerImageUrl: fullUrl,
-          });
-        }, 2000);
-      }
-      catch (err) {
-        console.error(err);
-      }
-      console.warn('cost', Date.now() - _start);
-      tracker.timing({
+    // 设置缩略图
+    try {
+      const _thumbStart = Date.now();
+      await loadImage(thumbUrl);
+      const thumbCost = Date.now() - _thumbStart;
+      thumbCost > 60 && tracker.timing({
+        category: 'users',
+        variable: 'downloadThumbBanner',
+        value: thumbCost,
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.setState({
+        bannerImageLoading: true,
+        bannerImageUrl: thumbUrl,
+      });
+    }
+    // 设置全尺寸图
+    try {
+      const _fullStart = Date.now();
+      await loadImage(fullUrl);
+      const fullCost = Date.now() - _fullStart;
+      fullCost > 60 && tracker.timing({
         category: 'users',
         variable: 'downloadFullBanner',
-        value: Date.now() - _start,
+        value: fullCost,
       });
-    }).catch(err => {
+    } catch (err) {
       console.error(err);
-      this && this.setState && this.setState({
-        bannerImageLoading: false,
-        bannerImageUrl: fullUrl,
-      });
-    });
+    } finally {
+      setTimeout(() => {
+        this.setState({
+          bannerImageLoading: false,
+          bannerImageUrl: fullUrl,
+        });
+      }, 100);
+    }
   };
 
   componentDidMount() {
@@ -149,7 +157,10 @@ class UserDetail extends React.Component<Props, State> {
     }
     catch (e) {}
     if (oldBannerImage !== newBannerImage) {
-      this.checkBannerImage(nextProps);
+      this.setState({
+        bannerImageLoading: false,
+        bannerImageUrl: '',
+      }, () => this.checkBannerImage(nextProps));
     }
   }
 

@@ -150,7 +150,7 @@ class ContestBase extends React.Component<Props, State> {
       return <PageLoading />;
     }
     else if (!detail) {
-      return <div>{children}</div>;
+      return <>{children}</>;
     }
     // TODO 仅 Running 设置计时器
     const startTime = toLongTs(detail.startAt);

@@ -426,14 +426,20 @@ ul {
 }
 
 .center-view {
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  // position: absolute;
+  // top: 45%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
 
-  @media only screen and (max-width: 767px) {
-    top: 47.5%;
-  }
+  // @media only screen and (max-width: 767px) {
+  //   top: 47.5%;
+  // }
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .content-area {
@@ -727,7 +733,8 @@ ul {
 
 .center-form {
   max-width: 400px;
-  margin: 0 auto;
+  width: 100%;
+  // margin: 0 auto;
 }
 
 .ant-row.ant-form-item.single-form-item {

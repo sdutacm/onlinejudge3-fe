@@ -974,28 +974,30 @@ class Beta extends React.Component<Props, State> {
             <div className="block full-block" style={{ marginTop: '60px' }}>
               <div className="header">公测在即，即刻预约</div>
               <p className="desc">{NAME} 即将正式开启公测，现在预约，提前获知最新动态。</p>
-              <div className="center-form" style={{ marginBottom: '60px' }}>
-                <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
-                  <Form.Item label="电子邮箱">
-                    {getFieldDecorator('email', {
-                      rules: [{
-                        type: 'email', message: '请输入有效的电子邮箱地址',
-                      }, {
-                        required: true, message: '请输入电子邮箱',
-                      }],
-                    })(<Input />)}
-                  </Form.Item>
+              <div className="center-view" style={{ marginBottom: '60px' }}>
+                <div className="center-form">
+                  <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
+                    <Form.Item label="电子邮箱">
+                      {getFieldDecorator('email', {
+                        rules: [{
+                          type: 'email', message: '请输入有效的电子邮箱地址',
+                        }, {
+                          required: true, message: '请输入电子邮箱',
+                        }],
+                      })(<Input />)}
+                    </Form.Item>
 
-                  <Form.Item label="OJ 用户名（选填）">
-                    {getFieldDecorator('username', {
-                      rules: [{ required: false }],
-                    })(<Input />)}
-                  </Form.Item>
+                    <Form.Item label="OJ 用户名（选填）">
+                      {getFieldDecorator('username', {
+                        rules: [{ required: false }],
+                      })(<Input />)}
+                    </Form.Item>
 
-                  <Form.Item>
-                    <Button type="primary" block htmlType="submit" loading={submitting}>提交</Button>
-                  </Form.Item>
-                </Form>
+                    <Form.Item>
+                      <Button type="primary" block htmlType="submit" loading={submitting}>提交</Button>
+                    </Form.Item>
+                  </Form>
+                </div>
               </div>
             </div>
 

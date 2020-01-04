@@ -21,6 +21,7 @@ const constants = {
   ranklistUpdateInterval: 30 * 1000,
   bgCheckSessionInterval: 60 * 1000,
   bgGetUnreadMessagesInterval: 10 * 60 * 1000,
+  mobileBreakPoint: 768,
 };
 
 export default constants;

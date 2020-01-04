@@ -4,6 +4,7 @@ import { Popover, Icon } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
 import styles from './ResponsiveNav.less';
 import { RouteLocation } from '@/@types/props';
+import { connect } from 'dva';
 
 // Powered by https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -14,34 +15,17 @@ export interface Props {
   placement: TooltipPlacement;
   navMenu: React.ReactNode;
   session: object;
+  mobile: boolean;
 }
 
 class ResponsiveNav extends React.Component<Props, any> {
   static defaultProps: Partial<Props> = {
-    mobileBreakPoint: 768,
-    applyViewportChange: 250,
     placement: 'bottom',
   };
 
   state = {
-    viewportWidth: 0,
     menuVisible: false,
   };
-
-  private saveViewportDimensions = throttle(() => {
-    this.setState({
-      viewportWidth: window.innerWidth,
-    });
-  }, this.props.applyViewportChange);
-
-  componentDidMount() {
-    this.saveViewportDimensions();
-    window.addEventListener('resize', this.saveViewportDimensions);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.saveViewportDimensions);
-  }
 
   handleMenuVisibility = (menuVisible) => {
     this.setState({ menuVisible });
@@ -49,7 +33,7 @@ class ResponsiveNav extends React.Component<Props, any> {
 
   render() {
     const NavMenu = this.props.navMenu;
-    if (this.state.viewportWidth >= this.props.mobileBreakPoint) {
+    if (!this.props.mobile) {
       // @ts-ignore
       return <NavMenu location={this.props.location} />;
     }
@@ -77,4 +61,10 @@ class ResponsiveNav extends React.Component<Props, any> {
   }
 }
 
-export default ResponsiveNav;
+function mapStateToProps(state) {
+  return {
+    mobile: state.global.mobile,
+  };
+}
+
+export default connect(mapStateToProps)(ResponsiveNav);

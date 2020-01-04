@@ -24,6 +24,9 @@ import 'animate.css';
 import pkg from '../../package.json';
 import tracker from '@/utils/tracker';
 import ExtLink from '@/components/ExtLink';
+import throttle from 'lodash.throttle';
+
+const VIEWPORT_CHANGE_THROTTLE = 250;
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -49,6 +52,16 @@ class Index extends React.Component<Props, State> {
       bgGetUnreadMessagesTimer: 0,
     };
   }
+
+  private saveViewportDimensions = throttle(() => {
+    this.props.dispatch({
+      type: 'global/setViewport',
+      payload: {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      },
+    })
+  }, VIEWPORT_CHANGE_THROTTLE);
 
   fetchSession = () => {
     const { dispatch } = this.props;
@@ -105,11 +118,15 @@ class Index extends React.Component<Props, State> {
     this.setState({ bgCheckSessionTimer });
     const bgGetUnreadMessagesTimer: any = setInterval(this.bgGetUnreadMessages, constants.bgGetUnreadMessagesInterval);
     this.setState({ bgGetUnreadMessagesTimer });
+    // viewport
+    this.saveViewportDimensions();
+    window.addEventListener('resize', this.saveViewportDimensions);
   }
 
   componentWillUnmount() {
     clearInterval(this.state.bgCheckSessionTimer);
     clearInterval(this.state.bgGetUnreadMessagesTimer);
+    window.removeEventListener('resize', this.saveViewportDimensions);
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {

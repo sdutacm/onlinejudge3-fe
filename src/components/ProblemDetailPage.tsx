@@ -17,6 +17,7 @@ import { withRouter } from 'react-router';
 import { RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
+import { connect } from 'dva';
 
 export interface Props extends RouteProps {
   loading: boolean;
@@ -25,9 +26,10 @@ export interface Props extends RouteProps {
   contestId?: number;
   problemIndex?: number;
   favorites: IFavorite[];
+  mobile: boolean;
 }
 
-const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location }) => {
+const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location, mobile }) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
@@ -38,6 +40,140 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
     ? ''
     : urlf(pages.topics.index, { query: { problemId: data.problemId, from: location.query.from } });
   const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
+  const renderSecondaryArea = () => {
+    return (
+      <PageAnimation>
+        <Card bordered={false} className={styles.buttonSeries}>
+          {loading
+            ? <Button type="primary" block disabled>Submit</Button>
+            : (!session.loggedIn
+              ? <Button type="primary" block disabled>Login to Submit</Button>
+              : <SubmissionModal
+                problemId={data.problemId}
+                title={data.title}
+                contestId={contestId}
+                problemIndex={problemIndex}
+                location={location}
+              >
+                <Button type="primary" block>Submit</Button>
+              </SubmissionModal>)
+          }
+          <Link
+            to={solutionsUrl}
+            onClick={() => {
+              tracker.event({
+                category: 'problems',
+                action: 'toSolutions',
+              });
+            }}
+          >
+            <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
+          </Link>
+          {topicsUrl &&
+            <Link
+              to={topicsUrl}
+              onClick={() => {
+                tracker.event({
+                  category: 'problems',
+                  action: 'toTopics',
+                });
+              }}
+            >
+              <Button block disabled={loading} className={styles.buttonMt}>Topics</Button>
+            </Link>}
+          <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
+            {session.loggedIn ?
+              (!favorite ?
+                <AddFavorite type="problem" id={data.problemId}>
+                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                    <Icon type="star" theme="outlined" />
+                  </Button>
+                </AddFavorite> :
+                <DeleteFavorite favoriteId={favorite.favoriteId}>
+                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                    <Icon type="star" theme="filled" />
+                  </Button>
+                </DeleteFavorite>) :
+              <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                <Icon type="star" theme="outlined" />
+              </Button>
+            }
+            <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
+              <Icon type="share-alt" theme="outlined" />
+            </Button>
+          </Button.Group>
+        </Card>
+        <Card bordered={false} className={styles.infoBoard}>
+          <Skeleton active loading={loading} paragraph={{ rows: 3, width: '100%' }}>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Time Limit</td>
+                  <td>{data.timeLimit || 0} ms</td>
+                </tr>
+                <tr>
+                  <td>Mem. Limit</td>
+                  <td>{data.memoryLimit || 0} KiB</td>
+                </tr>
+                {!!data.source &&
+                  <tr>
+                    <td>Source</td>
+                    <td>
+                      {!contestId ?
+                        <Link
+                          to={urlf(pages.problems.index, { query: { source: data.source } })}
+                          onClick={() => {
+                            tracker.event({
+                              category: 'problems',
+                              action: 'viewListBySource',
+                              label: data.source,
+                            });
+                          }}
+                        >{data.source}</Link> :
+                        <span>{data.source}</span>
+                      }
+                    </td>
+                  </tr>}
+              </tbody>
+            </table>
+          </Skeleton>
+        </Card>
+        {!loading && data.tags && !!data.tags.length && <Card bordered={false}>
+          <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+            <Form.Item label="Tags">
+              <div className="tags">
+                {data.tags.map(tag =>
+                  <Popover
+                    key={tag.tagId}
+                    content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
+                  >
+                    <Link
+                      to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
+                      onClick={() => {
+                        tracker.event({
+                          category: 'problems',
+                          action: 'viewListByTag',
+                        });
+                      }}
+                    >
+                      <Tag>{tag.name.en}</Tag>
+                    </Link>
+                  </Popover>
+                )}
+              </div>
+            </Form.Item>
+          </Form>
+        </Card>}
+        {!contestId && !loading && isPermissionDog(session) &&
+          <Card bordered={false}>
+            <EditProblemPropModal data={data}>
+              <Button block>Modify Prop.</Button>
+            </EditProblemPropModal>
+          </Card>}
+      </PageAnimation>
+    );
+  }
+
   return (
     <PageTitle
       title={Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}
@@ -52,141 +188,21 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
           </PageAnimation>
         </Col>
         <Col xs={24} md={6} xxl={6}>
-          <Affix offsetTop={84}>
-            <PageAnimation>
-              <Card bordered={false} className={styles.buttonSeries}>
-                {loading
-                  ? <Button type="primary" block disabled>Submit</Button>
-                  : (!session.loggedIn
-                    ? <Button type="primary" block disabled>Login to Submit</Button>
-                    : <SubmissionModal
-                      problemId={data.problemId}
-                      title={data.title}
-                      contestId={contestId}
-                      problemIndex={problemIndex}
-                      location={location}
-                    >
-                      <Button type="primary" block>Submit</Button>
-                    </SubmissionModal>)
-                }
-                <Link
-                  to={solutionsUrl}
-                  onClick={() => {
-                    tracker.event({
-                      category: 'problems',
-                      action: 'toSolutions',
-                    });
-                  }}
-                >
-                  <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
-                </Link>
-                {topicsUrl &&
-                  <Link
-                    to={topicsUrl}
-                    onClick={() => {
-                      tracker.event({
-                        category: 'problems',
-                        action: 'toTopics',
-                      });
-                    }}
-                  >
-                    <Button block disabled={loading} className={styles.buttonMt}>Topics</Button>
-                  </Link>}
-                <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
-                  {session.loggedIn ?
-                    (!favorite ?
-                      <AddFavorite type="problem" id={data.problemId}>
-                        <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                          <Icon type="star" theme="outlined" />
-                        </Button>
-                      </AddFavorite> :
-                      <DeleteFavorite favoriteId={favorite.favoriteId}>
-                        <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                          <Icon type="star" theme="filled" />
-                        </Button>
-                      </DeleteFavorite>) :
-                    <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                      <Icon type="star" theme="outlined" />
-                    </Button>
-                  }
-                  <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
-                    <Icon type="share-alt" theme="outlined" />
-                  </Button>
-                </Button.Group>
-              </Card>
-              <Card bordered={false} className={styles.infoBoard}>
-                <Skeleton active loading={loading} paragraph={{ rows: 3, width: '100%' }}>
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td>Time Limit</td>
-                        <td>{data.timeLimit || 0} ms</td>
-                      </tr>
-                      <tr>
-                        <td>Mem. Limit</td>
-                        <td>{data.memoryLimit || 0} KiB</td>
-                      </tr>
-                      {!!data.source &&
-                      <tr>
-                        <td>Source</td>
-                        <td>
-                          {!contestId ?
-                            <Link
-                              to={urlf(pages.problems.index, { query: { source: data.source } })}
-                              onClick={() => {
-                                tracker.event({
-                                  category: 'problems',
-                                  action: 'viewListBySource',
-                                  label: data.source,
-                                });
-                              }}
-                            >{data.source}</Link> :
-                            <span>{data.source}</span>
-                          }
-                        </td>
-                      </tr>}
-                    </tbody>
-                  </table>
-                </Skeleton>
-              </Card>
-              {!loading && data.tags && !!data.tags.length && <Card bordered={false}>
-                <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-                  <Form.Item label="Tags">
-                    <div className="tags">
-                      {data.tags.map(tag =>
-                        <Popover
-                          key={tag.tagId}
-                          content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
-                        >
-                          <Link
-                            to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
-                            onClick={() => {
-                              tracker.event({
-                                category: 'problems',
-                                action: 'viewListByTag',
-                              });
-                            }}
-                          >
-                            <Tag>{tag.name.en}</Tag>
-                          </Link>
-                        </Popover>
-                      )}
-                    </div>
-                  </Form.Item>
-                </Form>
-              </Card>}
-              {!contestId && !loading && isPermissionDog(session) &&
-              <Card bordered={false}>
-                <EditProblemPropModal data={data}>
-                  <Button block>Modify Prop.</Button>
-                </EditProblemPropModal>
-              </Card>}
-            </PageAnimation>
-          </Affix>
+          {mobile ?
+            renderSecondaryArea() :
+            <Affix offsetTop={84}>
+              {renderSecondaryArea()}
+            </Affix>}
         </Col>
       </Row>
     </PageTitle>
   );
 };
 
-export default withRouter(ProblemDetailPage);
+function mapStateToProps(state) {
+  return {
+    mobile: state.global.mobile,
+  };
+}
+
+export default connect(mapStateToProps)(withRouter(ProblemDetailPage));

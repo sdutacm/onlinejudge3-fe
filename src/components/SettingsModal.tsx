@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Radio, Modal, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import tracker from '@/utils/tracker';
+import Explanation from './Explanation';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -98,7 +99,12 @@ class SettingsModal extends React.Component<Props, State> {
             </Radio.Group>
           </div>
           <div className="settings-item">
-            <span>Color</span>
+            <span>
+              Color
+              <Explanation className="ml-sm-md">
+                The setting effects color style of problem status bar, solution result and ranklist.
+              </Explanation>
+            </span>
             <Radio.Group
               onChange={this.handleColorChange}
               defaultValue={settings.color}
@@ -111,7 +117,13 @@ class SettingsModal extends React.Component<Props, State> {
             </Radio.Group>
           </div>
           <div className="settings-item">
-            <span>Improve Animation</span>
+            <span>
+              Improve Animation
+              <Explanation className="ml-sm-md">
+                The setting effects animation.<br />
+                If "Improve Animation" is enabled, more animation effects will be displayed.
+              </Explanation>
+            </span>
             <Switch className="float-right" defaultChecked={settings.improveAnimation} onChange={this.handleImproveAnimationChange} />
           </div>
         </Modal>

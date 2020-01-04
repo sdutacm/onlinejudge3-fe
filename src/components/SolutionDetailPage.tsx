@@ -12,6 +12,7 @@ import msg from '@/utils/msg';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
+import Explanation from './Explanation';
 
 export interface Props extends ReduxProps {
   loading: boolean;
@@ -116,14 +117,14 @@ class SolutionDetailPage extends React.Component<Props, State> {
                         {isSelf(session, data.user.userId) ?
                           <div className="float-left">
                             <span>Share Code
-                              <Popover title="Shared code will be disabled in one of these cases" content={<div>
-                                <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
-                                  {/* <li>The user viewing code has not solved the problem</li> */}
-                                  <li>The problem exists in some running contests</li>
-                                </ul>
-                              </div>}>
-                                <Icon type="info-circle" className="info-tips ml-sm-md" />
-                              </Popover>
+                              <Explanation title="Shared code will be disabled in one of these cases" className="ml-sm-md">
+                                <div>
+                                  <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
+                                    {/* <li>The user viewing code has not solved the problem</li> */}
+                                    <li>The problem exists in some running contests</li>
+                                  </ul>
+                                </div>
+                              </Explanation>
                             </span>
                             <Switch
                               checked={data.shared} disabled={loading} loading={changeSharedLoading}

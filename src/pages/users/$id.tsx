@@ -104,7 +104,7 @@ class UserDetail extends React.Component<Props, State> {
       const _thumbStart = Date.now();
       await loadImage(thumbUrl);
       const thumbCost = Date.now() - _thumbStart;
-      thumbCost > 60 && tracker.timing({
+      thumbCost > 120 && tracker.timing({
         category: 'users',
         variable: 'downloadThumbBanner',
         value: thumbCost,
@@ -122,7 +122,7 @@ class UserDetail extends React.Component<Props, State> {
       const _fullStart = Date.now();
       await loadImage(fullUrl);
       const fullCost = Date.now() - _fullStart;
-      fullCost > 60 && tracker.timing({
+      fullCost > 120 && tracker.timing({
         category: 'users',
         variable: 'downloadFullBanner',
         value: fullCost,

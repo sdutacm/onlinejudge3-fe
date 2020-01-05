@@ -32,7 +32,7 @@ export default {
         ...data,
       };
     },
-    setDetail(state, { payload: { id, data } }) {      
+    setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
         ...data,
         ...genTimeFlag(60 * 1000),
@@ -106,12 +106,12 @@ export default {
       return ret;
     },
     * getDetail({ payload: { id, force = false }}, { call, put, select }) {
-      if(!force){
-        const savedState = yield select(state => state.solutions.detail[id]);      
+      if (!force) {
+        const savedState = yield select(state => state.solutions.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
-        }  
-      }    
+        }
+      }
       const ret: IApiResponse<ISolution> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({

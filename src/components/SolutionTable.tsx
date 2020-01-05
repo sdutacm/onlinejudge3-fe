@@ -69,16 +69,17 @@ class SolutionTable extends React.Component<Props, State> {
         },
       })
 
-      for (const item in data) {
-        if (data[item].result === 7) {
-          this.props.dispatch({
-            type: 'solutions/getDetail',
-            payload: {
-              id: item,
-              force: true
-            }
-          });
-
+      if (this.props.isDetail) {
+        for (const item in data) {
+          if (data[item].result === Results.CE) {
+            this.props.dispatch({
+              type: 'solutions/getDetail',
+              payload: {
+                id: item,
+                force: true
+              }
+            });
+          }
         }
       }
     }

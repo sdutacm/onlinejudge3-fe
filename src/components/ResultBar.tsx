@@ -41,7 +41,7 @@ class ResultBar extends React.Component<Props, State> {
     };
   }
 
-  updateProgress = () => {    
+  updateProgress = () => {
     // console.log('upd progress');
     const r = this.props.timeLimit / 1000;
     const d = Math.log(this.state.updateCnt / Math.pow(r, 1.75) + 3) - Math.log(this.state.updateCnt / Math.pow(r, 1.75) + 2);

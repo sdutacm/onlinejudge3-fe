@@ -24,11 +24,6 @@ class SolutionDetail extends React.Component<Props, State> {
     // console.log(checked);
   };
 
-  // componentWillReceiveProps = (nextProps) => {
-  //   console.log(nextProps);
-    
-  // }
-
   render() {
     const { loading, data: allData, changeSharedLoading, session, match, dispatch } = this.props;
     const id = ~~match.params.id;

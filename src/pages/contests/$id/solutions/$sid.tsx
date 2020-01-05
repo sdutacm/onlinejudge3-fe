@@ -35,7 +35,9 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     }
     props.dispatch({
       type: 'solutions/getDetail',
-      payload: ~~props.match.params.sid,
+      payload: {
+        id: ~~props.match.params.sid,
+      }
     });
   };
 

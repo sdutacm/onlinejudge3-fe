@@ -89,24 +89,24 @@ class SolutionDetailPage extends React.Component<Props, State> {
             </Card>
 
             {!loading && data.compileInfo &&
-            <Card bordered={false}>
-              <div>
-                <div style={{ height: '32px' }}>
-                  <div className="float-left">
-                    <span>Compile Info</span>
+              <Card bordered={false}>
+                <div>
+                  <div style={{ height: '32px' }}>
+                    <div className="float-left">
+                      <span>Compile Info</span>
+                    </div>
+                    <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
                   </div>
-                  <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
+                  <SyntaxHighlighter
+                    language="text"
+                    showLineNumbers
+                    style={theme === 'dark' ? atomOneDark : atomOneLight}
+                    lineNumberContainerStyle={highlighterLineNumberStyle}
+                  >
+                    {data.compileInfo}
+                  </SyntaxHighlighter>
                 </div>
-                <SyntaxHighlighter
-                  language="text"
-                  showLineNumbers
-                  style={theme === 'dark' ? atomOneDark : atomOneLight}
-                  lineNumberContainerStyle={highlighterLineNumberStyle}
-                >
-                  {data.compileInfo}
-                </SyntaxHighlighter>
-              </div>
-            </Card>}
+              </Card>}
 
             <Card bordered={false}>
               {!loading ?

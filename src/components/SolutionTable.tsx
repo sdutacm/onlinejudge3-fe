@@ -50,7 +50,8 @@ class SolutionTable extends React.Component<Props, State> {
     clearInterval(this.state.timer);
   }
 
-  updatePendingSolutions = () => {
+  updatePendingSolutions = async () => {
+
     const { rows } = this.props.data;
     const solutionIds: number[] = [];
     for (const row of rows) {
@@ -58,13 +59,29 @@ class SolutionTable extends React.Component<Props, State> {
         solutionIds.unshift(row.solutionId);
       }
     }
-    solutionIds.length && this.props.dispatch({
-      type: 'solutions/getListByIds',
-      payload: {
-        type: this.props.isDetail ? 'detail' : 'list',
-        solutionIds,
-      },
-    });
+
+    if (solutionIds.length) {
+      const { data } = await this.props.dispatch({
+        type: 'solutions/getListByIds',
+        payload: {
+          type: this.props.isDetail ? 'detail' : 'list',
+          solutionIds,
+        },
+      })
+
+      for (const item in data) {
+        if (data[item].result === 7) {
+          this.props.dispatch({
+            type: 'solutions/getDetail',
+            payload: {
+              id: item,
+              force: true
+            }
+          });
+
+        }
+      }
+    }
   };
 
   handlePageChange = page => {

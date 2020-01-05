@@ -127,6 +127,19 @@ export default {
       }
       return ret;
     },
+    * getDetailForCompilationInfo({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<ISolution> = yield call(service.getDetail, id);
+      if (ret.success) {
+        yield put({
+          type: 'setDetail',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
     * submit({ payload: data }, { call, put }) {
       return yield call(service.submit, data);
     },

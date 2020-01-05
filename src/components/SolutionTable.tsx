@@ -73,11 +73,10 @@ class SolutionTable extends React.Component<Props, State> {
         for (const item in data) {
           if (data[item].result === Results.CE) {
             this.props.dispatch({
-              type: 'solutions/getDetail',
+              type: 'solutions/getDetailForCompilationInfo',
               payload: {
                 id: item,
-                force: true
-              }
+              },
             });
           }
         }

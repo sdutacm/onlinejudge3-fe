@@ -1,8 +1,8 @@
 import React from 'react';
-import { ReduxProps, RouteProps } from '@/@types/props';
+import { ReduxProps } from '@/@types/props';
 import { connect } from 'dva';
 import SolutionTable from '@/components/SolutionTable';
-import { Card, Switch, Skeleton, Icon, Popover } from 'antd';
+import { Card, Switch, Skeleton } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
@@ -22,6 +22,7 @@ export interface Props extends ReduxProps {
   contestId?: number;
   problemList?: any[];
   theme: ISettingsTheme;
+  compilationInfoLoading: boolean;
 }
 
 interface State {
@@ -67,6 +68,48 @@ class SolutionDetailPage extends React.Component<Props, State> {
     });
   };
 
+  renderCompilicationInfo = () => {
+    const { loading, data, theme, compilationInfoLoading } = this.props;
+    if (loading) {
+      return null;
+    } else if (data.compileInfo) {
+      return (
+        <Card bordered={false}>
+          <div>
+            <div style={{ height: '32px' }}>
+              <div className="float-left">
+                <span>Compile Info</span>
+              </div>
+              <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
+            </div>
+            <SyntaxHighlighter
+              language="text"
+              showLineNumbers
+              style={theme === 'dark' ? atomOneDark : atomOneLight}
+              lineNumberContainerStyle={highlighterLineNumberStyle}
+            >
+              {data.compileInfo}
+            </SyntaxHighlighter>
+          </div>
+        </Card>
+      );
+    } else if (compilationInfoLoading) {
+      return (
+        <Card bordered={false}>
+          <div>
+            <div style={{ height: '32px' }}>
+              <div className="float-left">
+                <span>Compile Info</span>
+              </div>
+            </div>
+            <Skeleton active loading={true} title={false} paragraph={{ rows: 3, width: '100%' }} />
+          </div>
+        </Card>
+      );
+    }
+    return null;
+  }
+
   render() {
     const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList, theme } = this.props;
     if (!loading && !data.solutionId) {
@@ -88,25 +131,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
               />
             </Card>
 
-            {!loading && data.compileInfo &&
-              <Card bordered={false}>
-                <div>
-                  <div style={{ height: '32px' }}>
-                    <div className="float-left">
-                      <span>Compile Info</span>
-                    </div>
-                    <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
-                  </div>
-                  <SyntaxHighlighter
-                    language="text"
-                    showLineNumbers
-                    style={theme === 'dark' ? atomOneDark : atomOneLight}
-                    lineNumberContainerStyle={highlighterLineNumberStyle}
-                  >
-                    {data.compileInfo}
-                  </SyntaxHighlighter>
-                </div>
-              </Card>}
+            {this.renderCompilicationInfo()}
 
             <Card bordered={false}>
               {!loading ?
@@ -163,6 +188,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
 function mapStateToProps(state) {
   return {
     theme: state.settings.theme,
+    compilationInfoLoading: !!state.loading.effects['solutions/getDetailForCompilationInfo'],
   };
 }
 

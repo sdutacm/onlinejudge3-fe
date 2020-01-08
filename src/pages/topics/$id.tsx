@@ -116,7 +116,7 @@ class TopicDetail extends React.Component<Props, State> {
           <div className="content-view">
             <Card bordered={false} className="content-view">
               <Skeleton active loading={loading} paragraph={{ rows: 6, width: '100%' }}>
-                <div>
+                <div className="topic-content content-loaded">
                   <h2>{data.title}</h2>
                   {data.problem && <h4 style={{ marginBottom: '12px'}}>
                     <ProblemBar problem={data.problem} display="id-title" />

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import constants from '@/configs/constants';
 import api from '@/configs/apis';
+import { isBot } from '@/utils/userAgent';
 
 function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   const axiosInstance: AxiosInstance = axios.create({
@@ -48,7 +49,7 @@ async function request(url: string, options: AxiosRequestConfig = {}, initOption
 export async function get(url: string, minDuration?: number): Promise<IApiResponse<any> > {
   const startTime = Date.now();
   const res = await request(url);
-  if (minDuration > 0) {
+  if (!isBot() && minDuration > 0) {
     const duration = Date.now() - startTime;
     if (duration < minDuration) {
       return new Promise<IApiResponse<any>>((resolve, reject) => {

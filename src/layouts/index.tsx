@@ -121,6 +121,9 @@ class Index extends React.Component<Props, State> {
     // viewport
     this.saveViewportDimensions();
     window.addEventListener('resize', this.saveViewportDimensions);
+    // set some methods to window
+    // @ts-ignore
+    window._router = router;
   }
 
   componentWillUnmount() {

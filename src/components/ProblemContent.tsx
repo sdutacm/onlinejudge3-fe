@@ -29,7 +29,7 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
     );
   }
   return (
-    <div className={classNames(styles.problemContent, 'problem-content', 'content-area')}>
+    <div className={classNames(styles.problemContent, 'content-area', 'problem-content', 'content-loaded')}>
       <h2 className="text-center">{Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
 
       {data.description && <h3>Description</h3>}

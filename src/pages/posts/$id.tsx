@@ -35,7 +35,7 @@ class PostDetail extends React.Component<Props, State> {
           <div className="content-view">
             <Card bordered={false} className="content-view">
               <Skeleton active loading={loading} paragraph={{ rows: 6, width: '100%' }}>
-                <div>
+                <div className="post-content content-loaded">
                   <h2>{data.title}</h2>
                   <p>
                     <UserBar user={data.user} className="ant-comment-content-author-name" />

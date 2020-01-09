@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-   <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <sitemap>
-      <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemaps/problems.txt</loc>
-   </sitemap>
-   <sitemap>
-      <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemaps/topics.txt</loc>
-   </sitemap>
-   <sitemap>
-      <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemaps/posts.txt</loc>
-   </sitemap>
-   </sitemapindex>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<sitemap>
+  <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemap_base.xml</loc>
+</sitemap>
+<sitemap>
+  <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemaps/problems.txt</loc>
+</sitemap>
+<sitemap>
+  <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemaps/topics.txt</loc>
+</sitemap>
+<sitemap>
+  <loc>https://acm.sdut.edu.cn/onlinejudge3/sitemaps/posts.txt</loc>
+</sitemap>
+</sitemapindex>

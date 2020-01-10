@@ -24,6 +24,7 @@ import tracker from '@/utils/tracker';
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IContest>;
   session: ISessionStatus;
+  proMode: boolean;
 }
 
 interface State {
@@ -340,7 +341,7 @@ class ContestList extends React.Component<Props, State> {
         })),
       }
     ]
-    const { loading, data: { page, count, rows }, location: { query }, session } = this.props;
+    const { loading, data: { page, count, rows }, location: { query }, session, proMode } = this.props;
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       <PageAnimation>
@@ -372,6 +373,13 @@ class ContestList extends React.Component<Props, State> {
                       </span>
                     )}
                   />
+                  {proMode && <Table.Column
+                    title="ID"
+                    key="ID"
+                    render={(text, record: IContest) => (
+                      <span>{record.contestId}</span>
+                    )}
+                  />}
                   <Table.Column
                     title="Title"
                     key="Title"
@@ -536,6 +544,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['contests/getList'],
     data: state.contests.list,
     session: state.session,
+    proMode: !!state.settings.proMode,
   };
 }
 

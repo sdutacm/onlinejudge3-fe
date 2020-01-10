@@ -4,11 +4,18 @@ import { merge } from 'lodash';
 const initialState = {
   theme: 'light',
   color: 'default',
-  improveAnimation: false,
+  improveAnimation: true,
+  proMode: false,
 } as ISettings;
 
+function genState() {
+  const merged = merge(initialState, localStorage.get('settings'));
+  localStorage.set('settings', merged);
+  return merged;
+}
+
 export default {
-  state: merge(initialState, localStorage.get('settings')),
+  state: genState(),
   reducers: {
     setTheme(state, { payload: { theme } }) {
       if (theme === 'dark') {
@@ -33,6 +40,10 @@ export default {
     setImproveAnimation(state, { payload: { improveAnimation } }) {
       localStorage.set('settings', { ...state, improveAnimation });
       state.improveAnimation = improveAnimation;
+    },
+    setProMode(state, { payload: { proMode } }) {
+      localStorage.set('settings', { ...state, proMode });
+      state.proMode = proMode;
     },
   },
   effects: {

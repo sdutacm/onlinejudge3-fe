@@ -74,6 +74,18 @@ class SettingsModal extends React.Component<Props, State> {
     });
   };
 
+  handleProMode = (checked) => {
+    this.props.dispatch({
+      type: 'settings/setProMode',
+      payload: { proMode: checked },
+    });
+    tracker.event({
+      category: 'settings',
+      action: 'changeProMode',
+      label: checked ? 'true' : 'false',
+    });
+  };
+
   render() {
     const { children, settings } = this.props;
 
@@ -85,6 +97,7 @@ class SettingsModal extends React.Component<Props, State> {
           visible={this.state.visible}
           onOk={this.handleHideModel}
           onCancel={this.handleHideModel}
+          footer={null}
         >
           <div className="settings-item">
             <span>Theme</span>
@@ -125,6 +138,16 @@ class SettingsModal extends React.Component<Props, State> {
               </Explanation>
             </span>
             <Switch className="float-right" defaultChecked={settings.improveAnimation} onChange={this.handleImproveAnimationChange} />
+          </div>
+          <div className="settings-item">
+            <span>
+              Pro Mode
+              <Explanation className="ml-sm-md">
+                The setting effects some pro features.<br />
+                If "Pro Mode" is enabled, more features like "ID View" and "Force Refresh" will be available.
+              </Explanation>
+            </span>
+            <Switch className="float-right" defaultChecked={settings.proMode} onChange={this.handleProMode} />
           </div>
         </Modal>
       </>

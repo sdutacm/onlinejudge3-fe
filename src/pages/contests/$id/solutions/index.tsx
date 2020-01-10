@@ -18,6 +18,7 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
+import RefreshCard from '@/components/RefreshCard';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -26,6 +27,7 @@ export interface Props extends ReduxProps, RouteProps {
   detail: IContest;
   problems: IFullList<IProblem>;
   data: IList<ISolution>;
+  proMode: boolean;
 }
 
 interface State {
@@ -90,6 +92,7 @@ class ContestSolutions extends React.Component<Props, State> {
       data,
       dispatch,
       location: { query },
+      proMode,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
@@ -150,6 +153,9 @@ class ContestSolutions extends React.Component<Props, State> {
                   },
                 ]} />
               </Card>
+              {proMode && <Card bordered={false}>
+                <RefreshCard />
+              </Card>}
               {session.loggedIn &&
               <Card bordered={false}>
                 <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
@@ -182,6 +188,7 @@ function mapStateToProps(state) {
     problems: state.contests.problems[id] || {},
     loading: !!state.loading.effects['solutions/getList'],
     data: state.solutions.list,
+    proMode: !!state.settings.proMode,
   };
 }
 

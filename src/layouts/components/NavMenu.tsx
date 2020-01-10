@@ -26,6 +26,7 @@ export interface Props extends ReduxProps, RouteProps {
   session: ISessionStatus;
   unreadMessagesLoading: boolean;
   unreadMessages: IList<IMessage>;
+  proMode: boolean;
 }
 
 interface State {
@@ -89,7 +90,7 @@ class NavMenu extends React.Component<Props, State> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session, location, unreadMessages } = this.props;
+    const { mobileVersion, onLinkClick, className, loading, session, location, unreadMessages, proMode } = this.props;
     let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
@@ -118,6 +119,10 @@ class NavMenu extends React.Component<Props, State> {
         <Menu.Item key={pages.problems.index}>
           <Link to={pages.problems.index} onClick={onLinkClick}>Problems</Link>
         </Menu.Item>
+
+        {proMode && <Menu.Item key={pages.solutions.index}>
+          <Link to={pages.solutions.index} onClick={onLinkClick}>Solutions</Link>
+        </Menu.Item>}
 
         <Menu.Item key={pages.contests.index}>
           <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>Contests</Link>
@@ -287,6 +292,7 @@ function mapStateToProps(state) {
     session,
     unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,
+    proMode: !!state.settings.proMode,
   };
 }
 

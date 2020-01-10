@@ -18,6 +18,7 @@ import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IUser>;
+  proMode: boolean;
 }
 
 interface State {
@@ -60,7 +61,7 @@ class Standings extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data: { page, count, limit, rows }, location: { query } } = this.props;
+    const { loading, data: { page, count, limit, rows }, location: { query }, proMode } = this.props;
     const orderBy = query.orderBy || 'accepted';
     const orderDirection = query.orderDirection || 'DESC';
     const defaultSortOrder = orderDirection === 'DESC' ? 'descend' : 'ascend';
@@ -84,6 +85,13 @@ class Standings extends React.Component<Props, State> {
                     <span>{(page - 1) * limit + index + 1}</span>
                   )}
                 />
+                {proMode && <Table.Column
+                  title="ID"
+                  key="ID"
+                  render={(text, record: IUser) => (
+                    <span>{record.userId}</span>
+                  )}
+                />}
                 <Table.Column
                   title="User"
                   key="User"
@@ -147,6 +155,7 @@ function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['users/getList'],
     data: state.users.list,
+    proMode: !!state.settings.proMode,
   };
 }
 

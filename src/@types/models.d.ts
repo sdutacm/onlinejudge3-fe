@@ -422,4 +422,5 @@ interface ISettings {
   theme: ISettingsTheme;
   color: ISettingsColor;
   improveAnimation: boolean;
+  proMode: boolean;
 }

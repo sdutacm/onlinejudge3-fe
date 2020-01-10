@@ -19,10 +19,12 @@ import router from 'umi/router';
 import constants from '@/configs/constants';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
+import RefreshCard from '@/components/RefreshCard';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<ISolution>;
   session: ISessionStatus;
+  proMode: boolean;
 }
 
 interface State {
@@ -66,7 +68,7 @@ class SolutionList extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, dispatch, session } = this.props;
+    const { loading, data, dispatch, session, proMode } = this.props;
     return (
       <PageAnimation>
         <Row gutter={16} className="list-view">
@@ -107,6 +109,9 @@ class SolutionList extends React.Component<Props, State> {
                 },
               ]} />
             </Card>
+            {proMode && <Card bordered={false}>
+              <RefreshCard />
+            </Card>}
             {session.loggedIn &&
             <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
@@ -132,6 +137,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['solutions/getList'],
     data: state.solutions.list,
     session: state.session,
+    proMode: !!state.settings.proMode,
   };
 }
 

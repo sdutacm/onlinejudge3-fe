@@ -45,6 +45,7 @@ export default {
     'success-color': '#4fb24f',
     'error-color': '#e23a36',
     'icon-url': '"/assets/fonts/iconfont"',
+    'text-color': 'rgba(0, 0, 0, 0.75)',
   },
   proxy: {
     '/onlinejudge2/index.php/API_ng/': {

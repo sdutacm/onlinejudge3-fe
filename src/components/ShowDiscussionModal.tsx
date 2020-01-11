@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Modal } from 'antd';
 import QRCodeImage from '@/assets/misc/onlinejudge3-qq-group-qrcode.jpg';
+import tracker from '@/utils/tracker';
 
 export interface Props {
   className?: string;
@@ -24,6 +25,10 @@ class ShowDiscussionModal extends React.Component<Props, State> {
       e.stopPropagation();
     }
     this.setState({ visible: true });
+    tracker.event({
+      category: 'component.ShowDiscussionModal',
+      action: 'show',
+    });
   };
 
   handleHideModel = () => {

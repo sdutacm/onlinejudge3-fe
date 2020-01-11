@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Row, Col, Button, notification } from 'antd';
+import { Layout, Row, Col, Button, notification, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import NavContainer from './components/NavContainer';
 import pages from '../configs/pages';
@@ -25,6 +25,7 @@ import pkg from '../../package.json';
 import tracker from '@/utils/tracker';
 import ExtLink from '@/components/ExtLink';
 import throttle from 'lodash.throttle';
+import ShowDiscussionModal from '@/components/ShowDiscussionModal';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -214,6 +215,7 @@ class Index extends React.Component<Props, State> {
               <h3>Recommends</h3>
               <p><ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">Algo Bootstrap - The New Coding Experience</ExtLink></p>
               <p><ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">Contests API</ExtLink></p>
+              <p><ShowDiscussionModal className="normal-text-link">Join Discussion <Icon type="smile" /></ShowDiscussionModal></p>
             </Col>
           </Row>
           <p className="mt-lg" style={{ fontWeight: 600 }}>© 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.</p>

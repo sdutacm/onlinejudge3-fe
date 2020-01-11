@@ -46,6 +46,7 @@ export default {
     'error-color': '#e23a36',
     'icon-url': '"/assets/fonts/iconfont"',
     'text-color': 'rgba(0, 0, 0, 0.75)',
+    'code-family': 'Monaco, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
   },
   proxy: {
     '/onlinejudge2/index.php/API_ng/': {

@@ -156,7 +156,7 @@ class Index extends React.Component<Props, State> {
                 <Card bordered={false} className="list-card">
                   <Table
                     dataSource={data.rows.slice(0, TOP_NUM)}
-                    rowKey={(record: IStatsUserACRankUserStatus) => `${record.user.userId}`}
+                    rowKey={(record: IStatsUserACRankUserStatus) => `${record.user && record.user.userId}`}
                     loading={userACRankloading}
                     pagination={false}
                     className="responsive-table"

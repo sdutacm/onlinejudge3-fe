@@ -1,6 +1,6 @@
 {
   "name": "onlinejudge3-fe",
-  "version": "3.0.7",
+  "version": "3.1.0",
   "description": "",
   "scripts": {
     "start": "umi dev",

@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Spin, Table, Popover, Progress } from 'antd';
+import { Row, Col, Card, Table, Button } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import { filterXSS as xss } from 'xss';
-import { formatPercentage, numberToAlphabet, secToTimeStr, toLongTs, urlf } from '@/utils/format';
+import { numberToAlphabet, secToTimeStr, toLongTs, urlf } from '@/utils/format';
 import moment from 'moment';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import TimeStatusBadge from '@/components/TimeStatusBadge';
@@ -16,6 +16,8 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
+import contestRP from '@/configs/contestRP';
+import RedPacketModal from '@/components/RedPacketModal';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -48,9 +50,14 @@ class ContestOverview extends React.Component<Props, State> {
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
     if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
+      // TODO 考虑去掉 force，当用户 AC 后主动用 force=true 请求一次
       dispatch({
         type: 'users/getProblemResultStats',
-        payload: { userId: session.user.userId, contestId: id },
+        payload: {
+          userId: session.user.userId,
+          contestId: id,
+          force: true,
+        },
       });
       dispatch({
         type: 'contests/getProblemResultStats',
@@ -91,6 +98,7 @@ class ContestOverview extends React.Component<Props, State> {
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
+    const isContestRP = !!contestRP[id];
 
     return (
       <PageAnimation>
@@ -138,6 +146,20 @@ class ContestOverview extends React.Component<Props, State> {
                     { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
                   )}
                 >
+                  {isContestRP && <Table.Column
+                    title=""
+                    key="RedPacket"
+                    render={(text, record: IProblem, index) => {
+                      const rpList = contestRP[id];
+                      const rp = rpList.find(rp => rp.problemId === record.problemId);
+                      if (rp && ~acceptedProblemIds.indexOf(record.problemId)) {
+                        return <RedPacketModal rpKey={rp.key} rpNote={rp.note}>
+                          <Button type="danger" size="small">AC 红包</Button>
+                        </RedPacketModal>
+                      }
+                      return null;
+                    }}
+                  />}
                   <Table.Column
                     title=""
                     key="Index"

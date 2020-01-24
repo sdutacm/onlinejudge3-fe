@@ -25,6 +25,7 @@ export interface Props extends ReduxProps, RouteProps {
   contestId?: number;
   problemList?: any[];
   session?: ISessionStatus;
+  rating?: boolean;
 }
 
 interface State {
@@ -111,6 +112,7 @@ class SolutionTable extends React.Component<Props, State> {
       contestId,
       problemList,
       location,
+      rating,
     } = this.props;
     return (
       <>
@@ -154,7 +156,7 @@ class SolutionTable extends React.Component<Props, State> {
             title="User"
             key="User"
             render={(text, record: ISolution) => (
-              <UserBar user={record.user} isContestUser={record.contest && record.contest.type === ContestTypes.Register} />
+              <UserBar user={record.user} isContestUser={record.contest && record.contest.type === ContestTypes.Register} showRating={rating} />
             )}
           />
           <Table.Column

@@ -21,6 +21,7 @@ export interface Props extends RouteProps {
   handleUpdate?: () => any;
   updateInterval?: number;
   existedHeaderClassName?: string;
+  rating?: boolean;
 }
 
 interface State {
@@ -93,7 +94,7 @@ class Ranklist extends React.Component<Props, State> {
   };
 
   render() {
-    const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session, location: { query } } = this.props;
+    const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session, location: { query }, rating } = this.props;
     const { contentWidth } = this.state;
     // const contentWidth = 0;
     if (!data || !problemNum) {

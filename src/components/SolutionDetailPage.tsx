@@ -23,6 +23,7 @@ export interface Props extends ReduxProps {
   problemList?: any[];
   theme: ISettingsTheme;
   compilationInfoLoading: boolean;
+  rating?: boolean;
 }
 
 interface State {
@@ -111,7 +112,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
   }
 
   render() {
-    const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList, theme } = this.props;
+    const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList, theme, rating } = this.props;
     if (!loading && !data.solutionId) {
       return <NotFound />;
     }
@@ -128,6 +129,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
                 isDetail
                 contestId={contestId}
                 problemList={problemList}
+                rating={rating}
               />
             </Card>
 

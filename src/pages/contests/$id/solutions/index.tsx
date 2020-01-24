@@ -19,6 +19,7 @@ import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import RefreshCard from '@/components/RefreshCard';
+import { ContestModes } from '@/configs/contestModes';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -117,6 +118,7 @@ class ContestSolutions extends React.Component<Props, State> {
                   contestId={id}
                   problemList={problemList}
                   session={session}
+                  rating={detail.mode === ContestModes.Rating}
                 />
               </Card>
             </Col>

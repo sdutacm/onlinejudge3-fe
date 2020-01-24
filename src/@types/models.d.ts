@@ -40,6 +40,7 @@ interface IUserLite {
   nickname: string;
   avatar: string;
   bannerImage: string;
+  rating?: number;
 }
 
 interface IUserProblemResultStats {
@@ -138,6 +139,7 @@ interface IContest {
   team?: boolean;
   hidden?: boolean;
   ended: boolean;
+  mode: number;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }

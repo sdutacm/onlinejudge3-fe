@@ -6,6 +6,7 @@ import pages from '@/configs/pages';
 import { isEqual } from 'lodash';
 import SolutionDetailPage from '@/components/SolutionDetailPage';
 import PageLoading from '@/components/PageLoading';
+import { ContestModes } from '@/configs/contestModes';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -87,6 +88,7 @@ class ContestSolutionDetail extends React.Component<Props, State> {
       dispatch={dispatch}
       contestId={id}
       problemList={problemList}
+      rating={detail.mode === ContestModes.Rating}
     />;
   }
 }

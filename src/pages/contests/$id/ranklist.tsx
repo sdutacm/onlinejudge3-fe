@@ -14,6 +14,7 @@ import { ContestTypes } from '@/configs/contestTypes';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
+import { ContestModes } from '@/configs/contestModes';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -106,11 +107,12 @@ class ContestRanklist extends React.Component<Props, State> {
                   loading={ranklistLoading}
                   problemNum={problems.count || 0}
                   session={session}
-                  userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register} />}
+                  userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register} showRating={detail.mode === ContestModes.Rating} />}
                   needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
                   handleUpdate={this.refreshRanklist}
                   updateInterval={constants.ranklistUpdateInterval}
                   existedHeaderClassName="ranklist-header"
+                  rating={detail.mode === ContestModes.Rating}
                 />
               </Card>
             </Col>

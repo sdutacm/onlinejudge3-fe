@@ -147,7 +147,7 @@ class ContestRanklist extends React.Component<Props, State> {
           className={status === ContestRatingStatus.DONE ? 'display-none' : ''}
         />
         <p className="contest-rating-status text-center">{text}</p>
-        {status === ContestRatingStatus.DONE && used ? <p className="text-center text-secondary">cost {used}ms by Node.js</p> : null}
+        {status === ContestRatingStatus.DONE && used ? <p className="text-center text-secondary">cost {used} ms by Node.js</p> : null}
       </div>
     );
     // switch (status) {

@@ -184,7 +184,11 @@ interface IRanklistProblemResultStat {
 
 interface IRanklistRow {
   rank: number;
-  user: IUserLite;
+  user: IUserLite & {
+    globalUserId?: number;
+    oldRating?: number;
+    newRating?: number;
+  };
   solved: number;
   time: number;
   stats: IRanklistProblemResultStat[];

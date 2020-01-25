@@ -1,6 +1,6 @@
 import React from 'react';
-import { Table } from 'antd';
-import { numberToAlphabet, secToTimeStr, urlf } from '@/utils/format';
+import { Table, Popover } from 'antd';
+import { numberToAlphabet, urlf } from '@/utils/format';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,8 @@ import limits from '@/configs/limits';
 import router from 'umi/router';
 import { withRouter } from 'react-router';
 import { RouteProps } from '@/@types/props';
+import { get as safeGet } from 'lodash';
+import { getRatingLevel } from '@/utils/rating';
 
 export interface Props extends RouteProps {
   id: number;
@@ -104,6 +106,7 @@ class Ranklist extends React.Component<Props, State> {
     const width = {
       rank: 64,
       user: 250,
+      delta: 108,
       solved: 64,
       time: 80,
       stat: 80,
@@ -116,10 +119,11 @@ class Ranklist extends React.Component<Props, State> {
     let availableHeight = docHeight;
     try {
       const headerHeight = document.querySelector('.ant-layout-header').clientHeight;
-      const footerHeight = document.querySelector('.ant-layout-footer').clientHeight;
+      // const footerHeight = document.querySelector('.ant-layout-footer').clientHeight;
+      const footerHeight = 0;
       const existedHeaderHeight = document.querySelector(`.${existedHeaderClassName}`).clientHeight;
       const contentMargin = 20 + 20;
-      const ranklistMargin = 16;
+      const ranklistMargin = 64;
       const ranklistTheadHeight = 45;
       availableHeight = docHeight - headerHeight - footerHeight - contentMargin - existedHeaderHeight - ranklistMargin - ranklistTheadHeight - 1;
     }
@@ -138,6 +142,7 @@ class Ranklist extends React.Component<Props, State> {
         }
       }
     }
+    const hasRatingDelta = !!safeGet(ranklist, [0, 'user', 'newRating'], 0);
 
     return (
       <Table
@@ -175,6 +180,26 @@ class Ranklist extends React.Component<Props, State> {
             userCellRender(record.user)
           )}
         />
+        {rating && hasRatingDelta && <Table.Column
+          title="Δ"
+          key="Delta"
+          width={width.delta}
+          fixed={canFixLeft}
+          render={(text, record: IRanklistRow) => {
+            if (record.user && record.user.oldRating && record.user.newRating) {
+              const { oldRating, newRating } = record.user;
+              const oldRatingLevel = getRatingLevel(oldRating);
+              const newRatingLevel = getRatingLevel(newRating);
+              return <Popover content={`Δ: ${newRating >= oldRating ? '+' : ''}${newRating - oldRating}`}>
+                <span style={{ color: oldRatingLevel.color }}>{oldRating}</span>
+                <span className="ml-sm">→</span>
+                <span style={{ color: newRatingLevel.color }} className="ml-sm">{newRating}</span>
+              </Popover>;
+            }
+            return null;
+          }}
+        />}
+
         <Table.Column
           title="Slv."
           key="Solved"

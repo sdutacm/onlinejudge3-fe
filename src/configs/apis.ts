@@ -44,6 +44,8 @@ const api = {
     users: '/contests/:id/users',
     userDetail: '/contests/:id/users/:uid',
     ranklist: '/contests/:id/ranklist',
+    end: '/contests/:id/end',
+    ratingStatus: '/contests/:id/ratingStatus',
   },
   topics: {
     base: '/topics',

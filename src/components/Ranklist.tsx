@@ -43,7 +43,7 @@ class Ranklist extends React.Component<Props, State> {
     this.setState({
       contentWidth,
     });
-  }, 3000);
+  }, 2000);
 
   constructor(props) {
     super(props);
@@ -156,7 +156,7 @@ class Ranklist extends React.Component<Props, State> {
         pagination={{
           // className: 'ant-table-pagination',
           total: ranklist.length,
-          current: query.page || 1,
+          current: +query.page || 1,
           pageSize: limits.contests.ranklist,
           onChange: this.handlePageChange,
         }}

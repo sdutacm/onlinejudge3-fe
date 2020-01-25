@@ -20,7 +20,8 @@ const initialState = {
   problemResultStats: {},
   ranklist: {},
   userlist: {},
-  contestUserDetail: {} // only one user，之后再改
+  contestUserDetail: {}, // only one user，之后再改
+  ratingStatus: {},
 };
 
 export default {
@@ -96,6 +97,11 @@ export default {
     },
     setContestUser(state, { payload: { data } }) {
       state.contestUserDetail = {
+        ...data,
+      };
+    },
+    setRatingStatus(state, { payload: { id, data } }) {
+      state.ratingStatus[id] = {
         ...data,
       };
     },
@@ -325,6 +331,25 @@ export default {
 
     * updateContestUser({ payload: { id, uid, data } }, { call, put }) {
       const ret = yield call(service.updateContestUser, id, uid, data);
+      return ret;
+    },
+
+    * endContest({ payload: { id  } }, { call, put }) {
+      const ret = yield call(service.endContest, id);
+      return ret;
+    },
+
+    * getRatingStatus({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<IContestRatingStatus> = yield call(service.getRatingStatus, id);
+      if (ret.success) {
+        yield put({
+          type: 'setRatingStatus',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+      }
       return ret;
     },
   },

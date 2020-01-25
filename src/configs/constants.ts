@@ -19,6 +19,7 @@ const constants = {
   menuAnimationDurationFade: 300,
   switchAnimationDuration: 400,
   ranklistUpdateInterval: 30 * 1000,
+  ratingStatusUpdateInterval: 2 * 1000,
   bgCheckSessionInterval: 60 * 1000,
   bgGetUnreadMessagesInterval: 10 * 60 * 1000,
   mobileBreakPoint: 768,

@@ -95,3 +95,13 @@ export function updateContestUser(id, uid, data) {
   const url = urlf(api.contests.userDetail, { param: { id, uid } });
   return patch(url, data);
 }
+
+export function endContest(id) {
+  const url = urlf(api.contests.end, { param: { id } });
+  return post(url);
+}
+
+export function getRatingStatus(id) {
+  const url = urlf(api.contests.ratingStatus, { param: { id } });
+  return get(url);
+}

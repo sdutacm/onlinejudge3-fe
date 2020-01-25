@@ -197,6 +197,12 @@ interface IRanklistRow {
 
 type IRanklist = IRanklistRow[];
 
+interface IContestRatingStatus {
+  status: 0 | 1 | 2 | 3;
+  progress: number;
+  used: number;
+}
+
 interface ITopic {
   topicId: number;
   user: IUserLite;

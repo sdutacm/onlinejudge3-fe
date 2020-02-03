@@ -2,7 +2,7 @@ import localStorage from '@/utils/localStorage';
 import { merge } from 'lodash';
 
 const initialState = {
-  theme: 'light',
+  theme: 'auto',
   color: 'default',
   improveAnimation: true,
   proMode: false,
@@ -18,11 +18,12 @@ export default {
   state: genState(),
   reducers: {
     setTheme(state, { payload: { theme } }) {
-      if (theme === 'dark') {
+      document.body.classList.remove('auto');
+      document.body.classList.remove('dark');
+      if (theme === 'auto') {
+        document.body.classList.add('auto');
+      } else if (theme === 'dark') {
         document.body.classList.add('dark');
-      }
-      else {
-        document.body.classList.remove('dark');
       }
       localStorage.set('settings', { ...state, theme });
       state.theme = theme;
@@ -30,8 +31,7 @@ export default {
     setColor(state, { payload: { color } }) {
       if (color === 'colorblind-dp') {
         document.body.classList.add('colorblind-dp');
-      }
-      else {
+      } else {
         document.body.classList.remove('colorblind-dp');
       }
       localStorage.set('settings', { ...state, color });

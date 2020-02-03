@@ -86,7 +86,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
             <SyntaxHighlighter
               language="text"
               showLineNumbers
-              style={theme === 'dark' ? atomOneDark : atomOneLight}
+              style={theme === 'light' ? atomOneLight : atomOneDark}
               lineNumberContainerStyle={highlighterLineNumberStyle}
             >
               {data.compileInfo}
@@ -166,7 +166,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
                       <SyntaxHighlighter
                         language={langsMap4Hljs[data.language]}
                         showLineNumbers
-                        style={theme === 'dark' ? atomOneDark : atomOneLight}
+                        style={theme === 'light' ? atomOneLight : atomOneDark}
                         lineNumberContainerStyle={highlighterLineNumberStyle}
                       >
                         {data.code}

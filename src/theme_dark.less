@@ -1,0 +1,88 @@
+@dark-body-bg-color: rgb(25, 25, 25); // dark
+@dark-body-color: rgb(223, 223, 223); // dark
+
+// dark
+
+body.dark {
+  background-color: @dark-body-bg-color !important;
+  color: @dark-body-color;
+}
+
+.dark {
+  @import 'styles/dark_antd/style/mixins/index';
+  @import 'styles/dark_antd/button/style/index';
+  @import 'styles/dark_antd/input/style/index';
+  @import 'styles/dark_antd/select/style/index';
+  @import 'styles/dark_antd/checkbox/style/index';
+  @import 'styles/dark_antd/radio/style/index';
+  @import 'styles/dark_antd/grid/style/index';
+  @import 'styles/dark_antd/form/style/index';
+  @import 'styles/dark_antd/card/style/index';
+  @import 'styles/dark_antd/table/style/index';
+  @import 'styles/dark_antd/list/style/index';
+  @import 'styles/dark_antd/comment/style/index';
+  @import 'styles/dark_antd/pagination/style/index';
+  @import 'styles/dark_antd/menu/style/index';
+  @import 'styles/dark_antd/progress/style/index';
+  @import 'styles/dark_antd/tag/style/index';
+  @import 'styles/dark_antd/badge/style/index';
+  @import 'styles/dark_antd/tabs/style/index';
+  @import 'styles/dark_antd/collapse/style/index';
+  @import 'styles/dark_antd/popover/style/index';
+  @import 'styles/dark_antd/switch/style/index';
+  @import 'styles/dark_antd/spin/style/index';
+  @import 'styles/dark_antd/skeleton/style/index';
+  @import 'styles/dark_antd/divider/style/index';
+  @import 'styles/dark_antd/modal/style/index';
+  @import 'styles/dark_antd/message/style/index';
+  @import 'styles/dark_antd/notification/style/index';
+  @import 'styles/dark_antd/upload/style/index';
+  @import "dark.less";
+}
+
+// auto dark
+
+// body.auto {
+//   @media (prefers-color-scheme: dark) {
+//     background-color: @dark-body-bg-color;
+//     color: @dark-body-color;
+//   }
+// }
+
+@media (prefers-color-scheme: dark) {
+  body.auto {
+    background-color: @dark-body-bg-color !important;
+    color: @dark-body-color;
+  }
+  .auto {
+    @import 'styles/dark_antd_duplicated4auto/style/mixins/index';
+    @import 'styles/dark_antd_duplicated4auto/button/style/index';
+    @import 'styles/dark_antd_duplicated4auto/input/style/index';
+    @import 'styles/dark_antd_duplicated4auto/select/style/index';
+    @import 'styles/dark_antd_duplicated4auto/checkbox/style/index';
+    @import 'styles/dark_antd_duplicated4auto/radio/style/index';
+    @import 'styles/dark_antd_duplicated4auto/grid/style/index';
+    @import 'styles/dark_antd_duplicated4auto/form/style/index';
+    @import 'styles/dark_antd_duplicated4auto/card/style/index';
+    @import 'styles/dark_antd_duplicated4auto/table/style/index';
+    @import 'styles/dark_antd_duplicated4auto/list/style/index';
+    @import 'styles/dark_antd_duplicated4auto/comment/style/index';
+    @import 'styles/dark_antd_duplicated4auto/pagination/style/index';
+    @import 'styles/dark_antd_duplicated4auto/menu/style/index';
+    @import 'styles/dark_antd_duplicated4auto/progress/style/index';
+    @import 'styles/dark_antd_duplicated4auto/tag/style/index';
+    @import 'styles/dark_antd_duplicated4auto/badge/style/index';
+    @import 'styles/dark_antd_duplicated4auto/tabs/style/index';
+    @import 'styles/dark_antd_duplicated4auto/collapse/style/index';
+    @import 'styles/dark_antd_duplicated4auto/popover/style/index';
+    @import 'styles/dark_antd_duplicated4auto/switch/style/index';
+    @import 'styles/dark_antd_duplicated4auto/spin/style/index';
+    @import 'styles/dark_antd_duplicated4auto/skeleton/style/index';
+    @import 'styles/dark_antd_duplicated4auto/divider/style/index';
+    @import 'styles/dark_antd_duplicated4auto/modal/style/index';
+    @import 'styles/dark_antd_duplicated4auto/message/style/index';
+    @import 'styles/dark_antd_duplicated4auto/notification/style/index';
+    @import 'styles/dark_antd_duplicated4auto/upload/style/index';
+    @import "dark_duplicated4auto.less";
+  }
+}

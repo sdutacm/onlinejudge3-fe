@@ -3,7 +3,7 @@
 @import "../node_modules/antd/lib/style/themes/default";
 @import "../node_modules/antd/lib/button/style/mixin";
 @import 'margin';
-@import "dark";
+@import "theme_dark";
 @import "animations";
 
 // Sticky footer powered by https://github.com/philipwalton/solved-by-flexbox
@@ -15,7 +15,7 @@
 //rgb(34, 34, 34)
 
 body {
-  background-color: @bg-color;
+  background-color: @bg-color !important;
   //color: @font-color; // dark
 }
 
@@ -658,6 +658,42 @@ ul {
 //.ant-menu, .ant-layout-header>.ant-row {
 //  visibility: hidden;
 //}
+
+// problem content
+
+.problem-content {
+  h3 {
+    margin-top: 16px;
+  }
+
+  pre {
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 8px;
+  }
+}
+
+.problem-content-skeleton-title {
+  .ant-skeleton-content {
+    .ant-skeleton-title {
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .ant-skeleton-paragraph {
+      margin: 0;
+    }
+  }
+}
+
+.problem-content-sub-section-header {
+  &:not(:first-of-type) {
+    margin-top: 8px;
+  }
+}
+
+
+// user page
 
 @import "./Josefin_Sans";
 .u-bbg {

@@ -95,12 +95,14 @@ class Index extends React.Component<Props, State> {
 
   async componentDidMount() {
     const settings = this.props.settings;
-    if (settings.theme === 'dark') {
+    document.body.classList.remove('auto');
+    document.body.classList.remove('dark');
+    if (settings.theme === 'auto') {
+      document.body.classList.add('auto');
+    } else if (settings.theme === 'dark') {
       document.body.classList.add('dark');
     }
-    else {
-      document.body.classList.remove('dark');
-    }
+
     if (settings.color === 'colorblind-dp') {
       document.body.classList.add('colorblind-dp');
     }

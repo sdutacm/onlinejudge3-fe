@@ -107,6 +107,7 @@ class SettingsModal extends React.Component<Props, State> {
               size="small"
               className="float-right"
             >
+              <Radio.Button value="auto">Auto</Radio.Button>
               <Radio.Button value="light">Light</Radio.Button>
               <Radio.Button value="dark">Dark</Radio.Button>
             </Radio.Group>

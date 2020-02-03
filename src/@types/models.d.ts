@@ -427,7 +427,7 @@ interface IStatsUserACRank {
   _updatedAt: number;
 }
 
-type ISettingsTheme = 'light' | 'dark';
+type ISettingsTheme = 'auto' | 'light' | 'dark';
 
 type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';
 

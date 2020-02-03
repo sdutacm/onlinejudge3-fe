@@ -1,8 +1,9 @@
 {
   "name": "onlinejudge3-fe",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "",
   "scripts": {
+    "dev": "gulp dev",
     "start": "umi dev",
     "build": "umi build",
     "build:exp": "cross-env OJ3_BUILD4=exp umi build",
@@ -65,6 +66,10 @@
     "eslint": "^5.15.3",
     "eslint-config-alloy": "^2.0.0-alpha.2",
     "eslint-plugin-react": "^7.12.4",
+    "gulp": "^4.0.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-run-command": "^0.0.10",
+    "gulp-watch": "^5.0.1",
     "roadhog-api-doc": "^1.1.2",
     "typescript": "3.5.3",
     "umi": "^2.7.0",

@@ -709,7 +709,7 @@ class Intro extends React.Component<IntroProps, IntroState> {
           <SyntaxHighlighter
             language={langsMap4Hljs[data.language]}
             showLineNumbers
-            style={theme === 'dark' ? atomOneDark : atomOneLight}
+            style={theme === 'light' ? atomOneLight : atomOneDark}
             lineNumberContainerStyle={highlighterLineNumberStyle}
           >
             {data.code}

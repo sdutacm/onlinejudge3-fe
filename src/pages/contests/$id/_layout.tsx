@@ -12,6 +12,7 @@ import setStatePromise from '@/utils/setStatePromise';
 import PageLoading from '@/components/PageLoading';
 import { matchPath } from 'react-router';
 import tracker from '@/utils/tracker';
+import ContestTimeStatusWatcher from '@/components/ContestTimeStatusWatcher';
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -143,27 +144,26 @@ class ContestBase extends React.Component<Props, State> {
   }
 
   render() {
-    const { loading, session, detail, children } = this.props;
+    const { id, loading, session, detail, children } = this.props;
     const { currentTime } = this.state;
     // console.log('base render', loading, session);
     if (loading) {
       return <PageLoading />;
-    }
-    else if (!detail) {
-      return <>{children}</>;
+    } else if (!detail) {
+      return children;
     }
     // TODO 仅 Running 设置计时器
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     if (!(timeStatus === 'Running' || (timeStatus === 'Ended' && currentTime - endTime < 1000))) {
-      return <div>{children}</div>;
+      return <ContestTimeStatusWatcher contestId={id} timeStatus={timeStatus}>{children}</ContestTimeStatusWatcher>;
     }
     const percent = floor((currentTime - startTime) / (endTime - startTime) * 100, 1);
     const timeElapsedSecs = Math.floor((currentTime - startTime) / 1000);
     const timeRemainingSecs = Math.floor((endTime - startTime) / 1000) - timeElapsedSecs;
     return (
-      <div>
+      <ContestTimeStatusWatcher contestId={id} timeStatus={timeStatus}>
         <Popover
           placement="bottom"
           content={
@@ -186,7 +186,7 @@ class ContestBase extends React.Component<Props, State> {
           </div>
         </Popover>
         {children}
-      </div>
+      </ContestTimeStatusWatcher>
     );
   }
 }

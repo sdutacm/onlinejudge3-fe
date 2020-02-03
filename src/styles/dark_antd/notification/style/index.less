@@ -37,7 +37,7 @@
     padding: @notification-padding;
     border-radius: @border-radius-base;
     box-shadow: @shadow-2;
-    background: rgba(0, 0, 0, 90%); // dark;
+    background: rgba(0, 0, 0, .8); // dark
     line-height: 1.5;
     position: relative;
     margin-bottom: @notification-margin-bottom;
@@ -125,35 +125,35 @@
     }
   }
 
-  .notification-fade-effect {
-    animation-duration: 0.24s;
-    animation-fill-mode: both;
-    animation-timing-function: @ease-in-out;
-  }
+  // .notification-fade-effect {
+  //   animation-duration: 0.24s;
+  //   animation-fill-mode: both;
+  //   animation-timing-function: @ease-in-out;
+  // }
 
-  &-fade-enter,
-  &-fade-appear {
-    opacity: 0;
-    .notification-fade-effect();
-    animation-play-state: paused;
-  }
+  // &-fade-enter,
+  // &-fade-appear {
+  //   opacity: 0;
+  //   .notification-fade-effect();
+  //   animation-play-state: paused;
+  // }
 
-  &-fade-leave {
-    .notification-fade-effect();
-    animation-duration: 0.2s;
-    animation-play-state: paused;
-  }
+  // &-fade-leave {
+  //   .notification-fade-effect();
+  //   animation-duration: 0.2s;
+  //   animation-play-state: paused;
+  // }
 
-  &-fade-enter&-fade-enter-active,
-  &-fade-appear&-fade-appear-active {
-    animation-name: NotificationFadeIn;
-    animation-play-state: running;
-  }
+  // &-fade-enter&-fade-enter-active,
+  // &-fade-appear&-fade-appear-active {
+  //   animation-name: NotificationFadeIn;
+  //   animation-play-state: running;
+  // }
 
-  &-fade-leave&-fade-leave-active {
-    animation-name: NotificationFadeOut;
-    animation-play-state: running;
-  }
+  // &-fade-leave&-fade-leave-active {
+  //   animation-name: NotificationFadeOut;
+  //   animation-play-state: running;
+  // }
 }
 
 @keyframes NotificationFadeIn {

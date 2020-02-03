@@ -18,18 +18,20 @@ import { RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import { connect } from 'dva';
+import { ContestTimeStatus } from '@/utils/getSetTimeStatus';
 
 export interface Props extends RouteProps {
   loading: boolean;
   data: IProblem;
   session: ISessionStatus;
   contestId?: number;
+  contestTimeStatus?: ContestTimeStatus;
   problemIndex?: number;
   favorites: IFavorite[];
   mobile: boolean;
 }
 
-const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location, mobile }) => {
+const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location, mobile, contestTimeStatus }) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
@@ -39,25 +41,43 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
   const topicsUrl = contestId
     ? ''
     : urlf(pages.topics.index, { query: { problemId: data.problemId, from: location.query.from } });
+  const problemUrl = urlf(pages.problems.detail, { param: { id: data.problemId } });
   const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
+  const renderSubmitButton = () => {
+    if (loading) {
+      return <Button type="primary" block disabled>Submit</Button>;
+    }
+    if (!session.loggedIn) {
+      return <Button type="primary" block disabled>Login to Submit</Button>;
+    }
+    if (contestTimeStatus === 'Ended') {
+      return <Link
+        to={problemUrl}
+        onClick={() => {
+          tracker.event({
+            category: 'contests',
+            action: 'toProblem',
+          });
+        }}
+      >
+        <Button block>Practice</Button>
+      </Link>;
+    }
+    return <SubmissionModal
+      problemId={data.problemId}
+      title={data.title}
+      contestId={contestId}
+      problemIndex={problemIndex}
+      location={location}
+    >
+      <Button type="primary" block>Submit</Button>
+    </SubmissionModal>;
+  }
   const renderSecondaryArea = () => {
     return (
       <PageAnimation>
         <Card bordered={false} className={styles.buttonSeries}>
-          {loading
-            ? <Button type="primary" block disabled>Submit</Button>
-            : (!session.loggedIn
-              ? <Button type="primary" block disabled>Login to Submit</Button>
-              : <SubmissionModal
-                problemId={data.problemId}
-                title={data.title}
-                contestId={contestId}
-                problemIndex={problemIndex}
-                location={location}
-              >
-                <Button type="primary" block>Submit</Button>
-              </SubmissionModal>)
-          }
+          {renderSubmitButton()}
           <Link
             to={solutionsUrl}
             onClick={() => {

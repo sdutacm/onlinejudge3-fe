@@ -5,7 +5,8 @@ import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import ProblemDetailPage from '@/components/ProblemDetailPage';
 import PageLoading from '@/components/PageLoading';
-import { alphabetToNumber } from '@/utils/format';
+import { alphabetToNumber, toLongTs } from '@/utils/format';
+import getSetTimeStatus from '@/utils/getSetTimeStatus';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -63,11 +64,14 @@ class ContestProblem extends React.Component<Props, State> {
     }
     const index = alphabetToNumber(match.params.index);
     const problem = (rows && rows[index]) || {} as IProblem;
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
     return <ProblemDetailPage
       loading={problemsLoading}
       data={problem}
       session={session}
       contestId={id}
+      contestTimeStatus={timeStatus}
       problemIndex={index}
       favorites={favorites.rows}
     />;

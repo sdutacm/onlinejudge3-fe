@@ -27,6 +27,7 @@ export interface Props extends ReduxProps {
 }
 
 interface State {
+  systemTheme: 'light' | 'dark';
 }
 
 const langsMap4Hljs = {
@@ -46,11 +47,33 @@ const highlighterLineNumberStyle = {
 };
 
 class SolutionDetailPage extends React.Component<Props, State> {
+  private systemThemeMediaQuery: MediaQueryList;
+
   static defaultProps: Partial<Props> = {};
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      systemTheme: 'light',
+    };
+  }
+
+  systemThemeListener = (e: MediaQueryListEvent) => {
+    this.setState({
+      systemTheme: e.matches ? 'dark' : 'light',
+    })
+  }
+
+  componentDidMount() {
+    this.systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    this.setState({
+      systemTheme: this.systemThemeMediaQuery.matches ? 'dark' : 'light',
+    });
+    this.systemThemeMediaQuery.addListener(this.systemThemeListener);
+  }
+
+  componentWillUnmount() {
+    this.systemThemeMediaQuery.removeListener(this.systemThemeListener);
   }
 
   onShareChange = (checked) => {
@@ -69,6 +92,14 @@ class SolutionDetailPage extends React.Component<Props, State> {
     });
   };
 
+  getUsedTheme = () => {
+    const { theme } = this.props;
+    if (theme === 'auto') {
+      return this.state.systemTheme;
+    }
+    return theme;
+  }
+
   renderCompilicationInfo = () => {
     const { loading, data, theme, compilationInfoLoading } = this.props;
     if (loading) {
@@ -86,7 +117,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
             <SyntaxHighlighter
               language="text"
               showLineNumbers
-              style={theme === 'light' ? atomOneLight : atomOneDark}
+              style={this.getUsedTheme() === 'light' ? atomOneLight : atomOneDark}
               lineNumberContainerStyle={highlighterLineNumberStyle}
             >
               {data.compileInfo}
@@ -156,7 +187,8 @@ class SolutionDetailPage extends React.Component<Props, State> {
                             <Switch
                               checked={data.shared} disabled={loading} loading={changeSharedLoading}
                               onChange={this.onShareChange}
-                              className="ml-lg" />
+                              className="ml-lg"
+                            />
                           </div> :
                           <div className="float-left">
                             <span>Code</span>
@@ -166,7 +198,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
                       <SyntaxHighlighter
                         language={langsMap4Hljs[data.language]}
                         showLineNumbers
-                        style={theme === 'light' ? atomOneLight : atomOneDark}
+                        style={this.getUsedTheme() === 'light' ? atomOneLight : atomOneDark}
                         lineNumberContainerStyle={highlighterLineNumberStyle}
                       >
                         {data.code}

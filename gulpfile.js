@@ -23,6 +23,12 @@ gulp.task('watch-dup-dark-less', function () {
   }, copyDupDarkLess);
 });
 
+gulp.task('copy-dup-dark-antd', function () {
+  return gulp.src(dupDarkAntdSrc + '/**/*', { base: dupDarkAntdSrc })
+    .pipe(gulp.dest(dupDarkAntdDest));
+});
+
+
 gulp.task('watch-dup-dark-antd', function () {
   return gulp.src(dupDarkAntdSrc + '/**/*', { base: dupDarkAntdSrc })
     .pipe(watch(dupDarkAntdSrc, { base: dupDarkAntdSrc }))
@@ -36,4 +42,9 @@ gulp.task('dev', gulp.parallel(
   'watch-dup-dark-less',
   'watch-dup-dark-antd',
   'npm-run-start',
+));
+
+gulp.task('dup-less', gulp.series(
+  'copy-dup-dark-less',
+  'copy-dup-dark-antd',
 ));

@@ -12,7 +12,7 @@ import msg from '@/utils/msg';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
-import Explanation from './Explanation';
+import Explanation from '@/components/Explanation';
 
 export interface Props extends ReduxProps {
   loading: boolean;

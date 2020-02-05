@@ -8,7 +8,7 @@
     "build": "umi build",
     "build:exp": "cross-env OJ3_BUILD4=exp umi build",
     "build:test": "cross-env OJ3_BUILD4=test umi build",
-    "build-analyze": "ANALYZE=1 umi build",
+    "build-analyze": "cross-env ANALYZE=1 umi build",
     "line-count": "cloc src/ --exclude-dir=.umi,.umi-production --fullpath --not-match-f='/(styles/dark_antd|assets|configs/codes)/'",
     "pull-submodule": "git submodule foreach git pull origin master",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -44,7 +44,7 @@ export default {
         'time-is-money',
         'talk-is-cheap',
         'mathematics-is-the-queen-of-the-sciences',
-        'omg_some-higher-dimensions-shapes',
+        'draw-some-higher-dimensions-shapes',
         'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
         'umi',
       ],
@@ -154,7 +154,7 @@ export default {
           priority: 100,
         },
         highcharts: {
-          name: 'omg_some-higher-dimensions-shapes',
+          name: 'draw-some-higher-dimensions-shapes',
           chunks: 'all',
           test: /[\\/]node_modules[\\/](highcharts)[\\/]/,
           minSize: 0,

@@ -29,13 +29,25 @@ export default {
       },
       antd: true,
       routes: {
-        exclude: [/models\//],
+        exclude: [/models\//, /services\//],
       },
       title: {
         defaultTitle: 'SDUT OnlineJudge',
         separator: '|',
         format: '{current} {separator} {parent}',
       },
+      dynamicImport: null,
+      chunks: [
+        'vendors',
+        'raincloud',
+        'ui',
+        'time-is-money',
+        'talk-is-cheap',
+        'mathematics-is-the-queen-of-the-sciences',
+        'omg_some-higher-dimensions-shapes',
+        'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
+        'umi',
+      ],
     }],
   ],
   theme: {
@@ -82,5 +94,88 @@ export default {
         },
       ])
       .loader(require.resolve('@svgr/webpack'));
+
+    config.optimization.splitChunks({
+      // chunks: 'async',
+      // minSize: 30000,
+      // maxSize: 0,
+      // minChunks: 1,
+      maxAsyncRequests: 15,
+      maxInitialRequests: 15,
+      // automaticNameDelimiter: '.',
+      // name: true,
+      cacheGroups: {
+        vendors: {
+          name: 'vendors',
+          chunks: 'all',
+          test({ resource }) {
+            return /[\\/]node_modules[\\/]/.test(resource);
+          },
+          priority: 10,
+        },
+        raincloud: {
+          name: 'raincloud',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|axios|lodash|immutable)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        antd: {
+          name: 'ui',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](@ant-design|antd)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        moment: {
+          name: 'time-is-money',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](moment)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        highlight: {
+          name: 'talk-is-cheap',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](highlight\.js)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        katex: {
+          name: 'mathematics-is-the-queen-of-the-sciences',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](katex)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        highcharts: {
+          name: 'omg_some-higher-dimensions-shapes',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](highcharts)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        braftEditor: {
+          name: 'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](braft(-|\w+)(\w*)|draft(-|\w+)(\w*))[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        // 'async-commons': {
+        //   chunks: 'async',
+        //   minChunks: 2,
+        //   name: 'async-commons',
+        //   priority: 90,
+        // },
+      },
+    });
   },
 };

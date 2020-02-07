@@ -20,6 +20,22 @@ class SolutionDetail extends React.Component<Props, State> {
     this.state = {};
   }
 
+  componentWillReceiveProps(np: Props) {
+    const p = this.props;
+    if (p.session !== np.session) {
+      const id = ~~np.match.params.id;
+      if (id) {
+        np.dispatch({
+          type: 'solutions/getDetail',
+          payload: {
+            id,
+            force: true,
+          },
+        });
+      }
+    }
+  }
+
   onShareChange = (checked) => {
     // console.log(checked);
   };

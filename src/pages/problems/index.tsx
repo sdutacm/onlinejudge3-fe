@@ -161,9 +161,11 @@ class ProblemList extends React.Component<Props, State> {
                 <Table.Column
                   title=""
                   key="Difficulty"
-                  render={(text, record: IProblem) =>
+                  width={48}
+                  className="text-right"
+                  render={(text, record: IProblem) => (
                     <ProblemDifficulty difficulty={record.difficulty} />
-                  }
+                  )}
                 />
                 <Table.Column
                   title="Title"

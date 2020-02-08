@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Form, Row, Col, Card, Tag, Popover } from 'antd';
+import { Table, Pagination, Form, Row, Col, Card, Tag, Popover, Badge } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
@@ -18,6 +18,7 @@ import classNames from 'classnames';
 import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
+import ProblemDifficulty from '@/components/ProblemDifficulty';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -64,7 +65,7 @@ class ProblemList extends React.Component<Props, State> {
     });
   }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -95,25 +96,22 @@ class ProblemList extends React.Component<Props, State> {
     let tagIds: number[] = [];
     const originalTagIds = this.props.location.query.tagIds;
     if (Array.isArray(originalTagIds)) {
-      tagIds = originalTagIds.map(v => +v);
-    }
-    else if (typeof originalTagIds === 'string') {
+      tagIds = originalTagIds.map((v) => +v);
+    } else if (typeof originalTagIds === 'string') {
       tagIds = [+originalTagIds];
     }
     return tagIds;
   };
 
-  toggleTag = (tagId: number, replace: boolean = false): void => {
+  toggleTag = (tagId: number, replace = false): void => {
     let tagIds = this.getTagIdsFromQuery();
     if (replace) {
       tagIds = [tagId];
-    }
-    else {
+    } else {
       const index = tagIds.indexOf(tagId);
       if (~index) {
         tagIds.splice(index, 1);
-      }
-      else {
+      } else {
         tagIds.push(tagId);
       }
     }
@@ -133,7 +131,10 @@ class ProblemList extends React.Component<Props, State> {
 
   render() {
     const {
-      loading, data: { page, count, rows }, tagList, problemResultStats: { acceptedProblemIds, attemptedProblemIds },
+      loading,
+      data: { page, count, rows },
+      tagList,
+      problemResultStats: { acceptedProblemIds, attemptedProblemIds },
     } = this.props;
     const tagIds = this.getTagIdsFromQuery();
     // let searchInput;
@@ -149,12 +150,21 @@ class ProblemList extends React.Component<Props, State> {
                 onChange={this.handleTableChange}
                 pagination={false}
                 className="responsive-table"
-                rowClassName={(record: IProblem) => classNames(
-                  'problem-result-mark-row',
-                  { 'accepted': ~acceptedProblemIds.indexOf(record.problemId) },
-                  { 'attempted': ~attemptedProblemIds.indexOf(record.problemId) }
-                )}
+                rowClassName={(record: IProblem) =>
+                  classNames(
+                    'problem-result-mark-row',
+                    { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
+                    { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
+                  )
+                }
               >
+                <Table.Column
+                  title=""
+                  key="Difficulty"
+                  render={(text, record: IProblem) =>
+                    <ProblemDifficulty difficulty={record.difficulty} />
+                  }
+                />
                 <Table.Column
                   title="Title"
                   key="Title"
@@ -182,10 +192,12 @@ class ProblemList extends React.Component<Props, State> {
                   // }}
                   render={(text, record: IProblem) => (
                     <div>
-                      <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>{record.problemId} - {record.title}</Link>
-                      {record.tags.length ?
+                      <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>
+                        {record.problemId} - {record.title}
+                      </Link>
+                      {record.tags.length ? (
                         <div className="float-right">
-                          {record.tags.map(tag =>
+                          {record.tags.map((tag) => (
                             <Popover
                               key={tag.tagId}
                               content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
@@ -194,10 +206,13 @@ class ProblemList extends React.Component<Props, State> {
                                 <Tag>{tag.name.en}</Tag>
                               </a>
                             </Popover>
-                          )}
-                        </div> :
-                        <div className="float-right" style={{ visibility: 'hidden' }}><Tag>&nbsp;</Tag></div>
-                      }
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="float-right" style={{ visibility: 'hidden' }}>
+                          <Tag>&nbsp;</Tag>
+                        </div>
+                      )}
                     </div>
                   )}
                 />
@@ -209,16 +224,16 @@ class ProblemList extends React.Component<Props, State> {
                     <SolutionResultStats
                       accepted={record.accepted}
                       submitted={record.submitted}
-                      toSolutionsLink={urlf(pages.solutions.index, { query: { problemId: record.problemId } })}
+                      toSolutionsLink={urlf(pages.solutions.index, {
+                        query: { problemId: record.problemId },
+                      })}
                     />
                   )}
                 />
                 <Table.Column
                   title="Source"
                   key="Source"
-                  render={(text, record: IProblem) => (
-                    <span>{record.source}</span>
-                  )}
+                  render={(text, record: IProblem) => <span>{record.source}</span>}
                 />
               </Table>
               <Pagination
@@ -235,24 +250,33 @@ class ProblemList extends React.Component<Props, State> {
               <ToDetailCard
                 label="Go to Problem"
                 placeholder="Problem ID"
-                toDetailLink={id => urlf(pages.problems.detail, { param: { id } })}
+                toDetailLink={(id) => urlf(pages.problems.detail, { param: { id } })}
               />
             </Card>
             <Card bordered={false}>
-              <FilterCard fields={[
-                { displayName: 'Title', fieldName: 'title' },
-                { displayName: 'Source', fieldName: 'source' },
-              ]} />
+              <FilterCard
+                fields={[
+                  { displayName: 'Title', fieldName: 'title' },
+                  { displayName: 'Source', fieldName: 'source' },
+                ]}
+              />
             </Card>
             <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
                 <Form.Item label="Tags">
                   <div className="tags">
-                    {tagList.rows.map(tag =>
-                      <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
-                        <a onClick={() => this.toggleTag(tag.tagId)}><Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.name.en}</Tag></a>
+                    {tagList.rows.map((tag) => (
+                      <Popover
+                        key={tag.tagId}
+                        content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
+                      >
+                        <a onClick={() => this.toggleTag(tag.tagId)}>
+                          <Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>
+                            {tag.name.en}
+                          </Tag>
+                        </a>
                       </Popover>
-                    )}
+                    ))}
                   </div>
                 </Form.Item>
               </Form>

@@ -345,6 +345,10 @@ ul {
   visibility: visible;
 }
 
+.user-select-none {
+  user-select: none;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1267,6 +1271,16 @@ ul {
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 0;
+}
+
+// problem difficulty badge
+
+.problem-difficulty {
+  .ant-badge-count {
+    box-shadow: 0 0 0 1px @border-color-base;
+    background: @background-color-light;
+    color: inherit;
+  }
 }
 
 // mobile

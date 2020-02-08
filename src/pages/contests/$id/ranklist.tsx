@@ -15,7 +15,7 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import { ContestModes } from '@/configs/contestModes';
-import { isAdminDog } from '@/utils/permission'
+import { isAdminDog } from '@/utils/permission';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import { ContestRatingStatus, contestRatingStatusMap } from '@/configs/contestRatingStatus';
@@ -33,8 +33,7 @@ export interface Props extends ReduxProps, RouteProps {
   ratingStatus: IContestRatingStatus;
 }
 
-interface State {
-}
+interface State {}
 
 class ContestRanklist extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
@@ -62,7 +61,10 @@ class ContestRanklist extends React.Component<Props, State> {
     this.checkDetail(this.props.detail);
     this.refreshRatingStatus(true);
     // @ts-ignore
-    this._ratingStatusRefreshTimer = setInterval(this.refreshRatingStatus, constants.ratingStatusUpdateInterval);
+    this._ratingStatusRefreshTimer = setInterval(
+      this.refreshRatingStatus,
+      constants.ratingStatusUpdateInterval,
+    );
   }
 
   componentWillUnmount(): void {
@@ -88,7 +90,7 @@ class ContestRanklist extends React.Component<Props, State> {
     dispatch({
       type: 'contests/endContest',
       payload: { id },
-    }).then(ret => {
+    }).then((ret) => {
       msg.auto(ret);
       if (ret.success) {
         msg.success('Ended');
@@ -105,7 +107,7 @@ class ContestRanklist extends React.Component<Props, State> {
         });
       }
     });
-  }
+  };
 
   refreshRatingStatus = (isFirstRequest = false) => {
     const { id, detail, dispatch } = this.props;
@@ -113,7 +115,7 @@ class ContestRanklist extends React.Component<Props, State> {
       return dispatch({
         type: 'contests/getRatingStatus',
         payload: { id },
-      }).then(ret => {
+      }).then((ret) => {
         if (ret.success) {
           if (ret.data.status === ContestRatingStatus.DONE) {
             clearInterval(this._ratingStatusRefreshTimer);
@@ -130,7 +132,7 @@ class ContestRanklist extends React.Component<Props, State> {
         }
       });
     }
-  }
+  };
 
   renderRatingProgress = () => {
     if (!this.props.ratingStatus) {
@@ -141,13 +143,15 @@ class ContestRanklist extends React.Component<Props, State> {
     return (
       <div className="mt-lg">
         <Progress
-          percent={status === ContestRatingStatus.ERR ? 100 : (progress || 0)}
+          percent={status === ContestRatingStatus.ERR ? 100 : progress || 0}
           status={status === ContestRatingStatus.ERR ? 'exception' : 'active'}
           showInfo={false}
           className={status === ContestRatingStatus.DONE ? 'display-none' : ''}
         />
         <p className="contest-rating-status text-center">{text}</p>
-        {status === ContestRatingStatus.DONE && used ? <p className="text-center text-secondary">cost {used} ms by Node.js</p> : null}
+        {status === ContestRatingStatus.DONE && used ? (
+          <p className="text-center text-secondary">cost {used} ms by Node.js</p>
+        ) : null}
       </div>
     );
     // switch (status) {
@@ -175,7 +179,7 @@ class ContestRanklist extends React.Component<Props, State> {
     //     );
     // }
     // return null;
-  }
+  };
 
   render() {
     const {
@@ -195,9 +199,10 @@ class ContestRanklist extends React.Component<Props, State> {
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
-    const ranklist = rows || [] as IRanklist;
+    const ranklist = rows || ([] as IRanklist);
     const isRating = detail.mode === ContestModes.Rating;
-    const canEndContest = isRating && timeStatus === 'Ended' && !detail['ended'] && isAdminDog(session);
+    const canEndContest =
+      isRating && timeStatus === 'Ended' && !detail['ended'] && isAdminDog(session);
 
     return (
       <PageAnimation>
@@ -207,11 +212,22 @@ class ContestRanklist extends React.Component<Props, State> {
               <Card bordered={false} className="ranklist-header">
                 <h2 className="text-center">{detail.title}</h2>
                 <p className="text-center" style={{ marginBottom: '5px' }}>
-                  <span>{moment(startTime).format('YYYY-MM-DD HH:mm')} ~ {moment(endTime).format('YYYY-MM-DD HH:mm')}</span>
+                  <span>
+                    {moment(startTime).format('YYYY-MM-DD HH:mm')} ~{' '}
+                    {moment(endTime).format('YYYY-MM-DD HH:mm')}
+                  </span>
                 </p>
-                {canEndContest && <p className="text-center">
-                  <Button type="danger" loading={detailLoading || endContestLoading} onClick={this.endContest}>End Contest</Button>
-                </p>}
+                {canEndContest && (
+                  <p className="text-center">
+                    <Button
+                      type="danger"
+                      loading={detailLoading || endContestLoading}
+                      onClick={this.endContest}
+                    >
+                      End Contest
+                    </Button>
+                  </p>
+                )}
                 {detail.ended && isRating && this.renderRatingProgress()}
               </Card>
               <Card bordered={false} className="list-card">
@@ -221,7 +237,13 @@ class ContestRanklist extends React.Component<Props, State> {
                   loading={ranklistLoading}
                   problemNum={problems.count || 0}
                   session={session}
-                  userCellRender={user => <UserBar user={user} isContestUser={detail.type === ContestTypes.Register} showRating={isRating} />}
+                  userCellRender={(user) => (
+                    <UserBar
+                      user={user}
+                      isContestUser={detail.type === ContestTypes.Register}
+                      showRating={isRating}
+                    />
+                  )}
                   needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
                   handleUpdate={this.refreshRanklist}
                   updateInterval={constants.ranklistUpdateInterval}

@@ -6,6 +6,7 @@ import { numberToAlphabet } from '@/utils/format';
 import classNames from 'classnames';
 import 'katex/dist/katex.min.css';
 import AutoLaTeX from 'react-autolatex';
+import ProblemDifficulty from './ProblemDifficulty';
 
 export interface Props {
   loading: boolean;
@@ -19,8 +20,10 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
       <div>
         <Skeleton
           active
-          paragraph={{ rows: 0 }} title={{ width: '100%' }}
-          className="problem-content-skeleton-title" />
+          paragraph={{ rows: 0 }}
+          title={{ width: '100%' }}
+          className="problem-content-skeleton-title"
+        />
         <Skeleton active paragraph={{ rows: 4 }} title={{ width: '31.5%' }} />
         <Skeleton active paragraph={{ rows: 3 }} title={{ width: '14%' }} />
         <Skeleton active paragraph={{ rows: 3 }} title={{ width: '19%' }} />
@@ -28,8 +31,15 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
     );
   }
   return (
-    <div className={classNames('problem-content', 'content-area', 'problem-content', 'content-loaded')}>
-      <h2 className="text-center">{Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}</h2>
+    <div
+      className={classNames('problem-content', 'content-area', 'problem-content', 'content-loaded')}
+    >
+      <h2 className="text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <ProblemDifficulty difficulty={data.difficulty} className="mr-md-lg" />
+        {Number.isInteger(problemIndex)
+          ? `${numberToAlphabet(problemIndex)} - ${data.title}`
+          : data.title}
+      </h2>
 
       {data.description && <h3>Description</h3>}
       <AutoLaTeX>{xss(data.description)}</AutoLaTeX>
@@ -41,9 +51,19 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
       <AutoLaTeX>{xss(data.output)}</AutoLaTeX>
 
       {(data.sampleInput || data.sampleOutput) && <h3>Sample</h3>}
-      {data.sampleInput && <h4 className="problem-content-sub-section-header">Input&nbsp;<CopyToClipboardButton text={data.sampleInput} addNewLine /></h4>}
+      {data.sampleInput && (
+        <h4 className="problem-content-sub-section-header">
+          Input&nbsp;
+          <CopyToClipboardButton text={data.sampleInput} addNewLine />
+        </h4>
+      )}
       {data.sampleInput && <pre>{data.sampleInput}</pre>}
-      {data.sampleOutput && <h4 className="problem-content-sub-section-header">Output&nbsp;<CopyToClipboardButton text={data.sampleOutput} addNewLine /></h4>}
+      {data.sampleOutput && (
+        <h4 className="problem-content-sub-section-header">
+          Output&nbsp;
+          <CopyToClipboardButton text={data.sampleOutput} addNewLine />
+        </h4>
+      )}
       {data.sampleOutput && <pre>{data.sampleOutput}</pre>}
 
       {data.hint && <h3>Hint</h3>}

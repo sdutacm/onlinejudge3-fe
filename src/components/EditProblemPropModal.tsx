@@ -45,8 +45,8 @@ class EditProblemPropModal extends React.Component<Props, State> {
     const { dispatch, data: { problemId } } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.difficulty = +values.difficulty;
-        values.tagIds = values.tagIds.map(v => +v);
+        values.difficulty = Number(values.difficulty);
+        values.tagIds = values.tagIds.map(v => Number(v));
         Promise.all([
           dispatch({
             type: 'problems/modifyProblemTags',
@@ -117,7 +117,7 @@ class EditProblemPropModal extends React.Component<Props, State> {
               {getFieldDecorator('tagIds', {
                 initialValue: data.tags.map(tag => tag.tagId.toString()),
               })(
-                <Select mode="multiple" placeholder="Select problem tags">
+                <Select mode="multiple" placeholder="Select problem tags" optionFilterProp="children">
                   {tagList.rows.map(tag => (<Select.Option key={tag.tagId.toString()}>{tag.name.en} / {tag.name.zhHans}</Select.Option>))}
                 </Select>
               )}

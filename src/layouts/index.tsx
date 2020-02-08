@@ -61,7 +61,7 @@ class Index extends React.Component<Props, State> {
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
       },
-    })
+    });
   }, VIEWPORT_CHANGE_THROTTLE);
 
   fetchSession = () => {
@@ -105,21 +105,25 @@ class Index extends React.Component<Props, State> {
 
     if (settings.color === 'colorblind-dp') {
       document.body.classList.add('colorblind-dp');
-    }
-    else {
+    } else {
       document.body.classList.remove('colorblind-dp');
     }
     const OJBKRes = await OJBK.checkOJBK();
     if (OJBKRes) {
       this.fetchSession();
-    }
-    else {
+    } else {
       router.push(pages.OJBK);
     }
     // background timer tasks
-    const bgCheckSessionTimer: any = setInterval(this.bgCheckSession, constants.bgCheckSessionInterval);
+    const bgCheckSessionTimer: any = setInterval(
+      this.bgCheckSession,
+      constants.bgCheckSessionInterval,
+    );
     this.setState({ bgCheckSessionTimer });
-    const bgGetUnreadMessagesTimer: any = setInterval(this.bgGetUnreadMessages, constants.bgGetUnreadMessagesInterval);
+    const bgGetUnreadMessagesTimer: any = setInterval(
+      this.bgGetUnreadMessages,
+      constants.bgGetUnreadMessagesInterval,
+    );
     this.setState({ bgGetUnreadMessagesTimer });
     // viewport
     this.saveViewportDimensions();
@@ -154,8 +158,17 @@ class Index extends React.Component<Props, State> {
         <PageTitle title="x_x">
           <div className="center-view text-center">
             <h2 style={{ marginBottom: '30px' }}>Oops... OJ Crashed!</h2>
-            <p><Button onClick={() => window.location.reload()}>Reload Page</Button></p>
-            <p><Link to={pages.index} onClick={() => setTimeout(() => window.location.reload(), 500)}><Button>Back to Home</Button></Link></p>
+            <p>
+              <Button onClick={() => window.location.reload()}>Reload Page</Button>
+            </p>
+            <p>
+              <Link
+                to={pages.index}
+                onClick={() => setTimeout(() => window.location.reload(), 500)}
+              >
+                <Button>Back to Home</Button>
+              </Link>
+            </p>
           </div>
         </PageTitle>
       );
@@ -177,50 +190,105 @@ class Index extends React.Component<Props, State> {
       exact: true,
     });
     return (
-      <Layout className={classNames({
-        'user-page': inUserDetailPage,
-      })}>
+      <Layout
+        className={classNames({
+          'user-page': inUserDetailPage,
+        })}
+      >
         <Header>
           <Row>
             <Col>
-              <Link to={pages.index} className={styles.logo}>{constants.siteName}</Link>
+              <Link to={pages.index} className={styles.logo}>
+                {constants.siteName}
+              </Link>
             </Col>
-            <Col>
-              {this.state.sessionLoaded && <NavContainer />}
-            </Col>
+            <Col>{this.state.sessionLoaded && <NavContainer />}</Col>
           </Row>
         </Header>
         <Content>
-          {this.state.sessionLoaded || location.pathname === '/OJBK' ?
-            children :
-            <PageLoading />}
+          {this.state.sessionLoaded || location.pathname === '/OJBK' ? children : <PageLoading />}
         </Content>
-        <Footer className={styles.footer} style={{ paddingTop:  '30px', paddingBottom: '30px' }}>
+        <Footer className={styles.footer} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
           <Row gutter={20}>
             <Col xs={24} md={8} className="mb-md-lg">
-              <h3>About</h3>
-              <p>SDUT OJ v{pkg.version}</p>
-              <p><ExtLink className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues">Feedback</ExtLink></p>
-              <p><ExtLink className="normal-text-link" href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md">Changelog</ExtLink></p>
-              <p><ExtLink className="normal-text-link" href="https://github.com/sdutacm">GitHub</ExtLink></p>
+              <h3>About SDUT OJ v{pkg.version}</h3>
+              <p>
+                <ExtLink
+                  className="normal-text-link"
+                  href="https://github.com/sdutacm/onlinejudge3-issues"
+                >
+                  Feedback
+                </ExtLink>
+              </p>
+              <p>
+                <ExtLink
+                  className="normal-text-link"
+                  href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md"
+                >
+                  Changelog
+                </ExtLink>
+              </p>
+              <p>
+                <ExtLink className="normal-text-link" href="https://github.com/sdutacm">
+                  GitHub
+                </ExtLink>
+              </p>
+              <p>
+                <a className="normal-text-link" href="mailto:sdutacm@163.com">
+                  Contact us
+                </a>
+              </p>
             </Col>
 
             <Col xs={24} md={8} className="mb-md-lg">
               <h3>Our Apps</h3>
-              <p><ExtLink className="normal-text-link" href="https://stepbystep.sdutacm.cn/">StepByStep</ExtLink></p>
-              <p><ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/">ACM Contests Collection</ExtLink></p>
-              <p><ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html">Recent Contests</ExtLink></p>
-              <p><ExtLink className="normal-text-link" href="http://suyu.red/">Typing System</ExtLink></p>
+              <p>
+                <ExtLink className="normal-text-link" href="https://stepbystep.sdutacm.cn/">
+                  StepByStep
+                </ExtLink>
+              </p>
+              <p>
+                <ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/">
+                  ACM Contests Collection
+                </ExtLink>
+              </p>
+              <p>
+                <ExtLink
+                  className="normal-text-link"
+                  href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html"
+                >
+                  Recent Contests
+                </ExtLink>
+              </p>
+              <p>
+                <ExtLink className="normal-text-link" href="http://suyu.red/">
+                  Typing System
+                </ExtLink>
+              </p>
             </Col>
 
             <Col xs={24} md={8} className="mb-md-lg">
               <h3>Recommends</h3>
-              <p><ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">Algo Bootstrap - The New Coding Experience</ExtLink></p>
-              <p><ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">Contests API</ExtLink></p>
-              <p><ShowDiscussionModal className="normal-text-link">Join Discussion <Icon type="smile" /></ShowDiscussionModal></p>
+              <p>
+                <ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">
+                  Algo Bootstrap - The New Coding Experience
+                </ExtLink>
+              </p>
+              <p>
+                <ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">
+                  Contests API
+                </ExtLink>
+              </p>
+              <p>
+                <ShowDiscussionModal className="normal-text-link">
+                  Join Discussion <Icon type="smile" />
+                </ShowDiscussionModal>
+              </p>
             </Col>
           </Row>
-          <p className="mt-lg" style={{ fontWeight: 600 }}>© 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.</p>
+          <p className="mt-lg" style={{ fontWeight: 600 }}>
+            © 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.
+          </p>
           {/* <div> */}
           {/* <a>API</a> */}
           {/* <Divider type="vertical" /> */}
@@ -240,6 +308,5 @@ function mapStateToProps(state) {
     settings: state.settings,
   };
 }
-
 
 export default connect(mapStateToProps)(Index);

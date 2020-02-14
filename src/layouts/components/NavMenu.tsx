@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
-import { Menu, Icon, Spin, Avatar, Badge, Popover, List, Input, Tag } from 'antd';
+import { Menu, Icon, Spin, Avatar, Badge, Popover } from 'antd';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import pages from '@/configs/pages';
 import JoinModal from './JoinModal';
-import gStyles from '../../general.less';
+import gStyles from '@/general.less';
 import styles from './ResponsiveNav.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { formatAvatarUrl, urlf } from '@/utils/format';
@@ -61,16 +61,25 @@ class NavMenu extends React.Component<Props, State> {
     const { dispatch } = this.props;
     dispatch({
       type: 'session/logout',
-    }).then(ret => {
+    }).then((ret) => {
       msg.auto(ret);
     });
   };
 
   messagesComponent = () => {
-    const { unreadMessagesLoading, unreadMessages: { count, rows }, dispatch } = this.props;
+    const {
+      unreadMessagesLoading,
+      unreadMessages: { count, rows },
+      dispatch,
+    } = this.props;
     return (
       <div>
-        <MessageList count={count} rows={rows} dispatch={dispatch} loading={unreadMessagesLoading} />
+        <MessageList
+          count={count}
+          rows={rows}
+          dispatch={dispatch}
+          loading={unreadMessagesLoading}
+        />
         <div className="text-center" style={{ lineHeight: '45px' }}>
           <Link
             to={urlf(pages.messages.index, { query: { type: 'received' } })}
@@ -90,7 +99,16 @@ class NavMenu extends React.Component<Props, State> {
   };
 
   render() {
-    const { mobileVersion, onLinkClick, className, loading, session, location, unreadMessages, proMode } = this.props;
+    const {
+      mobileVersion,
+      onLinkClick,
+      className,
+      loading,
+      session,
+      location,
+      unreadMessages,
+      proMode,
+    } = this.props;
     let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
       activeLinkKey = pages.problems.index;
@@ -111,167 +129,257 @@ class NavMenu extends React.Component<Props, State> {
         selectedKeys={[`${activeLinkKey}`]}
         className={className}
       >
-        {!!(from && activeLinkKey !== pages.sets.index && !activeLinkKey.startsWith(pages.contests.index)) &&
-        <Menu.Item key={from}>
-          <Link to={from} onClick={onLinkClick}><Icon type="left" /> Set</Link>
-        </Menu.Item>}
+        {!!(
+          from &&
+          activeLinkKey !== pages.sets.index &&
+          !activeLinkKey.startsWith(pages.contests.index)
+        ) && (
+          <Menu.Item key={from}>
+            <Link to={from} onClick={onLinkClick}>
+              <Icon type="left" /> Set
+            </Link>
+          </Menu.Item>
+        )}
 
         <Menu.Item key={pages.problems.index}>
-          <Link to={pages.problems.index} onClick={onLinkClick}>Problems</Link>
+          <Link to={pages.problems.index} onClick={onLinkClick}>
+            Problems
+          </Link>
         </Menu.Item>
 
-        {proMode && <Menu.Item key={pages.solutions.index}>
-          <Link to={pages.solutions.index} onClick={onLinkClick}>Solutions</Link>
-        </Menu.Item>}
+        {proMode && (
+          <Menu.Item key={pages.solutions.index}>
+            <Link to={pages.solutions.index} onClick={onLinkClick}>
+              Solutions
+            </Link>
+          </Menu.Item>
+        )}
 
         <Menu.Item key={pages.contests.index}>
-          <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>Contests</Link>
+          <Link
+            to={urlf(pages.contests.index, { query: { category: 0 } })}
+            onClick={onLinkClick}
+          >
+            Contests
+          </Link>
         </Menu.Item>
 
-        {/* <Menu.Item key={pages.sets.index}>
-          <Link to={pages.sets.index} onClick={onLinkClick}>Sets</Link>
-        </Menu.Item> */}
+        <Menu.Item key={pages.sets.index}>
+          <Link to={pages.sets.index} onClick={onLinkClick}>
+            Sets
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key={pages.groups.index}>
+          <Link
+            to={urlf(pages.groups.index, { query: { category: 'explore' } })}
+            onClick={onLinkClick}
+          >
+            Groups
+          </Link>
+        </Menu.Item>
 
         <Menu.Item key={pages.users.index}>
-          <Link to={pages.users.index} onClick={onLinkClick}>Standings</Link>
+          <Link to={pages.users.index} onClick={onLinkClick}>
+            Standings
+          </Link>
         </Menu.Item>
 
         <Menu.Item key={pages.topics.index}>
-          <Link to={pages.topics.index} onClick={onLinkClick}>Topics</Link>
+          <Link to={pages.topics.index} onClick={onLinkClick}>
+            Topics
+          </Link>
         </Menu.Item>
 
         <Menu.Item key={pages.posts.index}>
-          <Link to={pages.posts.index} onClick={onLinkClick}>Posts</Link>
+          <Link to={pages.posts.index} onClick={onLinkClick}>
+            Posts
+          </Link>
         </Menu.Item>
 
         {/* {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
           <Link to={pages.index} onClick={onLinkClick}>Idea Notes</Link>
         </Menu.Item>} */}
-        {mobileVersion && session.loggedIn && <Menu.Item key={pages.messages.index}>
-          <Link
-            to={pages.messages.index}
-            onClick={(e) => {
-              onLinkClick && onLinkClick(e);
-              tracker.event({
-                category: 'component.NavMenu',
-                action: 'toMessages',
-              });
-            }}
-          >Notifications</Link>
-        </Menu.Item>}
+        {mobileVersion && session.loggedIn && (
+          <Menu.Item key={pages.messages.index}>
+            <Link
+              to={pages.messages.index}
+              onClick={(e) => {
+                onLinkClick?.(e);
+                tracker.event({
+                  category: 'component.NavMenu',
+                  action: 'toMessages',
+                });
+              }}
+            >
+              Notifications
+            </Link>
+          </Menu.Item>
+        )}
 
-        {mobileVersion ?
-          loading ?
+        {mobileVersion ? (
+          loading ? (
             <Menu.Item key="loading">
-              <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
+              <Spin
+                spinning={loading}
+                size="small"
+                delay={constants.indicatorDisplayDelay}
+              />
             </Menu.Item>
-            :
-            session.loggedIn ?
-              <Menu.ItemGroup
-                title={<span>
+          ) : session.loggedIn ? (
+            <Menu.ItemGroup
+              title={
+                <span>
                   <Avatar
                     icon="user"
                     src={formatAvatarUrl(session.user.avatar)}
                     className={styles.avatarDefault}
                   />
                   <span style={{ marginLeft: '8px' }}>{session.user.nickname}</span>
-                </span>}
-              >
-                <Menu.Item key="profile">
-                  <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })} onClick={onLinkClick}>Profile</Link>
-                </Menu.Item>
-                {/* <Menu.Item key="favorites"> */}
-                {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
-                {/* </Menu.Item> */}
-                <Menu.Item key="logout" onClick={(e) => {
-                  onLinkClick && onLinkClick(e.domEvent);
+                </span>
+              }
+            >
+              <Menu.Item key="profile">
+                <Link
+                  to={urlf(pages.users.detail, {
+                    param: { id: session.user.userId },
+                  })}
+                  onClick={onLinkClick}
+                >
+                  Profile
+                </Link>
+              </Menu.Item>
+              {/* <Menu.Item key="favorites"> */}
+              {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
+              {/* </Menu.Item> */}
+              <Menu.Item
+                key="logout"
+                onClick={(e) => {
+                  onLinkClick?.(e.domEvent);
                   this.logout();
-                }}>Logout</Menu.Item>
-              </Menu.ItemGroup>
-              :
-              <Menu.Item key="join">
-                <JoinModal onShow={onLinkClick}>Join</JoinModal>
+                }}
+              >
+                Logout
               </Menu.Item>
-          :
-          loading ?
-            <Menu.Item key="loading" className="float-right">
-              <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
+            </Menu.ItemGroup>
+          ) : (
+            <Menu.Item key="join">
+              <JoinModal onShow={onLinkClick}>Join</JoinModal>
             </Menu.Item>
-            :
-            session.loggedIn ?
-              <Menu.SubMenu
-                title={<span>
-                  <Avatar icon="user" src={formatAvatarUrl(session.user.avatar)} className={styles.avatarDefault} />
-                  <Icon type="down" className={gStyles.iconRight} />
-                </span>}
-                onTitleClick={() => router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))}
-                className="float-right">
-                <Menu.Item key="nickname" disabled>
-                  <span>{session.user.nickname}</span>
-                </Menu.Item>
-                <Menu.Item key="profile">
-                  <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>Profile</Link>
-                </Menu.Item>
-                <Menu.Item key="favorites">
-                  <Link to={urlf(pages.favorites.index)}>Favorites</Link>
-                </Menu.Item>
-                {/* <Menu.Item key="favorites"> */}
-                {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
-                {/* </Menu.Item> */}
-                <Menu.Item key="logout" onClick={this.logout}>Logout</Menu.Item>
-              </Menu.SubMenu>
-              :
-              <Menu.Item key="join" className="float-right">
-                <JoinModal>Join</JoinModal>
-              </Menu.Item>
-        }
+          )
+        ) : loading ? (
+          <Menu.Item key="loading" className="float-right">
+            <Spin
+              spinning={loading}
+              size="small"
+              delay={constants.indicatorDisplayDelay}
+            />
+          </Menu.Item>
+        ) : session.loggedIn ? (
+          <Menu.SubMenu
+            title={
+              <span>
+                <Avatar
+                  icon="user"
+                  src={formatAvatarUrl(session.user.avatar)}
+                  className={styles.avatarDefault}
+                />
+                <Icon type="down" className={gStyles.iconRight} />
+              </span>
+            }
+            onTitleClick={() =>
+              router.push(
+                urlf(pages.users.detail, { param: { id: session.user.userId } }),
+              )
+            }
+            className="float-right"
+          >
+            <Menu.Item key="nickname" disabled>
+              <span>{session.user.nickname}</span>
+            </Menu.Item>
+            <Menu.Item key="profile">
+              <Link
+                to={urlf(pages.users.detail, { param: { id: session.user.userId } })}
+              >
+                Profile
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="favorites">
+              <Link to={urlf(pages.favorites.index)}>Favorites</Link>
+            </Menu.Item>
+            {/* <Menu.Item key="favorites"> */}
+            {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
+            {/* </Menu.Item> */}
+            <Menu.Item key="logout" onClick={this.logout}>
+              Logout
+            </Menu.Item>
+          </Menu.SubMenu>
+        ) : (
+          <Menu.Item key="join" className="float-right">
+            <JoinModal>Join</JoinModal>
+          </Menu.Item>
+        )}
 
-        {!mobileVersion && session.loggedIn && <Menu.Item key="unreadMessages" className="float-right">
-          <Popover
-            content={this.messagesComponent()}
-            title="Messages"
-            placement="bottom"
-            trigger="click"
-            overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
-            overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
-            visible={this.state.messagesVisible}
-            onVisibleChange={messagesVisible => {
-              this.setState({ messagesVisible });
-              if (messagesVisible) {
-                tracker.event({
-                  category: 'component.NavMenu',
-                  action: 'showMessages',
-                });
+        {!mobileVersion && session.loggedIn && (
+          <Menu.Item key="unreadMessages" className="float-right">
+            <Popover
+              content={this.messagesComponent()}
+              title="Messages"
+              placement="bottom"
+              trigger="click"
+              overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
+              overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
+              visible={this.state.messagesVisible}
+              onVisibleChange={(messagesVisible) => {
+                this.setState({ messagesVisible });
+                if (messagesVisible) {
+                  tracker.event({
+                    category: 'component.NavMenu',
+                    action: 'showMessages',
+                  });
+                }
+              }}
+            >
+              <a>
+                <Badge count={unreadMessages.count}>
+                  <Icon type="bell" theme="outlined" />
+                </Badge>
+              </a>
+            </Popover>
+          </Menu.Item>
+        )}
+        {!mobileVersion && session.loggedIn && (
+          <Menu.Item key="/idea_note" className="float-right">
+            <Popover
+              content={
+                <IdeaNotes
+                  onLinkClick={() => this.setState({ notesVisible: false })}
+                />
               }
-            }}
-          >
-            <a><Badge count={unreadMessages.count}><Icon type="bell" theme="outlined" /></Badge></a>
-          </Popover>
-        </Menu.Item>}
-        {!mobileVersion && session.loggedIn && <Menu.Item key="/idea_note" className="float-right">
-          <Popover
-            content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
-            title="Idea Notes"
-            placement="bottom"
-            trigger="click"
-            overlayClassName="menu-popover inner-content-scroll-md"
-            visible={this.state.notesVisible}
-            onVisibleChange={notesVisible => {
-              this.setState({ notesVisible });
-              if (notesVisible) {
-                tracker.event({
-                  category: 'component.NavMenu',
-                  action: 'showIdeaNotes',
-                });
-              }
-            }}
-          >
-            <a style={{ left: '2px', position: 'relative' }}><Icon theme="outlined" component={NoteSvg} /></a>
-          </Popover>
-        </Menu.Item>}
+              title="Idea Notes"
+              placement="bottom"
+              trigger="click"
+              overlayClassName="menu-popover inner-content-scroll-md"
+              visible={this.state.notesVisible}
+              onVisibleChange={(notesVisible) => {
+                this.setState({ notesVisible });
+                if (notesVisible) {
+                  tracker.event({
+                    category: 'component.NavMenu',
+                    action: 'showIdeaNotes',
+                  });
+                }
+              }}
+            >
+              <a style={{ left: '2px', position: 'relative' }}>
+                <Icon theme="outlined" component={NoteSvg} />
+              </a>
+            </Popover>
+          </Menu.Item>
+        )}
         <Menu.Item key="settings" className="float-right">
           <SettingsModal
-            onClickShowModal={e => {
+            onClickShowModal={(e) => {
               if (mobileVersion && onLinkClick) {
                 onLinkClick(e);
               }
@@ -288,7 +396,9 @@ class NavMenu extends React.Component<Props, State> {
 function mapStateToProps(state) {
   const session = state.session;
   return {
-    loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
+    loading:
+      !!state.loading.effects['session/fetch'] ||
+      !!state.loading.effects['session/logout'],
     session,
     unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,

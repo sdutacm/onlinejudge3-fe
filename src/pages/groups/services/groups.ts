@@ -8,13 +8,13 @@ export function getList(query) {
     query: {
       ...query,
       page: query.page || 1,
-      limit: limits.groups.list,
+      limit: query.limit || limits.groups.list,
     },
   });
   return get(url);
 }
 
-export function getDetail(id: string) {
+export function getDetail(id: number) {
   const url = urlf(api.groups.detail, { param: { id } });
   return get(url);
 }
@@ -24,17 +24,56 @@ export function addGroup(data) {
   return post(url, data);
 }
 
-export function addGroupMember(id: string, userIds: number[]) {
-  const url = urlf(api.groups.members.base, { param: { id } });
-  return post(url, { userIds });
+export function updateGroup(
+  id: number,
+  data: {
+    name: IGroup['name'];
+    intro: IGroup['intro'];
+    verified?: IGroup['verified'];
+    private: IGroup['private'];
+    joinChannel: IGroup['joinChannel'];
+  },
+) {
+  const url = urlf(api.groups.detail, { param: { id } });
+  return patch(url, data);
 }
 
-export function deleteGroupMember(id: string, userIds: number[]) {
-  const url = urlf(api.groups.members.base, { param: { id } });
-  return del(url, { userIds });
+export function deleteGroup(id: number) {
+  const url = urlf(api.groups.detail, { param: { id } });
+  return del(url);
 }
 
-export function updateGroupMember(id: string, uid: number, data) {
+export function getMembers(id: number) {
+  const url = urlf(api.groups.members.base, { param: { id } });
+  return get(url);
+}
+
+export function addGroupMember(
+  id: number,
+  data: { userIds?: number[]; usernames?: string[] },
+) {
+  const url = urlf(api.groups.members.base, { param: { id } });
+  return post(url, data);
+}
+
+export function joinGroup(id: number) {
+  const url = urlf(api.groups.members.base, { param: { id } });
+  return post(url, { isApply: true });
+}
+
+export function updateGroupMember(
+  id: number,
+  uid: number,
+  data: {
+    permission?: IGroupMember['permission'];
+    status?: IGroupMember['status'];
+  },
+) {
   const url = urlf(api.groups.members.detail, { param: { id, uid } });
   return patch(url, data);
+}
+
+export function deleteGroupMember(id: number, uid: number) {
+  const url = urlf(api.groups.members.base, { param: { id, uid } });
+  return del(url);
 }

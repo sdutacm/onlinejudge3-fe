@@ -1,10 +1,10 @@
-@import "variables";
-@import "layouts/variables";
-@import "../node_modules/antd/lib/style/themes/default";
-@import "../node_modules/antd/lib/button/style/mixin";
+@import 'variables';
+@import 'layouts/variables';
+@import '../node_modules/antd/lib/style/themes/default';
+@import '../node_modules/antd/lib/button/style/mixin';
 @import 'margin';
-@import "theme_dark";
-@import "animations";
+@import 'theme_dark';
+@import 'animations';
 
 // Sticky footer powered by https://github.com/philipwalton/solved-by-flexbox
 
@@ -73,24 +73,25 @@ ul {
     //color: @font-color; // dark;
 
     &.ant-menu-horizontal {
-      &>.ant-menu-item, &>.ant-menu-submenu {
+      & > .ant-menu-item,
+      & > .ant-menu-submenu {
         border-bottom: none;
         top: 0;
         margin-top: 0;
 
-        &>a:before {
+        & > a:before {
           bottom: 0;
         }
       }
     }
 
-    &>.ant-menu-item-selected {
+    & > .ant-menu-item-selected {
       background-color: rgba(220, 220, 220, 0.2);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       backdrop-filter: saturate(180%) blur(20px);
       color: inherit;
 
-      &>a {
+      & > a {
         color: inherit;
       }
     }
@@ -167,7 +168,7 @@ ul {
 
 .card {
   background-color: #fff;
-  box-shadow: 0 0 6px 0 rgba(98, 98, 98, .12);
+  box-shadow: 0 0 6px 0 rgba(98, 98, 98, 0.12);
   border-radius: 4px;
   padding: 16px;
   overflow: auto;
@@ -235,17 +236,25 @@ ul {
 }
 
 .input-button {
-  :global(.ant-input-search-button) {
+  .ant-input-search-button {
     border-radius: @border-radius-base;
 
     .btn-default;
   }
 }
 
+.input-button-primary {
+  .ant-input-search-button {
+    border-radius: @border-radius-base;
+
+    .btn-primary;
+  }
+}
+
 .input-button-disabled {
   .input-button;
 
-  :global(.ant-input-search-button) {
+  .ant-input-search-button {
     &,
     &:hover,
     &:focus,
@@ -387,6 +396,14 @@ ul {
   white-space: nowrap;
 }
 
+.content-view-xl {
+  @media only screen and (min-width: 1280px) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 1180px;
+  }
+}
+
 .content-view-lg {
   @media only screen and (min-width: 1120px) {
     margin-left: auto !important;
@@ -477,7 +494,6 @@ ul {
       width: 1px; // tmp
     }
 
-
     &:hover {
       > td {
         cursor: pointer;
@@ -534,38 +550,37 @@ ul {
 
 @-webkit-keyframes ant-progress-active {
   0% {
-    opacity: .1;
-    width: 0
+    opacity: 0.1;
+    width: 0;
   }
 
   20% {
-    opacity: .5;
-    width: 0
+    opacity: 0.5;
+    width: 0;
   }
 
   to {
     opacity: 0;
-    width: 100%
+    width: 100%;
   }
 }
 
 @keyframes ant-progress-active {
   0% {
-    opacity: .1;
-    width: 0
+    opacity: 0.1;
+    width: 0;
   }
 
   20% {
-    opacity: .5;
-    width: 0
+    opacity: 0.5;
+    width: 0;
   }
 
   to {
     opacity: 0;
-    width: 100%
+    width: 100%;
   }
 }
-
 
 .result-bar {
   width: 50px;
@@ -581,11 +596,11 @@ ul {
     position: relative;
     height: 100%;
     display: inline-table;
-    background-color: #FFC107;
-    transition: all .4s cubic-bezier(.08,.82,.17,1) 0s;
+    background-color: #ffc107;
+    transition: all 0.4s cubic-bezier(0.08, 0.82, 0.17, 1) 0s;
 
     &::before {
-      content: "";
+      content: '';
       opacity: 0;
       position: absolute;
       top: 0;
@@ -593,8 +608,8 @@ ul {
       right: 0;
       bottom: 0;
       background: #fff;
-      -webkit-animation: ant-progress-active 2.4s cubic-bezier(.23,1,.32,1) infinite;
-      animation: ant-progress-active 2.4s cubic-bezier(.23,1,.32,1) infinite;
+      -webkit-animation: ant-progress-active 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+      animation: ant-progress-active 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite;
     }
   }
 
@@ -615,7 +630,8 @@ ul {
   }
 }
 
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
   &.near-result-bar {
     padding-left: 20px;
   }
@@ -696,10 +712,9 @@ ul {
   }
 }
 
-
 // user page
 
-@import "./Josefin_Sans";
+@import './Josefin_Sans';
 .u-bbg {
   //background-image: url('http://127.0.0.1/oj3_bgs/sunflowers-cut.jpg');
   background-color: #acacac;
@@ -890,7 +905,6 @@ ul {
   }
 }
 
-
 .upload-mask {
   .ant-avatar {
     cursor: pointer;
@@ -900,7 +914,7 @@ ul {
       position: absolute;
       z-index: 1;
       background-color: rgba(0, 0, 0, 0.5);
-      transition: all .3s;
+      transition: all 0.3s;
       width: 100%;
       height: 100%;
       left: 0;
@@ -914,7 +928,7 @@ ul {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    transition: all .3s;
+    transition: all 0.3s;
     z-index: 2;
     opacity: 0;
     font-size: 36px;
@@ -922,26 +936,24 @@ ul {
   }
 
   &:hover {
-    .ant-avatar::before, .upload-mask-icon {
+    .ant-avatar::before,
+    .upload-mask-icon {
       opacity: 1;
     }
   }
 
   &.hold {
-    .ant-avatar::before, .upload-mask-icon {
+    .ant-avatar::before,
+    .upload-mask-icon {
       opacity: 1;
     }
   }
-
-
 
   //display: inline-block;
   //height: 100%;
   //cursor: pointer;
   //z-index: 1;
   //border-radius: 50%;
-
-
 }
 
 .banner-edit-btn {
@@ -991,7 +1003,7 @@ ul {
 
 .info-tips {
   cursor: pointer;
-  opacity: .9;
+  opacity: 0.9;
 }
 
 .mini-ratio-progress {
@@ -1236,11 +1248,11 @@ ul {
 }
 
 .media-min(@min) {
-  @query: ~"@media only screen and (min-width: @{min})";
+  @query: ~'@media only screen and (min-width: @{min})';
 }
 
 .media-max(@max) {
-  @query: ~"@media only screen and (max-width: @{max})";
+  @query: ~'@media only screen and (max-width: @{max})';
 }
 
 .list-view {
@@ -1254,7 +1266,9 @@ ul {
 // red packet
 
 .red-packet-modal {
-  .ant-modal-header, .ant-modal-body, .ant-modal-title {
+  .ant-modal-header,
+  .ant-modal-body,
+  .ant-modal-title {
     background: #b72c2c;
     color: #ffca00;
   }
@@ -1262,7 +1276,6 @@ ul {
   .ant-modal-header {
     border-bottom: none;
   }
-
 }
 
 // contest rating header
@@ -1281,6 +1294,27 @@ ul {
     background: @background-color-light;
     color: inherit;
   }
+}
+
+// group card list
+
+.group-card-list {
+  &.ant-list .ant-list-item {
+    margin-bottom: 0;
+    padding: 8px 0;
+  }
+
+  // .ant-card {
+  // }
+}
+
+// verified badge
+
+.verified-badge {
+  font-style: italic;
+  color: @primary-6;
+  font-weight: 600;
+  user-select: none;
 }
 
 // mobile

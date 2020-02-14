@@ -37,7 +37,7 @@ body.dark {
   @import 'styles/dark_antd/message/style/index';
   @import 'styles/dark_antd/notification/style/index';
   @import 'styles/dark_antd/upload/style/index';
-  @import "dark.less";
+  @import 'dark.less';
 }
 
 // auto dark
@@ -83,6 +83,10 @@ body.dark {
     @import 'styles/dark_antd_duplicated4auto/message/style/index';
     @import 'styles/dark_antd_duplicated4auto/notification/style/index';
     @import 'styles/dark_antd_duplicated4auto/upload/style/index';
-    @import "dark_duplicated4auto.less";
+    @import 'dark_duplicated4auto.less';
+
+    .input-button-primary .ant-input-search-button {
+      .btn-primary;
+    }
   }
 }

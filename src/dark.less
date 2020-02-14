@@ -13,8 +13,12 @@
 
 //@import 'variables_dark';
 
-
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: @font-color; // dark
 }
 
@@ -150,7 +154,7 @@ a {
   }
 }
 
-.ant-table-fixed-header>.ant-table-content>.ant-table-scroll>.ant-table-body {
+.ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
   background: @component-background;
 }
 
@@ -191,17 +195,21 @@ a {
 }
 
 .input-button {
-  :global(.ant-input-search-button) {
-    border-radius: @border-radius-base;
-
+  .ant-input-search-button {
     .btn-default;
+  }
+}
+
+.input-button-primary {
+  .ant-input-search-button {
+    .btn-primary;
   }
 }
 
 .input-button-disabled {
   .input-button;
 
-  :global(.ant-input-search-button) {
+  .ant-input-search-button {
     &,
     &:hover,
     &:focus,
@@ -436,11 +444,11 @@ a {
 }
 
 .problem-content img {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 .image-area img {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 // solution calendar
@@ -468,7 +476,7 @@ a {
 // rating
 
 .rating-history {
-  opacity: .7;
+  opacity: 0.7;
 }
 
 //// solution result stats

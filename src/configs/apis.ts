@@ -23,6 +23,7 @@ const api = {
     ratingHistory: '/users/:id/ratingHistory',
     favorites: '/users/:id/favorites',
     notes: '/users/:id/notes',
+    groups: '/users/:id/groups',
   },
   problems: {
     base: '/problems',

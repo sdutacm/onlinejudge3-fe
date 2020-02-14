@@ -280,7 +280,7 @@ interface IFavoriteContest extends IFavoriteBase {
   };
 }
 
-type IFavorite = IFavoriteProblem | IFavoriteContest
+type IFavorite = IFavoriteProblem | IFavoriteContest;
 
 interface ISet {
   setId: number;
@@ -360,7 +360,7 @@ interface INoteUnknown extends INoteBase {
   };
 }
 
-type INote = INoteProblem | INoteContest | INoteSolution | INoteUnknown
+type INote = INoteProblem | INoteContest | INoteSolution | INoteUnknown;
 
 interface INoteProblemReq {
   type: 'problem';
@@ -397,20 +397,30 @@ interface INoteUnknownReq {
   };
 }
 
-type INoteReq = INoteProblemReq | INoteContestReq | INoteSolutionReq | INoteUnknownReq
-
-interface IGroupMember extends IUserLite {
-  permission?: number;
-  joinedAt?: ITimestamp;
-}
+type INoteReq =
+  | INoteProblemReq
+  | INoteContestReq
+  | INoteSolutionReq
+  | INoteUnknownReq;
 
 interface IGroup {
-  groupId: string;
+  groupId: number;
   name: string;
+  avatar: string;
+  intro: boolean;
   verified: boolean;
-  members?: IGroupMember[];
+  private: boolean;
+  joinChannel: 0 | 1 | 2;
+  membersCount: number;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
+}
+
+interface IGroupMember {
+  permission?: 0 | 1 | 3;
+  status?: 0 | 1;
+  joinedAt?: ITimestamp;
+  user: IUserLite;
 }
 
 interface IStatsUserACRankUserStatus {

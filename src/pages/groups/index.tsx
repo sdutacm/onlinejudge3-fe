@@ -1,6 +1,5 @@
 /**
- * name: Groups
- * intro: '介绍，这是介绍...',
+ * title: Groups
  */
 
 import React from 'react';

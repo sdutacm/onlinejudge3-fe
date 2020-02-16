@@ -5,29 +5,28 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Card, Tabs, Icon, Button, List, Input } from 'antd';
+import { Tabs, Icon, Button, Input } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
-import moment from 'moment';
-import constants from '@/configs/constants';
 import PageAnimation from '@/components/PageAnimation';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import tracker from '@/utils/tracker';
+import GroupList from '@/components/GroupList';
 
 export interface Props extends ReduxProps, RouteProps {
   searchList: IList<IGroup>;
-  myGroups: IFullList<IGroup>;
+  joinedGroups: IFullList<IGroup>;
   session: ISessionStatus;
+  searchLoading: boolean;
+  joinedLoading: boolean;
 }
 
 interface State {
   search: string;
 }
 
-class GroupList extends React.Component<Props, State> {
+class GroupIndex extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,16 +40,20 @@ class GroupList extends React.Component<Props, State> {
   //   }
   // }
 
-  componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-    if (
-      this.props.session.loggedIn &&
-      !nextProps.session.loggedIn &&
-      nextProps.location.query.joined
-    ) {
-      // router.replace({
-      //   pathname: this.props.location.pathname,
-      //   query: { ...this.props.location.query, joined: undefined, page: 1 },
-      // });
+  componentWillReceiveProps(np: Readonly<Props>): void {
+    const p = this.props;
+    if (np.location.query.category === 'my') {
+      if (!p.session.loggedIn && np.session.loggedIn) {
+        np.dispatch({
+          type: 'groups/getJoinedGroups',
+          payload: {},
+        });
+      } else if (p.session.loggedIn && !np.session.loggedIn) {
+        router.replace({
+          pathname: this.props.location.pathname,
+          query: { category: 'explore' },
+        });
+      }
     }
   }
 
@@ -69,12 +72,13 @@ class GroupList extends React.Component<Props, State> {
   };
 
   handleSearch = () => {
-    if (this.state.search) {
-      tracker.event({
-        category: 'groups',
-        action: 'search',
-        label: this.state.search,
-      });
+    if (!this.props.searchLoading) {
+      this.state.search &&
+        tracker.event({
+          category: 'groups',
+          action: 'search',
+          label: this.state.search,
+        });
       router.replace({
         pathname: this.props.location.pathname,
         query: { ...this.props.location.query, name: this.state.search, page: 1 },
@@ -84,9 +88,12 @@ class GroupList extends React.Component<Props, State> {
 
   render() {
     const {
-      loading,
-      searchList: { page, count, rows },
+      searchLoading,
+      joinedLoading,
+      searchList,
+      joinedGroups,
       location: { query },
+      session,
     } = this.props;
     return (
       <PageAnimation>
@@ -97,7 +104,7 @@ class GroupList extends React.Component<Props, State> {
             animated={false}
             onChange={this.handleCategoryChange}
             tabBarExtraContent={
-              <Button>
+              <Button disabled={!session.loggedIn}>
                 <Icon type="plus" /> Group
               </Button>
             }
@@ -105,79 +112,37 @@ class GroupList extends React.Component<Props, State> {
             <Tabs.TabPane tab="Explore" key="explore">
               <div className="mb-lg text-center" style={{ marginTop: '42px' }}>
                 <Input.Search
-                  enterButton="Search"
+                  enterButton={<Icon type="search" />}
                   placeholder=""
                   className="input-button-primary"
                   defaultValue={this.state.search}
                   onChange={(e) => this.setState({ search: e.target.value })}
                   style={{ maxWidth: '729px' }}
-                  disabled={loading}
                   onSearch={this.handleSearch}
                 />
               </div>
-              <List
-                className="group-card-list"
-                grid={{
-                  gutter: 16,
-                  xs: 1,
-                  md: 4,
-                }}
-                dataSource={rows}
-                locale={{ emptyText: query.name ? 'No groups' : '' }}
-                loading={loading}
-                pagination={
-                  count > 0
-                    ? {
-                        // className: 'ant-table-pagination',
-                        total: count,
-                        current: +page || 1,
-                        pageSize: limits.groups.search,
-                        onChange: this.handlePageChange,
-                      }
-                    : undefined
-                }
-                renderItem={(item) => (
-                  <List.Item>
-                    <Card bordered={false} style={{ width: '100%' }}>
-                      <Card.Meta
-                        title={
-                          <div>
-                            <div
-                              className="text-ellipsis"
-                              style={{ paddingRight: '16px' }}
-                            >
-                              {item.name}
-                            </div>
-                            {item.verified ? (
-                              <div
-                                className="verified-badge"
-                                style={{
-                                  position: 'absolute',
-                                  top: '12px',
-                                  right: '16px',
-                                }}
-                                title="Verified"
-                              >
-                                V
-                              </div>
-                            ) : null}
-                          </div>
-                        }
-                        description={
-                          <div className="text-ellipsis">
-                            {item.intro}
-                            <div className="mt-sm">
-                              <Icon type="user" /> {item.membersCount}
-                            </div>
-                          </div>
-                        }
-                      />
-                    </Card>
-                  </List.Item>
-                )}
+              <GroupList
+                loading={searchLoading}
+                count={searchList.count}
+                rows={searchList.rows}
+                page={searchList.page}
+                limit={limits.groups.search}
+                emptyText={query.name ? 'No groups' : ''}
+                onPageChange={this.handlePageChange}
               />
             </Tabs.TabPane>
-            <Tabs.TabPane tab="My Groups" key="my" />
+
+            {session.loggedIn && (
+              <Tabs.TabPane tab="My Groups" key="my">
+                <GroupList
+                  loading={joinedLoading}
+                  count={joinedGroups.count}
+                  rows={joinedGroups.rows}
+                  emptyText="No groups yet. Explore new groups just now!"
+                  onPageChange={this.handlePageChange}
+                />
+              </Tabs.TabPane>
+            )}
           </Tabs>
         </div>
       </PageAnimation>
@@ -187,10 +152,12 @@ class GroupList extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    loading: !!state.loading.effects['groups/searchList'],
+    searchLoading: !!state.loading.effects['groups/searchList'],
+    joinedLoading: !!state.loading.effects['groups/getJoinedGroups'],
     searchList: state.groups.search,
+    joinedGroups: state.groups.joinedGroups,
     session: state.session,
   };
 }
 
-export default connect(mapStateToProps)(GroupList);
+export default connect(mapStateToProps)(GroupIndex);

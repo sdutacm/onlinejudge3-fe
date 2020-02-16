@@ -6,16 +6,18 @@ import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
 
-const initialState = {
-  list: {
-    count: 0,
-    rows: [],
-    _query: {},
-  },
-};
+function genInitialState() {
+  return {
+    list: {
+      count: 0,
+      rows: [],
+      _query: {},
+    },
+  };
+}
 
 export default {
-  state: initialState,
+  state: genInitialState(),
   reducers: {
     setList(state, { payload: { data, query } }) {
       state.list = {
@@ -30,7 +32,7 @@ export default {
       };
     },
     clearAllNotes(state) {
-      state.list = initialState.list;
+      state.list = genInitialState().list;
     },
   },
   effects: {
@@ -54,7 +56,7 @@ export default {
           return;
         }
       }
-      const ret: IApiResponse<IFullList<INote> > = yield call(service.getList, userId, formattedQuery);
+      const ret: IApiResponse<IFullList<INote>> = yield call(service.getList, userId, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',

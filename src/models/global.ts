@@ -24,7 +24,11 @@ export default {
   subscriptions: {
     setup({ dispatch, history }: { dispatch: Function; history: History }) {
       return history.listen((location) => {
-        tracker.pageview(location.pathname + location.search);
+        let search = location.search || '';
+        search && !search.startsWith('?') && (search = '?' + search);
+        let hash = location.hash || '';
+        hash && !hash.startsWith('#') && (hash = '#' + hash);
+        tracker.pageview(location.pathname + search + hash);
       });
     },
   },

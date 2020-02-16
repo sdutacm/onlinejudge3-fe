@@ -21,7 +21,7 @@ import SendMessageModal from '@/components/SendMessageModal';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import { validateFile } from '@/utils/validate';
-import GeneralFormModal from '@/components/GeneralFormModal'
+import GeneralFormModal from '@/components/GeneralFormModal';
 import langs from '@/configs/solutionLanguages';
 import ChangeEmailModal from '@/components/ChangeEmailModal';
 import tracker from '@/utils/tracker';
@@ -42,17 +42,21 @@ interface State {
 class UserDetail extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
 
-  private validateAvatar = validateFile([
-    { name: 'JPG', type: 'image/jpeg' },
-    { name: 'BMP', type: 'image/bmp' },
-    { name: 'PNG', type: 'image/png' }],
-    4
+  private validateAvatar = validateFile(
+    [
+      { name: 'JPG', type: 'image/jpeg' },
+      { name: 'BMP', type: 'image/bmp' },
+      { name: 'PNG', type: 'image/png' },
+    ],
+    4,
   );
-  private validateBannerImage = validateFile([
-    { name: 'JPG', type: 'image/jpeg' },
-    { name: 'BMP', type: 'image/bmp' },
-    { name: 'PNG', type: 'image/png' }],
-    12
+  private validateBannerImage = validateFile(
+    [
+      { name: 'JPG', type: 'image/jpeg' },
+      { name: 'BMP', type: 'image/bmp' },
+      { name: 'PNG', type: 'image/png' },
+    ],
+    12,
   );
 
   constructor(props) {
@@ -92,23 +96,27 @@ class UserDetail extends React.Component<Props, State> {
   checkBannerImage = async (props: Props) => {
     const { data: allData, match } = props;
     const id = ~~match.params.id;
-    const data = allData[id] || {} as IUser;
+    const data = allData[id] || ({} as IUser);
     if (!data.bannerImage) {
       return;
     }
     const imageExtIndex = data.bannerImage.lastIndexOf('.');
-    const thumbUrl = `${constants.bannerImageUrlPrefix}min_${data.bannerImage.substring(0, imageExtIndex)}.jpg`;
+    const thumbUrl = `${constants.bannerImageUrlPrefix}min_${data.bannerImage.substring(
+      0,
+      imageExtIndex,
+    )}.jpg`;
     const fullUrl = `${constants.bannerImageUrlPrefix}${data.bannerImage}`;
     // 设置缩略图
     try {
       const _thumbStart = Date.now();
       await loadImage(thumbUrl);
       const thumbCost = Date.now() - _thumbStart;
-      thumbCost > 120 && tracker.timing({
-        category: 'users',
-        variable: 'downloadThumbBanner',
-        value: thumbCost,
-      });
+      thumbCost > 120 &&
+        tracker.timing({
+          category: 'users',
+          variable: 'downloadThumbBanner',
+          value: thumbCost,
+        });
     } catch (err) {
       console.error(err);
     } finally {
@@ -122,11 +130,12 @@ class UserDetail extends React.Component<Props, State> {
       const _fullStart = Date.now();
       await loadImage(fullUrl);
       const fullCost = Date.now() - _fullStart;
-      fullCost > 120 && tracker.timing({
-        category: 'users',
-        variable: 'downloadFullBanner',
-        value: fullCost,
-      });
+      fullCost > 120 &&
+        tracker.timing({
+          category: 'users',
+          variable: 'downloadFullBanner',
+          value: fullCost,
+        });
     } catch (err) {
       console.error(err);
     } finally {
@@ -150,17 +159,18 @@ class UserDetail extends React.Component<Props, State> {
     let newBannerImage = '';
     try {
       oldBannerImage = this.props.data[oldId].bannerImage;
-    }
-    catch (e) {}
+    } catch (e) {}
     try {
       newBannerImage = nextProps.data[newId].bannerImage;
-    }
-    catch (e) {}
+    } catch (e) {}
     if (oldBannerImage !== newBannerImage) {
-      this.setState({
-        bannerImageLoading: false,
-        bannerImageUrl: '',
-      }, () => this.checkBannerImage(nextProps));
+      this.setState(
+        {
+          bannerImageLoading: false,
+          bannerImageUrl: '',
+        },
+        () => this.checkBannerImage(nextProps),
+      );
     }
   }
 
@@ -173,8 +183,7 @@ class UserDetail extends React.Component<Props, State> {
         });
       }
       this.setState({ uploadAvatarLoading: true });
-    }
-    else if (info.file.status === 'done') {
+    } else if (info.file.status === 'done') {
       const resp = info.file.response;
       msg.auto(resp);
       if (resp.success) {
@@ -202,8 +211,7 @@ class UserDetail extends React.Component<Props, State> {
         });
       }
       this.setState({ uploadBannerImageLoading: true });
-    }
-    else if (info.file.status === 'done') {
+    } else if (info.file.status === 'done') {
       const resp = info.file.response;
       msg.auto(resp);
       if (resp.success) {
@@ -219,7 +227,7 @@ class UserDetail extends React.Component<Props, State> {
     }
   };
 
-  handleSolutionCalendarPeriodChange = value => {
+  handleSolutionCalendarPeriodChange = (value) => {
     this.setState({ solutionCalendarPeriod: value });
     tracker.event({
       category: 'users',
@@ -234,38 +242,42 @@ class UserDetail extends React.Component<Props, State> {
       field: 'oldPassword',
       component: 'input',
       type: 'password',
-      rules: [{ required: true, message: 'Please input old password' }]
+      rules: [{ required: true, message: 'Please input old password' }],
     },
     {
       name: 'New Password',
       field: 'password',
       component: 'input',
       type: 'password',
-      rules: [{ required: true, message: 'Please input new password' }]
+      rules: [{ required: true, message: 'Please input new password' }],
     },
     {
       name: 'Confirm Password',
       field: 'confirmPassword',
       component: 'input',
       type: 'password',
-      rules: [{ required: true, message: 'Please confirm new password' }]
-    }
-  ]
+      rules: [{ required: true, message: 'Please confirm new password' }],
+    },
+  ];
 
   render() {
     const { loading, data: allData, session, match } = this.props;
     const {
-      uploadAvatarLoading, uploadBannerImageLoading, bannerImageLoading, bannerImageUrl, solutionCalendarPeriod,
+      uploadAvatarLoading,
+      uploadBannerImageLoading,
+      bannerImageLoading,
+      bannerImageUrl,
+      solutionCalendarPeriod,
     } = this.state;
     const id = ~~match.params.id;
     const notFound = !loading && !allData[id];
     if (notFound) {
       return <NotFound />;
     }
-    const data = allData[id] || {} as IUser;
+    const data = allData[id] || ({} as IUser);
     const self = isSelf(session, data.userId);
     const solutionCalendarYears = new Set();
-    (data.solutionCalendar || []).forEach(d => {
+    (data.solutionCalendar || []).forEach((d) => {
       const year = +d.date.split('-')[0];
       solutionCalendarYears.add(year);
     });
@@ -276,28 +288,28 @@ class UserDetail extends React.Component<Props, State> {
         field: 'school',
         component: 'input',
         initialValue: data.school,
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College',
         field: 'college',
         component: 'input',
         initialValue: data.college,
-        rules: [{ required: true, message: 'Please input college' }]
+        rules: [{ required: true, message: 'Please input college' }],
       },
       {
         name: 'Major',
         field: 'major',
         component: 'input',
         initialValue: data.major,
-        rules: [{ required: true, message: 'Please input major' }]
+        rules: [{ required: true, message: 'Please input major' }],
       },
       {
         name: 'Class',
         field: 'class',
         component: 'input',
         initialValue: data.class,
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Site',
@@ -310,21 +322,27 @@ class UserDetail extends React.Component<Props, State> {
         field: 'defaultLanguage',
         component: 'select',
         initialValue: data.defaultLanguage,
-        options: langs.map(item => ({
+        options: langs.map((item) => ({
           value: item.fieldName,
           name: item.displayShortName,
         })),
-        rules: [{ required: true, message: 'Please input default language' }]
-      }
-    ]
+        rules: [{ required: true, message: 'Please input default language' }],
+      },
+    ];
 
     return (
       <PageTitle title={data.nickname} loading={loading}>
         <div>
-          <div className={classNames('u-bbg', { thumb: bannerImageLoading, 'no-banner': !data.bannerImage })} style={{
-            backgroundImage: data.bannerImage ? `url(${bannerImageUrl})` : undefined,
-          }} />
-          {self &&
+          <div
+            className={classNames('u-bbg', {
+              thumb: bannerImageLoading,
+              'no-banner': !data.bannerImage,
+            })}
+            style={{
+              backgroundImage: data.bannerImage ? `url(${bannerImageUrl})` : undefined,
+            }}
+          />
+          {self && (
             <div className="banner-edit-btn">
               <Upload
                 name="bannerImage"
@@ -334,14 +352,18 @@ class UserDetail extends React.Component<Props, State> {
                 onChange={this.handleBannerImageChange}
                 showUploadList={false}
               >
-                <Button ghost loading={uploadBannerImageLoading}>Change Banner</Button>
+                <Button ghost loading={uploadBannerImageLoading}>
+                  Change Banner
+                </Button>
               </Upload>
-            </div>}
+            </div>
+          )}
           <div className="content-view" style={{ position: 'relative' }}>
             <div className="u-header" style={{ height: '60px' }}>
               <span className="u-avatar">
-                {!self ?
-                  <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} /> :
+                {!self ? (
+                  <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} />
+                ) : (
                   <Upload
                     name="avatar"
                     accept="image/jpeg,image/bmp,image/png"
@@ -351,13 +373,14 @@ class UserDetail extends React.Component<Props, State> {
                     onChange={this.handleAvatarChange}
                     showUploadList={false}
                   >
-                    {uploadAvatarLoading || loading ?
-                      <Icon type="loading" className="upload-mask-icon" /> :
+                    {uploadAvatarLoading || loading ? (
+                      <Icon type="loading" className="upload-mask-icon" />
+                    ) : (
                       <Icon type="upload" className="upload-mask-icon" />
-                    }
+                    )}
                     <Avatar size={120} icon="user" src={formatAvatarUrl(data.avatar)} />
                   </Upload>
-                }
+                )}
               </span>
               <span className="u-info">
                 <h1>{data.nickname}</h1>
@@ -370,7 +393,11 @@ class UserDetail extends React.Component<Props, State> {
                   <Col xs={24} md={18} xxl={18}>
                     <Card bordered={false}>
                       <h3>Rating</h3>
-                      <Rating rating={data.rating} ratingHistory={data.ratingHistory || []} loading={loading} />
+                      <Rating
+                        rating={data.rating}
+                        ratingHistory={data.ratingHistory || []}
+                        loading={loading}
+                      />
                     </Card>
 
                     <Card bordered={false}>
@@ -382,16 +409,22 @@ class UserDetail extends React.Component<Props, State> {
                           size="small"
                           onChange={this.handleSolutionCalendarPeriodChange}
                         >
-                          {(Array.from(solutionCalendarYears) as number[]).map(y =>
-                            <Select.Option key={`${y}`} value={y}>{y}</Select.Option>
-                          )}
+                          {(Array.from(solutionCalendarYears) as number[]).map((y) => (
+                            <Select.Option key={`${y}`} value={y}>
+                              {y}
+                            </Select.Option>
+                          ))}
                           <Select.Option value={null}>Recent</Select.Option>
                         </Select>
                       </h3>
                       <SolutionCalendar
                         data={data.solutionCalendar}
-                        startDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-01-01` : undefined}
-                        endDate={solutionCalendarPeriod ? `${solutionCalendarPeriod}-12-31` : undefined}
+                        startDate={
+                          solutionCalendarPeriod ? `${solutionCalendarPeriod}-01-01` : undefined
+                        }
+                        endDate={
+                          solutionCalendarPeriod ? `${solutionCalendarPeriod}-12-31` : undefined
+                        }
                       />
                     </Card>
 
@@ -399,20 +432,22 @@ class UserDetail extends React.Component<Props, State> {
                       <h3 className="warning-text">╮(￣▽￣)╭<br />未开放测试的功能</h3>
                     </Card> */}
 
-                    {/*<Card bordered={false}>*/}
-                    {/*<h3>Activities</h3>*/}
-                    {/*<Tabs defaultActiveKey="1">*/}
-                    {/*<Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane>*/}
-                    {/*<Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane>*/}
-                    {/*<Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane>*/}
-                    {/*</Tabs>*/}
-                    {/*</Card>*/}
+                    {/* <Card bordered={false}> */}
+                    {/* <h3>Activities</h3> */}
+                    {/* <Tabs defaultActiveKey="1"> */}
+                    {/* <Tabs.TabPane tab="Shared (3)" key="1">{this.listComponent}</Tabs.TabPane> */}
+                    {/* <Tabs.TabPane tab="Asked (2)" key="2">Content of Tab Pane 2</Tabs.TabPane> */}
+                    {/* <Tabs.TabPane tab="Answered (15)" key="3">Content of Tab Pane 3</Tabs.TabPane> */}
+                    {/* </Tabs> */}
+                    {/* </Card> */}
                   </Col>
                   <Col xs={24} md={6} xxl={6}>
                     <Card bordered={false}>
                       <div style={{ width: '100%' }}>
                         <Link
-                          to={urlf(pages.solutions.index, { query: { userId: data.userId, result: Results.AC } })}
+                          to={urlf(pages.solutions.index, {
+                            query: { userId: data.userId, result: Results.AC },
+                          })}
                           className="normal-text-link"
                           onClick={() => {
                             tracker.event({
@@ -422,8 +457,17 @@ class UserDetail extends React.Component<Props, State> {
                             });
                           }}
                         >
-                          <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }}>
-                            <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.accepted}</strong></p>
+                          <div
+                            style={{
+                              display: 'block',
+                              width: '50%',
+                              float: 'left',
+                              textAlign: 'center',
+                            }}
+                          >
+                            <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}>
+                              <strong>{data.accepted}</strong>
+                            </p>
                             <p style={{ fontSize: '12px' }}>AC</p>
                           </div>
                         </Link>
@@ -438,8 +482,18 @@ class UserDetail extends React.Component<Props, State> {
                             });
                           }}
                         >
-                          <div style={{ display: 'block', width: '50%', float: 'left', textAlign: 'center' }} className="card-block-divider">
-                            <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}><strong>{data.submitted}</strong></p>
+                          <div
+                            style={{
+                              display: 'block',
+                              width: '50%',
+                              float: 'left',
+                              textAlign: 'center',
+                            }}
+                            className="card-block-divider"
+                          >
+                            <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}>
+                              <strong>{data.submitted}</strong>
+                            </p>
                             <p style={{ fontSize: '12px' }}>Submitted</p>
                           </div>
                         </Link>
@@ -465,7 +519,7 @@ class UserDetail extends React.Component<Props, State> {
                               <td>Class</td>
                               <td>{xss(data.class)}</td>
                             </tr>
-                            {data.site ?
+                            {data.site ? (
                               <tr>
                                 <td>Site</td>
                                 <td>
@@ -478,103 +532,141 @@ class UserDetail extends React.Component<Props, State> {
                                         action: 'toSite',
                                       });
                                     }}
-                                  >{xss(data.site)}</a>
+                                  >
+                                    {xss(data.site)}
+                                  </a>
                                 </td>
-                              </tr> : null}
-                            {data.email ?
+                              </tr>
+                            ) : null}
+                            {data.email ? (
                               <tr>
                                 <td>Email</td>
                                 <td>{xss(data.email)}</td>
-                              </tr> : null}
+                              </tr>
+                            ) : null}
                           </tbody>
                         </table>
                       </Skeleton>
                     </Card>
 
-                    {self && <Card bordered={false} className={styles.infoBoard}>
-                      <GeneralFormModal
-                        loadingEffect="users/editProfile"
-                        title="Edit Profile"
-                        autoMsg
-                        items={editProfileFormItems}
-                        submit={(dispatch: ReduxProps['dispatch'], values) => {
-                          tracker.event({
-                            category: 'users',
-                            action: 'editProfile',
-                          });
-                          return dispatch({
-                            type: 'users/editProfile',
-                            payload: {
-                              userId: session.user.userId,
-                              data: values,
-                            },
-                          });
-                        }}
-                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                          msg.success('Update successfully');
-                        }}
-                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                          dispatch({
-                            type: 'users/getDetail',
-                            payload: {
-                              id: session.user.userId,
-                              force: true,
-                            },
-                          });
-                        }}
-                      >
-                        <Button block>Edit Profile</Button>
-                      </GeneralFormModal>
+                    {data.groups?.length > 0 && (
+                      <Card bordered={false}>
+                        <h4>Groups</h4>
+                        {data.groups.map((g) => (
+                          <p key={g.groupId} style={{ marginBottom: '0' }}>
+                            <Link
+                              to={urlf(pages.groups.detail, { param: { id: g.groupId } })}
+                              className="normal-text-link display-flex"
+                              style={{ fontSize: '12px' }}
+                            >
+                              <div className="text-ellipsis">{g.name}</div>
+                              {g.verified && (
+                                <div className="verified-badge ml-sm-md" title="Verified">
+                                  V
+                                </div>
+                              )}
+                            </Link>
+                          </p>
+                        ))}
+                      </Card>
+                    )}
 
-                      <ChangeEmailModal type={data.verified ? 'change' : 'bind'} userId={data.userId}>
-                        <Button block className="mt-md">{data.verified ? 'Change Email' : 'Bind Email'}</Button>
-                      </ChangeEmailModal>
-
-                      <GeneralFormModal
-                        loadingEffect="users/changePassword"
-                        title="Change Password"
-                        autoMsg
-                        items={this.changePasswordFormItems}
-                        submit={(dispatch: ReduxProps['dispatch'], values) => {
-                          if (values.password !== values.confirmPassword) {
-                            msg.error('Two passwords are inconsistent');
-                            return;
-                          }
-                          else {
+                    {self && (
+                      <Card bordered={false} className={styles.infoBoard}>
+                        <GeneralFormModal
+                          loadingEffect="users/editProfile"
+                          title="Edit Profile"
+                          autoMsg
+                          items={editProfileFormItems}
+                          submit={(dispatch: ReduxProps['dispatch'], values) => {
                             tracker.event({
                               category: 'users',
-                              action: 'changePassword',
+                              action: 'editProfile',
                             });
                             return dispatch({
-                              type: 'users/changePassword',
+                              type: 'users/editProfile',
                               payload: {
                                 userId: session.user.userId,
-                                data: {
-                                  oldPassword: values.oldPassword,
-                                  password: values.password,
-                                },
+                                data: values,
                               },
                             });
-                          }
-                        }}
-                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                          msg.success('Update successfully');
-                        }}
-                      >
-                        <Button block className="mt-md">Change Password</Button>
-                      </GeneralFormModal>
-                    </Card>}
+                          }}
+                          onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                            msg.success('Update successfully');
+                          }}
+                          onSuccessModalClosed={(
+                            dispatch: ReduxProps['dispatch'],
+                            ret: IApiResponse<any>,
+                          ) => {
+                            dispatch({
+                              type: 'users/getDetail',
+                              payload: {
+                                id: session.user.userId,
+                                force: true,
+                              },
+                            });
+                          }}
+                        >
+                          <Button block>Edit Profile</Button>
+                        </GeneralFormModal>
 
-                    {!loading && session.loggedIn && !isSelf(session, data.userId) &&
+                        <ChangeEmailModal
+                          type={data.verified ? 'change' : 'bind'}
+                          userId={data.userId}
+                        >
+                          <Button block className="mt-md">
+                            {data.verified ? 'Change Email' : 'Bind Email'}
+                          </Button>
+                        </ChangeEmailModal>
+
+                        <GeneralFormModal
+                          loadingEffect="users/changePassword"
+                          title="Change Password"
+                          autoMsg
+                          items={this.changePasswordFormItems}
+                          submit={(dispatch: ReduxProps['dispatch'], values) => {
+                            if (values.password !== values.confirmPassword) {
+                              msg.error('Two passwords are inconsistent');
+                              return;
+                            } else {
+                              tracker.event({
+                                category: 'users',
+                                action: 'changePassword',
+                              });
+                              return dispatch({
+                                type: 'users/changePassword',
+                                payload: {
+                                  userId: session.user.userId,
+                                  data: {
+                                    oldPassword: values.oldPassword,
+                                    password: values.password,
+                                  },
+                                },
+                              });
+                            }
+                          }}
+                          onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                            msg.success('Update successfully');
+                          }}
+                        >
+                          <Button block className="mt-md">
+                            Change Password
+                          </Button>
+                        </GeneralFormModal>
+                      </Card>
+                    )}
+
+                    {!loading && session.loggedIn && !isSelf(session, data.userId) && (
                       <Card bordered={false}>
                         <SendMessageModal toUserId={data.userId}>
                           <Button block>Send Message</Button>
                         </SendMessageModal>
-                      </Card>}
+                      </Card>
+                    )}
 
-                    {/*<Card bordered={false}>*/}
-                    {/*<Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes*/}
-                    {/*</Card>*/}
+                    {/* <Card bordered={false}> */}
+                    {/* <Icon type="like" theme="outlined" className="mr-sm" /> Collected <strong>3</strong> likes */}
+                    {/* </Card> */}
                   </Col>
                 </Row>
               </div>
@@ -595,4 +687,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(UserDetail);
-

@@ -346,6 +346,10 @@ ul {
   display: none !important;
 }
 
+.display-flex {
+  display: flex;
+}
+
 .visibility-hidden {
   visibility: hidden;
 }
@@ -394,6 +398,11 @@ ul {
 
 .no-wrap {
   white-space: nowrap;
+}
+
+.flex-justify-space-between {
+  display: flex;
+  justify-content: space-between;
 }
 
 .content-view-xl {
@@ -1304,8 +1313,11 @@ ul {
     padding: 8px 0;
   }
 
-  // .ant-card {
-  // }
+  .ant-card {
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
 }
 
 // verified badge

@@ -18,6 +18,10 @@ function genInitialState() {
       rows: [],
       _query: {},
     },
+    joinedGroups: {
+      count: 0,
+      rows: [],
+    },
     detail: {},
     members: {},
   };
@@ -33,10 +37,22 @@ export default {
         _query: query,
       };
     },
+    clearAllSearch(state) {
+      state.search = genInitialState()['search'];
+    },
+    setJoinedGroups(state, { payload: { data } }) {
+      state.joinedGroups = {
+        ...data,
+        ...genTimeFlag(60 * 1000),
+      };
+    },
+    clearAllJoinedGroups(state) {
+      state.joinedGroups = genInitialState()['joinedGroups'];
+    },
     setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
         ...data,
-        ...genTimeFlag(60 * 60 * 1000),
+        ...genTimeFlag(60 * 1000),
       };
     },
     clearExpiredDetail(state) {
@@ -45,7 +61,7 @@ export default {
     setMembers(state, { payload: { id, data } }) {
       state.members[id] = {
         ...data,
-        ...genTimeFlag(60 * 60 * 1000),
+        ...genTimeFlag(60 * 1000),
       };
     },
     clearExpiredMembers(state) {
@@ -54,6 +70,13 @@ export default {
   },
   effects: {
     *searchList({ payload: query }, { call, put, select }) {
+      if (!query.name) {
+        yield put({
+          type: 'clearAllSearch',
+          payload: {},
+        });
+        return;
+      }
       const formattedQuery = formatListQuery(query);
       formattedQuery.limit = +query.limit || limits.groups.search;
       delete formattedQuery.category;
@@ -123,6 +146,28 @@ export default {
       }
       return ret;
     },
+    *getJoinedGroups({ payload: { force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.groups.joinedGroups);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const session = yield select((state) => state.session);
+      if (!session.loggedIn) {
+        return;
+      }
+      const ret: IApiResponse<IFullList<IGroup>> = yield call(service.getUserGroups, session.user.userId);
+      if (ret.success) {
+        yield put({
+          type: 'setJoinedGroups',
+          payload: {
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
     *addGroup({ payload: data }, { call }) {
       return yield call(service.addGroup, data);
     },
@@ -148,8 +193,12 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
-        if (pathname === pages.groups.index && query.category !== 'my' && query.name) {
-          requestEffect(dispatch, { type: 'searchList', payload: query });
+        if (pathname === pages.groups.index) {
+          if (query.category !== 'my') {
+            requestEffect(dispatch, { type: 'searchList', payload: query });
+          } else if (query.category === 'my') {
+            requestEffect(dispatch, { type: 'getJoinedGroups', payload: {} });
+          }
         }
         const matchDetail = matchPath(pathname, {
           path: pages.groups.detail,

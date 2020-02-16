@@ -47,7 +47,7 @@ module.exports = {
     // 'no-undefined': 'off',
     // 'implicit-arrow-linebreak': 'off',
     // 'no-confusing-arrow': 'off',
-    // 'no-param-reassign': 'off',
+    'no-param-reassign': 'off',
     'no-implicit-coercion': 'off',
     // 'guard-for-in': 'off',
     // 'spaced-comment': 'off',

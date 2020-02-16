@@ -14,6 +14,13 @@ export function getList(query) {
   return get(url);
 }
 
+export function getUserGroups(userId) {
+  const url = urlf(api.users.groups, {
+    param: { id: userId },
+  });
+  return get(url);
+}
+
 export function getDetail(id: number) {
   const url = urlf(api.groups.detail, { param: { id } });
   return get(url);

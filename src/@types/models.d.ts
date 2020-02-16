@@ -32,6 +32,7 @@ interface IUser {
   coin?: number;
   solutionCalendar?: ISolutionCalendar;
   defaultLanguage?: string;
+  groups?: IGroup[];
 }
 
 interface IUserLite {

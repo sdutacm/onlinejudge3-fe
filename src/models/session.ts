@@ -113,6 +113,9 @@ export default {
         yield put({
           type: 'notes/clearAllNotes',
         });
+        yield put({
+          type: 'groups/clearAllJoinedGroups',
+        });
       }
       return ret;
     },

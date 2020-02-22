@@ -16,7 +16,8 @@ export interface IGeneralFormItem {
   disabled?: boolean;
   type?: string; // for input
   rows?: number; // for textarea
-  options?: { // for select
+  options?: {
+    // for select
     value: string;
     name: string;
   }[];
@@ -34,6 +35,8 @@ export interface IGeneralFormModalProps extends ReduxProps, FormProps {
   okText?: string;
   cancelText?: string;
   autoMsg?: boolean;
+  className?: string;
+  disabled?: boolean;
   submit(dispatch: ReduxProps['dispatch'], values): Promise<IApiResponse<any>>;
   onSuccess?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
   onSuccessModalClosed?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
@@ -53,31 +56,44 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
   }
 
   handleOk = () => {
-    const { dispatch, form, hiddenValues, submit, onSuccess, onSuccessModalClosed, onFail, autoMsg } = this.props;
+    const {
+      dispatch,
+      form,
+      hiddenValues,
+      submit,
+      onSuccess,
+      onSuccessModalClosed,
+      onFail,
+      autoMsg,
+    } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
         // console.log('form ok', values);
-        submit(dispatch, { ...values, ...hiddenValues }).then(ret => {
+        submit(dispatch, { ...values, ...hiddenValues })?.then((ret) => {
           autoMsg && msg.auto(ret);
           if (ret.success) {
-            onSuccess && onSuccess(dispatch, ret);
+            onSuccess?.(dispatch, ret);
             this.handleHideModel();
-            onSuccessModalClosed && setTimeout(() => onSuccessModalClosed(dispatch, ret),
-              constants.modalAnimationDurationFade
-            );
+            onSuccessModalClosed &&
+              setTimeout(
+                () => onSuccessModalClosed(dispatch, ret),
+                constants.modalAnimationDurationFade,
+              );
           } else {
-            onFail && onFail(dispatch, ret);
+            onFail?.(dispatch, ret);
           }
         });
       }
     });
   };
 
-  handleShowModel = e => {
+  handleShowModel = (e) => {
     if (e) {
       e.stopPropagation();
     }
-    this.setState({ visible: true });
+    if (!this.props.disabled) {
+      this.setState({ visible: true });
+    }
   };
 
   handleHideModel = () => {
@@ -85,14 +101,26 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
   };
 
   render() {
-    const { children, form, loadings, loadingEffect, title, items, okText, cancelText } = this.props;
+    const {
+      children,
+      form,
+      loadings,
+      loadingEffect,
+      title,
+      items,
+      okText,
+      cancelText,
+      className,
+    } = this.props;
     let { initialValues } = this.props;
     initialValues = initialValues || {};
     const { getFieldDecorator } = form;
 
     return (
       <>
-        <a onClick={this.handleShowModel}>{children}</a>
+        <span className={className} onClick={this.handleShowModel}>
+          {children}
+        </span>
         <Modal
           title={title}
           visible={this.state.visible}
@@ -103,7 +131,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
           onCancel={this.handleHideModel}
         >
           <Form layout="vertical" hideRequiredMark={true}>
-            {items.map(item => {
+            {items.map((item) => {
               switch (item.component) {
                 case 'input':
                   return (
@@ -111,7 +139,13 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
                       {getFieldDecorator(item.field, {
                         rules: item.rules,
                         initialValue: initialValues[item.field] || item.initialValue,
-                      })(<Input placeholder={item.placeholder} type={item.type || 'text'} disabled={item.disabled} />)}
+                      })(
+                        <Input
+                          placeholder={item.placeholder}
+                          type={item.type || 'text'}
+                          disabled={item.disabled}
+                        />,
+                      )}
                     </Form.Item>
                   );
                 case 'textarea':
@@ -120,7 +154,13 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
                       {getFieldDecorator(item.field, {
                         rules: item.rules,
                         initialValue: initialValues[item.field] || item.initialValue,
-                      })(<Input.TextArea placeholder={item.placeholder} rows={item.rows} disabled={item.disabled} />)}
+                      })(
+                        <Input.TextArea
+                          placeholder={item.placeholder}
+                          rows={item.rows}
+                          disabled={item.disabled}
+                        />,
+                      )}
                     </Form.Item>
                   );
                 case 'select':
@@ -130,9 +170,11 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
                         rules: item.rules,
                         initialValue: initialValues[item.field] || item.initialValue,
                       })(
-                        <Select placeholder={item.placeholder} disabled={item.disabled} >
-                          {item.options.map(opt => (<Select.Option key={opt.value}>{opt.name}</Select.Option>))}
-                        </Select>
+                        <Select placeholder={item.placeholder} disabled={item.disabled}>
+                          {item.options.map((opt) => (
+                            <Select.Option key={opt.value}>{opt.name}</Select.Option>
+                          ))}
+                        </Select>,
                       )}
                     </Form.Item>
                   );

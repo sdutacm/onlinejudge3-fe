@@ -2,6 +2,7 @@ const initialState = {};
 
 const scrollToTopIgnoreList = [
   /^\/topics\/\d/,
+  /^\/groups\/\d/,
 ];
 
 export default {

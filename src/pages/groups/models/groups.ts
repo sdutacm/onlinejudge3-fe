@@ -55,6 +55,9 @@ export default {
         ...genTimeFlag(60 * 1000),
       };
     },
+    clearDetail(state, { payload: { id } }) {
+      delete state.detail[id];
+    },
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
     },
@@ -63,6 +66,9 @@ export default {
         ...data,
         ...genTimeFlag(60 * 1000),
       };
+    },
+    clearMembers(state, { payload: { id } }) {
+      delete state.members[id];
     },
     clearExpiredMembers(state) {
       state.members = clearExpiredStateProperties(state.members);
@@ -181,13 +187,20 @@ export default {
       return yield call(service.addGroupMember, id, data);
     },
     *joinGroup({ payload: { id } }, { call }) {
-      return yield call(service.addGroupMember, id);
+      return yield call(service.joinGroup, id);
     },
     *updateGroupMember({ payload: { id, userId, data } }, { call }) {
       return yield call(service.updateGroupMember, id, userId, data);
     },
     *deleteGroupMember({ payload: { id, userId } }, { call }) {
       return yield call(service.deleteGroupMember, id, userId);
+    },
+    *quitGroup({ payload: { id } }, { call, select }) {
+      const session = yield select((state) => state.session);
+      if (!session.loggedIn) {
+        return;
+      }
+      return yield call(service.deleteGroupMember, id, session.user.userId);
     },
   },
   subscriptions: {

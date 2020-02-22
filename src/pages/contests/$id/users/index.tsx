@@ -11,10 +11,9 @@ import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import FilterCard from '@/components/FilterCard';
 import PageAnimation from '@/components/PageAnimation';
-import { isAdminDog } from '@/utils/permission'
+import { isAdminDog } from '@/utils/permission';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import msg from '@/utils/msg';
-import { requestEffect } from '@/utils/effectInterceptor';
 import { matchPath } from 'react-router';
 import { get as safeGet } from 'lodash';
 import { getPathParamId } from '@/utils/getPathParams';
@@ -28,17 +27,15 @@ export interface Props extends ReduxProps, RouteProps {
   contestDetail: IContest;
 }
 
-interface State {
-}
+interface State {}
 
 class ContestUserList extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -67,24 +64,41 @@ class ContestUserList extends React.Component<Props, State> {
   };
 
   clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-  formList = ['schoolNo', 'name', 'school', 'college', 'major', 'class', 'tel', 'email', 'clothing']
+  formList = [
+    'schoolNo',
+    'name',
+    'school',
+    'college',
+    'major',
+    'class',
+    'tel',
+    'email',
+    'clothing',
+  ];
 
   render() {
     const {
-      loading, contestUser, data: { page, count, rows }, id, contestDetail, session, location: { query },
+      loading,
+      contestUser,
+      data: { page, count, rows },
+      id,
+      contestDetail,
+      session,
+      location: { query },
     } = this.props;
 
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
-    const regInProgress = contestDetail.registerStartAt * 1000 <= serverTime && serverTime < contestDetail.registerEndAt * 1000;
+    const regInProgress =
+      contestDetail.registerStartAt * 1000 <= serverTime &&
+      serverTime < contestDetail.registerEndAt * 1000;
 
     let addUserFormItems = [
-
       {
         name: 'Nickname',
         field: 'nickname',
         component: 'input',
         initialValue: contestUser.nickname,
-        rules: [{ required: true, message: 'Please input nickname' }]
+        rules: [{ required: true, message: 'Please input nickname' }],
       },
       {
         name: 'Password',
@@ -92,21 +106,24 @@ class ContestUserList extends React.Component<Props, State> {
         component: 'input',
         type: 'password',
         initialValue: contestUser.password,
-        rules: [{ required: true, message: 'Please input password' }]
+        rules: [{ required: true, message: 'Please input password' }],
       },
       {
         name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
         initialValue: String(contestUser.unofficial),
-        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+        options: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
       },
       {
         name: 'Name',
         field: 'name1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].name'),
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No.',
@@ -119,7 +136,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'school1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].school'),
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College',
@@ -138,7 +155,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].class'),
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel',
@@ -151,27 +168,26 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'email1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].email'),
-        rules: [{ required: true, message: 'Please input email' }]
+        rules: [{ required: true, message: 'Please input email' }],
       },
       {
         name: 'Clothing',
         field: 'clothing1',
         component: 'select',
         initialValue: safeGet(contestUser, 'members[0].clothing'),
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
-      }
-    ]
+      },
+    ];
     let addTeamUserFormItems = [
-
       {
         name: 'Nickname',
         field: 'nickname',
         component: 'input',
         initialValue: contestUser.nickname,
-        rules: [{ required: true, message: 'Please input nickname' }]
+        rules: [{ required: true, message: 'Please input nickname' }],
       },
       {
         name: 'Password',
@@ -179,21 +195,24 @@ class ContestUserList extends React.Component<Props, State> {
         component: 'input',
         type: 'password',
         initialValue: contestUser.password,
-        rules: [{ required: true, message: 'Please input password' }]
+        rules: [{ required: true, message: 'Please input password' }],
       },
       {
         name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
         initialValue: String(contestUser.unofficial),
-        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+        options: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
       },
       {
         name: 'Name of Member 1',
         field: 'name1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].name'),
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No. of Member 1',
@@ -206,7 +225,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'school1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].school'),
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College of Member 1',
@@ -225,7 +244,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].class'),
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 1',
@@ -238,14 +257,14 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'email1',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[0].email'),
-        rules: [{ required: true, message: 'Please input email' }]
+        rules: [{ required: true, message: 'Please input email' }],
       },
       {
         name: 'Clothing of Member 1',
         field: 'clothing1',
         component: 'select',
         initialValue: safeGet(contestUser, 'members[0].clothing'),
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
@@ -255,7 +274,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'name2',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[1].name'),
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No. of Member 2',
@@ -268,7 +287,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'school2',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[1].school'),
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College of Member 2',
@@ -287,7 +306,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class2',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[1].class'),
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 2',
@@ -306,7 +325,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'clothing2',
         component: 'select',
         initialValue: safeGet(contestUser, 'members[1].clothing'),
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
@@ -316,7 +335,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'name3',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[2].name'),
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No. of Member 3',
@@ -329,7 +348,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'school3',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[2].school'),
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College of Member 3',
@@ -348,7 +367,7 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class3',
         component: 'input',
         initialValue: safeGet(contestUser, 'members[2].class'),
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 3',
@@ -367,12 +386,12 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'clothing3',
         component: 'select',
         initialValue: safeGet(contestUser, 'members[2].clothing'),
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
-      }
-    ]
+      },
+    ];
     let this_ = this;
     return (
       <PageAnimation>
@@ -392,36 +411,30 @@ class ContestUserList extends React.Component<Props, State> {
                   key="unofficial"
                   render={(text, user: IContestUser) => {
                     if (user.unofficial) {
-                      return '*'
-                    }
-                    else {
-                      return ''
+                      return '*';
+                    } else {
+                      return '';
                     }
                   }}
                 />
-                <Table.Column
-                  title="ID"
-                  key="contestUserId"
-                  dataIndex="contestUserId"
-                />
-                <Table.Column
-                  title="Username"
-                  key="username"
-                  dataIndex="username"
-                />
-                <Table.Column
-                  title="Nickname"
-                  key="nickname"
-                  dataIndex="nickname"
-                />
+                <Table.Column title="ID" key="contestUserId" dataIndex="contestUserId" />
+                <Table.Column title="Username" key="username" dataIndex="username" />
+                <Table.Column title="Nickname" key="nickname" dataIndex="nickname" />
                 <Table.Column
                   title="Info"
                   key="info"
                   render={(text, user: IContestUser) => {
                     return user.members.map((item) => {
-                      let str = [item.name, item.school, item.class].filter(item => item).join(' | ')
-                      return <span key={str}>{str}<br></br></span>
-                    })
+                      let str = [item.name, item.school, item.class]
+                        .filter((item) => item)
+                        .join(' | ');
+                      return (
+                        <span key={str}>
+                          {str}
+                          <br />
+                        </span>
+                      );
+                    });
                   }}
                 />
                 <Table.Column
@@ -429,16 +442,32 @@ class ContestUserList extends React.Component<Props, State> {
                   key="status"
                   render={(text, user: IContestUser) => {
                     if (user.status === 0) {
-                      return <span><Icon type="question" /> Pending</span>
+                      return (
+                        <span>
+                          <Icon type="question" /> Pending
+                        </span>
+                      );
                     }
                     if (user.status === 1) {
-                      return <span><Icon type="check" /> Accepted</span>
+                      return (
+                        <span>
+                          <Icon type="check" /> Accepted
+                        </span>
+                      );
                     }
                     if (user.status === 2) {
-                      return <span><Icon type="exclamation" /> Modification Required</span>
+                      return (
+                        <span>
+                          <Icon type="exclamation" /> Modification Required
+                        </span>
+                      );
                     }
                     if (user.status === 3) {
-                      return <span><Icon type="close" /> Rejected</span>
+                      return (
+                        <span>
+                          <Icon type="close" /> Rejected
+                        </span>
+                      );
                     }
                   }}
                 />
@@ -446,64 +475,82 @@ class ContestUserList extends React.Component<Props, State> {
                   title=""
                   key="actions"
                   render={(text, user: IContestUser) => {
-                    if ((regInProgress && this.props.session.loggedIn && user.username === session.user.username) || isAdminDog(session)) {
-                      return <span><GeneralFormModal
-                        loadingEffect="contests/updateContestUser"
-                        title="Edit Register Info"
-                        autoMsg
-                        items={text.members.length === 3 ? addTeamUserFormItems : addUserFormItems}
-                        submit={(dispatch: ReduxProps['dispatch'], values) => {
-                          let data = {};
-                          data['nickname'] = values['nickname'];
-                          data['password'] = values['password'];
-                          data['unofficial'] = values['unofficial'] === "false" ? false : true;
-                          let members = [];
-                          if (text.members.length === 3) {
-                            members = [{}, {}, {}];
-                            for (let i = 0; i < 3; i++) {
-                              for (let j = 0; j < this.formList.length; j++) {
-                                members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
+                    if (
+                      (regInProgress &&
+                        this.props.session.loggedIn &&
+                        user.username === session.user.username) ||
+                      isAdminDog(session)
+                    ) {
+                      return (
+                        <span>
+                          <GeneralFormModal
+                            loadingEffect="contests/updateContestUser"
+                            title="Edit Register Info"
+                            autoMsg
+                            items={
+                              text.members.length === 3 ? addTeamUserFormItems : addUserFormItems
+                            }
+                            submit={(dispatch: ReduxProps['dispatch'], values) => {
+                              let data = {};
+                              data['nickname'] = values['nickname'];
+                              data['password'] = values['password'];
+                              data['unofficial'] = values['unofficial'] === 'false' ? false : true;
+                              let members = [];
+                              if (text.members.length === 3) {
+                                members = [{}, {}, {}];
+                                for (let i = 0; i < 3; i++) {
+                                  for (let j = 0; j < this.formList.length; j++) {
+                                    members[i][this.formList[j]] =
+                                      values[this.formList[j] + (i + 1)];
+                                  }
+                                }
+                              } else {
+                                members = [{}];
+                                for (let j = 0; j < this.formList.length; j++) {
+                                  members[0][this.formList[j]] = values[this.formList[j] + 1];
+                                }
                               }
-                            }
-                          }
-                          else {
-                            members = [{}];
-                            for (let j = 0; j < this.formList.length; j++) {
-                              members[0][this.formList[j]] = values[this.formList[j] + 1]
-                            }
-                          }
-                          data['members'] = members;
+                              data['members'] = members;
 
-                          return dispatch({
-                            type: 'contests/updateContestUser',
-                            payload: {
-                              id,
-                              uid: user.contestUserId,
-                              data: data,
-                            },
-                          });
-                        }}
-                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                          msg.success('Edit register info successfully');
-                          tracker.event({
-                            category: 'contests',
-                            action: 'modifyRegisterInfo',
-                          });
-                        }}
-                        onSuccessModalClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                          dispatch({
-                            type: 'contests/getUserList',
-                            payload: {
-                              cid: id,
-                              query,
-                            },
-                          })
-                        }}
-                      >
-                        <span onClick={() => this.editContestUser(text.contestUserId)}><Icon type="edit" /></span>
-                      </GeneralFormModal></span>
-                    }
-                    else {
+                              return dispatch({
+                                type: 'contests/updateContestUser',
+                                payload: {
+                                  id,
+                                  uid: user.contestUserId,
+                                  data: data,
+                                },
+                              });
+                            }}
+                            onSuccess={(
+                              dispatch: ReduxProps['dispatch'],
+                              ret: IApiResponse<any>,
+                            ) => {
+                              msg.success('Edit register info successfully');
+                              tracker.event({
+                                category: 'contests',
+                                action: 'modifyRegisterInfo',
+                              });
+                            }}
+                            onSuccessModalClosed={(
+                              dispatch: ReduxProps['dispatch'],
+                              ret: IApiResponse<any>,
+                            ) => {
+                              dispatch({
+                                type: 'contests/getUserList',
+                                payload: {
+                                  cid: id,
+                                  query,
+                                },
+                              });
+                            }}
+                          >
+                            <a onClick={() => this.editContestUser(text.contestUserId)}>
+                              <Icon type="edit" />
+                            </a>
+                          </GeneralFormModal>
+                        </span>
+                      );
+                    } else {
                       return '';
                     }
                   }}

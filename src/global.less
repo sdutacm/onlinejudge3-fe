@@ -107,7 +107,7 @@ ul {
   }
 }
 
-.user-page {
+.full-width-page {
   //.ant-layout-header {
   //  padding: 0;
   //}
@@ -235,6 +235,10 @@ ul {
   }
 }
 
+.button-block-group:not(:first-child) {
+  margin-top: 8px;
+}
+
 .input-button {
   .ant-input-search-button {
     border-radius: @border-radius-base;
@@ -323,6 +327,12 @@ ul {
   }
 }
 
+.ant-modal-confirm-content-only {
+  .ant-modal-confirm-title {
+    display: none;
+  }
+}
+
 .message-list {
   background: transparent;
 
@@ -344,6 +354,18 @@ ul {
 
 .display-none {
   display: none !important;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-inline-block {
+  display: inline-block;
+}
+
+.display-inline {
+  display: inline;
 }
 
 .display-flex {
@@ -1245,6 +1267,40 @@ ul {
   color: @text-color;
 }
 
+a {
+  &.text-success {
+    color: @color-green;
+
+    &:hover {
+      color: color(~`colorPalette('@{color-green}', 5) `);
+    }
+
+    &:active {
+      color: color(~`colorPalette('@{color-green}', 7) `);
+    }
+  }
+
+  &.text-danger {
+    color: @color-red;
+
+    &:hover {
+      color: color(~`colorPalette('@{color-red}', 5) `);
+    }
+
+    &:active {
+      color: color(~`colorPalette('@{color-red}', 7) `);
+    }
+  }
+}
+
+.text-success {
+  color: @color-green;
+}
+
+.text-danger {
+  color: @color-red;
+}
+
 .text-secondary {
   color: fade(#000, 45%);
 }
@@ -1329,6 +1385,40 @@ ul {
   user-select: none;
 }
 
+// group detail
+
+.g-bbg {
+  background-color: transparent;
+  height: 300px;
+  width: 100%;
+  margin-top: -84px;
+  padding-top: @header-height;
+  background-image: linear-gradient(180deg, transparent 56%, #dbdbdb 100%);
+
+  .group-info {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-left: 50px;
+    padding-right: 50px;
+
+    .group-info-item {
+      max-width: 100%;
+    }
+  }
+}
+
+.g-content {
+  margin-top: 25px;
+}
+
+.g-members-avatar {
+  padding: 4px 3px;
+  display: inline-block;
+}
+
 // mobile
 
 @media only screen and (max-width: 767px) {
@@ -1348,5 +1438,12 @@ ul {
 
   .u-info h1 {
     font-size: 1.8em;
+  }
+
+  .g-bbg {
+    .group-info {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
   }
 }

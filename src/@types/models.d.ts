@@ -418,6 +418,7 @@ interface IGroup {
 }
 
 interface IGroupMember {
+  groupMemberId: number;
   permission?: 0 | 1 | 3;
   status?: 0 | 1;
   joinedAt?: ITimestamp;

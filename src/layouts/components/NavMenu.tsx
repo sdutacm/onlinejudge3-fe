@@ -122,6 +122,9 @@ class NavMenu extends React.Component<Props, State> {
     if (activeLinkKey.startsWith(pages.posts.index)) {
       activeLinkKey = pages.posts.index;
     }
+    if (activeLinkKey.startsWith(pages.groups.index)) {
+      activeLinkKey = pages.groups.index;
+    }
     const from = location.query.from;
     return (
       <Menu
@@ -156,10 +159,7 @@ class NavMenu extends React.Component<Props, State> {
         )}
 
         <Menu.Item key={pages.contests.index}>
-          <Link
-            to={urlf(pages.contests.index, { query: { category: 0 } })}
-            onClick={onLinkClick}
-          >
+          <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>
             Contests
           </Link>
         </Menu.Item>
@@ -220,11 +220,7 @@ class NavMenu extends React.Component<Props, State> {
         {mobileVersion ? (
           loading ? (
             <Menu.Item key="loading">
-              <Spin
-                spinning={loading}
-                size="small"
-                delay={constants.indicatorDisplayDelay}
-              />
+              <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
             </Menu.Item>
           ) : session.loggedIn ? (
             <Menu.ItemGroup
@@ -269,11 +265,7 @@ class NavMenu extends React.Component<Props, State> {
           )
         ) : loading ? (
           <Menu.Item key="loading" className="float-right">
-            <Spin
-              spinning={loading}
-              size="small"
-              delay={constants.indicatorDisplayDelay}
-            />
+            <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
           </Menu.Item>
         ) : session.loggedIn ? (
           <Menu.SubMenu
@@ -288,9 +280,7 @@ class NavMenu extends React.Component<Props, State> {
               </span>
             }
             onTitleClick={() =>
-              router.push(
-                urlf(pages.users.detail, { param: { id: session.user.userId } }),
-              )
+              router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))
             }
             className="float-right"
           >
@@ -298,9 +288,7 @@ class NavMenu extends React.Component<Props, State> {
               <span>{session.user.nickname}</span>
             </Menu.Item>
             <Menu.Item key="profile">
-              <Link
-                to={urlf(pages.users.detail, { param: { id: session.user.userId } })}
-              >
+              <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>
                 Profile
               </Link>
             </Menu.Item>
@@ -351,11 +339,7 @@ class NavMenu extends React.Component<Props, State> {
         {!mobileVersion && session.loggedIn && (
           <Menu.Item key="/idea_note" className="float-right">
             <Popover
-              content={
-                <IdeaNotes
-                  onLinkClick={() => this.setState({ notesVisible: false })}
-                />
-              }
+              content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
               title="Idea Notes"
               placement="bottom"
               trigger="click"
@@ -396,9 +380,7 @@ class NavMenu extends React.Component<Props, State> {
 function mapStateToProps(state) {
   const session = state.session;
   return {
-    loading:
-      !!state.loading.effects['session/fetch'] ||
-      !!state.loading.effects['session/logout'],
+    loading: !!state.loading.effects['session/fetch'] || !!state.loading.effects['session/logout'],
     session,
     unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,

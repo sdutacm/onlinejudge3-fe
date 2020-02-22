@@ -185,14 +185,19 @@ class Index extends React.Component<Props, State> {
     //   router.replace(pages.beta);
     // }
 
-    const inUserDetailPage = matchPath(location.pathname, {
-      path: pages.users.detail,
-      exact: true,
-    });
+    const inFullWidthPage =
+      matchPath(location.pathname, {
+        path: pages.users.detail,
+        exact: true,
+      }) ||
+      matchPath(location.pathname, {
+        path: pages.groups.detail,
+        exact: true,
+      });
     return (
       <Layout
         className={classNames({
-          'user-page': inUserDetailPage,
+          'full-width-page': inFullWidthPage,
         })}
       >
         <Header>

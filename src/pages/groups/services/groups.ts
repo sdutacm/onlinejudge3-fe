@@ -81,6 +81,6 @@ export function updateGroupMember(
 }
 
 export function deleteGroupMember(id: number, uid: number) {
-  const url = urlf(api.groups.members.base, { param: { id, uid } });
+  const url = urlf(api.groups.members.detail, { param: { id, uid } });
   return del(url);
 }

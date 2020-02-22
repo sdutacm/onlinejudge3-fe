@@ -23,6 +23,7 @@ const constants = {
   bgCheckSessionInterval: 60 * 1000,
   bgGetUnreadMessagesInterval: 10 * 60 * 1000,
   mobileBreakPoint: 768,
+  navbarHeight: 64,
 };
 
 export default constants;

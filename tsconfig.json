@@ -12,6 +12,7 @@
       "@/*": ["src/*"]
     },
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "experimentalDecorators": true
   }
 }

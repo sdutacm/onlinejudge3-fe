@@ -41,6 +41,7 @@
     "lodash.throttle": "^4.1.1",
     "math-precision": "^1.0.5",
     "md5": "^2.2.1",
+    "memoize-one": "^5.1.1",
     "react": "^16.8.6",
     "react-autolatex": "^1.1.2",
     "react-calendar-heatmap": "^1.8.0",

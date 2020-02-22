@@ -884,6 +884,7 @@ class Beta extends React.Component<Props, State> {
           });
           this.props.form.resetFields();
           Modal.success({
+            className: 'ant-modal-confirm-content-only',
             content: '预约成功',
             okText: 'OJBK',
           });

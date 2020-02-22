@@ -40,6 +40,7 @@ const limits = {
   groups: {
     list: 20,
     search: 12,
+    members: 10,
   },
 };
 

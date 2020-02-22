@@ -27,8 +27,7 @@ export interface Props extends ReduxProps, RouteProps {
   proMode: boolean;
 }
 
-interface State {
-}
+interface State {}
 
 class ContestList extends React.Component<Props, State> {
   constructor(props) {
@@ -43,8 +42,11 @@ class ContestList extends React.Component<Props, State> {
   // }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
-    if (this.props.session.loggedIn && !nextProps.session.loggedIn &&
-      nextProps.location.query.joined) {
+    if (
+      this.props.session.loggedIn &&
+      !nextProps.session.loggedIn &&
+      nextProps.location.query.joined
+    ) {
       router.replace({
         pathname: this.props.location.pathname,
         query: { ...this.props.location.query, joined: undefined, page: 1 },
@@ -52,38 +54,55 @@ class ContestList extends React.Component<Props, State> {
     }
   }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
     });
   };
 
-  handleCategoryChange = category => {
+  handleCategoryChange = (category) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, category: category, page: 1 },
     });
   };
 
-  handleJoinedChange = joined => {
+  handleJoinedChange = (joined) => {
     tracker.event({
       category: 'contests',
       action: 'switchOwn',
     });
-    setTimeout(() => router.replace({
-      pathname: this.props.location.pathname,
-      query: { ...this.props.location.query, joined: joined || undefined, page: 1 },
-    }), constants.switchAnimationDuration);
+    setTimeout(
+      () =>
+        router.replace({
+          pathname: this.props.location.pathname,
+          query: { ...this.props.location.query, joined: joined || undefined, page: 1 },
+        }),
+      constants.switchAnimationDuration,
+    );
   };
 
   canRegister = (registerStartAt: ITimestamp, registerEndAt: ITimestamp) => {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
-    return this.props.session.loggedIn && (registerStartAt * 1000 <= serverTime && serverTime < registerEndAt * 1000);
-  }
+    return (
+      this.props.session.loggedIn &&
+      registerStartAt * 1000 <= serverTime && serverTime < registerEndAt * 1000
+    );
+  };
 
   clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-  formList = ['schoolNo', 'name', 'school', 'college', 'major', 'class', 'tel', 'email', 'clothing']
+  formList = [
+    'schoolNo',
+    'name',
+    'school',
+    'college',
+    'major',
+    'class',
+    'tel',
+    'email',
+    'clothing',
+  ];
 
   render() {
     let addUserFormItems = [
@@ -91,27 +110,30 @@ class ContestList extends React.Component<Props, State> {
         name: 'Nickname',
         field: 'nickname',
         component: 'input',
-        rules: [{ required: true, message: 'Please input nickname' }]
+        rules: [{ required: true, message: 'Please input nickname' }],
       },
       {
         name: 'Password',
         field: 'password',
         component: 'input',
         type: 'password',
-        rules: [{ required: true, message: 'Please input password' }]
+        rules: [{ required: true, message: 'Please input password' }],
       },
       {
         name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
         initialValue: 'false',
-        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+        options: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
       },
       {
         name: 'Name',
         field: 'name1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No.',
@@ -122,7 +144,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'School',
         field: 'school1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College',
@@ -138,7 +160,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class',
         field: 'class1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel',
@@ -149,45 +171,47 @@ class ContestList extends React.Component<Props, State> {
         name: 'Email',
         field: 'email1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input email' }]
+        rules: [{ required: true, message: 'Please input email' }],
       },
       {
         name: 'Clothing Size',
         field: 'clothing1',
         component: 'select',
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
-      }
-    ]
+      },
+    ];
     let addTeamUserFormItems = [
-
       {
         name: 'Nickname',
         field: 'nickname',
         component: 'input',
-        rules: [{ required: true, message: 'Please input nickname' }]
+        rules: [{ required: true, message: 'Please input nickname' }],
       },
       {
         name: 'Password',
         field: 'password',
         component: 'input',
         type: 'password',
-        rules: [{ required: true, message: 'Please input password' }]
+        rules: [{ required: true, message: 'Please input password' }],
       },
       {
         name: 'Unofficial Participation',
         field: 'unofficial',
         component: 'select',
         initialValue: 'false',
-        options: [{ name: 'Yes', value: true }, { name: 'No', value: false }],
+        options: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
       },
       {
         name: 'Name of Member 1',
         field: 'name1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No. of Member 1',
@@ -198,7 +222,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'School of Member 1',
         field: 'school1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College of Member 1',
@@ -214,7 +238,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class of Member 1',
         field: 'class1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 1',
@@ -225,13 +249,13 @@ class ContestList extends React.Component<Props, State> {
         name: 'Email of Member 1',
         field: 'email1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input email' }]
+        rules: [{ required: true, message: 'Please input email' }],
       },
       {
         name: 'Clothing Size of Member 1',
         field: 'clothing1',
         component: 'select',
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
@@ -240,7 +264,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Name of Member 2',
         field: 'name2',
         component: 'input',
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No. of Member 2',
@@ -251,7 +275,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'School of Member 2',
         field: 'school2',
         component: 'input',
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College of Member 2',
@@ -267,7 +291,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class of Member 2',
         field: 'class2',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 2',
@@ -283,7 +307,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Clothing Size of Member 2',
         field: 'clothing2',
         component: 'select',
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
@@ -292,7 +316,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Name of Member 3',
         field: 'name3',
         component: 'input',
-        rules: [{ required: true, message: 'Please input name' }]
+        rules: [{ required: true, message: 'Please input name' }],
       },
       {
         name: 'School No. of Member 3',
@@ -303,7 +327,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'School of Member 3',
         field: 'school3',
         component: 'input',
-        rules: [{ required: true, message: 'Please input school' }]
+        rules: [{ required: true, message: 'Please input school' }],
       },
       {
         name: 'College of Member 3',
@@ -319,7 +343,7 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class of Member 3',
         field: 'class3',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }]
+        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 3',
@@ -335,20 +359,31 @@ class ContestList extends React.Component<Props, State> {
         name: 'Clothing Size of Member 3',
         field: 'clothing3',
         component: 'select',
-        options: this.clothingSize.map(item => ({
+        options: this.clothingSize.map((item) => ({
           value: item,
           name: item,
         })),
-      }
-    ]
-    const { loading, data: { page, count, rows }, location: { query }, session, proMode } = this.props;
+      },
+    ];
+    const {
+      loading,
+      data: { page, count, rows },
+      location: { query },
+      session,
+      proMode,
+    } = this.props;
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       <PageAnimation>
         <PageTitle title={+query.category === 1 ? 'Experiments' : 'Contests'}>
           <Row gutter={16} className="list-view">
             <Col xs={24}>
-              <Tabs defaultActiveKey={query.category} activeKey={query.category} animated={false} onChange={this.handleCategoryChange}>
+              <Tabs
+                defaultActiveKey={query.category}
+                activeKey={query.category}
+                animated={false}
+                onChange={this.handleCategoryChange}
+              >
                 <Tabs.TabPane tab="Contests" key="0" />
                 <Tabs.TabPane tab="Experiments" key="1" />
               </Tabs>
@@ -373,39 +408,56 @@ class ContestList extends React.Component<Props, State> {
                       </span>
                     )}
                   />
-                  {proMode && <Table.Column
-                    title="ID"
-                    key="ID"
-                    render={(text, record: IContest) => (
-                      <span>{record.contestId}</span>
-                    )}
-                  />}
+                  {proMode && (
+                    <Table.Column
+                      title="ID"
+                      key="ID"
+                      render={(text, record: IContest) => <span>{record.contestId}</span>}
+                    />
+                  )}
                   <Table.Column
                     title="Title"
                     key="Title"
                     render={(text, record: IContest) => (
-                      <Link to={urlf(pages.contests.home, { param: { id: record.contestId } })}>{record.title}</Link>
+                      <Link to={urlf(pages.contests.home, { param: { id: record.contestId } })}>
+                        {record.title}
+                      </Link>
                     )}
                   />
                   <Table.Column
                     title="Time"
                     key="Time"
                     render={(text, record: any) => (
-                      <Popover content={(
-                        <table>
-                          <tbody>
-                            <tr>
-                              <td className={classNames(gStyles.textRight, gStyles.textBold)}>Start:</td>
-                              <td>{moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.startAt)).from(serverTime)})</td>
-                            </tr>
-                            <tr>
-                              <td className={classNames(gStyles.textRight, gStyles.textBold)}>End:</td>
-                              <td>{moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm:ss Z')} ({moment(toLongTs(record.endAt)).from(serverTime)})</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      )}>
-                        <span>{moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm')} ~ {moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm')}</span>
+                      <Popover
+                        content={
+                          <table>
+                            <tbody>
+                              <tr>
+                                <td className={classNames(gStyles.textRight, gStyles.textBold)}>
+                                  Start:
+                                </td>
+                                <td>
+                                  {moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm:ss Z')}{' '}
+                                  ({moment(toLongTs(record.startAt)).from(serverTime)})
+                                </td>
+                              </tr>
+                              <tr>
+                                <td className={classNames(gStyles.textRight, gStyles.textBold)}>
+                                  End:
+                                </td>
+                                <td>
+                                  {moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm:ss Z')} (
+                                  {moment(toLongTs(record.endAt)).from(serverTime)})
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        }
+                      >
+                        <span>
+                          {moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm')} ~{' '}
+                          {moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm')}
+                        </span>
                       </Popover>
                     )}
                   />
@@ -414,10 +466,13 @@ class ContestList extends React.Component<Props, State> {
                     key="status"
                     className="no-wrap"
                     render={(text, record: any) => (
-                      <TimeStatusBadge start={toLongTs(record.startAt)} end={toLongTs(record.endAt)} cur={serverTime} />
+                      <TimeStatusBadge
+                        start={toLongTs(record.startAt)}
+                        end={toLongTs(record.endAt)}
+                        cur={serverTime}
+                      />
                     )}
-                  >
-                  </Table.Column>
+                  ></Table.Column>
 
                   <Table.Column
                     title=""
@@ -429,7 +484,7 @@ class ContestList extends React.Component<Props, State> {
                       }
                       return (
                         <>
-                          {this.canRegister(record.registerStartAt, record.registerEndAt) ?
+                          {this.canRegister(record.registerStartAt, record.registerEndAt) ? (
                             <GeneralFormModal
                               loadingEffect="contests/addContestUser"
                               title="Register Contest"
@@ -439,20 +494,21 @@ class ContestList extends React.Component<Props, State> {
                                 let data = {};
                                 data['nickname'] = values['nickname'];
                                 data['password'] = values['password'];
-                                data['unofficial'] = values['unofficial'] === "false" ? false : true;
+                                data['unofficial'] =
+                                  values['unofficial'] === 'false' ? false : true;
                                 let members = [];
                                 if (record.team) {
                                   members = [{}, {}, {}];
                                   for (let i = 0; i < 3; i++) {
                                     for (let j = 0; j < this.formList.length; j++) {
-                                      members[i][this.formList[j]] = values[this.formList[j] + (i + 1)]
+                                      members[i][this.formList[j]] =
+                                        values[this.formList[j] + (i + 1)];
                                     }
                                   }
-                                }
-                                else {
+                                } else {
                                   members = [{}];
                                   for (let j = 0; j < this.formList.length; j++) {
-                                    members[0][this.formList[j]] = values[this.formList[j] + 1]
+                                    members[0][this.formList[j]] = values[this.formList[j] + 1];
                                   }
                                 }
                                 data['members'] = members;
@@ -465,7 +521,10 @@ class ContestList extends React.Component<Props, State> {
                                   },
                                 });
                               }}
-                              onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                              onSuccess={(
+                                dispatch: ReduxProps['dispatch'],
+                                ret: IApiResponse<any>,
+                              ) => {
                                 msg.success('Register contest successfully');
                                 tracker.event({
                                   category: 'contests',
@@ -473,9 +532,15 @@ class ContestList extends React.Component<Props, State> {
                                 });
                               }}
                             >
-                              <span title="Register Contest"><Icon type="plus" /></span>
-                            </GeneralFormModal> :
-                            <span className="visibility-hidden"><Icon type="plus" /></span>}
+                              <a title="Register Contest">
+                                <Icon type="plus" />
+                              </a>
+                            </GeneralFormModal>
+                          ) : (
+                            <span className="visibility-hidden">
+                              <Icon type="plus" />
+                            </span>
+                          )}
                           <span title="Contest Users" className="ml-sm-md">
                             <Link
                               to={urlf(pages.contests.users, { param: { id: record.contestId } })}
@@ -485,7 +550,9 @@ class ContestList extends React.Component<Props, State> {
                                   action: 'toContestUsers',
                                 });
                               }}
-                            ><Icon type="unordered-list" /></Link>
+                            >
+                              <Icon type="unordered-list" />
+                            </Link>
                           </span>
                         </>
                       );
@@ -504,33 +571,47 @@ class ContestList extends React.Component<Props, State> {
             <Col xs={24} md={6} xxl={4}>
               <Card bordered={false}>
                 <ToDetailCard
-                  label="Go to Contest" placeholder="Contest ID"
-                  toDetailLink={id => urlf(pages.contests.home, { param: { id } })}
+                  label="Go to Contest"
+                  placeholder="Contest ID"
+                  toDetailLink={(id) => urlf(pages.contests.home, { param: { id } })}
                 />
               </Card>
               <Card bordered={false}>
-                <FilterCard fields={[
-                  { displayName: 'Title', fieldName: 'title' },
-                  {
-                    displayName: 'Type', fieldName: 'type', options: contestTypes.map(res => {
-                      return { fieldName: res.id, displayName: res.name };
-                    }),
-                  },
-                ]} initQuery={{ category: query.category }} />
+                <FilterCard
+                  fields={[
+                    { displayName: 'Title', fieldName: 'title' },
+                    {
+                      displayName: 'Type',
+                      fieldName: 'type',
+                      options: contestTypes.map((res) => {
+                        return { fieldName: res.id, displayName: res.name };
+                      }),
+                    },
+                  ]}
+                  initQuery={{ category: query.category }}
+                />
               </Card>
-              {session.loggedIn &&
+              {session.loggedIn && (
                 <Card bordered={false}>
                   <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-                    <Form.Item className="single-form-item" label={
-                      <div>
-                        <span className="title">My Joined Contests</span>
-                        <div className="float-right">
-                          <Switch defaultChecked={!!query.joined} onChange={this.handleJoinedChange} loading={loading} />
+                    <Form.Item
+                      className="single-form-item"
+                      label={
+                        <div>
+                          <span className="title">My Joined Contests</span>
+                          <div className="float-right">
+                            <Switch
+                              defaultChecked={!!query.joined}
+                              onChange={this.handleJoinedChange}
+                              loading={loading}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    } />
+                      }
+                    />
                   </Form>
-                </Card>}
+                </Card>
+              )}
             </Col>
           </Row>
         </PageTitle>

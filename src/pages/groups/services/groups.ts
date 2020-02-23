@@ -31,6 +31,11 @@ export function addGroup(data) {
   return post(url, data);
 }
 
+export function addEmptyGroup(data) {
+  const url = urlf(api.groups.base, { query: { type: 'empty' } });
+  return post(url, data);
+}
+
 export function updateGroup(
   id: number,
   data: {

@@ -177,6 +177,9 @@ export default {
     *addGroup({ payload: { data } }, { call }) {
       return yield call(service.addGroup, data);
     },
+    *addEmptyGroup({ payload: { data } }, { call }) {
+      return yield call(service.addEmptyGroup, data);
+    },
     *updateGroup({ payload: { id, data } }, { call }) {
       return yield call(service.updateGroup, id, data);
     },

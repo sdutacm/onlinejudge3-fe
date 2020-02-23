@@ -287,6 +287,40 @@ a {
   background-color: @item-hover-bg;
 }
 
+.ant-upload.ant-upload-drag {
+  border: @border-width-base dashed @border-color-base;
+  background: @background-color-light;
+
+  &.@{upload-prefix-cls}-drag-hover:not(.@{upload-prefix-cls}-disabled) {
+    border: 2px dashed @primary-5;
+  }
+
+  &:not(.@{upload-prefix-cls}-disabled):hover {
+    border-color: @primary-5;
+  }
+
+  p.@{upload-prefix-cls}-drag-icon {
+    .@{iconfont-css-prefix} {
+      color: @primary-5;
+    }
+  }
+  p.@{upload-prefix-cls}-text {
+    color: @heading-color;
+  }
+  p.@{upload-prefix-cls}-hint {
+    color: @text-color-secondary;
+  }
+  .@{iconfont-css-prefix}-plus {
+    color: @disabled-color;
+    &:hover {
+      color: @text-color-secondary;
+    }
+  }
+  &:hover .@{iconfont-css-prefix}-plus {
+    color: @text-color-secondary;
+  }
+}
+
 .message-list {
   background: transparent;
 

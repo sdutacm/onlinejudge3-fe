@@ -1,4 +1,5 @@
-const buildTarget = (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
+const buildTarget =
+  (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
 console.log('Using build target:', buildTarget);
 
 const buildConfig = {
@@ -23,32 +24,36 @@ export default {
   ...buildConfig[buildTarget],
   hash: true,
   plugins: [
-    ['umi-plugin-react', {
-      dva: {
-        immer: true,
+    [
+      'umi-plugin-react',
+      {
+        dva: {
+          immer: true,
+        },
+        antd: true,
+        routes: {
+          exclude: [/models\//, /services\//],
+        },
+        title: {
+          defaultTitle: 'SDUT OnlineJudge',
+          separator: '|',
+          format: '{current} {separator} {parent}',
+        },
+        dynamicImport: null,
+        chunks: [
+          'vendors',
+          'raincloud',
+          'ui',
+          'time-is-money',
+          'talk-is-cheap',
+          'mathematics-is-the-queen-of-the-sciences',
+          'ms-excel-suite-2022-customized-for-sdut_powered-by-ms-cn',
+          'draw-some-higher-dimensions-shapes',
+          'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
+          'umi',
+        ],
       },
-      antd: true,
-      routes: {
-        exclude: [/models\//, /services\//],
-      },
-      title: {
-        defaultTitle: 'SDUT OnlineJudge',
-        separator: '|',
-        format: '{current} {separator} {parent}',
-      },
-      dynamicImport: null,
-      chunks: [
-        'vendors',
-        'raincloud',
-        'ui',
-        'time-is-money',
-        'talk-is-cheap',
-        'mathematics-is-the-queen-of-the-sciences',
-        'draw-some-higher-dimensions-shapes',
-        'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
-        'umi',
-      ],
-    }],
+    ],
   ],
   theme: {
     // 'primary-color': '#1e66d5', // dark
@@ -58,23 +63,24 @@ export default {
     'error-color': '#e23a36',
     'icon-url': '"/assets/fonts/iconfont"',
     'text-color': 'rgba(0, 0, 0, 0.75)',
-    'code-family': 'Monaco, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
+    'code-family':
+      'Monaco, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
   },
   proxy: {
     '/onlinejudge2/index.php/API_ng/': {
       target: 'http://127.0.0.1:8848/index.php/API_ng/',
       // target: 'https://acm.sdut.edu.cn/onlinejudge2/index.php/API_ng/',
       changeOrigin: true,
-      pathRewrite: { '^/onlinejudge2/index.php/API_ng/' : '' }
+      pathRewrite: { '^/onlinejudge2/index.php/API_ng/': '' },
     },
     '/image/': {
       target: 'http://127.0.0.1:8848/dev_images/',
       // target: 'https://acm.sdut.edu.cn/image/',
       changeOrigin: true,
       pathRewrite: {
-        '^/image/': ''
-      }
-    }
+        '^/image/': '',
+      },
+    },
   },
   urlLoaderExcludes: [/\.svg$/],
   chainWebpack(config) {
@@ -149,6 +155,14 @@ export default {
           name: 'mathematics-is-the-queen-of-the-sciences',
           chunks: 'all',
           test: /[\\/]node_modules[\\/](katex)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        xlsx: {
+          name: 'ms-excel-suite-2022-customized-for-sdut_powered-by-ms-cn',
+          chunks: 'all',
+          test: /[\\/]node_modules[\\/](xlsx)[\\/]/,
           minSize: 0,
           minChunks: 1,
           priority: 100,

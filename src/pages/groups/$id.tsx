@@ -162,7 +162,6 @@ class GroupDetail extends React.Component<Props, State> {
         field: 'intro',
         component: 'input',
         initialValue: detail.intro,
-        rules: [{ required: true, message: 'Please input intro' }],
       },
       {
         name: 'Private',
@@ -638,7 +637,7 @@ class GroupDetail extends React.Component<Props, State> {
               return (
                 <span>
                   {/*
-                // @ts-ignore */}
+                  // @ts-ignore */}
                   <GeneralFormModal
                     loadingEffect="groups/updateGroupMember"
                     title="Edit Member"

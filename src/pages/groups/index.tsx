@@ -12,6 +12,11 @@ import PageAnimation from '@/components/PageAnimation';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import tracker from '@/utils/tracker';
 import GroupList from '@/components/GroupList';
+import { groupJoinChannels, GroupJoinChannel } from '@/configs/groups';
+import { isAdminDog } from '@/utils/permission';
+import msg from '@/utils/msg';
+import pages from '@/configs/pages';
+import { urlf } from '@/utils/format';
 
 export interface Props extends ReduxProps, RouteProps {
   searchList: IList<IGroup>;
@@ -54,6 +59,73 @@ class GroupIndex extends React.Component<Props, State> {
         });
       }
     }
+  }
+
+  get groupDetailFormItems() {
+    const { session } = this.props;
+    const items = [
+      {
+        name: 'Name',
+        field: 'name',
+        component: 'input',
+        initialValue: '',
+        rules: [{ required: true, message: 'Please input name' }],
+      },
+      {
+        name: 'Intro',
+        field: 'intro',
+        component: 'input',
+        initialValue: '',
+      },
+      {
+        name: 'Private',
+        field: 'private',
+        component: 'select',
+        initialValue: 'false',
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'Join Channel',
+        field: 'joinChannel',
+        component: 'select',
+        initialValue: `${GroupJoinChannel.Any}`,
+        options: groupJoinChannels.map((jc) => ({
+          value: jc.id,
+          name: jc.name,
+        })),
+        rules: [{ required: true }],
+      },
+    ];
+    if (isAdminDog(session)) {
+      items.splice(2, 0, {
+        name: 'Verified',
+        field: 'verified',
+        component: 'select',
+        initialValue: 'false',
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
+      });
+    }
+    return items;
   }
 
   handleCategoryChange = (category) => {
@@ -103,9 +175,49 @@ class GroupIndex extends React.Component<Props, State> {
             animated={false}
             onChange={this.handleCategoryChange}
             tabBarExtraContent={
-              <Button disabled={!session.loggedIn}>
-                <Icon type="plus" /> Group
-              </Button>
+              <GeneralFormModal
+                loadingEffect="groups/addGroup"
+                title="Create Group"
+                autoMsg
+                items={this.groupDetailFormItems}
+                submit={(dispatch: ReduxProps['dispatch'], values) => {
+                  tracker.event({
+                    category: 'groups',
+                    action: 'createGroup',
+                  });
+                  const data = {
+                    ...values,
+                    private: values.private === 'true',
+                    joinChannel: +values.joinChannel,
+                  };
+                  values.verified && (data.verified = values.verified === 'true');
+                  return dispatch({
+                    type: 'groups/addGroup',
+                    payload: {
+                      data,
+                    },
+                  });
+                }}
+                onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
+                  msg.success('Create group successfully');
+                }}
+                onSuccessModalClosed={(
+                  dispatch: ReduxProps['dispatch'],
+                  ret: IApiResponse<{ groupId: number }>,
+                ) => {
+                  if (ret.success) {
+                    dispatch({
+                      type: 'groups/clearAllJoinedGroups',
+                      payload: {},
+                    });
+                    router.push(urlf(pages.groups.detail, { param: { id: ret.data.groupId } }));
+                  }
+                }}
+              >
+                <Button disabled={!session.loggedIn}>
+                  <Icon type="plus" /> Group
+                </Button>
+              </GeneralFormModal>
             }
           >
             <Tabs.TabPane tab="Explore" key="explore">

@@ -78,6 +78,13 @@ export default {
       }
       return ret;
     },
+    * searchUser({ payload: { nickname, limit = 10 } }, { call, put, select }) {
+      const query = {
+        nickname,
+        limit,
+      };
+      return yield call(service.getList, query);
+    },
     * getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
       if (!force) {
         const savedState = yield select(state => state.users.detail[id]);

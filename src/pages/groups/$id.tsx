@@ -44,6 +44,7 @@ import UserBar from '@/components/UserBar';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import { isEqual } from 'lodash';
+import AddGroupMemberModal from '@/components/AddGroupMemberModal';
 
 const MAX_PERMISSION = 999;
 
@@ -759,9 +760,11 @@ class GroupDetail extends React.Component<Props, State> {
                           ) : null}
                         </h3>
                         {this.hasAdminPerm && (
-                          <Button size="small">
-                            <Icon type="plus" /> Member
-                          </Button>
+                          <AddGroupMemberModal groupId={id}>
+                            <Button size="small">
+                              <Icon type="plus" /> Member
+                            </Button>
+                          </AddGroupMemberModal>
                         )}
                       </div>
                       <Skeleton

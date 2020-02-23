@@ -13,33 +13,50 @@ export interface Props {
   hideUsername?: boolean;
   className?: string;
   disableJump?: boolean;
+  showAsText?: boolean;
   showRating?: boolean;
 }
 
-const UserBar: React.FC<Props> = ({ user, isContestUser = false, hideAvatar = false, hideUsername = false, disableJump = false, showRating = false, className }) => {
+const UserBar: React.FC<Props> = ({
+  user,
+  isContestUser = false,
+  hideAvatar = false,
+  hideUsername = false,
+  disableJump = false,
+  showAsText = false,
+  showRating = false,
+  className,
+}) => {
   if (!user) {
     return <span>--</span>;
   }
-  const avatar = !hideAvatar ? <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} /> : null;
-  const username = !hideUsername ? <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{user.nickname}</span> : null;
+  const avatar = !hideAvatar ? (
+    <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} />
+  ) : null;
+  const username = !hideUsername ? (
+    <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{user.nickname}</span>
+  ) : null;
   const rating = user.rating;
   const userRatingLevel = getRatingLevel(rating);
-  const ratingStyle = showRating && userRatingLevel ? { color: userRatingLevel.color, fontWeight: 500 } : {};
-  const inner = <span className={classNames('no-wrap', className)} style={ ratingStyle }>
-    {avatar}{username}
-  </span>;
-  if (isContestUser) {
+  const ratingStyle =
+    showRating && userRatingLevel ? { color: userRatingLevel.color, fontWeight: 500 } : {};
+  const inner = (
+    <span className={classNames('no-wrap', className)} style={ratingStyle}>
+      {avatar}
+      {username}
+    </span>
+  );
+  if (isContestUser || showAsText) {
     return inner;
   }
   if (disableJump) {
-    return (
-      <a>{inner}</a>
-    );
+    return <a>{inner}</a>;
   }
   return (
     <Link
       to={urlf(pages.users.detail, { param: { id: user.userId } })}
-      onClick={e => e.stopPropagation()}>
+      onClick={(e) => e.stopPropagation()}
+    >
       {inner}
     </Link>
   );

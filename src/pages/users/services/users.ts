@@ -16,7 +16,7 @@ export function getList(query) {
     query: {
       ...query,
       page: query.page || 1,
-      limit: limits.users.list,
+      limit: query.limit || limits.users.list,
     },
   });
   return get(url);

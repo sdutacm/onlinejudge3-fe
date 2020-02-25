@@ -1277,6 +1277,10 @@ a {
   &.text-success {
     color: @color-green;
 
+    &.normal-text-link {
+      color: inherit;
+    }
+
     &:hover {
       color: color(~`colorPalette('@{color-green}', 5) `);
     }
@@ -1288,6 +1292,10 @@ a {
 
   &.text-danger {
     color: @color-red;
+
+    &.normal-text-link {
+      color: inherit;
+    }
 
     &:hover {
       color: color(~`colorPalette('@{color-red}', 5) `);

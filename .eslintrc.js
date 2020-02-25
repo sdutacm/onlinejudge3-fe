@@ -30,7 +30,7 @@ module.exports = {
     //         flatTernaryExpressions: true
     //     }
     // ],
-    // 'no-case-declarations': 'off',
+    'no-case-declarations': 'off',
     // 'object-curly-spacing': [
     //   'error',
     //   'always',

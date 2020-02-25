@@ -289,9 +289,8 @@ interface ISet {
   description: string;
   type: 'standard';
   props: any;
-  startAt: ITimestamp;
-  endAt: ITimestamp;
   hidden?: boolean;
+  author: IUserLite;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }
@@ -299,8 +298,13 @@ interface ISet {
 interface ISetPropsTypeStandard {
   sections: {
     title: string;
+    description?: string;
     problems: IProblem[];
   }[];
+}
+
+interface ISetStandard extends ISet {
+  props: ISetPropsTypeStandard;
 }
 
 interface INoteBase {
@@ -398,11 +402,7 @@ interface INoteUnknownReq {
   };
 }
 
-type INoteReq =
-  | INoteProblemReq
-  | INoteContestReq
-  | INoteSolutionReq
-  | INoteUnknownReq;
+type INoteReq = INoteProblemReq | INoteContestReq | INoteSolutionReq | INoteUnknownReq;
 
 interface IGroup {
   groupId: number;

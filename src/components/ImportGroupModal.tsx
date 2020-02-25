@@ -141,7 +141,7 @@ class ImportGroupModal extends React.Component<Props, State> {
                 <Collapse bordered={false} className="single-panel">
                   <Collapse.Panel
                     key={`${Date.now()}`}
-                    header={`${data.usernames.length} members(s)`}
+                    header={`${data.usernames.length} member(s)`}
                   >
                     {data.usernames.map((username) => (
                       <p key={username} className="mb-none">

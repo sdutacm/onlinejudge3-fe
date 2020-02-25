@@ -6,18 +6,20 @@ import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 
-const initialState = {
-  list: {
-    page: 1,
-    count: 0,
-    rows: [],
-    _query: {},
-  },
-  detail: {},
-};
+function genInitialState() {
+  return {
+    list: {
+      page: 1,
+      count: 0,
+      rows: [],
+      _query: {},
+    },
+    detail: {},
+  };
+}
 
 export default {
-  state: initialState,
+  state: genInitialState(),
   reducers: {
     setList(state, { payload: { data, query } }) {
       state.list = {
@@ -26,24 +28,30 @@ export default {
         ...genTimeFlag(5 * 60 * 1000),
       };
     },
+    clearList(state) {
+      state.list = genInitialState()['list'];
+    },
     setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
         ...data,
         ...genTimeFlag(60 * 60 * 1000),
       };
     },
+    clearDetail(state, { payload: { id } }) {
+      delete state.detail[id];
+    },
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
     },
   },
   effects: {
-    * getList({ payload: query }, { call, put, select }) {
+    *getList({ payload: query }, { call, put, select }) {
       const formattedQuery = formatListQuery(query);
-      const savedState = yield select(state => state.sets.list);
+      const savedState = yield select((state) => state.sets.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<ISet> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<ISet>> = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -55,9 +63,9 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: { id, force = false } }, { call, put, select }) {
+    *getDetail({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.sets.detail[id]);
+        const savedState = yield select((state) => state.sets.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -76,6 +84,15 @@ export default {
         });
       }
       return ret;
+    },
+    *addSet({ payload: { data } }, { call }) {
+      return yield call(service.addSet, data);
+    },
+    *updateSet({ payload: { id, data } }, { call }) {
+      return yield call(service.updateSet, id, data);
+    },
+    *deleteSet({ payload: { id } }, { call }) {
+      return yield call(service.deleteSet, id);
     },
   },
   subscriptions: {

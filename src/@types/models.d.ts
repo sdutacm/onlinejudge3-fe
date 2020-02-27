@@ -256,9 +256,11 @@ interface IMessage {
   createdAt: ITimestamp;
 }
 
+type IFavoriteType = 'problem' | 'contest' | 'set' | 'group';
+
 interface IFavoriteBase {
   favoriteId: number;
-  type: string;
+  type: IFavoriteType;
   target: any;
   note: string;
   createdAt: ITimestamp;
@@ -281,7 +283,25 @@ interface IFavoriteContest extends IFavoriteBase {
   };
 }
 
-type IFavorite = IFavoriteProblem | IFavoriteContest;
+interface IFavoriteSet extends IFavoriteBase {
+  type: 'set';
+  target: {
+    setId: number;
+    title: string;
+  };
+}
+
+interface IFavoriteGroup extends IFavoriteBase {
+  type: 'group';
+  target: {
+    groupId: number;
+    title: string;
+    name: IGroup['name'];
+    verified: IGroup['verified'];
+  };
+}
+
+type IFavorite = IFavoriteProblem | IFavoriteContest | IFavoriteSet | IFavoriteGroup;
 
 interface ISet {
   setId: number;
@@ -437,6 +457,24 @@ interface IStatsUserACRank {
   startAt: string;
   _updateEvery: number;
   _updatedAt: number;
+}
+
+interface IStatsUserAcceptedProblems {
+  stats: Record<
+    number,
+    {
+      accepted: number;
+      problems: {
+        pid: number;
+        sid: number;
+        at: number; // timestamp (s)
+      }[];
+      _updatedAt: number; // timestamp (ms)
+    }
+  >;
+  truncated: number;
+  _updateEvery: number;
+  _updatedAt: number; // timestamp (ms)
 }
 
 type ISettingsTheme = 'auto' | 'light' | 'dark';

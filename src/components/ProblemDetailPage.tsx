@@ -31,48 +31,79 @@ export interface Props extends RouteProps {
   mobile: boolean;
 }
 
-const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId, problemIndex, favorites, location, mobile, contestTimeStatus }) => {
+const ProblemDetailPage: React.FC<Props> = ({
+  loading,
+  data,
+  session,
+  contestId,
+  problemIndex,
+  favorites,
+  location,
+  mobile,
+  contestTimeStatus,
+}) => {
   if (!loading && !data.problemId) {
     return <NotFound />;
   }
   const solutionsUrl = contestId
-    ? urlf(pages.contests.solutions, { param: { id: contestId }, query: { problemId: data.problemId } })
-    : urlf(pages.solutions.index, { query: { problemId: data.problemId, from: location.query.from } });
+    ? urlf(pages.contests.solutions, {
+        param: { id: contestId },
+        query: { problemId: data.problemId },
+      })
+    : urlf(pages.solutions.index, {
+        query: { problemId: data.problemId, from: location.query.from },
+      });
   const topicsUrl = contestId
     ? ''
     : urlf(pages.topics.index, { query: { problemId: data.problemId, from: location.query.from } });
   const problemUrl = urlf(pages.problems.detail, { param: { id: data.problemId } });
-  const favorite = favorites.find(v => v.type === 'problem' && v.target && v.target.problemId === data.problemId);
+  const favorite = favorites.find(
+    (v) => v.type === 'problem' && v.target && v.target.problemId === data.problemId,
+  );
   const renderSubmitButton = () => {
     if (loading) {
-      return <Button type="primary" block disabled>Submit</Button>;
+      return (
+        <Button type="primary" block disabled>
+          Submit
+        </Button>
+      );
     }
     if (!session.loggedIn) {
-      return <Button type="primary" block disabled>Login to Submit</Button>;
+      return (
+        <Button type="primary" block disabled>
+          Login to Submit
+        </Button>
+      );
     }
     if (contestTimeStatus === 'Ended') {
-      return <Link
-        to={problemUrl}
-        onClick={() => {
-          tracker.event({
-            category: 'contests',
-            action: 'toProblem',
-          });
-        }}
-      >
-        <Button block>Practice</Button>
-      </Link>;
+      return (
+        <Link
+          to={problemUrl}
+          onClick={() => {
+            tracker.event({
+              category: 'contests',
+              action: 'toProblem',
+            });
+          }}
+        >
+          <Button block>Practice</Button>
+        </Link>
+      );
     }
-    return <SubmissionModal
-      problemId={data.problemId}
-      title={data.title}
-      contestId={contestId}
-      problemIndex={problemIndex}
-      location={location}
-    >
-      <Button type="primary" block>Submit</Button>
-    </SubmissionModal>;
-  }
+    return (
+      <SubmissionModal
+        problemId={data.problemId}
+        title={data.title}
+        contestId={contestId}
+        problemIndex={problemIndex}
+        location={location}
+      >
+        <Button type="primary" block>
+          Submit
+        </Button>
+      </SubmissionModal>
+    );
+  };
   const renderSecondaryArea = () => {
     return (
       <PageAnimation>
@@ -87,9 +118,11 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
               });
             }}
           >
-            <Button block disabled={loading} className={styles.buttonMt}>Solutions</Button>
+            <Button block disabled={loading} className={styles.buttonMt}>
+              Solutions
+            </Button>
           </Link>
-          {topicsUrl &&
+          {topicsUrl && (
             <Link
               to={topicsUrl}
               onClick={() => {
@@ -99,25 +132,31 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
                 });
               }}
             >
-              <Button block disabled={loading} className={styles.buttonMt}>Topics</Button>
-            </Link>}
+              <Button block disabled={loading} className={styles.buttonMt}>
+                Topics
+              </Button>
+            </Link>
+          )}
           <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
-            {session.loggedIn ?
-              (!favorite ?
+            {session.loggedIn ? (
+              !favorite ? (
                 <AddFavorite type="problem" id={data.problemId}>
                   <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
                     <Icon type="star" theme="outlined" />
                   </Button>
-                </AddFavorite> :
+                </AddFavorite>
+              ) : (
                 <DeleteFavorite favoriteId={favorite.favoriteId}>
                   <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
                     <Icon type="star" theme="filled" />
                   </Button>
-                </DeleteFavorite>) :
+                </DeleteFavorite>
+              )
+            ) : (
               <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
                 <Icon type="star" theme="outlined" />
               </Button>
-            }
+            )}
             <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
               <Icon type="share-alt" theme="outlined" />
             </Button>
@@ -135,11 +174,11 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
                   <td>Mem. Limit</td>
                   <td>{data.memoryLimit || 0} KiB</td>
                 </tr>
-                {!!data.source &&
+                {!!data.source && (
                   <tr>
                     <td>Source</td>
                     <td>
-                      {!contestId ?
+                      {!contestId ? (
                         <Link
                           to={urlf(pages.problems.index, { query: { source: data.source } })}
                           onClick={() => {
@@ -149,54 +188,65 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
                               label: data.source,
                             });
                           }}
-                        >{data.source}</Link> :
+                        >
+                          {data.source}
+                        </Link>
+                      ) : (
                         <span>{data.source}</span>
-                      }
+                      )}
                     </td>
-                  </tr>}
+                  </tr>
+                )}
               </tbody>
             </table>
           </Skeleton>
         </Card>
-        {!loading && data.tags && !!data.tags.length && <Card bordered={false}>
-          <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-            <Form.Item label="Tags">
-              <div className="tags">
-                {data.tags.map(tag =>
-                  <Popover
-                    key={tag.tagId}
-                    content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
-                  >
-                    <Link
-                      to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
-                      onClick={() => {
-                        tracker.event({
-                          category: 'problems',
-                          action: 'viewListByTag',
-                        });
-                      }}
+        {!loading && data.tags && !!data.tags.length && (
+          <Card bordered={false}>
+            <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+              <Form.Item label="Tags">
+                <div className="tags">
+                  {data.tags.map((tag) => (
+                    <Popover
+                      key={tag.tagId}
+                      content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
                     >
-                      <Tag>{tag.name.en}</Tag>
-                    </Link>
-                  </Popover>
-                )}
-              </div>
-            </Form.Item>
-          </Form>
-        </Card>}
-        {!contestId && !loading && isPermissionDog(session) &&
+                      <Link
+                        to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
+                        onClick={() => {
+                          tracker.event({
+                            category: 'problems',
+                            action: 'viewListByTag',
+                          });
+                        }}
+                      >
+                        <Tag>{tag.name.en}</Tag>
+                      </Link>
+                    </Popover>
+                  ))}
+                </div>
+              </Form.Item>
+            </Form>
+          </Card>
+        )}
+        {!contestId && !loading && isPermissionDog(session) && (
           <Card bordered={false}>
             <EditProblemPropModal data={data}>
               <Button block>Modify Prop.</Button>
             </EditProblemPropModal>
-          </Card>}
+          </Card>
+        )}
       </PageAnimation>
     );
-  }
+  };
 
   return (
     <PageTitle
-      title={Number.isInteger(problemIndex) ? `${numberToAlphabet(problemIndex)} - ${data.title}` : data.title}
+      title={
+        Number.isInteger(problemIndex)
+          ? `${numberToAlphabet(problemIndex)} - ${data.title}`
+          : data.title
+      }
       loading={loading}
     >
       <Row gutter={16} className="content-view list-view">
@@ -208,11 +258,7 @@ const ProblemDetailPage: React.FC<Props> = ({ loading, data, session, contestId,
           </PageAnimation>
         </Col>
         <Col xs={24} md={6} xxl={6}>
-          {mobile ?
-            renderSecondaryArea() :
-            <Affix offsetTop={84}>
-              {renderSecondaryArea()}
-            </Affix>}
+          {mobile ? renderSecondaryArea() : <Affix offsetTop={84}>{renderSecondaryArea()}</Affix>}
         </Col>
       </Row>
     </PageTitle>

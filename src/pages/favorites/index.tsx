@@ -4,11 +4,10 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Tabs, Popover, Icon, Form, Switch, List } from 'antd';
+import { Row, Col, Card, Icon, List } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import FavoriteList from '@/components/MessageList';
 import PageAnimation from '@/components/PageAnimation';
 import ProblemBar from '@/components/ProblemBar';
 import TimeBar from '@/components/TimeBar';
@@ -19,13 +18,12 @@ export interface Props extends ReduxProps, RouteProps {
   data: IList<IFavorite>;
 }
 
-interface State {
-}
+interface State {}
 
 class FavoriteListPage extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   // componentDidUpdate(prevProps) {
   //   if (this.props.location !== prevProps.location) {
@@ -33,14 +31,14 @@ class FavoriteListPage extends React.Component<Props, State> {
   //   }
   // }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
     });
   };
 
-  handleTypeChange = type => {
+  handleTypeChange = (type) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, type, page: 1 },
@@ -48,7 +46,12 @@ class FavoriteListPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, location: { query }, dispatch } = this.props;
+    const {
+      loading,
+      data,
+      location: { query },
+      dispatch,
+    } = this.props;
     return (
       <PageAnimation>
         <Row gutter={16}>
@@ -66,23 +69,45 @@ class FavoriteListPage extends React.Component<Props, State> {
                 locale={{ emptyText: 'No Favorites' }}
                 dataSource={data.rows}
                 renderItem={(item: IFavorite) => {
-                  if (item.type === 'problem') {
-                    return (
-                      <List.Item
-                        className="hover-visible-container"
-                        actions={[<DeleteFavorite favoriteId={item.favoriteId}>
-                          <a key="action-delete" className="hover-visible"><Icon type="delete" /></a>
-                        </DeleteFavorite>]}
-                      >
-                        <List.Item.Meta
-                          title={<ProblemBar problem={item.target} display="id-title" />}
-                          description={<pre>{item.note}</pre>}
-                        />
-                        <TimeBar time={item.createdAt * 1000} />
-                      </List.Item>
-                    );
+                  switch (item.type) {
+                    case 'problem':
+                      return (
+                        <List.Item
+                          className="hover-visible-container"
+                          actions={[
+                            <DeleteFavorite key={item.favoriteId} favoriteId={item.favoriteId}>
+                              <a key="action-delete" className="hover-visible">
+                                <Icon type="delete" />
+                              </a>
+                            </DeleteFavorite>,
+                          ]}
+                        >
+                          <List.Item.Meta
+                            title={<ProblemBar problem={item.target} display="id-title" />}
+                            description={<pre>{item.note}</pre>}
+                          />
+                          <TimeBar time={item.createdAt * 1000} />
+                        </List.Item>
+                      );
                   }
-                  return null;
+                  return (
+                    <List.Item
+                      className="hover-visible-container"
+                      actions={[
+                        <DeleteFavorite key={item.favoriteId} favoriteId={item.favoriteId}>
+                          <a key="action-delete" className="hover-visible">
+                            <Icon type="delete" />
+                          </a>
+                        </DeleteFavorite>,
+                      ]}
+                    >
+                      <List.Item.Meta
+                        title={item.target.title}
+                        description={<pre>{item.note}</pre>}
+                      />
+                      <TimeBar time={item.createdAt * 1000} />
+                    </List.Item>
+                  );
                 }}
                 pagination={{
                   className: 'ant-table-pagination',

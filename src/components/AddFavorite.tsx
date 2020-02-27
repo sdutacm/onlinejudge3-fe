@@ -11,6 +11,8 @@ export interface Props extends ReduxProps {
   id: number;
   placement?: PopoverProps['placement'];
   silent?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 interface State {
@@ -38,7 +40,8 @@ class AddFavorite extends React.Component<Props, State> {
     });
   }
 
-  handleAdd = () => {
+  handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
     const { dispatch, type, id, loading } = this.props;
     const { note } = this.state;
     if (loading) {
@@ -93,7 +96,7 @@ class AddFavorite extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, loading, placement, silent } = this.props;
+    const { children, loading, placement, silent, className, style } = this.props;
     if (!silent) {
       return (
         <Popover
@@ -121,7 +124,11 @@ class AddFavorite extends React.Component<Props, State> {
         </Popover>
       );
     }
-    return <span onClick={this.handleAdd}>{children}</span>;
+    return (
+      <span onClick={this.handleAdd} className={className} style={style}>
+        {children}
+      </span>
+    );
   }
 }
 

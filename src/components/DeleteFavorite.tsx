@@ -10,6 +10,8 @@ export interface Props extends ReduxProps {
   favoriteId: number;
   placement?: PopoverProps['placement'];
   silent?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 interface State {
@@ -35,7 +37,8 @@ class DeleteFavorite extends React.Component<Props, State> {
     });
   }
 
-  handleDelete = () => {
+  handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
     const { dispatch, favoriteId, loading } = this.props;
     if (loading) {
       return;
@@ -69,7 +72,7 @@ class DeleteFavorite extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, placement, silent } = this.props;
+    const { children, placement, silent, className, style } = this.props;
     if (!silent) {
       return (
         <Popconfirm
@@ -81,7 +84,11 @@ class DeleteFavorite extends React.Component<Props, State> {
         </Popconfirm>
       );
     }
-    return <span onClick={this.handleDelete}>{children}</span>;
+    return (
+      <span className={className} style={style} onClick={this.handleDelete}>
+        {children}
+      </span>
+    );
   }
 }
 

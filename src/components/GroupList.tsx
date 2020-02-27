@@ -1,10 +1,14 @@
 import React from 'react';
+import { connect } from 'dva';
 import { Link } from 'react-router-dom';
 import { Card, List, Icon } from 'antd';
 import { urlf } from '@/utils/format';
 import pages from '@/configs/pages';
+import { ReduxProps } from '@/@types/props';
+import AddFavorite from './AddFavorite';
+import DeleteFavorite from './DeleteFavorite';
 
-interface Props {
+interface Props extends ReduxProps {
   loading: boolean;
   count: number;
   rows: IGroup[];
@@ -12,6 +16,8 @@ interface Props {
   limit?: number;
   emptyText?: string;
   onPageChange?: (page: number) => void;
+  favorites: IFullList<IFavorite>;
+  session: ISessionStatus;
 }
 
 interface State {}
@@ -23,6 +29,39 @@ class GroupList extends React.Component<Props, State> {
     super(props);
     this.state = {};
   }
+
+  renderFavoriteButton = (groupId: number) => {
+    const {
+      favorites: { rows: favoritesRows },
+      session,
+    } = this.props;
+    if (!session.loggedIn) {
+      return null;
+    }
+    const favorite = favoritesRows.find((v) => v.type === 'group' && v.target?.groupId === groupId);
+    if (!favorite) {
+      return (
+        <AddFavorite
+          type="group"
+          id={groupId}
+          silent
+          style={{ paddingLeft: '4px', fontSize: '16px' }}
+        >
+          <Icon type="star" theme="outlined" />
+        </AddFavorite>
+      );
+    } else {
+      return (
+        <DeleteFavorite
+          favoriteId={favorite.favoriteId}
+          silent
+          style={{ paddingLeft: '4px', fontSize: '16px' }}
+        >
+          <Icon type="star" theme="filled" />
+        </DeleteFavorite>
+      );
+    }
+  };
 
   render() {
     const { count, rows, page, limit, loading, emptyText, onPageChange } = this.props;
@@ -70,8 +109,14 @@ class GroupList extends React.Component<Props, State> {
                   description={
                     <div className="text-ellipsis">
                       {item.intro}
-                      <div className="mt-sm">
-                        <Icon type="user" /> {item.membersCount}
+                      <div
+                        className="mt-sm flex-justify-space-between"
+                        style={{ alignItems: 'center' }}
+                      >
+                        <span style={{ lineHeight: '2' }}>
+                          <Icon type="user" /> {item.membersCount}
+                        </span>
+                        {this.renderFavoriteButton(item.groupId)}
                       </div>
                     </div>
                   }
@@ -85,4 +130,11 @@ class GroupList extends React.Component<Props, State> {
   }
 }
 
-export default GroupList;
+function mapStateToProps(state) {
+  return {
+    favorites: state.favorites.list,
+    session: state.session,
+  };
+}
+
+export default connect(mapStateToProps)(GroupList);

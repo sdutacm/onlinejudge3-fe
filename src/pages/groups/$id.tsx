@@ -45,6 +45,8 @@ import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import { isEqual } from 'lodash';
 import AddGroupMemberModal from '@/components/AddGroupMemberModal';
+import AddFavorite from '@/components/AddFavorite';
+import DeleteFavorite from '@/components/DeleteFavorite';
 
 const MAX_PERMISSION = 999;
 
@@ -52,6 +54,7 @@ export interface Props extends ReduxProps, RouteProps {
   id: number;
   detail: IGroup;
   members: IFullList<IGroupMember>;
+  favorites: IFullList<IFavorite>;
   session: ISessionStatus;
   loadings: {
     detail: boolean;
@@ -537,6 +540,46 @@ class GroupDetail extends React.Component<Props, State> {
     return null;
   };
 
+  renderFavoriteButton = () => {
+    const {
+      detail,
+      favorites: { rows: favoritesRows },
+      session,
+    } = this.props;
+    if (!session.loggedIn) {
+      return null;
+    }
+    const favorite = favoritesRows.find(
+      (v) => v.type === 'group' && v.target?.groupId === detail.groupId,
+    );
+    if (!favorite) {
+      return (
+        <AddFavorite
+          type="group"
+          id={detail.groupId}
+          silent
+          className="button-block-group display-block"
+        >
+          <Button block>
+            <Icon type="star" theme="outlined" />
+          </Button>
+        </AddFavorite>
+      );
+    } else {
+      return (
+        <DeleteFavorite
+          favoriteId={favorite.favoriteId}
+          silent
+          className="button-block-group display-block"
+        >
+          <Button block>
+            <Icon type="star" theme="filled" />
+          </Button>
+        </DeleteFavorite>
+      );
+    }
+  };
+
   renderMembersImageView = () => {
     return this.members.map((m) => (
       <Popover
@@ -710,7 +753,7 @@ class GroupDetail extends React.Component<Props, State> {
       id,
       loadings,
       detail,
-      members: { count: membersCount, rows: membersRows },
+      members: { count: membersCount },
       session,
     } = this.props;
 
@@ -828,6 +871,7 @@ class GroupDetail extends React.Component<Props, State> {
                           <Button block>Edit Info</Button>
                         </GeneralFormModal>
                       )}
+                      {this.renderFavoriteButton()}
                       {(this.isGroupMaster || isAdminDog(session)) && (
                         <Button
                           className="button-block-group"
@@ -868,6 +912,7 @@ function mapStateToProps(state) {
     id,
     detail: state.groups.detail[id] || {},
     members: state.groups.members[id] || { count: 0, rows: [] },
+    favorites: state.favorites.list,
     session: state.session,
     loadings: {
       detail: !!state.loading.effects['groups/getDetail'],

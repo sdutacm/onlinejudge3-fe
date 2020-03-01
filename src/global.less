@@ -424,6 +424,10 @@ ul {
   overflow: hidden;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 .no-wrap {
   white-space: nowrap;
 }
@@ -540,6 +544,13 @@ ul {
       //   visibility: visible;
       // }
     }
+  }
+}
+
+.table-pagination-left {
+  .ant-pagination.ant-table-pagination {
+    float: left;
+    margin-left: 16px;
   }
 }
 
@@ -1431,6 +1442,17 @@ a {
 .g-members-avatar {
   padding: 4px 3px;
   display: inline-block;
+}
+
+// set stats
+
+.set-stats {
+  .set-stats-ranklist-col-bd {
+    @media only screen and (min-width: 768px) {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
 }
 
 // mobile

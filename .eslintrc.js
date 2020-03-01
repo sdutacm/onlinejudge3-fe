@@ -53,6 +53,7 @@ module.exports = {
     // 'spaced-comment': 'off',
     complexity: 'off',
     'no-unused-expressions': 'off',
+    'max-depth': 'off',
 
     // TypeScript
     // '@typescript-eslint/indent': [

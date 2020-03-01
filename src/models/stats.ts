@@ -2,6 +2,7 @@ import * as service from '../services/stats';
 import { genTimeFlag, isStateExpired } from '@/utils/misc';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
+import { isEqual } from 'lodash';
 
 function genInitialState() {
   return {
@@ -31,8 +32,15 @@ function genInitialState() {
         _updatedAt: -1,
       },
     },
+    userAcceptedProblems: {
+      stats: {},
+      truncated: 0,
+      _updateEvery: 0,
+      _updatedAt: 0,
+      _query: {},
+    },
   };
-};
+}
 
 export default {
   state: genInitialState(),
@@ -47,11 +55,21 @@ export default {
     clearAllUserACRank(state) {
       state.userACRank = genInitialState().userACRank;
     },
+    setUserAcceptedProblems(state, { payload: { data, query } }) {
+      state.userAcceptedProblems = {
+        ...data,
+        ...genTimeFlag(5 * 60 * 1000),
+        _query: query,
+      };
+    },
+    clearAllUserAcceptedProblems(state) {
+      state.userAcceptedProblems = genInitialState().userAcceptedProblems;
+    },
   },
   effects: {
-    * getAllUserACRank({ payload: { force = false } = { force: false } }, { call, put, select }) {
+    *getAllUserACRank({ payload: { force = false } = { force: false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.stats.userACRank);
+        const savedState = yield select((state) => state.stats.userACRank);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -91,6 +109,50 @@ export default {
         week: weekRet,
         month: monthRet,
       };
+    },
+    *getUserAcceptedProblems({ payload: { userIds, force = false } }, { call, put, select }) {
+      const query = {
+        userIds,
+      };
+      if (!force) {
+        const savedState = yield select((state) => state.stats.userAcceptedProblems);
+        if (!isStateExpired(savedState) && isEqual(savedState._query, query)) {
+          return {
+            success: true,
+            code: 0,
+            data: savedState,
+          };
+        }
+      }
+      if (!Array.isArray(userIds) || userIds.length === 0) {
+        const data = genInitialState().userAcceptedProblems;
+        yield put({
+          type: 'setUserAcceptedProblems',
+          payload: {
+            data,
+            query,
+          },
+        });
+        return {
+          success: true,
+          code: 0,
+          data,
+        };
+      }
+      const ret: IApiResponse<IStatsUserAcceptedProblems> = yield call(
+        service.getUserAcceptedProblems,
+        userIds,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setUserAcceptedProblems',
+          payload: {
+            data: ret.data,
+            query,
+          },
+        });
+      }
+      return ret;
     },
   },
   subscriptions: {

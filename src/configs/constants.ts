@@ -24,6 +24,8 @@ const constants = {
   bgGetUnreadMessagesInterval: 10 * 60 * 1000,
   mobileBreakPoint: 768,
   navbarHeight: 64,
+  setStatsUserMaxSelect: 1000,
+  setStatsUserMaxSelectPermission: 5000,
 };
 
 export default constants;

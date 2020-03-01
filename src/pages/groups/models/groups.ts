@@ -1,15 +1,12 @@
 import * as service from '../services/groups';
-import {
-  clearExpiredStateProperties,
-  genTimeFlag,
-  isStateExpired,
-} from '@/utils/misc';
+import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
 import { formatListQuery } from '@/utils/format';
 import { isEqual } from 'lodash';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { matchPath } from 'react-router';
 import limits from '@/configs/limits';
+import { Codes } from '@/configs/codes/codes';
 
 function genInitialState() {
   return {
@@ -87,16 +84,10 @@ export default {
       formattedQuery.limit = +query.limit || limits.groups.search;
       delete formattedQuery.category;
       const savedState = yield select((state) => state.groups.search);
-      if (
-        !isStateExpired(savedState) &&
-        isEqual(savedState._query, formattedQuery)
-      ) {
+      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<IGroup>> = yield call(
-        service.getList,
-        formattedQuery,
-      );
+      const ret: IApiResponse<IList<IGroup>> = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setSearch',
@@ -134,7 +125,11 @@ export default {
       if (!force) {
         const savedState = yield select((state) => state.groups.members[id]);
         if (!isStateExpired(savedState)) {
-          return;
+          return {
+            success: true,
+            code: 0,
+            data: savedState,
+          };
         }
       }
       const ret: IApiResponse<IGroup> = yield call(service.getMembers, id);
@@ -156,14 +151,24 @@ export default {
       if (!force) {
         const savedState = yield select((state) => state.groups.joinedGroups);
         if (!isStateExpired(savedState)) {
-          return;
+          return {
+            success: true,
+            code: 0,
+            data: savedState,
+          };
         }
       }
       const session = yield select((state) => state.session);
       if (!session.loggedIn) {
-        return;
+        return {
+          success: false,
+          code: Codes.R_SESSION_NOT_LOGGED_IN,
+        };
       }
-      const ret: IApiResponse<IFullList<IGroup>> = yield call(service.getUserGroups, session.user.userId);
+      const ret: IApiResponse<IFullList<IGroup>> = yield call(
+        service.getUserGroups,
+        session.user.userId,
+      );
       if (ret.success) {
         yield put({
           type: 'setJoinedGroups',
@@ -216,6 +221,7 @@ export default {
             requestEffect(dispatch, { type: 'getJoinedGroups', payload: {} });
           }
         }
+
         const matchDetail = matchPath(pathname, {
           path: pages.groups.detail,
           exact: true,

@@ -477,6 +477,25 @@ interface IStatsUserAcceptedProblems {
   _updatedAt: number; // timestamp (ms)
 }
 
+interface ISetUserStats {
+  solved: number;
+  acceptedProblemsMap: Map<
+    number,
+    {
+      solutionId: number;
+      submittedAt: number;
+    }
+  >;
+}
+
+interface ISetStatsRanklistRow {
+  rank: number;
+  user: IUserLite;
+  stats: ISetUserStats;
+}
+
+type ISetStatsRanklist = ISetStatsRanklistRow[];
+
 type ISettingsTheme = 'auto' | 'light' | 'dark';
 
 type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';

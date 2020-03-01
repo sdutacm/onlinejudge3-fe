@@ -40,6 +40,7 @@ export default {
   sets: {
     index: '/sets',
     detail: '/sets/:id',
+    stats: '/sets/:id/stats',
   },
   notes: {
     index: '/notes',

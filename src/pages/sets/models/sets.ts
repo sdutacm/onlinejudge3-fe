@@ -101,6 +101,7 @@ export default {
         if (pathname === pages.sets.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
         }
+
         const matchDetail = matchPath(pathname, {
           path: pages.sets.detail,
           exact: true,
@@ -108,6 +109,14 @@ export default {
         if (matchDetail) {
           requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
           requestEffect(dispatch, { type: 'users/getProblemResultStats' });
+        }
+
+        const matchStats = matchPath(pathname, {
+          path: pages.sets.stats,
+          exact: true,
+        });
+        if (matchStats) {
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchStats.params['id'] } });
         }
       });
     },

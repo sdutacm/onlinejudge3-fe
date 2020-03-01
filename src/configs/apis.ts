@@ -94,6 +94,7 @@ const api = {
   stats: {
     base: '/stats',
     userACRank: '/stats/userACRank',
+    userAcceptedProblems: '/stats/userAcceptedProblems',
   },
 };
 

@@ -33,6 +33,7 @@ const limits = {
   },
   sets: {
     list: 20,
+    stats: 20,
   },
   notes: {
     list: 10,

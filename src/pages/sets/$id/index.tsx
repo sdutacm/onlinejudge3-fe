@@ -147,18 +147,20 @@ class SetDetail extends React.Component<Props, State> {
                             <Icon type="delete" /> Delete
                           </a>
                         ) : null}
-                        <Link
-                          to={urlf(pages.sets.stats, { param: { id } })}
-                          className="ml-lg normal-text-link"
-                          onClick={() => {
-                            tracker.event({
-                              category: 'sets',
-                              action: 'toStats',
-                            });
-                          }}
-                        >
-                          <Icon type="table" /> Statistics
-                        </Link>
+                        {session.loggedIn && (
+                          <Link
+                            to={urlf(pages.sets.stats, { param: { id } })}
+                            className="ml-lg normal-text-link"
+                            onClick={() => {
+                              tracker.event({
+                                category: 'sets',
+                                action: 'toStats',
+                              });
+                            }}
+                          >
+                            <Icon type="table" /> Statistics
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </Card>

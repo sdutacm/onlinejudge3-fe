@@ -108,7 +108,7 @@ class GroupList extends React.Component<Props, State> {
                   }
                   description={
                     <div className="text-ellipsis">
-                      {item.intro}
+                      <div>{item.intro || '　'}</div>
                       <div
                         className="mt-sm flex-justify-space-between"
                         style={{ alignItems: 'center' }}

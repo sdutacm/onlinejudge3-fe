@@ -4,6 +4,7 @@ import { formatListQuery } from '@/utils/format';
 import { isEqual } from 'lodash';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
+import { Codes } from '@/configs/codes/codes';
 
 const initialState = {
   list: {
@@ -33,27 +34,43 @@ export default {
     },
   },
   effects: {
-    * getList({ payload: { userId, query = {}, force = false } = { userId: null, query: {}, force: false } }, { call, put, select }) {
+    *getList(
+      {
+        payload: { userId, query = {}, force = false } = { userId: null, query: {}, force: false },
+      },
+      { call, put, select },
+    ) {
       if (!userId) {
-        const session = yield select(state => state.session);
+        const session = yield select((state) => state.session);
         if (!session.loggedIn) {
-          return;
+          return {
+            success: false,
+            code: Codes.R_SESSION_NOT_LOGGED_IN,
+          };
         }
         userId = session.user.userId;
       }
       const formattedQuery = {
-        ...formatListQuery(query, true),
         orderBy: 'favoriteId',
         orderDirection: 'DESC',
+        ...formatListQuery(query, true),
         // limit: limits.favorites.list,
       };
       if (!force) {
-        const savedState = yield select(state => state.favorites.list);
+        const savedState = yield select((state) => state.favorites.list);
         if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
-          return;
+          return {
+            success: true,
+            code: 0,
+            data: savedState,
+          };
         }
       }
-      const ret: IApiResponse<IFullList<IFavorite> > = yield call(service.getList, userId, formattedQuery);
+      const ret: IApiResponse<IFullList<IFavorite>> = yield call(
+        service.getList,
+        userId,
+        formattedQuery,
+      );
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -65,10 +82,10 @@ export default {
       }
       return ret;
     },
-    * addFavorite({ payload: data }, { call }) {
+    *addFavorite({ payload: data }, { call }) {
       return yield call(service.addFavorite, data);
     },
-    * deleteFavorite({ payload: { id } }, { call }) {
+    *deleteFavorite({ payload: { id } }, { call }) {
       return yield call(service.deleteFavorite, id);
     },
   },

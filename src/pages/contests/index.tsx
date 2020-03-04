@@ -35,6 +35,20 @@ class ContestList extends React.Component<Props, State> {
     this.state = {};
   }
 
+  get categoryName() {
+    const {
+      location: { query },
+    } = this.props;
+    switch (+query.category) {
+      case 2:
+        return 'Tests';
+      case 1:
+        return 'Experiments';
+      default:
+        return 'Contests';
+    }
+  }
+
   // componentDidUpdate(prevProps) {
   //   if (this.props.location !== prevProps.location) {
   //     window.scrollTo(0, 0);
@@ -87,7 +101,8 @@ class ContestList extends React.Component<Props, State> {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       this.props.session.loggedIn &&
-      registerStartAt * 1000 <= serverTime && serverTime < registerEndAt * 1000
+      registerStartAt * 1000 <= serverTime &&
+      serverTime < registerEndAt * 1000
     );
   };
 
@@ -375,7 +390,7 @@ class ContestList extends React.Component<Props, State> {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       <PageAnimation>
-        <PageTitle title={+query.category === 1 ? 'Experiments' : 'Contests'}>
+        <PageTitle title={this.categoryName}>
           <Row gutter={16} className="list-view">
             <Col xs={24}>
               <Tabs
@@ -385,6 +400,7 @@ class ContestList extends React.Component<Props, State> {
                 onChange={this.handleCategoryChange}
               >
                 <Tabs.TabPane tab="Contests" key="0" />
+                <Tabs.TabPane tab="Tests" key="2" />
                 <Tabs.TabPane tab="Experiments" key="1" />
               </Tabs>
             </Col>

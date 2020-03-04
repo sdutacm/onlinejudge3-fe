@@ -86,7 +86,7 @@ class AddGroupMemberModal extends React.Component<Props, State> {
             <Form.Item label="Users">
               {getFieldDecorator('users', {
                 rules: [{ required: true, message: 'Please select at least one user' }],
-              })(<UserSelect multiple />)}
+              })(<UserSelect multiple placeholder="Input nickname to search" />)}
             </Form.Item>
           </Form>
         </Modal>

@@ -445,6 +445,13 @@ interface IGroupMember {
   user: IUserLite;
 }
 
+interface IGroupLiteWithMembers {
+  groupId: IGroup['groupId'];
+  name: IGroup['name'];
+  verified: IGroup['verified'];
+  members: IGroupMember[];
+}
+
 interface IStatsUserACRankUserStatus {
   user: IUserLite;
   accepted: number;

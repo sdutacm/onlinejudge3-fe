@@ -42,13 +42,6 @@ interface State {
   dataUpdatedAt?: number;
 }
 
-interface IGroupLiteWithMembers {
-  groupId: IGroup['groupId'];
-  name: IGroup['name'];
-  verified: IGroup['verified'];
-  members: IGroupMember[];
-}
-
 const MAX_TASK_NUM = 3;
 
 class SetStats extends React.Component<Props, State> {

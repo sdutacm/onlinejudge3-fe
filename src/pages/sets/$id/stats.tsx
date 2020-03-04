@@ -27,6 +27,7 @@ import setStatePromise from '@/utils/setStatePromise';
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   detail: ISet;
+  uap: IStatsUserAcceptedProblems;
   session: ISessionStatus;
 }
 
@@ -37,12 +38,86 @@ interface State {
   selectedGM: string[];
   selectedStartAt?: moment.Moment;
   selectedEndAt?: moment.Moment;
+  lastSelectedStartAt?: moment.Moment;
+  lastSelectedEndAt?: moment.Moment;
   statsRanklist: ISetStatsRanklist;
   shownStats: boolean;
-  dataUpdatedAt?: number;
+  uapUpdatedAt?: number;
 }
 
-const MAX_TASK_NUM = 3;
+interface IFlatProblem {
+  id: string;
+  problemId: number;
+  title: string;
+}
+
+const MAX_TASK_NUM = 5;
+
+function calcStatsRanklist(
+  flatProblems: IFlatProblem[],
+  userMap: Map<number, IUserLite>,
+  uap: IStatsUserAcceptedProblems,
+  selectedUserIds: IUser['userId'][],
+  selectedStartAt?: moment.Moment,
+  selectedEndAt?: moment.Moment,
+): ISetStatsRanklist {
+  try {
+    const { stats: uapStats } = uap;
+    const userStatsRanklist: ISetStatsRanklist = [];
+    for (const userId of selectedUserIds) {
+      const userStats: ISetUserStats = {
+        solved: 0,
+        acceptedProblemsMap: new Map<
+          number,
+          {
+            solutionId: number;
+            submittedAt: number;
+          }
+        >(), // AC 题目的映射，仅包含在 Set 中的题目
+      };
+      const stats = uapStats[userId];
+      if (stats) {
+        for (const p of stats.problems) {
+          if (!flatProblems.find((fp) => fp.problemId === p.pid)) {
+            continue;
+          }
+          const submittedMoment = moment(p.at * 1000);
+          if (selectedStartAt && submittedMoment.isBefore(selectedStartAt)) {
+            continue;
+          }
+          if (selectedEndAt && submittedMoment.isAfter(selectedEndAt)) {
+            continue;
+          }
+          userStats.acceptedProblemsMap.set(p.pid, {
+            solutionId: p.sid,
+            submittedAt: p.at,
+          });
+        }
+      }
+      userStats.solved = userStats.acceptedProblemsMap.size;
+      userStatsRanklist.push({
+        rank: 0,
+        user: userMap.get(userId),
+        stats: userStats,
+      });
+    }
+    userStatsRanklist.sort((a, b) => b.stats.solved - a.stats.solved);
+    let lastRank = 1;
+    userStatsRanklist[0] && (userStatsRanklist[0].rank = lastRank);
+    for (let i = 1; i < userStatsRanklist.length; ++i) {
+      const row = userStatsRanklist[i];
+      if (row.stats.solved === userStatsRanklist[i - 1].stats.solved) {
+        row.rank = lastRank;
+      } else {
+        row.rank = lastRank = i + 1;
+      }
+    }
+    return userStatsRanklist;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
 
 class SetStats extends React.Component<Props, State> {
   private setStatePromise = setStatePromise.bind(this);
@@ -58,9 +133,11 @@ class SetStats extends React.Component<Props, State> {
       selectedGM: [],
       selectedStartAt: undefined,
       selectedEndAt: undefined,
+      lastSelectedStartAt: undefined,
+      lastSelectedEndAt: undefined,
       statsRanklist: [],
       shownStats: false,
-      dataUpdatedAt: undefined,
+      uapUpdatedAt: undefined,
     };
     this.pq = new PromiseQueue(MAX_TASK_NUM, Infinity);
     this.lastReqId = 0;
@@ -91,15 +168,42 @@ class SetStats extends React.Component<Props, State> {
   }
 
   @memoize
-  flatProblemsImpl(sections: ISetPropsTypeStandard['sections']) {
+  selectedGroupsWithMembersImpl(
+    selectedGM: State['selectedGM'],
+    groupsWithMembers: State['groupsWithMembers'],
+  ) {
+    const selected: IGroupLiteWithMembers[] = [];
+    for (const gm of selectedGM) {
+      const [g, m] = gm.split('-');
+      if (!m) {
+        const group = groupsWithMembers.find((group) => group.groupId === +g);
+        if (group) {
+          selected.push(group);
+        }
+      }
+    }
+    return selected;
+  }
+
+  get selectedGroupsWithMembers() {
+    return this.selectedGroupsWithMembersImpl(this.state.selectedGM, this.state.groupsWithMembers);
+  }
+
+  @memoize
+  flatProblemsImpl(sections: ISetPropsTypeStandard['sections']): IFlatProblem[] {
     if (!Array.isArray(sections)) {
       return [];
     }
-    const problems: Pick<IProblem, 'problemId' | 'title'>[] = [];
-    sections.forEach((section) => {
-      section.problems.forEach((problem) => problems.push(problem));
+    const flatProblems: IFlatProblem[] = [];
+    sections.forEach((section, sectionIndex) => {
+      section.problems.forEach((problem, problemIndex) =>
+        flatProblems.push({
+          id: `${sectionIndex + 1}-${problemIndex + 1}`,
+          ...problem,
+        }),
+      );
     });
-    return problems;
+    return flatProblems;
   }
 
   get flatProblems() {
@@ -270,15 +374,18 @@ class SetStats extends React.Component<Props, State> {
       return;
     }
     try {
+      const _startAt = Date.now();
       await this.setStatePromise({
         calcStatsLoading: true,
         shownStats: true,
         statsRanklist: [],
-        dataUpdatedAt: undefined,
+        uapUpdatedAt: undefined,
+        lastSelectedStartAt: selectedStartAt,
+        lastSelectedEndAt: selectedEndAt,
       });
       router.replace({
         pathname: this.props.location.pathname,
-        query: { ...this.props.location.query, page: 1 },
+        query: { ...this.props.location.query, page: undefined },
       });
       const ret: IApiResponse<IStatsUserAcceptedProblems> = await dispatch({
         type: 'stats/getUserAcceptedProblems',
@@ -286,60 +393,23 @@ class SetStats extends React.Component<Props, State> {
       });
       msg.auto(ret);
       if (ret.success) {
-        const { stats: uap, _updatedAt } = ret.data;
-        const userStatsRanklist: ISetStatsRanklist = [];
-        for (const userId of selectedUserIds) {
-          const userStats: ISetUserStats = {
-            solved: 0,
-            acceptedProblemsMap: new Map<
-              number,
-              {
-                solutionId: number;
-                submittedAt: number;
-              }
-            >(),
-          };
-          const stats = uap[userId];
-          if (stats) {
-            for (const p of stats.problems) {
-              if (!this.flatProblems.find((fp) => fp.problemId === p.pid)) {
-                continue;
-              }
-              const submittedMoment = moment(p.at * 1000);
-              if (selectedStartAt && submittedMoment.isBefore(selectedStartAt)) {
-                continue;
-              }
-              if (selectedEndAt && submittedMoment.isAfter(selectedEndAt)) {
-                continue;
-              }
-              userStats.acceptedProblemsMap.set(p.pid, {
-                solutionId: p.sid,
-                submittedAt: p.at,
-              });
-            }
-          }
-          userStats.solved = userStats.acceptedProblemsMap.size;
-          userStatsRanklist.push({
-            rank: 0,
-            user: this.userMap.get(userId),
-            stats: userStats,
-          });
-        }
-        userStatsRanklist.sort((a, b) => b.stats.solved - a.stats.solved);
-        let lastRank = 1;
-        userStatsRanklist[0] && (userStatsRanklist[0].rank = lastRank);
-        for (let i = 1; i < userStatsRanklist.length; ++i) {
-          const row = userStatsRanklist[i];
-          if (row.stats.solved === userStatsRanklist[i - 1].stats.solved) {
-            row.rank = lastRank;
-          } else {
-            row.rank = lastRank = i + 1;
-          }
-        }
+        const userStatsRanklist = calcStatsRanklist(
+          this.flatProblems,
+          this.userMap,
+          ret.data,
+          this.selectedUserIds,
+          selectedStartAt,
+          selectedEndAt,
+        );
         this.setState({
           statsRanklist: userStatsRanklist,
           calcStatsLoading: false,
-          dataUpdatedAt: _updatedAt,
+          uapUpdatedAt: ret.data._updatedAt,
+        });
+        tracker.timing({
+          category: 'sets',
+          variable: 'calcStats',
+          value: Date.now() - _startAt,
         });
       }
     } catch (e) {
@@ -364,7 +434,11 @@ class SetStats extends React.Component<Props, State> {
       statsRanklist,
       calcStatsLoading,
       shownStats,
-      dataUpdatedAt,
+      uapUpdatedAt,
+      selectedStartAt,
+      selectedEndAt,
+      lastSelectedStartAt,
+      lastSelectedEndAt,
     } = this.state;
 
     return (
@@ -415,7 +489,22 @@ class SetStats extends React.Component<Props, State> {
             {isPermissionDog(session) && (
               <Col xs={24} lg={10} xl={8}>
                 <div style={{ padding: '16px 20px 0' }}>
-                  <DatePicker.RangePicker
+                  <DatePicker
+                    placeholder="End at (optional)"
+                    defaultPickerValue={moment()
+                      .add(1, 'd')
+                      .startOf('d')}
+                    onChange={(moment, _str) =>
+                      this.setState({
+                        selectedEndAt: moment,
+                      })
+                    }
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    value={selectedEndAt}
+                    style={{ width: '100%' }}
+                  />
+                  {/* <DatePicker.RangePicker
                     placeholder={['Start at (optional)', 'End at (optional)']}
                     defaultPickerValue={[
                       moment('2008-01-01 00:00:00', 'YYYY-MM-DD HH:mm:ss'),
@@ -431,8 +520,9 @@ class SetStats extends React.Component<Props, State> {
                     }
                     showTime
                     format="YYYY-MM-DD HH:mm:ss"
+                    value={[selectedStartAt, selectedEndAt]}
                     style={{ width: '100%' }}
-                  />
+                  /> */}
                 </div>
               </Col>
             )}
@@ -455,9 +545,14 @@ class SetStats extends React.Component<Props, State> {
                   <StatsRanklist
                     id={detail.setId}
                     title={detail.title}
-                    data={statsRanklist}
-                    dataUpdatedAt={dataUpdatedAt}
                     sections={detail.props.sections}
+                    // userMap={this.userMap}
+                    // selectedGroups={this.selectedGroupsWithMembers}
+                    // selectedUserIds={this.selectedUserIds}
+                    data={statsRanklist}
+                    uapUpdatedAt={uapUpdatedAt}
+                    selectedStartAt={lastSelectedStartAt}
+                    selectedEndAt={lastSelectedEndAt}
                     loading={calcStatsLoading}
                     showDetail={isPermissionDog(session)}
                   />
@@ -477,6 +572,7 @@ function mapStateToProps(state) {
     id,
     loading: !!state.loading.effects['sets/getDetail'],
     detail: state.sets.detail[id] || {},
+    uap: state.stats.userAcceptedProblems,
     session: state.session,
   };
 }

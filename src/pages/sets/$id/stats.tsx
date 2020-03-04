@@ -23,6 +23,7 @@ import moment from 'moment';
 import constants from '@/configs/constants';
 import StatsRanklist from '@/components/StatsRanklist';
 import setStatePromise from '@/utils/setStatePromise';
+import locale from 'antd/es/date-picker/locale/en_US';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -420,6 +421,29 @@ class SetStats extends React.Component<Props, State> {
     }
   };
 
+  handleCalcStatsPerGroup = () => {
+    const { uap } = this.props;
+    const { selectedStartAt, selectedEndAt } = this.state;
+    const groupStats: ISetStatsGroupRanklist[] = [];
+    for (const group of this.selectedGroupsWithMembers) {
+      const userStatsRanklist = calcStatsRanklist(
+        this.flatProblems,
+        this.userMap,
+        uap,
+        [...group.members.map((member) => member.user.userId)],
+        selectedStartAt,
+        selectedEndAt,
+      );
+      groupStats.push({
+        groupId: group.groupId,
+        name: group.name,
+        verified: group.verified,
+        ranklist: userStatsRanklist,
+      });
+    }
+    return groupStats;
+  };
+
   render() {
     const { id, detail, loading, session } = this.props;
     if (loading) {
@@ -503,6 +527,15 @@ class SetStats extends React.Component<Props, State> {
                     format="YYYY-MM-DD HH:mm:ss"
                     value={selectedEndAt}
                     style={{ width: '100%' }}
+                    locale={{
+                      ...locale,
+                      lang: {
+                        ...locale.lang,
+                        ok: 'OK',
+                        timeSelect: 'Select time',
+                        dateSelect: 'Select date',
+                      },
+                    }}
                   />
                   {/* <DatePicker.RangePicker
                     placeholder={['Start at (optional)', 'End at (optional)']}
@@ -522,6 +555,15 @@ class SetStats extends React.Component<Props, State> {
                     format="YYYY-MM-DD HH:mm:ss"
                     value={[selectedStartAt, selectedEndAt]}
                     style={{ width: '100%' }}
+                    locale={{
+                      ...locale,
+                      lang: {
+                        ...locale.lang,
+                        ok: 'OK',
+                        timeSelect: 'Select time',
+                        dateSelect: 'Select date',
+                      },
+                    }}
                   /> */}
                 </div>
               </Col>
@@ -555,6 +597,7 @@ class SetStats extends React.Component<Props, State> {
                     selectedEndAt={lastSelectedEndAt}
                     loading={calcStatsLoading}
                     showDetail={isPermissionDog(session)}
+                    calcStatsPerGroup={this.handleCalcStatsPerGroup}
                   />
                 </Card>
               </Col>

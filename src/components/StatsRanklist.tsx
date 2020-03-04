@@ -24,6 +24,7 @@ export interface Props extends RouteProps {
   selectedEndAt?: moment.Moment;
   loading: boolean;
   showDetail?: boolean;
+  calcStatsPerGroup?: () => ISetStatsGroupRanklist[];
 }
 
 interface State {}
@@ -89,7 +90,16 @@ class StatsRanklist extends React.Component<Props, State> {
   };
 
   handleExport = () => {
-    const { id, title, sections, data, uapUpdatedAt, selectedEndAt, loading } = this.props;
+    const {
+      id,
+      title,
+      sections,
+      data: totalRanklist,
+      uapUpdatedAt,
+      selectedEndAt,
+      loading,
+      calcStatsPerGroup,
+    } = this.props;
     if (loading || this.exportLoading) {
       return;
     }
@@ -100,61 +110,76 @@ class StatsRanklist extends React.Component<Props, State> {
     this.setState({
       exportLoading: true,
     });
+    const groupRanklists = calcStatsPerGroup?.() || [];
+    const ranklists = [
+      {
+        sheetName: 'Statistics',
+        data: totalRanklist,
+      },
+      ...groupRanklists.map((gr) => ({
+        sheetName: gr.name,
+        data: gr.ranklist,
+      })),
+    ];
     try {
       let until: moment.Moment | null = moment(uapUpdatedAt);
       if (selectedEndAt?.isBefore(uapUpdatedAt)) {
         until = selectedEndAt;
       }
-      const aoa: any[][] = [
-        [
-          `${moment(until).format('YYYY-MM-DD HH:mm:ss')}  ${title} (${sections.length} section${
-            sections.length > 1 ? 's' : ''
-          }, ${this.flatProblems.length} problem${this.flatProblems.length > 1 ? 's' : ''})`,
-        ],
-        [
-          'Rank',
-          'Username',
-          'Nickname',
-          'Solved',
-          'Progress',
-          ...sections.map((section, sectionIndex) => `S${sectionIndex + 1}: ${section.title}`),
-          ...this.flatProblems.map((p) => p.id),
-        ],
-      ];
-      for (const d of data) {
-        aoa.push([
-          d.rank,
-          d.user.username,
-          d.user.nickname,
-          d.stats.solved,
-          (d.stats.solved / this.flatProblems.length).toFixed(2),
-          ...sections.map((section) => {
-            return section.problems.reduce(
-              (acc, cur) => acc + (d.stats.acceptedProblemsMap.has(cur.problemId) ? 1 : 0),
-              0,
-            );
-          }),
-          ...this.flatProblems.map((p) =>
-            d.stats.acceptedProblemsMap.has(p.problemId) ? '✓' : '',
-          ),
-        ]);
-      }
-      const sheet = XLSX.utils.aoa_to_sheet(aoa);
-      const commonHeaderMerges = [
-        {
-          s: { r: 0, c: 0 },
-          e: { r: 0, c: aoa[1].length - 1 },
-        },
-      ];
-      const commonHeaderWidth = [{ wch: 8 }, { wch: 20 }, { wch: 20 }];
-      sheet['!merges'] = commonHeaderMerges;
-      sheet['!cols'] = commonHeaderWidth;
-      const sheetName = 'Statistics';
       const workbook = {
-        SheetNames: [sheetName],
+        SheetNames: [],
         Sheets: {},
       };
-      workbook.Sheets[sheetName] = sheet;
+      for (const ranklist of ranklists) {
+        const { sheetName, data } = ranklist;
+        const aoa: any[][] = [
+          [
+            `${moment(until).format('YYYY-MM-DD HH:mm:ss')}  ${title} (${sections.length} section${
+              sections.length > 1 ? 's' : ''
+            }, ${this.flatProblems.length} problem${this.flatProblems.length > 1 ? 's' : ''})`,
+          ],
+          [
+            'Rank',
+            'Username',
+            'Nickname',
+            'Solved',
+            'Progress',
+            ...sections.map((section, sectionIndex) => `S${sectionIndex + 1}: ${section.title}`),
+            ...this.flatProblems.map((p) => p.id),
+          ],
+        ];
+        for (const d of data) {
+          aoa.push([
+            d.rank,
+            d.user.username,
+            d.user.nickname,
+            d.stats.solved,
+            (d.stats.solved / this.flatProblems.length).toFixed(2),
+            ...sections.map((section) => {
+              return section.problems.reduce(
+                (acc, cur) => acc + (d.stats.acceptedProblemsMap.has(cur.problemId) ? 1 : 0),
+                0,
+              );
+            }),
+            ...this.flatProblems.map((p) =>
+              d.stats.acceptedProblemsMap.has(p.problemId) ? '✓' : '',
+            ),
+          ]);
+        }
+        const sheet = XLSX.utils.aoa_to_sheet(aoa);
+        const commonHeaderMerges = [
+          {
+            s: { r: 0, c: 0 },
+            e: { r: 0, c: aoa[1].length - 1 },
+          },
+        ];
+        const commonHeaderWidth = [{ wch: 8 }, { wch: 20 }, { wch: 20 }];
+        sheet['!merges'] = commonHeaderMerges;
+        sheet['!cols'] = commonHeaderWidth;
+        workbook.SheetNames.push(sheetName);
+        workbook.Sheets[sheetName] = sheet;
+      }
+
       workbook2Excel(
         workbook,
         `Until ${moment(until).format('YYYY-MM-DD HH_mm_ss')} set-${id}_${title} (${

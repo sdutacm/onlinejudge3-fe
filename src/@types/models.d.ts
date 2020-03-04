@@ -503,6 +503,13 @@ interface ISetStatsRanklistRow {
 
 type ISetStatsRanklist = ISetStatsRanklistRow[];
 
+interface ISetStatsGroupRanklist {
+  groupId: IGroup['groupId'];
+  name: IGroup['name'];
+  verified: IGroup['verified'];
+  ranklist: ISetStatsRanklist;
+}
+
 type ISettingsTheme = 'auto' | 'light' | 'dark';
 
 type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';

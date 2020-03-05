@@ -32,10 +32,10 @@ class PostDetail extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <PageTitle title={data.title} loading={loading}>
-          <div className="content-view">
-            <Card bordered={false} className="content-view">
+          <div className="content-view-lg">
+            <Card bordered={false}>
               <Skeleton active loading={loading} paragraph={{ rows: 6, width: '100%' }}>
-                <div className="post-content content-loaded">
+                <div className="post-content content-area content-loaded">
                   <h2>{data.title}</h2>
                   <p>
                     <UserBar user={data.user} className="ant-comment-content-author-name" />

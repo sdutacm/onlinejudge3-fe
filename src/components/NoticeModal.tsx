@@ -44,6 +44,11 @@ class NoticeModal extends React.Component<Props, State> {
 
   handleHideModel = () => {
     this.setState({ visible: false });
+    tracker.event({
+      category: 'component.NoticeModal',
+      action: 'close',
+      label: this.noticeId,
+    });
   };
 
   handleViewDetail = () => {
@@ -63,7 +68,6 @@ class NoticeModal extends React.Component<Props, State> {
         title=""
         className="notice-modal"
         visible={this.state.visible}
-        onOk={this.handleHideModel}
         onCancel={this.handleHideModel}
         footer={null}
         maskClosable={false}

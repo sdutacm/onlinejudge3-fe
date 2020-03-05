@@ -52,7 +52,7 @@ class NoticeModal extends React.Component<Props, State> {
   };
 
   handleViewDetail = () => {
-    this.handleHideModel();
+    this.setState({ visible: false });
     tracker.event({
       category: 'component.NoticeModal',
       action: 'viewDetail',
@@ -61,8 +61,6 @@ class NoticeModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { read } = this.props;
-
     return (
       <Modal
         title=""

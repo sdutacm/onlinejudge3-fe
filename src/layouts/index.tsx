@@ -26,6 +26,7 @@ import tracker from '@/utils/tracker';
 import ExtLink from '@/components/ExtLink';
 import throttle from 'lodash.throttle';
 import ShowDiscussionModal from '@/components/ShowDiscussionModal';
+import NoticeModal from '@/components/NoticeModal';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -211,6 +212,7 @@ class Index extends React.Component<Props, State> {
           </Row>
         </Header>
         <Content>
+          <NoticeModal />
           {this.state.sessionLoaded || location.pathname === '/OJBK' ? children : <PageLoading />}
         </Content>
         <Footer className={styles.footer} style={{ paddingTop: '30px', paddingBottom: '30px' }}>

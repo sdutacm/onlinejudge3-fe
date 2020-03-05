@@ -520,3 +520,9 @@ interface ISettings {
   improveAnimation: boolean;
   proMode: boolean;
 }
+
+type INoticeId = string;
+
+interface INotices {
+  read: Record<INoticeId, boolean>;
+}

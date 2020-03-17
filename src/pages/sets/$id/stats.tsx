@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Icon, TreeSelect, DatePicker, Button } from 'antd';
+import { Row, Col, Card, Icon, TreeSelect, DatePicker, Button, Radio } from 'antd';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import NotFound from '@/pages/404';
@@ -39,6 +39,7 @@ interface State {
   selectedGM: string[];
   selectedStartAt?: moment.Moment;
   selectedEndAt?: moment.Moment;
+  selectedSection: number | '$all';
   lastSelectedStartAt?: moment.Moment;
   lastSelectedEndAt?: moment.Moment;
   statsRanklist: ISetStatsRanklist;
@@ -52,7 +53,22 @@ interface IFlatProblem {
   title: string;
 }
 
-const MAX_TASK_NUM = 5;
+function getInitialState(): State {
+  return {
+    gLoading: false,
+    calcStatsLoading: false,
+    groupsWithMembers: [],
+    selectedGM: [],
+    selectedStartAt: undefined,
+    selectedEndAt: undefined,
+    selectedSection: '$all',
+    lastSelectedStartAt: undefined,
+    lastSelectedEndAt: undefined,
+    statsRanklist: [],
+    shownStats: false,
+    uapUpdatedAt: undefined,
+  };
+}
 
 function calcStatsRanklist(
   flatProblems: IFlatProblem[],
@@ -120,6 +136,10 @@ function calcStatsRanklist(
   }
 }
 
+const MAX_TASK_NUM = 5;
+let cachedSetId: number;
+let cachedState = getInitialState();
+
 class SetStats extends React.Component<Props, State> {
   private setStatePromise = setStatePromise.bind(this);
   private pq: PromiseQueue;
@@ -127,19 +147,7 @@ class SetStats extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      gLoading: false,
-      calcStatsLoading: false,
-      groupsWithMembers: [],
-      selectedGM: [],
-      selectedStartAt: undefined,
-      selectedEndAt: undefined,
-      lastSelectedStartAt: undefined,
-      lastSelectedEndAt: undefined,
-      statsRanklist: [],
-      shownStats: false,
-      uapUpdatedAt: undefined,
-    };
+    this.state = cachedSetId === props.id ? cachedState : getInitialState();
     this.pq = new PromiseQueue(MAX_TASK_NUM, Infinity);
     this.lastReqId = 0;
   }
@@ -233,6 +241,7 @@ class SetStats extends React.Component<Props, State> {
     if (this.props.session.loggedIn) {
       this.fetchAvailableGroupsWithMembers();
     }
+    this.props.id && (cachedSetId = this.props.id);
   }
 
   componentWillReceiveProps(np: Readonly<Props>, nextContext: any): void {
@@ -246,6 +255,13 @@ class SetStats extends React.Component<Props, State> {
         });
       }
     }
+    if (p.id !== np.id && np.id) {
+      cachedSetId = this.props.id;
+    }
+  }
+
+  componentWillUnmount() {
+    cachedState = this.state;
   }
 
   fetchAvailableGroupsWithMembers = async (props?: Props) => {
@@ -356,6 +372,14 @@ class SetStats extends React.Component<Props, State> {
     this.setState({ selectedGM: value });
   };
 
+  handleSectionChange = (e) => {
+    this.setState({ selectedSection: e.target.value });
+    router.replace({
+      pathname: this.props.location.pathname,
+      query: { ...this.props.location.query, page: undefined },
+    });
+  };
+
   handleCalcStats = async () => {
     tracker.event({
       category: 'sets',
@@ -461,6 +485,7 @@ class SetStats extends React.Component<Props, State> {
       uapUpdatedAt,
       selectedStartAt,
       selectedEndAt,
+      selectedSection,
       lastSelectedStartAt,
       lastSelectedEndAt,
     } = this.state;
@@ -579,6 +604,27 @@ class SetStats extends React.Component<Props, State> {
 
             {shownStats && (
               <Col xs={24}>
+                <div style={{ padding: '16px 20px 0' }}>
+                  <Radio.Group onChange={this.handleSectionChange} value={selectedSection}>
+                    <Radio.Button className="mt-md" value="$all">
+                      All
+                    </Radio.Button>
+                    {(detail.props as ISetPropsTypeStandard).sections.map((section, index) => (
+                      <Radio.Button
+                        className="mt-md"
+                        key={`${detail.setId}-$${index}`}
+                        value={index}
+                      >
+                        {section.title}
+                      </Radio.Button>
+                    ))}
+                  </Radio.Group>
+                </div>
+              </Col>
+            )}
+
+            {shownStats && (
+              <Col xs={24}>
                 <Card
                   bordered={false}
                   className="list-card mt-xl set-stats-ranklist-col-bd"
@@ -595,6 +641,7 @@ class SetStats extends React.Component<Props, State> {
                     uapUpdatedAt={uapUpdatedAt}
                     selectedStartAt={lastSelectedStartAt}
                     selectedEndAt={lastSelectedEndAt}
+                    selectedSection={selectedSection}
                     loading={calcStatsLoading}
                     showDetail={isPermissionDog(session)}
                     calcStatsPerGroup={this.handleCalcStatsPerGroup}

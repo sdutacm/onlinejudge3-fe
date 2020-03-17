@@ -22,6 +22,7 @@ export interface Props extends RouteProps {
   data: ISetStatsRanklist;
   uapUpdatedAt?: number;
   selectedEndAt?: moment.Moment;
+  selectedSection: number | '$all';
   loading: boolean;
   showDetail?: boolean;
   calcStatsPerGroup?: () => ISetStatsGroupRanklist[];
@@ -50,6 +51,7 @@ class StatsRanklist extends React.Component<Props, State> {
       'data',
       'uapUpdatedAt',
       'selectedEndAt',
+      'selectedSection',
       'loading',
       'showDetail',
       'location.query',
@@ -76,6 +78,35 @@ class StatsRanklist extends React.Component<Props, State> {
   }
 
   get flatProblems() {
+    return this.flatProblemsImpl(this.props.sections);
+  }
+
+  @memoize
+  flatProblemsInSelectedSectionImpl(
+    sections: ISetPropsTypeStandard['sections'],
+    sectionIndex: number,
+  ) {
+    const flatProblems: {
+      id: string;
+      problemId: number;
+      title: string;
+    }[] = [];
+    sections[sectionIndex].problems.forEach((problem, problemIndex) =>
+      flatProblems.push({
+        id: `${sectionIndex + 1}-${problemIndex + 1}`,
+        ...problem,
+      }),
+    );
+    return flatProblems;
+  }
+
+  get flatProblemsInSelectedSection() {
+    if (this.props.selectedSection !== '$all') {
+      return this.flatProblemsInSelectedSectionImpl(
+        this.props.sections,
+        this.props.selectedSection,
+      );
+    }
     return this.flatProblemsImpl(this.props.sections);
   }
 
@@ -201,7 +232,8 @@ class StatsRanklist extends React.Component<Props, State> {
       sections,
       loading,
       showDetail,
-      location: { query },
+      selectedSection,
+      location: { query, pathname },
     } = this.props;
     // const contentWidth = 0;
     if (!id || !data || !sections) {
@@ -254,17 +286,24 @@ class StatsRanklist extends React.Component<Props, State> {
             // width={80}
             // width={width.solved}
             // fixed={canFixLeft}
-            render={(text, record: ISetStatsRanklistRow) => (
-              <div>
-                {record.stats.solved} / {this.flatProblems.length}{' '}
-                {record.stats.solved
-                  ? `(${Math.floor((record.stats.solved / this.flatProblems.length) * 100)}%)`
-                  : ''}
-              </div>
-            )}
+            render={(text, record: ISetStatsRanklistRow) => {
+              const solved = selectedSection
+                ? this.flatProblemsInSelectedSection.reduce(
+                    (acc, cur) =>
+                      acc + (record.stats.acceptedProblemsMap.has(cur.problemId) ? 1 : 0),
+                    0,
+                  )
+                : record.stats.solved;
+              const total = this.flatProblemsInSelectedSection.length;
+              return (
+                <div>
+                  {solved} / {total} {solved ? `(${Math.floor((solved / total) * 100)}%)` : ''}
+                </div>
+              );
+            }}
           />
           {showDetail &&
-            this.flatProblems.map((problem) => (
+            this.flatProblemsInSelectedSection.map((problem) => (
               <Table.Column
                 title={problem.id}
                 key={problem.id}
@@ -280,7 +319,11 @@ class StatsRanklist extends React.Component<Props, State> {
                   return (
                     <Link
                       to={urlf(pages.solutions.index, {
-                        query: { problemId: problem.problemId, userId: record.user.userId },
+                        query: {
+                          problemId: problem.problemId,
+                          userId: record.user.userId,
+                          from: pathname,
+                        },
                       })}
                     >
                       <div>

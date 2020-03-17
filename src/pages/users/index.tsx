@@ -21,8 +21,7 @@ export interface Props extends ReduxProps, RouteProps {
   proMode: boolean;
 }
 
-interface State {
-}
+interface State {}
 
 class Standings extends React.Component<Props, State> {
   constructor(props) {
@@ -36,7 +35,7 @@ class Standings extends React.Component<Props, State> {
   //   }
   // }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: pages.users.index,
       query: { ...this.props.location.query, page },
@@ -61,7 +60,12 @@ class Standings extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data: { page, count, limit, rows }, location: { query }, proMode } = this.props;
+    const {
+      loading,
+      data: { page, count, limit, rows },
+      location: { query },
+      proMode,
+    } = this.props;
     const orderBy = query.orderBy || 'accepted';
     const orderDirection = query.orderDirection || 'DESC';
     const defaultSortOrder = orderDirection === 'DESC' ? 'descend' : 'ascend';
@@ -85,28 +89,31 @@ class Standings extends React.Component<Props, State> {
                     <span>{(page - 1) * limit + index + 1}</span>
                   )}
                 />
-                {proMode && <Table.Column
-                  title="ID"
-                  key="ID"
-                  render={(text, record: IUser) => (
-                    <span>{record.userId}</span>
-                  )}
-                />}
+                {proMode && (
+                  <Table.Column
+                    title="ID"
+                    key="ID"
+                    render={(text, record: IUser) => <span>{record.userId}</span>}
+                  />
+                )}
+                {proMode && (
+                  <Table.Column
+                    title="Username"
+                    key="Username"
+                    render={(text, record: IUser) => <span>{record.username}</span>}
+                  />
+                )}
                 <Table.Column
                   title="User"
                   key="User"
-                  render={(text, record: IUser) => (
-                    <UserBar user={record} />
-                  )}
+                  render={(text, record: IUser) => <UserBar user={record} />}
                 />
                 <Table.Column
                   title="Accepted"
                   key="accepted"
                   sorter
                   sortOrder={orderBy === 'accepted' ? defaultSortOrder : undefined}
-                  render={(text, record: IUser) => (
-                    <span>{record.accepted}</span>
-                  )}
+                  render={(text, record: IUser) => <span>{record.accepted}</span>}
                 />
                 <Table.Column
                   title="Rating"
@@ -132,17 +139,19 @@ class Standings extends React.Component<Props, State> {
               <ToDetailCard
                 label="Go to User"
                 placeholder="User ID"
-                toDetailLink={id => urlf(pages.users.detail, { param: { id } })}
+                toDetailLink={(id) => urlf(pages.users.detail, { param: { id } })}
               />
             </Card>
             <Card bordered={false}>
-              <FilterCard fields={[
-                { displayName: 'Nickname', fieldName: 'nickname' },
-                { displayName: 'School', fieldName: 'school' },
-                { displayName: 'College', fieldName: 'college' },
-                { displayName: 'Major', fieldName: 'major' },
-                { displayName: 'Class', fieldName: 'class' },
-              ]} />
+              <FilterCard
+                fields={[
+                  { displayName: 'Nickname', fieldName: 'nickname' },
+                  { displayName: 'School', fieldName: 'school' },
+                  { displayName: 'College', fieldName: 'college' },
+                  { displayName: 'Major', fieldName: 'major' },
+                  { displayName: 'Class', fieldName: 'class' },
+                ]}
+              />
             </Card>
           </Col>
         </Row>

@@ -24,11 +24,12 @@ import constants from '@/configs/constants';
 import StatsRanklist from '@/components/StatsRanklist';
 import setStatePromise from '@/utils/setStatePromise';
 import locale from 'antd/es/date-picker/locale/en_US';
+import { Results } from '@/configs/results';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   detail: ISet;
-  uap: IStatsUserAcceptedProblems;
+  uasp: IStatsUASP;
   session: ISessionStatus;
 }
 
@@ -44,7 +45,7 @@ interface State {
   lastSelectedEndAt?: moment.Moment;
   statsRanklist: ISetStatsRanklist;
   shownStats: boolean;
-  uapUpdatedAt?: number;
+  uaspUpdatedAt?: number;
 }
 
 interface IFlatProblem {
@@ -66,33 +67,34 @@ function getInitialState(): State {
     lastSelectedEndAt: undefined,
     statsRanklist: [],
     shownStats: false,
-    uapUpdatedAt: undefined,
+    uaspUpdatedAt: undefined,
   };
 }
 
 function calcStatsRanklist(
   flatProblems: IFlatProblem[],
   userMap: Map<number, IUserLite>,
-  uap: IStatsUserAcceptedProblems,
+  uasp: IStatsUASP,
   selectedUserIds: IUser['userId'][],
   selectedStartAt?: moment.Moment,
   selectedEndAt?: moment.Moment,
 ): ISetStatsRanklist {
   try {
-    const { stats: uapStats } = uap;
+    const { stats: uaspStats } = uasp;
     const userStatsRanklist: ISetStatsRanklist = [];
     for (const userId of selectedUserIds) {
       const userStats: ISetUserStats = {
         solved: 0,
-        acceptedProblemsMap: new Map<
+        problemsStatsMap: new Map<
           number,
           {
-            solutionId: number;
-            submittedAt: number;
+            accepted: boolean;
+            attempted?: number;
           }
-        >(), // AC 题目的映射，仅包含在 Set 中的题目
+        >(), // 提交题目的映射，仅包含在 Set 中的题目
       };
-      const stats = uapStats[userId];
+      const stats = uaspStats[userId];
+      let acceptedProblemCount = 0;
       if (stats) {
         for (const p of stats.problems) {
           if (!flatProblems.find((fp) => fp.problemId === p.pid)) {
@@ -105,13 +107,19 @@ function calcStatsRanklist(
           if (selectedEndAt && submittedMoment.isAfter(selectedEndAt)) {
             continue;
           }
-          userStats.acceptedProblemsMap.set(p.pid, {
-            solutionId: p.sid,
-            submittedAt: p.at,
+          const lastSolution = p.s
+            ? p.s[p.s.length - 1]
+            : { sid: p.sid, res: Results.AC, at: p.at };
+          userStats.problemsStatsMap.set(p.pid, {
+            accepted: lastSolution?.res === Results.AC,
+            attempted: p.s ? p.s.length : undefined,
           });
+          if (lastSolution?.res === Results.AC) {
+            acceptedProblemCount++;
+          }
         }
       }
-      userStats.solved = userStats.acceptedProblemsMap.size;
+      userStats.solved = acceptedProblemCount;
       userStatsRanklist.push({
         rank: 0,
         user: userMap.get(userId),
@@ -235,6 +243,15 @@ class SetStats extends React.Component<Props, State> {
 
   get userMap() {
     return this.userMapImpl(this.state.groupsWithMembers);
+  }
+
+  @memoize
+  isPermissionDogImpl(session: ISessionStatus) {
+    return isPermissionDog(session);
+  }
+
+  get isPermissionDog() {
+    return this.isPermissionDogImpl(this.props.session);
   }
 
   componentDidMount(): void {
@@ -386,12 +403,12 @@ class SetStats extends React.Component<Props, State> {
       action: 'calcStats',
     });
     const selectedUserIds = this.selectedUserIds;
-    const { session, dispatch } = this.props;
+    const { dispatch } = this.props;
     const { selectedStartAt, selectedEndAt, calcStatsLoading } = this.state;
     if (calcStatsLoading) {
       return;
     }
-    const userNumLimit = isPermissionDog(session)
+    const userNumLimit = this.isPermissionDog
       ? constants.setStatsUserMaxSelectPermission
       : constants.setStatsUserMaxSelect;
     if (selectedUserIds.length > userNumLimit) {
@@ -404,7 +421,7 @@ class SetStats extends React.Component<Props, State> {
         calcStatsLoading: true,
         shownStats: true,
         statsRanklist: [],
-        uapUpdatedAt: undefined,
+        uaspUpdatedAt: undefined,
         lastSelectedStartAt: selectedStartAt,
         lastSelectedEndAt: selectedEndAt,
       });
@@ -412,9 +429,12 @@ class SetStats extends React.Component<Props, State> {
         pathname: this.props.location.pathname,
         query: { ...this.props.location.query, page: undefined },
       });
-      const ret: IApiResponse<IStatsUserAcceptedProblems> = await dispatch({
-        type: 'stats/getUserAcceptedProblems',
-        payload: { userIds: selectedUserIds },
+      const ret: IApiResponse<IStatsUASP> = await dispatch({
+        type: 'stats/getUASP',
+        payload: {
+          userIds: selectedUserIds,
+          includeSubmitted: this.isPermissionDog,
+        },
       });
       msg.auto(ret);
       if (ret.success) {
@@ -429,7 +449,7 @@ class SetStats extends React.Component<Props, State> {
         this.setState({
           statsRanklist: userStatsRanklist,
           calcStatsLoading: false,
-          uapUpdatedAt: ret.data._updatedAt,
+          uaspUpdatedAt: ret.data._updatedAt,
         });
         tracker.timing({
           category: 'sets',
@@ -446,14 +466,14 @@ class SetStats extends React.Component<Props, State> {
   };
 
   handleCalcStatsPerGroup = () => {
-    const { uap } = this.props;
+    const { uasp } = this.props;
     const { selectedStartAt, selectedEndAt } = this.state;
     const groupStats: ISetStatsGroupRanklist[] = [];
     for (const group of this.selectedGroupsWithMembers) {
       const userStatsRanklist = calcStatsRanklist(
         this.flatProblems,
         this.userMap,
-        uap,
+        uasp,
         [...group.members.map((member) => member.user.userId)],
         selectedStartAt,
         selectedEndAt,
@@ -469,7 +489,7 @@ class SetStats extends React.Component<Props, State> {
   };
 
   render() {
-    const { id, detail, loading, session } = this.props;
+    const { id, detail, loading } = this.props;
     if (loading) {
       return <PageLoading />;
     }
@@ -482,7 +502,7 @@ class SetStats extends React.Component<Props, State> {
       statsRanklist,
       calcStatsLoading,
       shownStats,
-      uapUpdatedAt,
+      uaspUpdatedAt,
       selectedStartAt,
       selectedEndAt,
       selectedSection,
@@ -527,7 +547,7 @@ class SetStats extends React.Component<Props, State> {
                   If no groups shown, go to "Groups", and then join or favorite some.
                   <br />
                   At most{' '}
-                  {isPermissionDog(session)
+                  {this.isPermissionDog
                     ? constants.setStatsUserMaxSelectPermission
                     : constants.setStatsUserMaxSelect}{' '}
                   users will be calculated in stats.
@@ -535,7 +555,7 @@ class SetStats extends React.Component<Props, State> {
               </div>
             </Col>
 
-            {isPermissionDog(session) && (
+            {this.isPermissionDog && (
               <Col xs={24} lg={10} xl={8}>
                 <div style={{ padding: '16px 20px 0' }}>
                   <DatePicker
@@ -638,12 +658,12 @@ class SetStats extends React.Component<Props, State> {
                     // selectedGroups={this.selectedGroupsWithMembers}
                     // selectedUserIds={this.selectedUserIds}
                     data={statsRanklist}
-                    uapUpdatedAt={uapUpdatedAt}
+                    uaspUpdatedAt={uaspUpdatedAt}
                     selectedStartAt={lastSelectedStartAt}
                     selectedEndAt={lastSelectedEndAt}
                     selectedSection={selectedSection}
                     loading={calcStatsLoading}
-                    showDetail={isPermissionDog(session)}
+                    showDetail
                     calcStatsPerGroup={this.handleCalcStatsPerGroup}
                   />
                 </Card>
@@ -662,7 +682,7 @@ function mapStateToProps(state) {
     id,
     loading: !!state.loading.effects['sets/getDetail'],
     detail: state.sets.detail[id] || {},
-    uap: state.stats.userAcceptedProblems,
+    uasp: state.stats.uasp,
     session: state.session,
   };
 }

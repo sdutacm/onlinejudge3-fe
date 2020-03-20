@@ -32,7 +32,7 @@ function genInitialState() {
         _updatedAt: -1,
       },
     },
-    userAcceptedProblems: {
+    uasp: {
       stats: {},
       truncated: 0,
       _updateEvery: 0,
@@ -55,15 +55,15 @@ export default {
     clearAllUserACRank(state) {
       state.userACRank = genInitialState().userACRank;
     },
-    setUserAcceptedProblems(state, { payload: { data, query } }) {
-      state.userAcceptedProblems = {
+    setUASP(state, { payload: { data, query } }) {
+      state.uasp = {
         ...data,
         ...genTimeFlag(5 * 60 * 1000),
         _query: query,
       };
     },
-    clearAllUserAcceptedProblems(state) {
-      state.userAcceptedProblems = genInitialState().userAcceptedProblems;
+    clearAllUASP(state) {
+      state.uasp = genInitialState().uasp;
     },
   },
   effects: {
@@ -110,9 +110,13 @@ export default {
         month: monthRet,
       };
     },
-    *getUserAcceptedProblems({ payload: { userIds, force = false } }, { call, put, select }) {
+    *getUASP(
+      { payload: { userIds, includeSubmitted = false, force = false } },
+      { call, put, select },
+    ) {
       const query = {
         userIds,
+        includeSubmitted,
       };
       if (!force) {
         const savedState = yield select((state) => state.stats.userAcceptedProblems);
@@ -125,9 +129,9 @@ export default {
         }
       }
       if (!Array.isArray(userIds) || userIds.length === 0) {
-        const data = genInitialState().userAcceptedProblems;
+        const data = genInitialState().uasp;
         yield put({
-          type: 'setUserAcceptedProblems',
+          type: 'setUASP',
           payload: {
             data,
             query,
@@ -139,15 +143,39 @@ export default {
           data,
         };
       }
-      const ret: IApiResponse<IStatsUserAcceptedProblems> = yield call(
-        service.getUserAcceptedProblems,
-        userIds,
-      );
-      if (ret.success) {
+      let data: IStatsUASP;
+      let ret: IApiResponse;
+      if (includeSubmitted) {
+        ret = yield call(service.getUserSubmittedProblems, userIds) as IApiResponse<
+          IStatsUserSubmittedProblems
+        >;
+        if (ret.success) {
+          data = ret.data;
+          for (const _userId of Object.keys(data.stats)) {
+            const userId = +_userId;
+            const d = data.stats[userId];
+            for (const p of d.problems) {
+              const lastSolution = p.s.length ? p.s[p.s.length - 1] : undefined;
+              if (lastSolution?.res === 1) {
+                p.sid = lastSolution.sid;
+                p.at = lastSolution.at;
+              }
+            }
+          }
+        }
+      } else {
+        ret = yield call(service.getUserAcceptedProblems, userIds) as IApiResponse<
+          IStatsUserAcceptedProblems
+        >;
+        if (ret.success) {
+          data = ret.data;
+        }
+      }
+      if (data) {
         yield put({
-          type: 'setUserAcceptedProblems',
+          type: 'setUASP',
           payload: {
-            data: ret.data,
+            data,
             query,
           },
         });

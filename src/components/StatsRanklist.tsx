@@ -20,7 +20,7 @@ export interface Props extends RouteProps {
   title: string;
   sections: ISetPropsTypeStandard['sections'];
   data: ISetStatsRanklist;
-  uapUpdatedAt?: number;
+  uaspUpdatedAt?: number;
   selectedEndAt?: moment.Moment;
   selectedSection: number | '$all';
   loading: boolean;
@@ -49,7 +49,7 @@ class StatsRanklist extends React.Component<Props, State> {
       'title',
       'sections',
       'data',
-      'uapUpdatedAt',
+      'uaspUpdatedAt',
       'selectedEndAt',
       'selectedSection',
       'loading',
@@ -120,13 +120,26 @@ class StatsRanklist extends React.Component<Props, State> {
     }
   };
 
+  getUserProblemStatWording = (stats?: { accepted: boolean; attempted?: number }) => {
+    if (!stats) {
+      return '';
+    }
+    if (stats.accepted) {
+      return '✓';
+    }
+    if (stats.attempted) {
+      return `-${stats.attempted}`;
+    }
+    return '';
+  };
+
   handleExport = () => {
     const {
       id,
       title,
       sections,
       data: totalRanklist,
-      uapUpdatedAt,
+      uaspUpdatedAt,
       selectedEndAt,
       loading,
       calcStatsPerGroup,
@@ -153,8 +166,8 @@ class StatsRanklist extends React.Component<Props, State> {
       })),
     ];
     try {
-      let until: moment.Moment | null = moment(uapUpdatedAt);
-      if (selectedEndAt?.isBefore(uapUpdatedAt)) {
+      let until: moment.Moment | null = moment(uaspUpdatedAt);
+      if (selectedEndAt?.isBefore(uaspUpdatedAt)) {
         until = selectedEndAt;
       }
       const workbook = {
@@ -188,12 +201,12 @@ class StatsRanklist extends React.Component<Props, State> {
             (d.stats.solved / this.flatProblems.length).toFixed(2),
             ...sections.map((section) => {
               return section.problems.reduce(
-                (acc, cur) => acc + (d.stats.acceptedProblemsMap.has(cur.problemId) ? 1 : 0),
+                (acc, cur) => acc + (d.stats.problemsStatsMap.has(cur.problemId) ? 1 : 0),
                 0,
               );
             }),
             ...this.flatProblems.map((p) =>
-              d.stats.acceptedProblemsMap.has(p.problemId) ? '✓' : '',
+              this.getUserProblemStatWording(d.stats.problemsStatsMap.get(p.problemId)),
             ),
           ]);
         }
@@ -228,11 +241,10 @@ class StatsRanklist extends React.Component<Props, State> {
     const {
       id,
       data,
-      uapUpdatedAt,
+      uaspUpdatedAt,
       sections,
       loading,
       showDetail,
-      selectedSection,
       location: { query, pathname },
     } = this.props;
     // const contentWidth = 0;
@@ -287,13 +299,7 @@ class StatsRanklist extends React.Component<Props, State> {
             // width={width.solved}
             // fixed={canFixLeft}
             render={(text, record: ISetStatsRanklistRow) => {
-              const solved = selectedSection
-                ? this.flatProblemsInSelectedSection.reduce(
-                    (acc, cur) =>
-                      acc + (record.stats.acceptedProblemsMap.has(cur.problemId) ? 1 : 0),
-                    0,
-                  )
-                : record.stats.solved;
+              const solved = record.stats.solved;
               const total = this.flatProblemsInSelectedSection.length;
               return (
                 <div>
@@ -312,33 +318,51 @@ class StatsRanklist extends React.Component<Props, State> {
                 className="nowrap"
                 // width={50}
                 render={(text, record: ISetStatsRanklistRow) => {
-                  const info = record.stats.acceptedProblemsMap.get(problem.problemId);
+                  const info = record.stats.problemsStatsMap.get(problem.problemId);
                   if (!info) {
-                    return;
+                    return null;
                   }
-                  return (
-                    <Link
-                      to={urlf(pages.solutions.index, {
-                        query: {
-                          problemId: problem.problemId,
-                          userId: record.user.userId,
-                          from: pathname,
-                        },
-                      })}
-                    >
-                      <div>
-                        <Icon type="check" className="text-success" />
-                      </div>
-                    </Link>
-                  );
+                  if (info.accepted) {
+                    return (
+                      <Link
+                        to={urlf(pages.solutions.index, {
+                          query: {
+                            problemId: problem.problemId,
+                            userId: record.user.userId,
+                            from: pathname,
+                          },
+                        })}
+                      >
+                        <div>
+                          <Icon type="check" className="text-success" />
+                        </div>
+                      </Link>
+                    );
+                  }
+                  if (info.attempted) {
+                    return (
+                      <Link
+                        to={urlf(pages.solutions.index, {
+                          query: {
+                            problemId: problem.problemId,
+                            userId: record.user.userId,
+                            from: pathname,
+                          },
+                        })}
+                      >
+                        <div className="text-danger">-{info.attempted}</div>
+                      </Link>
+                    );
+                  }
+                  return null;
                 }}
               />
             ))}
         </Table>
 
-        {uapUpdatedAt ? (
+        {uaspUpdatedAt ? (
           <div className="ml-lg mr-lg mt-md mb-lg text-secondary">
-            Data last updated at {moment(uapUpdatedAt).format('YYYY-MM-DD HH:mm:ss Z')}
+            Data last updated at {moment(uaspUpdatedAt).format('YYYY-MM-DD HH:mm:ss Z')}
           </div>
         ) : null}
       </>

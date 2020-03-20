@@ -95,6 +95,7 @@ const api = {
     base: '/stats',
     userACRank: '/stats/userACRank',
     userAcceptedProblems: '/stats/userAcceptedProblems',
+    userSubmittedProblems: '/stats/userSubmittedProblems',
   },
 };
 

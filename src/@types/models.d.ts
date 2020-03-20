@@ -484,13 +484,59 @@ interface IStatsUserAcceptedProblems {
   _updatedAt: number; // timestamp (ms)
 }
 
-interface ISetUserStats {
-  solved: number;
-  acceptedProblemsMap: Map<
+interface IStatsUserSubmittedProblems {
+  stats: Record<
     number,
     {
-      solutionId: number;
-      submittedAt: number;
+      accepted: number;
+      submitted: number;
+      problems: {
+        pid: number;
+        s: {
+          sid: number;
+          res: number;
+          at: number; // timestamp (s)
+        }[];
+      }[];
+      _updatedAt: number; // timestamp (ms)
+    }
+  >;
+  truncated: number;
+  _updateEvery: number;
+  _updatedAt: number; // timestamp (ms)
+}
+
+interface IStatsUASP {
+  stats: Record<
+    number,
+    {
+      accepted: number;
+      submitted?: number; // 仅指定包含 submitted 时
+      problems: {
+        pid: number;
+        sid?: number; // 仅存在 AC 提交时
+        at?: number; // timestamp (s)，仅存在 AC 提交时
+        s?: {
+          sid: number;
+          res: number;
+          at: number; // timestamp (s)
+        }[]; // 仅指定包含 submitted 时
+      }[];
+      _updatedAt: number; // timestamp (ms)
+    }
+  >;
+  truncated: number;
+  _updateEvery: number;
+  _updatedAt: number; // timestamp (ms)
+}
+
+interface ISetUserStats {
+  solved: number;
+  problemsStatsMap: Map<
+    number,
+    {
+      accepted: boolean;
+      attempted?: number;
     }
   >;
 }

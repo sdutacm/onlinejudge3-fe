@@ -15,3 +15,8 @@ export function getUserAcceptedProblems(userIds: number[]) {
   const url = api.stats.userAcceptedProblems;
   return post(url, { userIds });
 }
+
+export function getUserSubmittedProblems(userIds: number[]) {
+  const url = api.stats.userSubmittedProblems;
+  return post(url, { userIds });
+}

@@ -390,7 +390,23 @@ class SetStats extends React.Component<Props, State> {
   };
 
   handleSectionChange = (e) => {
-    this.setState({ selectedSection: e.target.value });
+    const selectedSection = e.target.value;
+    const { uasp } = this.props;
+    const { selectedStartAt, selectedEndAt } = this.state;
+    const statsRanklist = calcStatsRanklist(
+      selectedSection === '$all'
+        ? this.flatProblems
+        : this.flatProblems.filter((p) => p.id.split('-')?.[0] === `${selectedSection + 1}`),
+      this.userMap,
+      uasp,
+      this.selectedUserIds,
+      selectedStartAt,
+      selectedEndAt,
+    );
+    this.setState({
+      selectedSection: e.target.value,
+      statsRanklist,
+    });
     router.replace({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page: undefined },
@@ -467,11 +483,13 @@ class SetStats extends React.Component<Props, State> {
 
   handleCalcStatsPerGroup = () => {
     const { uasp } = this.props;
-    const { selectedStartAt, selectedEndAt } = this.state;
+    const { selectedStartAt, selectedEndAt, selectedSection } = this.state;
     const groupStats: ISetStatsGroupRanklist[] = [];
     for (const group of this.selectedGroupsWithMembers) {
       const userStatsRanklist = calcStatsRanklist(
-        this.flatProblems,
+        selectedSection === '$all'
+          ? this.flatProblems
+          : this.flatProblems.filter((p) => p.id.split('-')?.[0] === `${selectedSection + 1}`),
         this.userMap,
         uasp,
         [...group.members.map((member) => member.user.userId)],
@@ -653,7 +671,19 @@ class SetStats extends React.Component<Props, State> {
                   <StatsRanklist
                     id={detail.setId}
                     title={detail.title}
-                    sections={detail.props.sections}
+                    sections={
+                      selectedSection === '$all'
+                        ? detail.props.sections
+                        : (detail.props as ISetPropsTypeStandard).sections.map((section, index) => {
+                            if (index === selectedSection) {
+                              return section;
+                            }
+                            return {
+                              ...section,
+                              problems: [],
+                            };
+                          })
+                    }
                     // userMap={this.userMap}
                     // selectedGroups={this.selectedGroupsWithMembers}
                     // selectedUserIds={this.selectedUserIds}
@@ -661,7 +691,6 @@ class SetStats extends React.Component<Props, State> {
                     uaspUpdatedAt={uaspUpdatedAt}
                     selectedStartAt={lastSelectedStartAt}
                     selectedEndAt={lastSelectedEndAt}
-                    selectedSection={selectedSection}
                     loading={calcStatsLoading}
                     showDetail
                     calcStatsPerGroup={this.handleCalcStatsPerGroup}

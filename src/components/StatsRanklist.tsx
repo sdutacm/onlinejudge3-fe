@@ -22,7 +22,6 @@ export interface Props extends RouteProps {
   data: ISetStatsRanklist;
   uaspUpdatedAt?: number;
   selectedEndAt?: moment.Moment;
-  selectedSection: number | '$all';
   loading: boolean;
   showDetail?: boolean;
   calcStatsPerGroup?: () => ISetStatsGroupRanklist[];
@@ -51,7 +50,6 @@ class StatsRanklist extends React.Component<Props, State> {
       'data',
       'uaspUpdatedAt',
       'selectedEndAt',
-      'selectedSection',
       'loading',
       'showDetail',
       'location.query',
@@ -78,35 +76,6 @@ class StatsRanklist extends React.Component<Props, State> {
   }
 
   get flatProblems() {
-    return this.flatProblemsImpl(this.props.sections);
-  }
-
-  @memoize
-  flatProblemsInSelectedSectionImpl(
-    sections: ISetPropsTypeStandard['sections'],
-    sectionIndex: number,
-  ) {
-    const flatProblems: {
-      id: string;
-      problemId: number;
-      title: string;
-    }[] = [];
-    sections[sectionIndex].problems.forEach((problem, problemIndex) =>
-      flatProblems.push({
-        id: `${sectionIndex + 1}-${problemIndex + 1}`,
-        ...problem,
-      }),
-    );
-    return flatProblems;
-  }
-
-  get flatProblemsInSelectedSection() {
-    if (this.props.selectedSection !== '$all') {
-      return this.flatProblemsInSelectedSectionImpl(
-        this.props.sections,
-        this.props.selectedSection,
-      );
-    }
     return this.flatProblemsImpl(this.props.sections);
   }
 
@@ -299,8 +268,12 @@ class StatsRanklist extends React.Component<Props, State> {
             // width={width.solved}
             // fixed={canFixLeft}
             render={(text, record: ISetStatsRanklistRow) => {
-              const solved = record.stats.solved;
-              const total = this.flatProblemsInSelectedSection.length;
+              const solved = this.flatProblems.reduce(
+                (acc, cur) =>
+                  acc + (record.stats.problemsStatsMap.get(cur.problemId)?.accepted ? 1 : 0),
+                0,
+              );
+              const total = this.flatProblems.length;
               return (
                 <div>
                   {solved} / {total} {solved ? `(${Math.floor((solved / total) * 100)}%)` : ''}
@@ -309,7 +282,7 @@ class StatsRanklist extends React.Component<Props, State> {
             }}
           />
           {showDetail &&
-            this.flatProblemsInSelectedSection.map((problem) => (
+            this.flatProblems.map((problem) => (
               <Table.Column
                 title={problem.id}
                 key={problem.id}

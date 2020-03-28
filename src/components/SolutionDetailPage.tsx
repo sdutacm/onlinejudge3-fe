@@ -31,11 +31,11 @@ interface State {
 }
 
 const langsMap4Hljs = {
-  'gcc': 'cpp',
+  gcc: 'cpp',
   'g++': 'cpp',
-  'java': 'java',
-  'python2': 'python',
-  'python3': 'python',
+  java: 'java',
+  python2: 'python',
+  python3: 'python',
   'c#': 'cs',
 };
 
@@ -61,8 +61,8 @@ class SolutionDetailPage extends React.Component<Props, State> {
   systemThemeListener = (e: MediaQueryListEvent) => {
     this.setState({
       systemTheme: e.matches ? 'dark' : 'light',
-    })
-  }
+    });
+  };
 
   componentDidMount() {
     this.systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -77,19 +77,21 @@ class SolutionDetailPage extends React.Component<Props, State> {
   }
 
   onShareChange = (checked) => {
-    this.props.dispatch({
-      type: 'solutions/changeShared',
-      payload: {
-        id: this.props.data.solutionId,
-        shared: checked,
-      },
-    }).then(ret => {
-      msg.auto(ret);
-      tracker.event({
-        category: 'solutions',
-        action: 'switchCodeShare',
+    this.props
+      .dispatch({
+        type: 'solutions/changeShared',
+        payload: {
+          id: this.props.data.solutionId,
+          shared: checked,
+        },
+      })
+      .then((ret) => {
+        msg.auto(ret);
+        tracker.event({
+          category: 'solutions',
+          action: 'switchCodeShare',
+        });
       });
-    });
   };
 
   getUsedTheme = () => {
@@ -98,7 +100,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
       return this.state.systemTheme;
     }
     return theme;
-  }
+  };
 
   renderCompilicationInfo = () => {
     const { loading, data, theme, compilationInfoLoading } = this.props;
@@ -112,7 +114,9 @@ class SolutionDetailPage extends React.Component<Props, State> {
               <div className="float-left">
                 <span>Compile Info</span>
               </div>
-              <div className="float-right"><CopyToClipboardButton text={data.compileInfo} addNewLine={false} /></div>
+              <div className="float-right">
+                <CopyToClipboardButton text={data.compileInfo} addNewLine={false} />
+              </div>
             </div>
             <SyntaxHighlighter
               language="text"
@@ -140,10 +144,83 @@ class SolutionDetailPage extends React.Component<Props, State> {
       );
     }
     return null;
-  }
+  };
+
+  renderCodeInside = () => {
+    const { loading, data, session, changeSharedLoading } = this.props;
+    if (loading) {
+      return (
+        <Skeleton
+          active
+          title={false}
+          paragraph={{ rows: 6, width: ['26%', '0%', '19%', '50%', '20%', '5%'] }}
+        />
+      );
+    }
+    if (!session.loggedIn) {
+      return (
+        <div>
+          <h3 className="warning-text">Login to view more info</h3>
+        </div>
+      );
+    }
+    if (typeof data.code !== 'string') {
+      return (
+        <div>
+          <h3 className="warning-text">You do not have permission to view code</h3>
+        </div>
+      );
+    }
+    return (
+      <div>
+        <div style={{ height: '32px' }}>
+          {isSelf(session, data.user.userId) ? (
+            <div className="float-left">
+              <span>
+                Share Code
+                <Explanation
+                  title="Shared code will be disabled in one of these cases"
+                  className="ml-sm-md"
+                >
+                  <div>
+                    <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
+                      {/* <li>The user viewing code has not solved the problem</li> */}
+                      <li>The problem exists in some running contests</li>
+                    </ul>
+                  </div>
+                </Explanation>
+              </span>
+              <Switch
+                checked={data.shared}
+                disabled={loading}
+                loading={changeSharedLoading}
+                onChange={this.onShareChange}
+                className="ml-lg"
+              />
+            </div>
+          ) : (
+            <div className="float-left">
+              <span>Code</span>
+            </div>
+          )}
+          <div className="float-right">
+            <CopyToClipboardButton text={data.code} addNewLine={false} />
+          </div>
+        </div>
+        <SyntaxHighlighter
+          language={langsMap4Hljs[data.language]}
+          showLineNumbers
+          style={this.getUsedTheme() === 'light' ? atomOneLight : atomOneDark}
+          lineNumberContainerStyle={highlighterLineNumberStyle}
+        >
+          {data.code}
+        </SyntaxHighlighter>
+      </div>
+    );
+  };
 
   render() {
-    const { loading, data, changeSharedLoading, session, dispatch, contestId, problemList, theme, rating } = this.props;
+    const { loading, data, dispatch, contestId, problemList, rating } = this.props;
     if (!loading && !data.solutionId) {
       return <NotFound />;
     }
@@ -166,52 +243,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
 
             {this.renderCompilicationInfo()}
 
-            <Card bordered={false}>
-              {!loading ?
-                <>
-                  {data.code ?
-                    <div>
-                      <div style={{ height: '32px' }}>
-                        {isSelf(session, data.user.userId) ?
-                          <div className="float-left">
-                            <span>Share Code
-                              <Explanation title="Shared code will be disabled in one of these cases" className="ml-sm-md">
-                                <div>
-                                  <ul style={{ paddingInlineStart: '1rem', marginBottom: 0 }}>
-                                    {/* <li>The user viewing code has not solved the problem</li> */}
-                                    <li>The problem exists in some running contests</li>
-                                  </ul>
-                                </div>
-                              </Explanation>
-                            </span>
-                            <Switch
-                              checked={data.shared} disabled={loading} loading={changeSharedLoading}
-                              onChange={this.onShareChange}
-                              className="ml-lg"
-                            />
-                          </div> :
-                          <div className="float-left">
-                            <span>Code</span>
-                          </div>}
-                        <div className="float-right"><CopyToClipboardButton text={data.code} addNewLine={false} /></div>
-                      </div>
-                      <SyntaxHighlighter
-                        language={langsMap4Hljs[data.language]}
-                        showLineNumbers
-                        style={this.getUsedTheme() === 'light' ? atomOneLight : atomOneDark}
-                        lineNumberContainerStyle={highlighterLineNumberStyle}
-                      >
-                        {data.code}
-                      </SyntaxHighlighter>
-                    </div> :
-                    <div>
-                      <h3 className="warning-text">You do not have permission to view code</h3>
-                    </div>
-                  }
-                </> :
-                <Skeleton active title={false} paragraph={{ rows: 6, width: ['26%', '0%', '19%', '50%', '20%', '5%'] }} />
-              }
-            </Card>
+            <Card bordered={false}>{this.renderCodeInside()}</Card>
           </div>
         </PageTitle>
       </PageAnimation>

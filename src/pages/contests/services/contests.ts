@@ -105,3 +105,12 @@ export function getRatingStatus(id) {
   const url = urlf(api.contests.ratingStatus, { param: { id } });
   return get(url);
 }
+
+export function getContest(id) {
+  const url = urlf(api.contests.base, {
+    query: {
+      contestId: id,
+    },
+  });
+  return get(url);
+}

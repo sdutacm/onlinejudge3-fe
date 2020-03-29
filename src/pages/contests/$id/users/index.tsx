@@ -46,53 +46,8 @@ class ContestUserList extends React.Component<Props, State> {
     console.log(e);
   };
 
-  editContestUser = (uid) => {
-    const { dispatch, id } = this.props;
-    const matchDetail = matchPath(this.props.location.pathname, {
-      path: pages.contests.users,
-      exact: true,
-    });
-    if (matchDetail) {
-      dispatch({
-        type: 'contests/getContestUser',
-        payload: {
-          id,
-          uid,
-        },
-      });
-    }
-  };
-
-  clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-  formList = [
-    'schoolNo',
-    'name',
-    'school',
-    'college',
-    'major',
-    'class',
-    'tel',
-    'email',
-    'clothing',
-  ];
-
-  render() {
-    const {
-      loading,
-      contestUser,
-      data: { page, count, rows },
-      id,
-      contestDetail,
-      session,
-      location: { query },
-    } = this.props;
-
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
-    const regInProgress =
-      contestDetail.registerStartAt * 1000 <= serverTime &&
-      serverTime < contestDetail.registerEndAt * 1000;
-
-    let addUserFormItems = [
+  addUserFormItems = (contestUser, uid) => {
+    return [
       {
         name: 'Nickname',
         field: 'nickname',
@@ -181,7 +136,9 @@ class ContestUserList extends React.Component<Props, State> {
         })),
       },
     ];
-    let addTeamUserFormItems = [
+  };
+  addTeamUserFormItems = (contestUser, uid) => {
+    return [
       {
         name: 'Nickname',
         field: 'nickname',
@@ -392,6 +349,36 @@ class ContestUserList extends React.Component<Props, State> {
         })),
       },
     ];
+  };
+
+  clothingSize = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+  formList = [
+    'schoolNo',
+    'name',
+    'school',
+    'college',
+    'major',
+    'class',
+    'tel',
+    'email',
+    'clothing',
+  ];
+
+  render() {
+    const {
+      loading,
+      data: { page, count, rows },
+      id,
+      contestDetail,
+      session,
+      location: { query },
+    } = this.props;
+
+    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const regInProgress =
+      contestDetail.registerStartAt * 1000 <= serverTime &&
+      serverTime < contestDetail.registerEndAt * 1000;
+
     let this_ = this;
     return (
       <PageAnimation>
@@ -488,7 +475,9 @@ class ContestUserList extends React.Component<Props, State> {
                             title="Edit Register Info"
                             autoMsg
                             items={
-                              text.members.length === 3 ? addTeamUserFormItems : addUserFormItems
+                              text.members.length === 3
+                                ? this_.addTeamUserFormItems(text, text.contestUserId)
+                                : this_.addUserFormItems(text, text.contestUserId)
                             }
                             submit={(dispatch: ReduxProps['dispatch'], values) => {
                               let data = {};
@@ -544,7 +533,7 @@ class ContestUserList extends React.Component<Props, State> {
                               });
                             }}
                           >
-                            <a onClick={() => this.editContestUser(text.contestUserId)}>
+                            <a>
                               <Icon type="edit" />
                             </a>
                           </GeneralFormModal>
@@ -590,8 +579,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['contests/getUserList'],
     data: state.contests.userlist,
     session: state.session,
-    contestUser: state.contests.contestUserDetail,
-    contestDetail: state.contests.detail[id] || {},
+    contestDetail: state.contests.contest[id] || {},
   };
 }
 

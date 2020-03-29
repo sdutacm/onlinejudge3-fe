@@ -6,7 +6,6 @@ import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { matchPath } from 'react-router';
 
-
 const initialState = {
   list: {
     page: 1,
@@ -22,6 +21,7 @@ const initialState = {
   userlist: {},
   contestUserDetail: {}, // only one user，之后再改
   ratingStatus: {},
+  contest: {},
 };
 
 export default {
@@ -95,8 +95,8 @@ export default {
         ...genTimeFlag(25 * 1000),
       };
     },
-    setContestUser(state, { payload: { data } }) {
-      state.contestUserDetail = {
+    setContestUser(state, { payload: { id, data } }) {
+      state.contestUserDetail[id] = {
         ...data,
       };
     },
@@ -105,19 +105,28 @@ export default {
         ...data,
       };
     },
+    setContest(state, { payload: { id, data } }) {
+      state.contest[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearExpiredContest(state) {
+      state.detail = clearExpiredStateProperties(state.contest);
+    },
   },
   effects: {
-    * getList({ payload: query }, { call, put, select }) {
+    *getList({ payload: query }, { call, put, select }) {
       const formattedQuery = {
         ...formatListQuery(query),
         orderBy: 'contestId',
         orderDirection: 'DESC',
       };
-      const savedState = yield select(state => state.contests.list);
+      const savedState = yield select((state) => state.contests.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<IContest> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<IContest>> = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -129,7 +138,7 @@ export default {
       }
       return ret;
     },
-    * getListData({ payload: query }, { call, put, select }) {
+    *getListData({ payload: query }, { call, put, select }) {
       const formattedQuery = {
         orderBy: 'contestId',
         orderDirection: 'DESC',
@@ -138,9 +147,9 @@ export default {
       const ret: IApiResponse<IList<IContest>> = yield call(service.getList, formattedQuery);
       return ret;
     },
-    * getSession({ payload: { id, force = false } }, { call, put, select }) {
+    *getSession({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.contests.session[id]);
+        const savedState = yield select((state) => state.contests.session[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -160,8 +169,7 @@ export default {
         yield put({
           type: 'clearExpiredSession',
         });
-      }
-      else {
+      } else {
         yield put({
           type: 'setSession',
           payload: {
@@ -176,7 +184,7 @@ export default {
       }
       return ret;
     },
-    * login({ payload: { id, data } }, { call, put }) {
+    *login({ payload: { id, data } }, { call, put }) {
       const ret: IApiResponse<ISession> = yield call(service.login, id, data);
       if (ret.success) {
         yield put({
@@ -192,7 +200,7 @@ export default {
       }
       return ret;
     },
-    * logout({ payload: { id, clearSession = true } }, { call, put }) {
+    *logout({ payload: { id, clearSession = true } }, { call, put }) {
       const ret: IApiResponse<ISession> = yield call(service.logout, id);
       if (ret.success && clearSession) {
         yield put({
@@ -204,9 +212,9 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: { id, force = false } }, { call, put, select }) {
+    *getDetail({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.contests.detail[id]);
+        const savedState = yield select((state) => state.contests.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -226,14 +234,14 @@ export default {
       }
       return ret;
     },
-    * getProblems({ payload: { id, force = false } }, { call, put, select }) {
+    *getProblems({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.contests.problems[id]);
+        const savedState = yield select((state) => state.contests.problems[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
       }
-      const ret: IApiResponse<IFullList<IProblem> > = yield call(service.getProblems, id);
+      const ret: IApiResponse<IFullList<IProblem>> = yield call(service.getProblems, id);
       if (ret.success) {
         yield put({
           type: 'setProblems',
@@ -248,14 +256,17 @@ export default {
       }
       return ret;
     },
-    * getProblemResultStats({ payload: { id, force = false } }, { call, put, select }) {
+    *getProblemResultStats({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.contests.problemResultStats[id]);
+        const savedState = yield select((state) => state.contests.problemResultStats[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
       }
-      const ret: IApiResponse<IContestProblemResultStats> = yield call(service.getProblemResultStats, id);
+      const ret: IApiResponse<IContestProblemResultStats> = yield call(
+        service.getProblemResultStats,
+        id,
+      );
       if (ret.success) {
         yield put({
           type: 'setProblemResultStats',
@@ -270,14 +281,14 @@ export default {
       }
       return ret;
     },
-    * getRanklist({ payload: { id, force = false } }, { call, put, select }) {
+    *getRanklist({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.contests.ranklist[id]);
+        const savedState = yield select((state) => state.contests.ranklist[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
       }
-      const ret: IApiResponse<IFullList<IRanklistRow> > = yield call(service.getRanklist, id);
+      const ret: IApiResponse<IFullList<IRanklistRow>> = yield call(service.getRanklist, id);
       if (ret.success) {
         // 应先 clear，防止 set 时间过长导致又被 clear 掉
         yield put({
@@ -293,13 +304,17 @@ export default {
       }
       return ret;
     },
-    * getUserList({ payload: prams }, { call, put, select }) {
+    *getUserList({ payload: prams }, { call, put, select }) {
       const formattedQuery = {
         ...formatListQuery(prams.query),
         orderBy: 'contestUserId',
         orderDirection: 'DESC',
       };
-      const ret: IApiResponse<IList<IContest> > = yield call(service.getUserList, formattedQuery, prams.cid);
+      const ret: IApiResponse<IList<IContest>> = yield call(
+        service.getUserList,
+        formattedQuery,
+        prams.cid,
+      );
       if (ret.success) {
         yield put({
           type: 'setUserList',
@@ -311,17 +326,18 @@ export default {
       }
       return ret;
     },
-    * addContestUser({ payload: { id, data } }, { call, put }) {
+    *addContestUser({ payload: { id, data } }, { call, put }) {
       const ret = yield call(service.addContestUser, id, data);
       return ret;
     },
 
-    * getContestUser({ payload: { id, uid } }, { call, put }) {
+    *getContestUser({ payload: { id, uid } }, { call, put }) {
       const ret: IApiResponse<IContestUser> = yield call(service.getContestUser, id, uid);
       if (ret.success) {
         yield put({
           type: 'setContestUser',
           payload: {
+            id: uid,
             data: ret.data,
           },
         });
@@ -329,17 +345,17 @@ export default {
       return ret;
     },
 
-    * updateContestUser({ payload: { id, uid, data } }, { call, put }) {
+    *updateContestUser({ payload: { id, uid, data } }, { call, put }) {
       const ret = yield call(service.updateContestUser, id, uid, data);
       return ret;
     },
 
-    * endContest({ payload: { id  } }, { call, put }) {
+    *endContest({ payload: { id } }, { call, put }) {
       const ret = yield call(service.endContest, id);
       return ret;
     },
 
-    * getRatingStatus({ payload: { id } }, { call, put }) {
+    *getRatingStatus({ payload: { id } }, { call, put }) {
       const ret: IApiResponse<IContestRatingStatus> = yield call(service.getRatingStatus, id);
       if (ret.success) {
         yield put({
@@ -347,6 +363,27 @@ export default {
           payload: {
             id,
             data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
+
+    *getContest({ payload: { id } }, { call, put, select }) {
+      const savedState = yield select((state) => state.contests.contest[id]);
+      if (!isStateExpired(savedState)) {
+        return;
+      }
+      const ret: IApiResponse<IList<IContest>> = yield call(service.getContest, id);
+      if (ret.success) {
+        yield put({
+          type: 'clearExpiredContest',
+        });
+        yield put({
+          type: 'setContest',
+          payload: {
+            id: id,
+            data: ret.data.rows[0],
           },
         });
       }
@@ -363,8 +400,16 @@ export default {
           path: pages.contests.users,
           exact: true,
         });
+
         if (matchContestUserDetail) {
-          requestEffect(dispatch, { type: 'getUserList', payload: { query, cid: matchContestUserDetail.params['id'] }});
+          requestEffect(dispatch, {
+            type: 'getUserList',
+            payload: { query, cid: matchContestUserDetail.params['id'] },
+          });
+          requestEffect(dispatch, {
+            type: 'getContest',
+            payload: { id: matchContestUserDetail.params['id'] },
+          });
         }
         // const matchContest = matchPath(pathname, {
         //   path: pages.contests.home,

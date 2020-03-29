@@ -2,7 +2,6 @@ import { get, post, patch, del } from '@/utils/request';
 import api from '@/configs/apis';
 import limits from '@/configs/limits';
 import { urlf } from '@/utils/format';
-import IdeaNotes from '@/components/IdeaNotes';
 
 export function getList(query) {
   const url = urlf(api.contests.base, {
@@ -110,7 +109,7 @@ export function getRatingStatus(id) {
 export function getContest(id) {
   const url = urlf(api.contests.base, {
     query: {
-      contestId: id
+      contestId: id,
     },
   });
   return get(url);

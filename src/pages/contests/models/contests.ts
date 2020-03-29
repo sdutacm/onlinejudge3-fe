@@ -400,7 +400,6 @@ export default {
           path: pages.contests.users,
           exact: true,
         });
-        console.log(matchContestUserDetail);
 
         if (matchContestUserDetail) {
           requestEffect(dispatch, {

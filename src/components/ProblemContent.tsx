@@ -34,7 +34,10 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
     <div
       className={classNames('problem-content', 'content-area', 'problem-content', 'content-loaded')}
     >
-      <h2 className="text-center" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <h2
+        className="text-center"
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
         <ProblemDifficulty difficulty={data.difficulty} className="mr-md-lg" />
         {Number.isInteger(problemIndex)
           ? `${numberToAlphabet(problemIndex)} - ${data.title}`
@@ -42,13 +45,13 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
       </h2>
 
       {data.description && <h3>Description</h3>}
-      <AutoLaTeX>{xss(data.description)}</AutoLaTeX>
+      <AutoLaTeX>{data.description}</AutoLaTeX>
 
       {data.input && <h3>Input</h3>}
-      <AutoLaTeX>{xss(data.input)}</AutoLaTeX>
+      <AutoLaTeX>{data.input}</AutoLaTeX>
 
       {data.output && <h3>Output</h3>}
-      <AutoLaTeX>{xss(data.output)}</AutoLaTeX>
+      <AutoLaTeX>{data.output}</AutoLaTeX>
 
       {(data.sampleInput || data.sampleOutput) && <h3>Sample</h3>}
       {data.sampleInput && (
@@ -67,7 +70,7 @@ const ProblemContent: React.FC<Props> = ({ loading, data, problemIndex }) => {
       {data.sampleOutput && <pre>{data.sampleOutput}</pre>}
 
       {data.hint && <h3>Hint</h3>}
-      <AutoLaTeX>{xss(data.hint)}</AutoLaTeX>
+      <AutoLaTeX>{data.hint}</AutoLaTeX>
     </div>
   );
 };

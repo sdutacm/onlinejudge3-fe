@@ -402,7 +402,7 @@ class UserDetail extends React.Component<Props, State> {
 
                     <Card bordered={false}>
                       <h3>
-                        WA Calendar
+                        AC Calendar
                         <Select
                           defaultValue={null}
                           className="float-right"
@@ -453,7 +453,7 @@ class UserDetail extends React.Component<Props, State> {
                             tracker.event({
                               category: 'users',
                               action: 'toSolution',
-                              label: 'WA',
+                              label: 'AC',
                             });
                           }}
                         >
@@ -468,7 +468,7 @@ class UserDetail extends React.Component<Props, State> {
                             <p style={{ marginBottom: '4px', fontSize: '16px', height: '25px' }}>
                               <strong>{data.accepted}</strong>
                             </p>
-                            <p style={{ fontSize: '12px' }}>WA</p>
+                            <p style={{ fontSize: '12px' }}>AC</p>
                           </div>
                         </Link>
                         <Link

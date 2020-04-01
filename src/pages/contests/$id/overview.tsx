@@ -30,8 +30,7 @@ export interface Props extends ReduxProps {
   contestProblemResultStats: IContestProblemResultStats;
 }
 
-interface State {
-}
+interface State {}
 
 class ContestOverview extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
@@ -48,8 +47,13 @@ class ContestOverview extends React.Component<Props, State> {
       return;
     }
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
-    const timeStatus = getSetTimeStatus(toLongTs(detail.startAt), toLongTs(detail.endAt), currentTime);
-    if (timeStatus !== 'Pending') { // 比赛已开始，可以去获取其他数据
+    const timeStatus = getSetTimeStatus(
+      toLongTs(detail.startAt),
+      toLongTs(detail.endAt),
+      currentTime,
+    );
+    if (timeStatus !== 'Pending') {
+      // 比赛已开始，可以去获取其他数据
       // TODO 考虑去掉 force，当用户 AC 后主动用 force=true 请求一次
       dispatch({
         type: 'users/getProblemResultStats',
@@ -108,93 +112,117 @@ class ContestOverview extends React.Component<Props, State> {
               <Card bordered={false}>
                 <h2 className="text-center">{detail.title}</h2>
                 <p className="text-center" style={{ marginBottom: '5px' }}>
-                  <span>{moment(startTime).format('YYYY-MM-DD HH:mm')} ~ {moment(endTime).format('YYYY-MM-DD HH:mm')}</span>
+                  <span>
+                    {moment(startTime).format('YYYY-MM-DD HH:mm')} ~{' '}
+                    {moment(endTime).format('YYYY-MM-DD HH:mm')}
+                  </span>
                 </p>
                 <p className="text-center">
                   <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
                 </p>
-                {timeStatus === 'Pending' ?
+                {timeStatus === 'Pending' ? (
                   <Countdown
                     secs={Math.floor((startTime - currentTime) / 1000)}
-                    renderTime={(secs: number) =>
-                      <h1 className="text-center" style={{ margin: '30px 0' }}>{secToTimeStr(secs, true)}</h1>
-                    }
+                    renderTime={(secs: number) => (
+                      <h1 className="text-center" style={{ margin: '30px 0' }}>
+                        {secToTimeStr(secs, true)}
+                      </h1>
+                    )}
                     handleRequestTimeSync={() => {
                       const currentTime = Date.now() - ((window as any)._t_diff || 0);
                       return Math.floor((startTime - currentTime) / 1000);
                     }}
                     timeSyncInterval={30000}
-                  /> :
+                  />
+                ) : (
                   <div
                     dangerouslySetInnerHTML={{ __html: xss(detail.description) }}
                     className="content-area"
                     style={{ marginTop: '15px' }}
                   />
-                }
+                )}
               </Card>
-              {timeStatus !== 'Pending' &&
-              <Card bordered={false} className="list-card">
-                <Table
-                  dataSource={problems.rows}
-                  rowKey="problemId"
-                  loading={problemsLoading}
-                  pagination={false}
-                  className="responsive-table"
-                  rowClassName={(record: IProblem) => classNames(
-                    'problem-result-mark-row',
-                    { attempted: ~acceptedProblemIds.indexOf(record.problemId) },
-                    { accepted: ~attemptedProblemIds.indexOf(record.problemId) }
-                  )}
-                >
-                  {isContestRP && <Table.Column
-                    title=""
-                    key="RedPacket"
-                    render={(text, record: IProblem, index) => {
-                      const rpList = contestRP[id];
-                      const rp = rpList.find(rp => rp.problemId === record.problemId);
-                      if (rp && ~acceptedProblemIds.indexOf(record.problemId)) {
-                        return <RedPacketModal rpKey={rp.key} rpNote={rp.note}>
-                          <Button type="danger" size="small">AC 红包</Button>
-                        </RedPacketModal>
-                      }
-                      return null;
-                    }}
-                  />}
-                  <Table.Column
-                    title=""
-                    key="Index"
-                    render={(text, record: IProblem, index) => (
-                      <div>{numberToAlphabet(index)}</div>
+              {timeStatus !== 'Pending' && (
+                <Card bordered={false} className="list-card">
+                  <Table
+                    dataSource={problems.rows}
+                    rowKey="problemId"
+                    loading={problemsLoading}
+                    pagination={false}
+                    className="responsive-table"
+                    rowClassName={(record: IProblem) =>
+                      classNames(
+                        'problem-result-mark-row',
+                        { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
+                        { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
+                      )
+                    }
+                  >
+                    {isContestRP && (
+                      <Table.Column
+                        title=""
+                        key="RedPacket"
+                        render={(text, record: IProblem, index) => {
+                          const rpList = contestRP[id];
+                          const rp = rpList.find((rp) => rp.problemId === record.problemId);
+                          if (rp && ~acceptedProblemIds.indexOf(record.problemId)) {
+                            return (
+                              <RedPacketModal rpKey={rp.key} rpNote={rp.note}>
+                                <Button type="danger" size="small">
+                                  AC 红包
+                                </Button>
+                              </RedPacketModal>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
                     )}
-                  />
-                  <Table.Column
-                    title="Title"
-                    key="Title"
-                    render={(text, record: IProblem, index) => (
-                      <div>
-                        <Link to={urlf(pages.contests.problemDetail, { param: { id, index: numberToAlphabet(index) } })}>{record.title}</Link>
-                      </div>
-                    )}
-                  />
-                  <Table.Column
-                    title="Stats"
-                    key="Statistics"
-                    className="no-wrap"
-                    render={(text, record: IProblem) => {
-                      if (!contestProblemResultStats[record.problemId]) {
-                        return null;
-                      }
-                      return (
-                        <SolutionResultStats
-                          accepted={contestProblemResultStats[record.problemId].accepted}
-                          submitted={contestProblemResultStats[record.problemId].submitted}
-                          toSolutionsLink={urlf(pages.contests.solutions, { param: { id }, query: { problemId: record.problemId } })}
-                        />
-                      );
-                    }}
-                  />
-                </Table>
-              </Card>}
+                    <Table.Column
+                      title=""
+                      key="Index"
+                      render={(text, record: IProblem, index) => (
+                        <div>{numberToAlphabet(index)}</div>
+                      )}
+                    />
+                    <Table.Column
+                      title="Title"
+                      key="Title"
+                      render={(text, record: IProblem, index) => (
+                        <div>
+                          <Link
+                            to={urlf(pages.contests.problemDetail, {
+                              param: { id, index: numberToAlphabet(index) },
+                            })}
+                          >
+                            {record.title}
+                          </Link>
+                        </div>
+                      )}
+                    />
+                    <Table.Column
+                      title="Stats"
+                      key="Statistics"
+                      className="no-wrap"
+                      render={(text, record: IProblem) => {
+                        if (!contestProblemResultStats[record.problemId]) {
+                          return null;
+                        }
+                        return (
+                          <SolutionResultStats
+                            accepted={contestProblemResultStats[record.problemId].accepted}
+                            submitted={contestProblemResultStats[record.problemId].submitted}
+                            toSolutionsLink={urlf(pages.contests.solutions, {
+                              param: { id },
+                              query: { problemId: record.problemId },
+                            })}
+                          />
+                        );
+                      }}
+                    />
+                  </Table>
+                </Card>
+              )}
             </Col>
           </Row>
         </PageTitle>

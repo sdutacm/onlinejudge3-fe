@@ -150,7 +150,7 @@ class Ranklist extends React.Component<Props, State> {
         rowKey={(record, index) => `${record._self ? '_self' : record.user && record.user.userId}`}
         loading={loading}
         // pagination={false}
-        className="ranklist reverse"
+        className="ranklist"
         rowClassName={(record) => record._self ? 'self-rank-row' : ''}
         scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
         pagination={{

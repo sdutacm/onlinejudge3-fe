@@ -10,12 +10,14 @@ export interface Props {
   endDate?: string;
 }
 
-interface State {
-}
+interface State {}
 
 class SolutionCalendar extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
-    startDate: moment().subtract(1, 'year').add(1, 'day').format('YYYY-MM-DD'),
+    startDate: moment()
+      .subtract(1, 'year')
+      .add(1, 'day')
+      .format('YYYY-MM-DD'),
     endDate: moment().format('YYYY-MM-DD'),
   };
 
@@ -36,31 +38,27 @@ class SolutionCalendar extends React.Component<Props, State> {
           startDate={startDate}
           endDate={endDate}
           values={data || []}
-          classForValue={value => {
+          classForValue={(value) => {
             let level = 0;
             if (!value || value.count <= 0) {
               level = 0;
-            }
-            else if (value.count <= 2) {
+            } else if (value.count <= 2) {
               level = 1;
-            }
-            else if (value.count <= 5) {
+            } else if (value.count <= 5) {
               level = 2;
-            }
-            else if (value.count <= 10) {
+            } else if (value.count <= 10) {
               level = 3;
-            }
-            else {
+            } else {
               level = 4;
             }
             return `solution-calendar solution-calendar-color-${level}`;
           }}
-          tooltipDataAttrs={value => {
+          tooltipDataAttrs={(value) => {
             if (!value || !value.count) {
               return null;
             }
             return {
-              'data-tip': `[${value.date}] Wrong Answer: ${value.count}`,
+              'data-tip': `[${value.date}] Accepted: ${value.count}`,
             };
           }}
         />

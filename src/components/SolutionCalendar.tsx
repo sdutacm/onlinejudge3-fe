@@ -60,7 +60,7 @@ class SolutionCalendar extends React.Component<Props, State> {
               return null;
             }
             return {
-              'data-tip': `[${value.date}] Accepted: ${value.count}`,
+              'data-tip': `[${value.date}] Wrong Answer: ${value.count}`,
             };
           }}
         />

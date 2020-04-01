@@ -27,7 +27,7 @@ const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutions
   );
   return (
     <Popover
-      title="AC / Total"
+      title="WA / Total"
       content={`${accepted} / ${submitted} (${formatPercentage(accepted, submitted)})`}
       onVisibleChange={(visible) => {
         if (visible) {

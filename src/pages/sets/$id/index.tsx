@@ -177,8 +177,8 @@ class SetDetail extends React.Component<Props, State> {
                           rowClassName={(record: IProblem) =>
                             classNames(
                               'problem-result-mark-row',
-                              { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
-                              { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
+                              { attempted: ~acceptedProblemIds.indexOf(record.problemId) },
+                              { accepted: ~attemptedProblemIds.indexOf(record.problemId) },
                             )
                           }
                         >

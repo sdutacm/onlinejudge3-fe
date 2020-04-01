@@ -169,8 +169,8 @@ class Index extends React.Component<Props, State> {
                       )}
                     />
                     <Table.Column
-                      title="AC"
-                      key="Accepted"
+                      title="WA"
+                      key="Wrong Answer"
                       render={(text, record: IStatsUserACRankUserStatus) => (
                         <span>{record.accepted}</span>
                       )}

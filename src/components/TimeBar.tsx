@@ -2,8 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import { Popover } from 'antd';
 import classNames from 'classnames';
+import { connect } from 'dva';
 
 export interface Props {
+  useAbsoluteTime: boolean;
   time: number;
   className?: string;
 }
@@ -35,13 +37,21 @@ class TimeBar extends React.Component<Props, State> {
   }
 
   render() {
-    const { time, className } = this.props;
+    const { useAbsoluteTime, time, className } = this.props;
     return (
       <Popover content={moment(time).format('YYYY-MM-DD HH:mm:ss Z')}>
-        <span className={classNames('no-wrap', className)}>{moment(time).fromNow()}</span>
+        <span className={classNames('no-wrap', className)}>
+          {useAbsoluteTime ? moment(time).format('YYYY-MM-DD HH:mm:ss') : moment(time).fromNow()}
+        </span>
       </Popover>
     );
   }
 }
 
-export default TimeBar;
+function mapStateToProps(state) {
+  return {
+    useAbsoluteTime: state.settings.useAbsoluteTime,
+  };
+}
+
+export default connect(mapStateToProps)(TimeBar);

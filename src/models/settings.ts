@@ -6,6 +6,7 @@ const initialState = {
   color: 'default',
   improveAnimation: true,
   proMode: false,
+  useAbsoluteTime: false,
 } as ISettings;
 
 function genState() {
@@ -45,7 +46,10 @@ export default {
       localStorage.set('settings', { ...state, proMode });
       state.proMode = proMode;
     },
+    setUseAbsoluteTime(state, { payload: { useAbsoluteTime } }) {
+      localStorage.set('settings', { ...state, useAbsoluteTime });
+      state.useAbsoluteTime = useAbsoluteTime;
+    },
   },
-  effects: {
-  },
+  effects: {},
 };

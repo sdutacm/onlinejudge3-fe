@@ -565,6 +565,7 @@ interface ISettings {
   color: ISettingsColor;
   improveAnimation: boolean;
   proMode: boolean;
+  useAbsoluteTime: boolean;
 }
 
 type INoticeId = string;

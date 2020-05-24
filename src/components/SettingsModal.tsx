@@ -22,7 +22,7 @@ class SettingsModal extends React.Component<Props, State> {
     };
   }
 
-  handleShowModel = e => {
+  handleShowModel = (e) => {
     if (e) {
       e.stopPropagation();
     }
@@ -86,6 +86,18 @@ class SettingsModal extends React.Component<Props, State> {
     });
   };
 
+  handleUseAbsoluteTime = (checked) => {
+    this.props.dispatch({
+      type: 'settings/setUseAbsoluteTime',
+      payload: { useAbsoluteTime: checked },
+    });
+    tracker.event({
+      category: 'settings',
+      action: 'changeUseAbsoluteTime',
+      label: checked ? 'true' : 'false',
+    });
+  };
+
   render() {
     const { children, settings } = this.props;
 
@@ -134,21 +146,47 @@ class SettingsModal extends React.Component<Props, State> {
             <span>
               Improve Animation
               <Explanation className="ml-sm-md">
-                The setting effects animation.<br />
+                The setting effects animation.
+                <br />
                 If "Improve Animation" is enabled, more animation effects will be displayed.
               </Explanation>
             </span>
-            <Switch className="float-right" defaultChecked={settings.improveAnimation} onChange={this.handleImproveAnimationChange} />
+            <Switch
+              className="float-right"
+              defaultChecked={settings.improveAnimation}
+              onChange={this.handleImproveAnimationChange}
+            />
           </div>
           <div className="settings-item">
             <span>
               Pro Mode
               <Explanation className="ml-sm-md">
-                The setting effects some pro features.<br />
-                If "Pro Mode" is enabled, more features like "ID View" and "Force Refresh" will be available.
+                The setting effects some pro features.
+                <br />
+                If "Pro Mode" is enabled, more features like "ID View" and "Force Refresh" will be
+                available.
               </Explanation>
             </span>
-            <Switch className="float-right" defaultChecked={settings.proMode} onChange={this.handleProMode} />
+            <Switch
+              className="float-right"
+              defaultChecked={settings.proMode}
+              onChange={this.handleProMode}
+            />
+          </div>
+          <div className="settings-item">
+            <span>
+              Use Absolute Time
+              <Explanation className="ml-sm-md">
+                The setting effects time display.
+                <br />
+                If "Use Absolute Time" is enabled, OJ will use absolute time instead of relative time to display.
+              </Explanation>
+            </span>
+            <Switch
+              className="float-right"
+              defaultChecked={settings.useAbsoluteTime}
+              onChange={this.handleUseAbsoluteTime}
+            />
           </div>
         </Modal>
       </>

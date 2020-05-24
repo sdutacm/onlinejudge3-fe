@@ -41,7 +41,9 @@ class SolutionList extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
     if (!isEqual(this.props.location.query, nextProps.location.query)) {
-      this.setState({ filterOwned: ~~nextProps.location.query.userId === nextProps.session.user.userId });
+      this.setState({
+        filterOwned: ~~nextProps.location.query.userId === nextProps.session.user.userId,
+      });
     }
   }
 
@@ -51,20 +53,24 @@ class SolutionList extends React.Component<Props, State> {
   //   }
   // }
 
-  handleOwnedChange = owned => {
+  handleOwnedChange = (owned) => {
     this.setState({ filterOwned: owned });
     tracker.event({
       category: 'solutions',
       action: 'switchOwn',
     });
-    setTimeout(() => router.replace({
-      pathname: this.props.location.pathname,
-      query: {
-        ...this.props.location.query,
-        userId: owned ? this.props.session.user.userId : undefined,
-        page: 1,
-      },
-    }), constants.switchAnimationDuration);
+    setTimeout(
+      () =>
+        router.replace({
+          pathname: this.props.location.pathname,
+          query: {
+            ...this.props.location.query,
+            userId: owned ? this.props.session.user.userId : undefined,
+            page: 1,
+          },
+        }),
+      constants.switchAnimationDuration,
+    );
   };
 
   render() {
@@ -80,6 +86,7 @@ class SolutionList extends React.Component<Props, State> {
                 dispatch={dispatch}
                 showPagination
                 session={session}
+                showId={proMode}
               />
             </Card>
           </Col>
@@ -88,43 +95,61 @@ class SolutionList extends React.Component<Props, State> {
               <ToDetailCard
                 label="Go to Solution"
                 placeholder="Solution ID"
-                toDetailLink={id => urlf(pages.solutions.detail, { param: { id } })}
+                toDetailLink={(id) => urlf(pages.solutions.detail, { param: { id } })}
               />
             </Card>
             <Card bordered={false}>
-              <FilterCard fields={[
-                { displayName: 'Owner User ID', fieldName: 'userId' },
-                { displayName: 'Problem ID', fieldName: 'problemId' },
-                {
-                  displayName: 'Language', fieldName: 'language', options: langs.map(lang => {
-                    return { fieldName: lang.fieldName, displayName: lang.displayShortName };
-                  }),
-                },
-                {
-                  displayName: 'Result', fieldName: 'result', options: results.filter(res => {
-                    return res.id !== Results.WT && res.id !== Results.JG;
-                  }).map(res => {
-                    return { fieldName: res.id, displayName: res.fullName };
-                  }),
-                },
-              ]} />
+              <FilterCard
+                fields={[
+                  { displayName: 'Owner User ID', fieldName: 'userId' },
+                  { displayName: 'Problem ID', fieldName: 'problemId' },
+                  {
+                    displayName: 'Language',
+                    fieldName: 'language',
+                    options: langs.map((lang) => {
+                      return { fieldName: lang.fieldName, displayName: lang.displayShortName };
+                    }),
+                  },
+                  {
+                    displayName: 'Result',
+                    fieldName: 'result',
+                    options: results
+                      .filter((res) => {
+                        return res.id !== Results.WT && res.id !== Results.JG;
+                      })
+                      .map((res) => {
+                        return { fieldName: res.id, displayName: res.fullName };
+                      }),
+                  },
+                ]}
+              />
             </Card>
-            {proMode && <Card bordered={false}>
-              <RefreshCard />
-            </Card>}
-            {session.loggedIn &&
-            <Card bordered={false}>
-              <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
-                <Form.Item className="single-form-item" label={
-                  <div>
-                    <span className="title">My Solutions</span>
-                    <div className="float-right">
-                      <Switch checked={this.state.filterOwned} onChange={this.handleOwnedChange} loading={loading} />
-                    </div>
-                  </div>
-                } />
-              </Form>
-            </Card>}
+            {proMode && (
+              <Card bordered={false}>
+                <RefreshCard />
+              </Card>
+            )}
+            {session.loggedIn && (
+              <Card bordered={false}>
+                <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
+                  <Form.Item
+                    className="single-form-item"
+                    label={
+                      <div>
+                        <span className="title">My Solutions</span>
+                        <div className="float-right">
+                          <Switch
+                            checked={this.state.filterOwned}
+                            onChange={this.handleOwnedChange}
+                            loading={loading}
+                          />
+                        </div>
+                      </div>
+                    }
+                  />
+                </Form>
+              </Card>
+            )}
           </Col>
         </Row>
       </PageAnimation>

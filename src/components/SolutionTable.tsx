@@ -26,6 +26,7 @@ export interface Props extends ReduxProps, RouteProps {
   problemList?: any[];
   session?: ISessionStatus;
   rating?: boolean;
+  showId?: boolean;
 }
 
 interface State {
@@ -52,7 +53,6 @@ class SolutionTable extends React.Component<Props, State> {
   }
 
   updatePendingSolutions = async () => {
-
     const { rows } = this.props.data;
     const solutionIds: number[] = [];
     for (const row of rows) {
@@ -68,7 +68,7 @@ class SolutionTable extends React.Component<Props, State> {
           type: this.props.isDetail ? 'detail' : 'list',
           solutionIds,
         },
-      })
+      });
 
       if (this.props.isDetail) {
         for (const item in data) {
@@ -85,7 +85,7 @@ class SolutionTable extends React.Component<Props, State> {
     }
   };
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -97,11 +97,15 @@ class SolutionTable extends React.Component<Props, State> {
     if (isDetail || !session || !session.loggedIn) {
       return false;
     }
-    if (solution.shared || solution.user.userId === session.user.userId || isPermissionDog(session)) {
+    if (
+      solution.shared ||
+      solution.user.userId === session.user.userId ||
+      isPermissionDog(session)
+    ) {
       return true;
     }
     return false;
-  }
+  };
 
   render() {
     const {
@@ -113,6 +117,7 @@ class SolutionTable extends React.Component<Props, State> {
       problemList,
       location,
       rating,
+      showId,
     } = this.props;
     return (
       <>
@@ -121,42 +126,43 @@ class SolutionTable extends React.Component<Props, State> {
           rowKey="solutionId"
           loading={loading}
           pagination={false}
-          className={classNames(
-            'responsive-table',
-            {
-              'click-table': !isDetail,
-              'single-row-table': isDetail,
-            }
-          )}
+          className={classNames('responsive-table', {
+            'click-table': !isDetail,
+            'single-row-table': isDetail,
+          })}
           onRow={(record) => {
-            const solutionDetailUrl = contestId ?
-              urlf(pages.contests.solutionDetail, {
-                param: {
-                  id: contestId,
-                  sid: record.solutionId,
-                },
-              }) :
-              urlf(pages.solutions.detail, {
-                param: { id: record.solutionId },
-                query: { from: location.query.from },
-              });
+            const solutionDetailUrl = contestId
+              ? urlf(pages.contests.solutionDetail, {
+                  param: {
+                    id: contestId,
+                    sid: record.solutionId,
+                  },
+                })
+              : urlf(pages.solutions.detail, {
+                  param: { id: record.solutionId },
+                  query: { from: location.query.from },
+                });
             return {
               onClick: () => !this.props.isDetail && router.push(solutionDetailUrl),
             };
           }}
         >
-          {isDetail && <Table.Column
-            title="ID"
-            key="ID"
-            render={(text, record: ISolution) => (
-              <span>{record.solutionId}</span>
+          {(isDetail || showId) && (
+              <Table.Column
+                title="ID"
+                key="ID"
+                render={(text, record: ISolution) => <span>{record.solutionId}</span>}
+              />
             )}
-          />}
           <Table.Column
             title="User"
             key="User"
             render={(text, record: ISolution) => (
-              <UserBar user={record.user} isContestUser={record.contest && record.contest.type === ContestTypes.Register} showRating={rating} />
+              <UserBar
+                user={record.user}
+                isContestUser={record.contest && record.contest.type === ContestTypes.Register}
+                showRating={rating}
+              />
             )}
           />
           <Table.Column
@@ -172,11 +178,13 @@ class SolutionTable extends React.Component<Props, State> {
                   }
                 }
               }
-              return <ProblemBar
-                problem={contestProblem || record.problem}
-                contestId={contestId}
-                index={contestProblem ? contestProblem.index : undefined}
-              />;
+              return (
+                <ProblemBar
+                  problem={contestProblem || record.problem}
+                  contestId={contestId}
+                  index={contestProblem ? contestProblem.index : undefined}
+                />
+              );
             }}
           />
           <Table.Column
@@ -192,65 +200,69 @@ class SolutionTable extends React.Component<Props, State> {
             title="Time"
             key="Time"
             className="near-result-bar"
-            render={(text, record: ISolution) => (
-              <span>{record.time}</span>
-            )}
+            render={(text, record: ISolution) => <span>{record.time}</span>}
           />
           <Table.Column
             title="Mem."
             key="Memory"
-            render={(text, record: ISolution) => (
-              <span>{record.memory}</span>
-            )}
+            render={(text, record: ISolution) => <span>{record.memory}</span>}
           />
           <Table.Column
             title="Len."
             key="Length"
-            render={(text, record: ISolution) => (
-              <span>{record.codeLength}</span>
-            )}
+            render={(text, record: ISolution) => <span>{record.codeLength}</span>}
           />
           <Table.Column
             title="Lang."
             key="Language"
             render={(text, record: ISolution) => (
-              <span>{langsMap[record.language] ? langsMap[record.language].displayShortName : record.language}</span>
+              <span>
+                {langsMap[record.language]
+                  ? langsMap[record.language].displayShortName
+                  : record.language}
+              </span>
             )}
           />
           <Table.Column
             title="At"
             key="At"
-            render={(text, record: ISolution) => (
-              <TimeBar time={record.createdAt * 1000} />
-            )}
+            render={(text, record: ISolution) => <TimeBar time={record.createdAt * 1000} />}
           />
-          {!isDetail && <Table.Column
-            title=""
-            key=""
-            className="float-btn"
-            render={(text, record: ISolution) => {
-              const solutionDetailUrl = contestId
-                ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: record.solutionId } })
-                : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
-              return (
-                <Link
-                  to={solutionDetailUrl}
-                  onClick={e => e.stopPropagation()}
-                  className={this.canViewDetail(record) ? 'show' : ''}
-                >
-                  <Icon type="ellipsis" theme="outlined" />
-                </Link>
-              );
-            }}
-          />}
+          {!isDetail && (
+            <Table.Column
+              title=""
+              key=""
+              className="float-btn"
+              render={(text, record: ISolution) => {
+                const solutionDetailUrl = contestId
+                  ? urlf(pages.contests.solutionDetail, {
+                      param: { id: contestId, sid: record.solutionId },
+                    })
+                  : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
+                return (
+                  <Link
+                    to={solutionDetailUrl}
+                    onClick={(e) => e.stopPropagation()}
+                    className={this.canViewDetail(record) ? 'show' : ''}
+                  >
+                    <Icon type="ellipsis" theme="outlined" />
+                  </Link>
+                );
+              }}
+            />
+          )}
         </Table>
-        {showPagination ? <Pagination
-          className="ant-table-pagination"
-          total={count}
-          current={page}
-          pageSize={limits.solutions.list}
-          onChange={this.handlePageChange}
-        /> : <div />}
+        {showPagination ? (
+          <Pagination
+            className="ant-table-pagination"
+            total={count}
+            current={page}
+            pageSize={limits.solutions.list}
+            onChange={this.handlePageChange}
+          />
+        ) : (
+          <div />
+        )}
       </>
     );
   }

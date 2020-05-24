@@ -64,7 +64,7 @@ type ISolutionCalendar = IDateCount[];
 interface IRatingHistoryItem {
   contest: {
     contestId: number;
-    title: number;
+    title: string;
   };
   rank: number;
   rating: number;

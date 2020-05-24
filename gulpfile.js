@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const gulp = require('gulp');
 const rename = require('gulp-rename');
 const run = require('gulp-run-command').default;

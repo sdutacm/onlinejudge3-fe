@@ -106,7 +106,7 @@ class Standings extends React.Component<Props, State> {
                 <Table.Column
                   title="User"
                   key="User"
-                  render={(text, record: IUser) => <UserBar user={record} />}
+                  render={(text, record: IUser) => <UserBar user={record} showRating />}
                 />
                 <Table.Column
                   title="Accepted"

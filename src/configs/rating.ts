@@ -2,7 +2,7 @@ const ratingLevel = [
   {
     min: -10000,
     text: '普通',
-    color: '#969696',
+    color: '#989898',
   },
   {
     min: 1200,

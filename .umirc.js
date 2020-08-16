@@ -67,14 +67,14 @@ export default {
       'Monaco, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
   },
   proxy: {
-    '/onlinejudge2/index.php/API_ng/': {
-      target: 'http://127.0.0.1:8848/index.php/API_ng/',
+    '/onlinejudge3/api/': {
+      target: 'http://127.0.0.1:7001/',
       // target: 'https://acm.sdut.edu.cn/onlinejudge2/index.php/API_ng/',
       changeOrigin: true,
-      pathRewrite: { '^/onlinejudge2/index.php/API_ng/': '' },
+      pathRewrite: { '^/onlinejudge3/api/': '' },
     },
     '/image/': {
-      target: 'http://127.0.0.1:8848/dev_images/',
+      target: 'http://127.0.0.1:7001/public/sf/',
       // target: 'https://acm.sdut.edu.cn/image/',
       changeOrigin: true,
       pathRewrite: {

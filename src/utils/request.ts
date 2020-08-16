@@ -12,7 +12,7 @@ function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   axiosInstance.interceptors.request.use(function(config) {
     config.params = {
       ...config.params,
-      _t: new Date().getTime(),
+      // _t: new Date().getTime(),
     };
     return config;
   });

@@ -9,7 +9,7 @@ import constants from '@/configs/constants';
 import styles from './JoinModal.less';
 import gStyles from '../../general.less';
 import 'csshake';
-import { Codes } from '@/configs/codes/codes';
+import { Codes } from '@/common/codes';
 import tracker from '@/utils/tracker';
 
 class JoinModal extends React.Component<any, any> {
@@ -23,9 +23,12 @@ class JoinModal extends React.Component<any, any> {
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
             <Form.Item label="Email or Username">
               {getFieldDecorator('loginName', {
-                rules: [{
-                  required: true, message: 'Please input email or username',
-                }],
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input email or username',
+                  },
+                ],
               })(<Input />)}
             </Form.Item>
 
@@ -36,8 +39,8 @@ class JoinModal extends React.Component<any, any> {
             </Form.Item>
 
             <Form.Item>
-              <a onClick={e => this.switchTab(e, 'forgotPassword')}>Forgot Password</a> or <a
-                onClick={e => this.switchTab(e, 'register')}>Register</a>
+              <a onClick={(e) => this.switchTab(e, 'forgotPassword')}>Forgot Password</a> or{' '}
+              <a onClick={(e) => this.switchTab(e, 'register')}>Register</a>
             </Form.Item>
 
             <Form.Item className="display-none">
@@ -57,11 +60,16 @@ class JoinModal extends React.Component<any, any> {
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
             <Form.Item label="Email">
               {getFieldDecorator('email', {
-                rules: [{
-                  type: 'email', message: 'Please input a valid email',
-                }, {
-                  required: true, message: 'Please input email',
-                }],
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'Please input a valid email',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input email',
+                  },
+                ],
               })(<Input />)}
             </Form.Item>
 
@@ -70,59 +78,74 @@ class JoinModal extends React.Component<any, any> {
                 rules: [{ required: true, message: 'Please input verification code' }],
               })(
                 <Input.Search
-                  enterButton={verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'}
-                  className={verificationCodeRetry || loading.verificationCode ? 'input-button-disabled' : 'input-button'}
-                  onSearch={() => !(verificationCodeRetry || loading.verificationCode) && this.getVerificationCode()}
-                />
+                  enterButton={
+                    verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'
+                  }
+                  className={
+                    verificationCodeRetry || loading.verificationCode
+                      ? 'input-button-disabled'
+                      : 'input-button'
+                  }
+                  onSearch={() =>
+                    !(verificationCodeRetry || loading.verificationCode) &&
+                    this.getVerificationCode()
+                  }
+                />,
               )}
             </Form.Item>
 
             <Form.Item label="Password">
               {getFieldDecorator('password', {
-                rules: [{
-                  required: true, message: 'Please input password',
-                }, {
-                  validator: this.validateToNextPassword,
-                }],
-              })(
-                <Input type="password" />
-              )}
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input password',
+                  },
+                  {
+                    validator: this.validateToNextPassword,
+                  },
+                ],
+              })(<Input type="password" />)}
             </Form.Item>
 
             <Form.Item label="Confirm Password">
               {getFieldDecorator('confirm', {
-                rules: [{
-                  required: true, message: 'Please confirm password',
-                }, {
-                  validator: this.compareToFirstPassword,
-                }],
-              })(
-                <Input type="password" onBlur={this.handleConfirmBlur} />
-              )}
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please confirm password',
+                  },
+                  {
+                    validator: this.compareToFirstPassword,
+                  },
+                ],
+              })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
             </Form.Item>
 
             <Form.Item label="Username">
               {getFieldDecorator('username', {
-                rules: [{
-                  required: true, message: 'Please input username',
-                }],
-              })(
-                <Input />
-              )}
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input username',
+                  },
+                ],
+              })(<Input />)}
             </Form.Item>
 
             <Form.Item label="Nickname">
               {getFieldDecorator('nickname', {
-                rules: [{
-                  required: true, message: 'Please input nickname',
-                }],
-              })(
-                <Input />
-              )}
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input nickname',
+                  },
+                ],
+              })(<Input />)}
             </Form.Item>
 
             <Form.Item>
-              Already have an account? <a onClick={e => this.switchTab(e, 'login')}>Login</a>
+              Already have an account? <a onClick={(e) => this.switchTab(e, 'login')}>Login</a>
             </Form.Item>
 
             <Form.Item className="display-none">
@@ -142,11 +165,16 @@ class JoinModal extends React.Component<any, any> {
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
             <Form.Item label="Email">
               {getFieldDecorator('email', {
-                rules: [{
-                  type: 'email', message: 'Please input a valid email',
-                }, {
-                  required: true, message: 'Please input email',
-                }],
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'Please input a valid email',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input email',
+                  },
+                ],
               })(<Input />)}
             </Form.Item>
 
@@ -155,39 +183,52 @@ class JoinModal extends React.Component<any, any> {
                 rules: [{ required: true, message: 'Please input verification code' }],
               })(
                 <Input.Search
-                  enterButton={verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'}
-                  className={verificationCodeRetry || loading.verificationCode ? 'input-button-disabled' : 'input-button'}
-                  onSearch={() => !(verificationCodeRetry || loading.verificationCode) && this.getVerificationCode()}
-                />
+                  enterButton={
+                    verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'
+                  }
+                  className={
+                    verificationCodeRetry || loading.verificationCode
+                      ? 'input-button-disabled'
+                      : 'input-button'
+                  }
+                  onSearch={() =>
+                    !(verificationCodeRetry || loading.verificationCode) &&
+                    this.getVerificationCode()
+                  }
+                />,
               )}
             </Form.Item>
 
             <Form.Item label="Password">
               {getFieldDecorator('password', {
-                rules: [{
-                  required: true, message: 'Please input password',
-                }, {
-                  validator: this.validateToNextPassword,
-                }],
-              })(
-                <Input type="password" />
-              )}
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input password',
+                  },
+                  {
+                    validator: this.validateToNextPassword,
+                  },
+                ],
+              })(<Input type="password" />)}
             </Form.Item>
 
             <Form.Item label="Confirm Password">
               {getFieldDecorator('confirm', {
-                rules: [{
-                  required: true, message: 'Please confirm password',
-                }, {
-                  validator: this.compareToFirstPassword,
-                }],
-              })(
-                <Input type="password" onBlur={this.handleConfirmBlur} />
-              )}
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please confirm password',
+                  },
+                  {
+                    validator: this.compareToFirstPassword,
+                  },
+                ],
+              })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
             </Form.Item>
 
             <Form.Item>
-              Back to <a onClick={e => this.switchTab(e, 'login')}>Login</a>
+              Back to <a onClick={(e) => this.switchTab(e, 'login')}>Login</a>
             </Form.Item>
 
             <Form.Item className="display-none">
@@ -252,7 +293,10 @@ class JoinModal extends React.Component<any, any> {
     form.resetFields();
     this.funTransitionOpacity(modalHeader);
     this.funTransitionHeight(modalBody);
-    setTimeout(() => this.setState({ contentVisible: true }), constants.modalAnimationDurationSwitch / 2);
+    setTimeout(
+      () => this.setState({ contentVisible: true }),
+      constants.modalAnimationDurationSwitch / 2,
+    );
     tracker.event({
       category: 'component.JoinModal',
       action: 'switchTab',
@@ -260,7 +304,7 @@ class JoinModal extends React.Component<any, any> {
     });
   };
 
-  handleConfirmBlur = e => {
+  handleConfirmBlur = (e) => {
     const value = e.target.value;
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   };
@@ -269,8 +313,7 @@ class JoinModal extends React.Component<any, any> {
     const form = this.props.form;
     if (value && value !== form.getFieldValue('password')) {
       callback('Two passwords are inconsistent');
-    }
-    else {
+    } else {
       callback();
     }
   };
@@ -290,20 +333,23 @@ class JoinModal extends React.Component<any, any> {
       dispatch({
         type: 'verifications/getCode',
         payload: form.getFieldsValue(['email']),
-      }).then(ret => {
-        if (ret.success || ret.code === Codes.R_VERIFICATIONS_FLE) {
+      }).then((ret) => {
+        if (ret.success || ret.code === Codes.GENERAL_FLE) {
           msg.success('The verifications code has been sent to your email');
           const { retryAfter } = ret.data;
           this.setState({ verificationCodeRetry: Math.ceil(retryAfter) });
-          const timer = setInterval(function () {
-            this.setState(prevState => {
-              if (prevState.verificationCodeRetry <= 1) {
-                clearInterval(prevState.verificationCodeRetryTimer);
-                return { verificationCodeRetry: null };
-              }
-              return { verificationCodeRetry: prevState.verificationCodeRetry - 1 };
-            });
-          }.bind(this), 1000);
+          const timer = setInterval(
+            function() {
+              this.setState((prevState) => {
+                if (prevState.verificationCodeRetry <= 1) {
+                  clearInterval(prevState.verificationCodeRetryTimer);
+                  return { verificationCodeRetry: null };
+                }
+                return { verificationCodeRetry: prevState.verificationCodeRetry - 1 };
+              });
+            }.bind(this),
+            1000,
+          );
           this.setState({ verificationCodeRetryTimer: timer });
           tracker.event({
             category: 'component.JoinModal',
@@ -317,67 +363,78 @@ class JoinModal extends React.Component<any, any> {
     }
   };
 
-  register = data => {
+  register = (data) => {
     const { dispatch, form } = this.props;
     data.code = +data.code;
     dispatch({
       type: 'users/register',
       payload: data,
-    }).then(ret => {
+    }).then((ret) => {
       msg.auto(ret);
       if (ret.success) {
-        msg.success(`Welcome, ${ret.data.nickname}`);
+        msg.success(`Welcome to ${constants.siteName}`);
         this.handleHideModel();
-        setTimeout(() => dispatch({
-          type: 'session/fetch',
-        }), constants.modalAnimationDurationFade);
+        setTimeout(
+          () =>
+            dispatch({
+              type: 'session/fetch',
+            }),
+          constants.modalAnimationDurationFade,
+        );
         tracker.event({
           category: 'component.JoinModal',
           action: 'register',
         });
-      }
-      else if (ret.result === 'error') {
+      } else if (ret.result === 'error') {
         setFormErrors(form, ret.errors);
       }
     });
   };
 
-  login = data => {
+  login = (data) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'session/login',
       payload: data,
-    }).then(ret => {
+    }).then((ret) => {
       msg.auto(ret);
       if (ret.success) {
         msg.success(`Welcome back, ${ret.data.nickname}`);
         this.handleHideModel();
-        setTimeout(() => dispatch({
-          type: 'session/setSession',
-          payload: { user: ret.data },
-        }), constants.modalAnimationDurationFade);
+        setTimeout(
+          () =>
+            dispatch({
+              type: 'session/setSession',
+              payload: { user: ret.data },
+            }),
+          constants.modalAnimationDurationFade,
+        );
         tracker.event({
           category: 'component.JoinModal',
           action: 'login',
         });
-      }
-      else {
+      } else {
         if (this.state.shakeTimer) {
           clearTimeout(this.state.shakeTimer);
         }
         this.setState({ shake: true });
-        this.setState({ shakeTimer: setTimeout(() => this.setState({ shake: false }), constants.modalAnimationDurationShake) });
+        this.setState({
+          shakeTimer: setTimeout(
+            () => this.setState({ shake: false }),
+            constants.modalAnimationDurationShake,
+          ),
+        });
       }
     });
   };
 
-  forgotPassword = data => {
+  forgotPassword = (data) => {
     const { dispatch, form } = this.props;
     data.code = +data.code;
     dispatch({
       type: 'users/forgotPassword',
       payload: data,
-    }).then(ret => {
+    }).then((ret) => {
       msg.auto(ret);
       if (ret.success) {
         msg.success('Your password has been reset successfully');
@@ -386,8 +443,7 @@ class JoinModal extends React.Component<any, any> {
           category: 'component.JoinModal',
           action: 'forgotPassword',
         });
-      }
-      else if (ret.result === 'error') {
+      } else if (ret.result === 'error') {
         setFormErrors(form, ret.errors);
       }
     });
@@ -397,27 +453,34 @@ class JoinModal extends React.Component<any, any> {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         switch (this.state.tab) {
-          case 'login':
+          case 'login': {
             this.login(values);
             break;
-          case 'register':
-            this.register(values);
+          }
+          case 'register': {
+            const data = { ...values };
+            delete data.confirm;
+            this.register(data);
             break;
-          case 'forgotPassword':
-            this.forgotPassword(values);
+          }
+          case 'forgotPassword': {
+            const data = { ...values };
+            delete data.confirm;
+            this.forgotPassword(data);
             break;
+          }
           default:
         }
       }
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.handleOk();
   };
 
-  handleShowModel = e => {
+  handleShowModel = (e) => {
     if (e) {
       e.stopPropagation();
     }
@@ -438,15 +501,10 @@ class JoinModal extends React.Component<any, any> {
 
   render() {
     const { children, loading } = this.props;
-    const classes = classNames(
-      gStyles.modalForm,
-      gStyles.modalHeightSm,
-      styles.modalTransition,
-      {
-        [styles.modalTransitionHide]: !this.state.contentVisible,
-        'shake-horizontal shake-constant': this.state.shake,
-      }
-    );
+    const classes = classNames(gStyles.modalForm, gStyles.modalHeightSm, styles.modalTransition, {
+      [styles.modalTransitionHide]: !this.state.contentVisible,
+      'shake-horizontal shake-constant': this.state.shake,
+    });
 
     return (
       <>

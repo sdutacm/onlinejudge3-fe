@@ -92,19 +92,13 @@ export default {
           return;
         }
       }
-      const [detailRet, solutionStatsRet, solutionCalendarRet, ratingHistoryRet, groupsRet]: IApiResponse<any>[] = yield all([
+      const [detailRet, solutionCalendarRet, groupsRet]: IApiResponse<any>[] = yield all([
         call(service.getDetail, id),
-        call(service.getSolutionStats, id),
         call(service.getSolutionCalendar, id, Results.AC),
-        call(service.getRatingHistory, id),
         call(groupService.getUserGroups, id),
       ]);
       if (detailRet.success) {
-        const solutionStats = ((solutionStatsRet?.data) || {}) as IUserSolutionStats;
-        detailRet.data.accepted = solutionStats.accepted || 0;
-        detailRet.data.submitted = solutionStats.submitted || 0;
         detailRet.data.solutionCalendar = ((solutionCalendarRet?.data) || []) as ISolutionCalendar;
-        detailRet.data.ratingHistory = ((ratingHistoryRet?.data?.rows) || []) as IRatingHistory;
         detailRet.data.groups = ((groupsRet?.data?.rows) || []) as IGroup[];
         yield put({
           type: 'clearExpiredDetail',

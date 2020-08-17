@@ -1,22 +1,20 @@
-import { get, post } from '@/utils/request';
-import api from '@/configs/apis';
-import { urlf } from '@/utils/format';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 
 export function getUserACRank(type: 'day' | 'week' | 'month') {
-  const url = urlf(api.stats.userACRank, {
-    query: {
-      type,
-    },
+  return post(routesBe.getUserACRank.url, {
+    type,
   });
-  return get(url);
 }
 
 export function getUserAcceptedProblems(userIds: number[]) {
-  const url = api.stats.userAcceptedProblems;
-  return post(url, { userIds });
+  return post(routesBe.getUserAcceptedProblems.url, {
+    userIds,
+  });
 }
 
 export function getUserSubmittedProblems(userIds: number[]) {
-  const url = api.stats.userSubmittedProblems;
-  return post(url, { userIds });
+  return post(routesBe.getUserSubmittedProblems.url, {
+    userIds,
+  });
 }

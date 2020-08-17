@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import styles from './IdeaNotes.less';
 import { resultsMap } from '@/configs/results';
 import msg from '@/utils/msg';
-import { Codes } from '@/configs/codes/codes';
+import { Codes } from '@/common/codes';
 import TimeBar from '@/components/TimeBar';
 import classNames from 'classnames';
 import tracker from '@/utils/tracker';
@@ -106,7 +106,7 @@ class IdeaNotes extends React.Component<Props> {
           type: 'notes/addNote',
           payload: postData,
         }).then(ret => {
-          if (ret.code === Codes.R_NOTES_NO_PERMISSION) {
+          if (ret.code === Codes.GENERAL_NO_PERMISSION) {
             msg.error('Save Failed. You don\'t have view permission in this page');
           }
           else {

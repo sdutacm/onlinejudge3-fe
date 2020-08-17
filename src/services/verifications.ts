@@ -1,6 +1,6 @@
 import { post } from '@/utils/request';
-import api from '@/configs/apis';
+import { routesBe } from '@/common/routes';
 
 export function fetchEmailCode(data) {
-  return post(api.verifications.code, data);
+  return post(routesBe.sendEmailVerification.url, data);
 }

@@ -4,7 +4,7 @@ import { formatListQuery } from '@/utils/format';
 import { isEqual } from 'lodash';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
-import { Codes } from '@/configs/codes/codes';
+import { Codes } from '@/common/codes';
 
 const initialState = {
   list: {
@@ -45,7 +45,7 @@ export default {
         if (!session.loggedIn) {
           return {
             success: false,
-            code: Codes.R_SESSION_NOT_LOGGED_IN,
+            code: Codes.GENERAL_NOT_LOGGED_IN,
           };
         }
         userId = session.user.userId;

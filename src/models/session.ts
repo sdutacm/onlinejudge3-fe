@@ -38,7 +38,7 @@ export default {
     * fetch(action, { call, put }) {
       startInterception();
       const ret: IApiResponse<ISession> = yield call(service.fetch);
-      if (ret.success) {
+      if (ret.success && ret.data) {
         yield put({
           type: 'setSession',
           payload: { user: ret.data },

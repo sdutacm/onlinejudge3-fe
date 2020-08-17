@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Form, Input, Modal } from 'antd';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import msg from '@/utils/msg';
-import { Codes } from '@/configs/codes/codes';
+import { Codes } from '@/common/codes';
 import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
@@ -35,20 +35,23 @@ class ChangeEmailModal extends React.Component<Props, State> {
       dispatch({
         type: 'verifications/getCode',
         payload: form.getFieldsValue(['email']),
-      }).then(ret => {
-        if (ret.success || ret.code === Codes.R_VERIFICATIONS_FLE) {
+      }).then((ret) => {
+        if (ret.success || ret.code === Codes.GENERAL_FLE) {
           msg.success('The verifications code has been sent to your email');
           const { retryAfter } = ret.data;
           this.setState({ verificationCodeRetry: Math.ceil(retryAfter) });
-          const timer = setInterval(function () {
-            this.setState(prevState => {
-              if (prevState.verificationCodeRetry <= 1) {
-                clearInterval(prevState.verificationCodeRetryTimer);
-                return { verificationCodeRetry: null };
-              }
-              return { verificationCodeRetry: prevState.verificationCodeRetry - 1 };
-            });
-          }.bind(this), 1000);
+          const timer = setInterval(
+            function() {
+              this.setState((prevState) => {
+                if (prevState.verificationCodeRetry <= 1) {
+                  clearInterval(prevState.verificationCodeRetryTimer);
+                  return { verificationCodeRetry: null };
+                }
+                return { verificationCodeRetry: prevState.verificationCodeRetry - 1 };
+              });
+            }.bind(this),
+            1000,
+          );
           // @ts-ignore
           this.setState({ verificationCodeRetryTimer: timer });
         } else {
@@ -71,7 +74,7 @@ class ChangeEmailModal extends React.Component<Props, State> {
               code: +values.code,
             },
           },
-        }).then(ret => {
+        }).then((ret) => {
           msg.auto(ret);
           if (ret.success) {
             msg.success(type === 'bind' ? 'Bind email successfully' : 'Change email successfully');
@@ -93,7 +96,7 @@ class ChangeEmailModal extends React.Component<Props, State> {
     });
   };
 
-  handleShowModel = e => {
+  handleShowModel = (e) => {
     if (e) {
       e.stopPropagation();
     }
@@ -123,11 +126,16 @@ class ChangeEmailModal extends React.Component<Props, State> {
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Email">
               {getFieldDecorator('email', {
-                rules: [{
-                  type: 'email', message: 'Please input a valid email',
-                }, {
-                  required: true, message: 'Please input email',
-                }],
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'Please input a valid email',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input email',
+                  },
+                ],
               })(<Input />)}
             </Form.Item>
 
@@ -136,10 +144,19 @@ class ChangeEmailModal extends React.Component<Props, State> {
                 rules: [{ required: true, message: 'Please input verification code' }],
               })(
                 <Input.Search
-                  enterButton={verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'}
-                  className={verificationCodeRetry || loadings.verificationCode ? 'input-button-disabled' : 'input-button'}
-                  onSearch={() => !(verificationCodeRetry || loadings.verificationCode) && this.getVerificationCode()}
-                />
+                  enterButton={
+                    verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'
+                  }
+                  className={
+                    verificationCodeRetry || loadings.verificationCode
+                      ? 'input-button-disabled'
+                      : 'input-button'
+                  }
+                  onSearch={() =>
+                    !(verificationCodeRetry || loadings.verificationCode) &&
+                    this.getVerificationCode()
+                  }
+                />,
               )}
             </Form.Item>
           </Form>

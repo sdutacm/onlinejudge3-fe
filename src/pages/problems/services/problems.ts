@@ -1,40 +1,48 @@
-import { get, patch } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import {
+  IGetProblemListReq,
+  IGetProblemListResp,
+  IGetProblemDetailReq,
+  IGetProblemDetailResp,
+  ISetProblemTagsReq,
+  IUpdateProblemDetailReq,
+} from '@/common/contracts/problem';
+import { IGetTagFullListReq, IGetTagFullListResp } from '@/common/contracts/tag';
 
 export function getList(query) {
-  const url = urlf(api.problems.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.problems.list,
-    },
+  return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.problems.list,
   });
-  return get(url);
 }
 
-export function getDetail(id) {
-  const url = urlf(api.problems.detail, { param: { id } });
-  return get(url, 1000);
+export function getDetail(problemId) {
+  return post<IGetProblemDetailReq, IGetProblemDetailResp>(routesBe.getProblemDetail.url, {
+    problemId,
+  });
 }
 
 export function getTagList() {
-  const url = urlf(api.tags.base);
-  return get(url);
+  return post<IGetTagFullListReq, IGetTagFullListResp>(routesBe.getTagFullList.url);
 }
 
 export function getProblemTags(id) {
-  const url = urlf(api.problems.tags, { param: { id } });
-  return get(url);
+  return;
 }
 
-export function setProblemTags(id, data) {
-  const url = urlf(api.problems.tags, { param: { id } });
-  return patch(url, data);
+export function setProblemTags(problemId, data) {
+  return post<ISetProblemTagsReq, void>(routesBe.setProblemTags.url, {
+    problemId,
+    ...data,
+  });
 }
 
-export function setProblemDifficulty(id, data) {
-  const url = urlf(api.problems.difficulty, { param: { id } });
-  return patch(url, data);
+export function setProblemDifficulty(problemId, data) {
+  return post<IUpdateProblemDetailReq, void>(routesBe.updateProblemDetail.url, {
+    problemId,
+    ...data,
+  });
 }

@@ -202,10 +202,10 @@ class ProblemList extends React.Component<Props, State> {
                           {record.tags.map((tag) => (
                             <Popover
                               key={tag.tagId}
-                              content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
+                              content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
                             >
                               <a onClick={() => this.toggleTag(tag.tagId, true)}>
-                                <Tag>{tag.name.en}</Tag>
+                                <Tag>{tag.nameEn}</Tag>
                               </a>
                             </Popover>
                           ))}
@@ -270,11 +270,11 @@ class ProblemList extends React.Component<Props, State> {
                     {tagList.rows.map((tag) => (
                       <Popover
                         key={tag.tagId}
-                        content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
+                        content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
                       >
                         <a onClick={() => this.toggleTag(tag.tagId)}>
                           <Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>
-                            {tag.name.en}
+                            {tag.nameEn}
                           </Tag>
                         </a>
                       </Popover>

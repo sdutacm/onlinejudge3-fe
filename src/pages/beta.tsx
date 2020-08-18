@@ -558,8 +558,8 @@ class Intro extends React.Component<IntroProps, IntroState> {
       <Card bordered={false} style={{ maxWidth: '250px' }}>
         <div className="tags">
           {tagList.rows.map(tag =>
-            <Popover key={tag.tagId} content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}>
-              <a><Tag color={null}>{tag.name.en}</Tag></a>
+            <Popover key={tag.tagId} content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}>
+              <a><Tag color={null}>{tag.nameEn}</Tag></a>
             </Popover>
           )}
         </div>

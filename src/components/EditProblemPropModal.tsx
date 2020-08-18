@@ -118,7 +118,7 @@ class EditProblemPropModal extends React.Component<Props, State> {
                 initialValue: data.tags.map(tag => tag.tagId.toString()),
               })(
                 <Select mode="multiple" placeholder="Select problem tags" optionFilterProp="children">
-                  {tagList.rows.map(tag => (<Select.Option key={tag.tagId.toString()}>{tag.name.en} / {tag.name.zhHans}</Select.Option>))}
+                  {tagList.rows.map(tag => (<Select.Option key={tag.tagId.toString()}>{tag.nameEn} / {tag.nameZhHans}</Select.Option>))}
                 </Select>
               )}
             </Form.Item>

@@ -47,13 +47,19 @@ export default {
     },
   },
   effects: {
-    * getList({ payload: query }, { call, put, select }) {
+    *getList({ payload: query }, { call, put, select }) {
+      if (query.tagIds && typeof query.tagIds === 'string') {
+        query.tagIds = [query.tagIds];
+      }
+      if (query.tagIds && Array.isArray(query.tagIds)) {
+        query.tagIds = query.tagIds.map(tagId => +tagId);
+      }
       const formattedQuery = formatListQuery(query);
-      const savedState = yield select(state => state.problems.list);
+      const savedState = yield select((state) => state.problems.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<IProblem> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<IProblem>> = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -65,23 +71,15 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
+    *getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.problems.detail[id]);
+        const savedState = yield select((state) => state.problems.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
       }
-      const [detailRet, tagsRet]: IApiResponse<any>[] = yield all([
-        call(service.getDetail, id),
-        call(service.getProblemTags, id),
-      ]);
+      const detailRet: IApiResponse<any> = yield call(service.getDetail, id);
       if (detailRet.success) {
-        detailRet.data.tags = [];
-        try {
-          detailRet.data.tags = [...tagsRet.data.rows];
-        }
-        catch (err) {}
         yield put({
           type: 'clearExpiredDetail',
         });
@@ -95,12 +93,12 @@ export default {
       }
       return detailRet;
     },
-    * getTagList(action, { call, put, select }) {
-      const savedState = yield select(state => state.problems.tagList);
+    *getTagList(action, { call, put, select }) {
+      const savedState = yield select((state) => state.problems.tagList);
       if (!isStateExpired(savedState)) {
         return;
       }
-      const ret: IApiResponse<IFullList<ITag> > = yield call(service.getTagList);
+      const ret: IApiResponse<IFullList<ITag>> = yield call(service.getTagList);
       if (ret.success) {
         yield put({
           type: 'setTagList',
@@ -109,10 +107,10 @@ export default {
       }
       return ret;
     },
-    * modifyProblemTags({ payload: { id, tagIds } }, { call }) {
+    *modifyProblemTags({ payload: { id, tagIds } }, { call }) {
       return yield call(service.setProblemTags, id, { tagIds });
     },
-    * modifyProblemDifficulty({ payload: { id, difficulty } }, { call }) {
+    *modifyProblemDifficulty({ payload: { id, difficulty } }, { call }) {
       return yield call(service.setProblemDifficulty, id, { difficulty });
     },
     // * reloadList(action, { put, select }) {
@@ -134,7 +132,10 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
+          requestEffect(dispatch, {
+            type: 'getDetail',
+            payload: { id: +matchDetail.params['id'] },
+          });
         }
       });
     },

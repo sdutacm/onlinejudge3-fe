@@ -209,7 +209,7 @@ const ProblemDetailPage: React.FC<Props> = ({
                   {data.tags.map((tag) => (
                     <Popover
                       key={tag.tagId}
-                      content={`${tag.name.en} / ${tag.name.zhHans} / ${tag.name.zhHant}`}
+                      content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
                     >
                       <Link
                         to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
@@ -220,7 +220,7 @@ const ProblemDetailPage: React.FC<Props> = ({
                           });
                         }}
                       >
-                        <Tag>{tag.name.en}</Tag>
+                        <Tag>{tag.nameEn}</Tag>
                       </Link>
                     </Popover>
                   ))}

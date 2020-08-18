@@ -35,7 +35,11 @@ function checkStatus(response: AxiosResponse) {
  * @param {AxiosRequestConfig} options
  * @returns {Promise<IApiResponse<any>>}
  */
-async function request(url: string, options: AxiosRequestConfig = {}, initOptions: AxiosRequestConfig = {}): Promise<IApiResponse<any> > {
+async function request(
+  url: string,
+  options: AxiosRequestConfig = {},
+  initOptions: AxiosRequestConfig = {},
+): Promise<IApiResponse<any>> {
   const axiosInstance = initAxios(initOptions);
   const response = await axiosInstance({
     url,
@@ -46,7 +50,7 @@ async function request(url: string, options: AxiosRequestConfig = {}, initOption
   return response.data;
 }
 
-export async function get(url: string, minDuration?: number): Promise<IApiResponse<any> > {
+export async function get<O = any>(url: string, minDuration?: number): Promise<IApiResponse<O>> {
   const startTime = Date.now();
   const res = await request(url);
   if (!isBot() && minDuration > 0) {
@@ -60,28 +64,28 @@ export async function get(url: string, minDuration?: number): Promise<IApiRespon
   return res;
 }
 
-export function post(url: string, data?: any): Promise<IApiResponse<any> > {
+export function post<I = any, O = any>(url: string, data?: I): Promise<IApiResponse<O>> {
   return request(url, {
     method: 'post',
     data,
   });
 }
 
-export function put(url: string, data?: any): Promise<IApiResponse<any> > {
+export function put<I = any, O = any>(url: string, data?: I): Promise<IApiResponse<O>> {
   return request(url, {
     method: 'put',
     data,
   });
 }
 
-export function patch(url: string, data?: any): Promise<IApiResponse<any> > {
+export function patch<I = any, O = any>(url: string, data?: I): Promise<IApiResponse<O>> {
   return request(url, {
     method: 'patch',
     data,
   });
 }
 
-export function del(url: string, data?: any): Promise<IApiResponse<any> > {
+export function del<I = any, O = any>(url: string, data?: I): Promise<IApiResponse<O>> {
   return request(url, {
     method: 'delete',
     data,

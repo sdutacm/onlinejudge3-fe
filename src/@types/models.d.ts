@@ -237,11 +237,9 @@ interface IPost {
 
 interface ITag {
   tagId: number;
-  name: {
-    en: string;
-    zhHans: string;
-    zhHant: string;
-  };
+  nameEn: string;
+  nameZhHans: string;
+  nameZhHant: string;
   createdAt: ITimestamp;
 }
 
@@ -428,7 +426,7 @@ interface IGroup {
   groupId: number;
   name: string;
   avatar: string;
-  intro: boolean;
+  intro: string;
   verified: boolean;
   private: boolean;
   joinChannel: 0 | 1 | 2;

@@ -56,13 +56,19 @@ export default {
     },
   },
   effects: {
-    * getList({ payload: query }, { call, put, select }) {
+    *getList({ payload: query }, { call, put, select }) {
       const formattedQuery = {
         ...formatListQuery(query),
-        orderBy: query.orderBy || 'accepted',
-        orderDirection: query.orderDirection ? (query.orderDirection === 'DESC' ? 'DESC' : 'ASC') : 'DESC',
+        order: [
+          [
+            query.orderBy || 'accepted',
+            query.orderDirection ? (query.orderDirection === 'DESC' ? 'DESC' : 'ASC') : 'DESC',
+          ],
+        ],
       };
-      const savedState = yield select(state => state.users.list);
+      delete formattedQuery.orderBy;
+      delete formattedQuery.orderDirection;
+      const savedState = yield select((state) => state.users.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
@@ -78,16 +84,16 @@ export default {
       }
       return ret;
     },
-    * searchUser({ payload: { nickname, limit = 10 } }, { call, put, select }) {
+    *searchUser({ payload: { nickname, limit = 10 } }, { call, put, select }) {
       const query = {
         nickname,
         limit,
       };
       return yield call(service.getList, query);
     },
-    * getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
+    *getDetail({ payload: { id, force = false } }, { all, call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.users.detail[id]);
+        const savedState = yield select((state) => state.users.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -98,8 +104,8 @@ export default {
         call(groupService.getUserGroups, id),
       ]);
       if (detailRet.success) {
-        detailRet.data.solutionCalendar = ((solutionCalendarRet?.data) || []) as ISolutionCalendar;
-        detailRet.data.groups = ((groupsRet?.data?.rows) || []) as IGroup[];
+        detailRet.data.solutionCalendar = (solutionCalendarRet?.data || []) as ISolutionCalendar;
+        detailRet.data.groups = (groupsRet?.data?.rows || []) as IGroup[];
         yield put({
           type: 'clearExpiredDetail',
         });
@@ -113,14 +119,17 @@ export default {
       }
       return detailRet;
     },
-    * register({ payload: data }, { call, put }) {
+    *register({ payload: data }, { call, put }) {
       return yield call(service.register, data);
     },
-    * forgotPassword({ payload: data }, { call, put }) {
+    *forgotPassword({ payload: data }, { call, put }) {
       return yield call(service.forgotPassword, data);
     },
-    * getProblemResultStats({ payload: { userId, contestId, force = false } = { userId: null, contestId: null } }, { call, put, select }) {
-      const globalSess = yield select(state => state.session);
+    *getProblemResultStats(
+      { payload: { userId, contestId, force = false } = { userId: null, contestId: null } },
+      { call, put, select },
+    ) {
+      const globalSess = yield select((state) => state.session);
       userId = userId || globalSess.user.userId;
       if (!userId) {
         return;
@@ -130,12 +139,16 @@ export default {
         contestId,
       };
       if (!force) {
-        const savedState = yield select(state => state.users.problemResultStats);
+        const savedState = yield select((state) => state.users.problemResultStats);
         if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
           return;
         }
       }
-      const ret: IApiResponse<IUserProblemResultStats> = yield call(service.getProblemResultStats, userId, contestId);
+      const ret: IApiResponse<IUserProblemResultStats> = yield call(
+        service.getProblemResultStats,
+        userId,
+        contestId,
+      );
       if (ret.success) {
         yield put({
           type: 'setProblemResultStats',
@@ -147,24 +160,24 @@ export default {
       }
       return ret;
     },
-    * changePassword({ payload: { userId, data } }, { call, select }) {
-      const globalSess = yield select(state => state.session);
+    *changePassword({ payload: { userId, data } }, { call, select }) {
+      const globalSess = yield select((state) => state.session);
       userId = userId || globalSess.user.userId;
       if (!userId) {
         return;
       }
       return yield call(service.changePassword, userId, data);
     },
-    * editProfile({ payload: { userId, data } }, { call, select }) {
-      const globalSess = yield select(state => state.session);
+    *editProfile({ payload: { userId, data } }, { call, select }) {
+      const globalSess = yield select((state) => state.session);
       userId = userId || globalSess.user.userId;
       if (!userId) {
         return;
       }
       return yield call(service.editProfile, userId, data);
     },
-    * changeEmail({ payload: { userId, data } }, { call, select }) {
-      const globalSess = yield select(state => state.session);
+    *changeEmail({ payload: { userId, data } }, { call, select }) {
+      const globalSess = yield select((state) => state.session);
       userId = userId || globalSess.user.userId;
       if (!userId) {
         return;
@@ -183,7 +196,7 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
         }
       });
     },

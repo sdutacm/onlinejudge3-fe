@@ -1,43 +1,57 @@
-import { del, get, patch, post } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import {
+  IGetGroupListReq,
+  IGetGroupListResp,
+  IGetUserGroupsReq,
+  IGetUserGroupsResp,
+  IGetGroupDetailReq,
+  IGetGroupDetailResp,
+  ICreateGroupReq,
+  ICreateGroupResp,
+  ICreateEmptyGroupReq,
+  ICreateEmptyGroupResp,
+  IUpdateGroupReq,
+  IDeleteGroupReq,
+  IGetGroupMemberListReq,
+  IGetGroupMemberListResp,
+  IBatchAddGroupMembersReq,
+  IJoinGroupReq,
+  IUpdateGroupMemberReq,
+  IDeleteGroupMemberReq,
+} from '@/common/contracts/group';
 
 export function getList(query) {
-  const url = urlf(api.groups.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: query.limit || limits.groups.list,
-    },
+  return post<IGetGroupListReq, IGetGroupListResp>(routesBe.getGroupList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.groups.list,
   });
-  return get(url);
 }
 
 export function getUserGroups(userId) {
-  const url = urlf(api.users.groups, {
-    param: { id: userId },
+  return post<IGetUserGroupsReq, IGetUserGroupsResp>(routesBe.getUserGroups.url, {
+    userId,
   });
-  return get(url);
 }
 
-export function getDetail(id: number) {
-  const url = urlf(api.groups.detail, { param: { id } });
-  return get(url);
+export function getDetail(groupId: number) {
+  return post<IGetGroupDetailReq, IGetGroupDetailResp>(routesBe.getGroupDetail.url, {
+    groupId,
+  });
 }
 
 export function addGroup(data) {
-  const url = urlf(api.groups.base);
-  return post(url, data);
+  return post<ICreateGroupReq, ICreateGroupResp>(routesBe.createGroup.url, data);
 }
 
 export function addEmptyGroup(data) {
-  const url = urlf(api.groups.base, { query: { type: 'empty' } });
-  return post(url, data);
+  return post<ICreateEmptyGroupReq, ICreateEmptyGroupResp>(routesBe.createEmptyGroup.url, data);
 }
 
 export function updateGroup(
-  id: number,
+  groupId: number,
   data: {
     name: IGroup['name'];
     intro: IGroup['intro'];
@@ -46,46 +60,58 @@ export function updateGroup(
     joinChannel: IGroup['joinChannel'];
   },
 ) {
-  const url = urlf(api.groups.detail, { param: { id } });
-  return patch(url, data);
+  return post<IUpdateGroupReq, void>(routesBe.updateGroup.url, {
+    groupId,
+    ...data,
+  });
 }
 
-export function deleteGroup(id: number) {
-  const url = urlf(api.groups.detail, { param: { id } });
-  return del(url);
+export function deleteGroup(groupId: number) {
+  return post<IDeleteGroupReq, void>(routesBe.deleteGroup.url, {
+    groupId,
+  });
 }
 
-export function getMembers(id: number) {
-  const url = urlf(api.groups.members.base, { param: { id } });
-  return get(url);
+export function getMembers(groupId: number) {
+  return post<IGetGroupMemberListReq, IGetGroupMemberListResp>(routesBe.getGroupMemberList.url, {
+    groupId,
+  });
 }
 
 export function addGroupMember(
-  id: number,
+  groupId: number,
   data: { userIds?: number[]; usernames?: string[] },
 ) {
-  const url = urlf(api.groups.members.base, { param: { id } });
-  return post(url, data);
+  return post<IBatchAddGroupMembersReq, void>(routesBe.batchAddGroupMembers.url, {
+    groupId,
+    ...data,
+  });
 }
 
-export function joinGroup(id: number) {
-  const url = urlf(api.groups.members.base, { param: { id } });
-  return post(url, { isApply: true });
+export function joinGroup(groupId: number) {
+  return post<IJoinGroupReq, void>(routesBe.joinGroup.url, {
+    groupId,
+  });
 }
 
 export function updateGroupMember(
-  id: number,
-  uid: number,
+  groupId: number,
+  userId: number,
   data: {
     permission?: IGroupMember['permission'];
     status?: IGroupMember['status'];
   },
 ) {
-  const url = urlf(api.groups.members.detail, { param: { id, uid } });
-  return patch(url, data);
+  return post<IUpdateGroupMemberReq, void>(routesBe.updateGroupMember.url, {
+    groupId,
+    userId,
+    ...data,
+  });
 }
 
-export function deleteGroupMember(id: number, uid: number) {
-  const url = urlf(api.groups.members.detail, { param: { id, uid } });
-  return del(url);
+export function deleteGroupMember(groupId: number, userId: number) {
+  return post<IDeleteGroupMemberReq, void>(routesBe.deleteGroupMember.url, {
+    groupId,
+    userId,
+  });
 }

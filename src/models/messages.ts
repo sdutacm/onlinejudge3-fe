@@ -49,13 +49,13 @@ export default {
     },
   },
   effects: {
-    * getUnreadList({ payload: { userId } }, { call, put, select }) {
-      const savedState = yield select(state => state.messages.unread);
+    *getUnreadList({ payload: { userId } }, { call, put, select }) {
+      const savedState = yield select((state) => state.messages.unread);
       if (!isStateExpired(savedState)) {
         return;
       }
       if (!userId) {
-        const session = yield select(state => state.session);
+        const session = yield select((state) => state.session);
         if (!session.loggedIn) {
           return;
         }
@@ -67,8 +67,7 @@ export default {
       };
       const formattedQuery = {
         ...formatListQuery(query),
-        orderBy: 'messageId',
-        orderDirection: 'DESC',
+        order: [['messageId', 'DESC']],
         limit: limits.messages.unread,
       };
       const ret: IApiResponse<IList<IMessage>> = yield call(service.getList, formattedQuery);
@@ -84,9 +83,9 @@ export default {
       }
       return ret;
     },
-    * getReceivedList({ payload: { userId, query } }, { call, put, select }) {
+    *getReceivedList({ payload: { userId, query } }, { call, put, select }) {
       if (!userId) {
-        const session = yield select(state => state.session);
+        const session = yield select((state) => state.session);
         if (!session.loggedIn) {
           return;
         }
@@ -95,11 +94,10 @@ export default {
       const formattedQuery = {
         ...formatListQuery(query),
         toUserId: userId,
-        orderBy: 'messageId',
-        orderDirection: 'DESC',
+        order: [['messageId', 'DESC']],
         limit: limits.messages.list,
       };
-      const savedState = yield select(state => state.messages.received);
+      const savedState = yield select((state) => state.messages.received);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
@@ -116,9 +114,9 @@ export default {
       }
       return ret;
     },
-    * getSentList({ payload: { userId, query } }, { call, put, select }) {
+    *getSentList({ payload: { userId, query } }, { call, put, select }) {
       if (!userId) {
-        const session = yield select(state => state.session);
+        const session = yield select((state) => state.session);
         if (!session.loggedIn) {
           return;
         }
@@ -127,11 +125,10 @@ export default {
       const formattedQuery = {
         ...formatListQuery(query),
         fromUserId: userId,
-        orderBy: 'messageId',
-        orderDirection: 'DESC',
+        order: [['messageId', 'DESC']],
         limit: limits.messages.list,
       };
-      const savedState = yield select(state => state.messages.sent);
+      const savedState = yield select((state) => state.messages.sent);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
@@ -148,11 +145,12 @@ export default {
       }
       return ret;
     },
-    * markRead({ payload: { id, read } }, { call, put, select }) {
+    *markRead({ payload: { id, read } }, { call, put, select }) {
       const ret: IApiResponse<any> = yield call(service.markRead, id, read);
-      if (ret.success && read) { // 如果有 mark as unread 要再加相应逻辑
-        const unreadList: IList<IMessage> = yield select(state => state.messages.unread);
-        const newUnreadRows = unreadList.rows.filter(m => m.messageId !== id);
+      if (ret.success && read) {
+        // 如果有 mark as unread 要再加相应逻辑
+        const unreadList: IList<IMessage> = yield select((state) => state.messages.unread);
+        const newUnreadRows = unreadList.rows.filter((m) => m.messageId !== id);
         yield put({
           type: 'updateList',
           payload: {
@@ -165,8 +163,8 @@ export default {
           },
         });
 
-        const receivedList: IList<IMessage> = yield select(state => state.messages.received);
-        const newReceivedRows = receivedList.rows.map(m => {
+        const receivedList: IList<IMessage> = yield select((state) => state.messages.received);
+        const newReceivedRows = receivedList.rows.map((m) => {
           if (m.messageId !== id) {
             return m;
           }
@@ -188,7 +186,7 @@ export default {
       }
       return ret;
     },
-    * send({ payload: data }, { call, put }) {
+    *send({ payload: data }, { call, put }) {
       return yield call(service.send, data);
     },
   },
@@ -200,8 +198,7 @@ export default {
             const q = { ...query };
             delete q.type;
             requestEffect(dispatch, { type: 'getReceivedList', payload: { query: q } });
-          }
-          else if (query.type === 'sent') {
+          } else if (query.type === 'sent') {
             const q = { ...query };
             delete q.type;
             requestEffect(dispatch, { type: 'getSentList', payload: { query: q } });

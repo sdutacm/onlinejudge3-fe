@@ -126,7 +126,7 @@ export default {
       return yield call(service.forgotPassword, data);
     },
     *getProblemResultStats(
-      { payload: { userId, contestId, force = false } = { userId: null, contestId: null } },
+      { payload: { userId, contestId, force = false } = { userId: null, contestId: undefined } },
       { call, put, select },
     ) {
       const globalSess = yield select((state) => state.session);

@@ -78,7 +78,7 @@ class MessageList extends React.Component<Props, State> {
                     >{m.to.nickname}</Link> :
                     <span>Unknown</span>)
                 }
-                <span className="ml-md-lg">{moment(m.createdAt * 1000).fromNow()}</span>
+                <span className="ml-md-lg">{moment(m.createdAt).fromNow()}</span>
                 {type === 'received' && !m.read &&
                 <a className="ml-md-lg mark-as-read" onClick={e => {
                   e.stopPropagation();

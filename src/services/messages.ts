@@ -1,26 +1,28 @@
-import { get, patch, post } from '@/utils/request';
-import api from '@/configs/apis';
-import { urlf } from '@/utils/format';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
+import limits from '@/configs/limits';
+import {
+  IGetMessageListReq,
+  IGetMessageListResp,
+  IUpdateMessageReadReq,
+  ISendMessageReq,
+} from '@/common/contracts/message';
 
 export function getList(query) {
-  const url = urlf(api.messages.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-    },
+  return post<IGetMessageListReq, IGetMessageListResp>(routesBe.getMessageList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.messages.list,
   });
-  return get(url);
 }
 
-export function markRead(id, read) {
-  const url = urlf(api.messages.detail, {
-    param: {
-      id,
-    },
+export function markRead(messageId, read) {
+  return post<IUpdateMessageReadReq, void>(routesBe.updateMessageRead.url, {
+    messageId,
+    read,
   });
-  return patch(url, { read });
 }
 
 export function send(data) {
-  return post(api.messages.base, data);
+  return post<ISendMessageReq, void>(routesBe.sendMessage.url, data);
 }

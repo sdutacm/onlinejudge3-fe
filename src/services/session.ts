@@ -1,6 +1,7 @@
 import { get, post } from '@/utils/request';
 import { routesBe } from '@/common/routes';
 import { urlf } from '@/utils/format';
+import { ILoginReq, ILoginResp } from '@/common/contracts/user';
 
 export function fetch() {
   return get(
@@ -11,9 +12,9 @@ export function fetch() {
 }
 
 export function login(data) {
-  return post(routesBe.login.url, data);
+  return post<ILoginReq, ILoginResp>(routesBe.login.url, data);
 }
 
 export function logout() {
-  return post(routesBe.logout.url);
+  return post<void, void>(routesBe.logout.url);
 }

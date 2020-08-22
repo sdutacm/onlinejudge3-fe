@@ -1,17 +1,33 @@
 import { post } from '@/utils/request';
 import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
+import {
+  IRegisterReq,
+  IRegisterResp,
+  IResetUserPasswordReq,
+  IGetUserListReq,
+  IGetUserListResp,
+  IGetUserDetailReq,
+  IGetUserDetailResp,
+  IGetUserProblemResultStatsReq,
+  IGetUserProblemResultStatsResp,
+  IGetUserSolutionCalendarReq,
+  IGetUserSolutionCalendarResp,
+  IUpdateUserPasswordReq,
+  IUpdateUserDetailReq,
+  IUpdateUserEmailReq,
+} from '@/common/contracts/user';
 
 export function register(data) {
-  return post(routesBe.register.url, data);
+  return post<IRegisterReq, IRegisterResp>(routesBe.register.url, data);
 }
 
 export function forgotPassword(data) {
-  return post(routesBe.resetUserPassword.url, data);
+  return post<IResetUserPasswordReq, void>(routesBe.resetUserPassword.url, data);
 }
 
 export function getList(query) {
-  return post(routesBe.getUserList.url, {
+  return post<IGetUserListReq, IGetUserListResp>(routesBe.getUserList.url, {
     ...query,
     page: query.page || 1,
     limit: query.limit || limits.users.list,
@@ -19,16 +35,19 @@ export function getList(query) {
 }
 
 export function getDetail(userId) {
-  return post(routesBe.getUserDetail.url, {
+  return post<IGetUserDetailReq, IGetUserDetailResp>(routesBe.getUserDetail.url, {
     userId,
   });
 }
 
 export function getProblemResultStats(userId, contestId = undefined) {
-  return post(routesBe.getUserProblemResultStats.url, {
-    userId,
-    contestId,
-  });
+  return post<IGetUserProblemResultStatsReq, IGetUserProblemResultStatsResp>(
+    routesBe.getUserProblemResultStats.url,
+    {
+      userId,
+      contestId,
+    },
+  );
 }
 
 export function getSolutionStats(id) {
@@ -36,10 +55,13 @@ export function getSolutionStats(id) {
 }
 
 export function getSolutionCalendar(userId, result) {
-  return post(routesBe.getUserSolutionCalendar.url, {
-    userId,
-    result,
-  });
+  return post<IGetUserSolutionCalendarReq, IGetUserSolutionCalendarResp>(
+    routesBe.getUserSolutionCalendar.url,
+    {
+      userId,
+      result,
+    },
+  );
 }
 
 export function getRatingHistory(id) {
@@ -47,21 +69,21 @@ export function getRatingHistory(id) {
 }
 
 export function changePassword(userId, data) {
-  return post(routesBe.updateUserPassword.url, {
+  return post<IUpdateUserPasswordReq, void>(routesBe.updateUserPassword.url, {
     userId,
     ...data,
   });
 }
 
 export function editProfile(userId, data) {
-  return post(routesBe.updateUserDetail.url, {
+  return post<IUpdateUserDetailReq, void>(routesBe.updateUserDetail.url, {
     userId,
     ...data,
   });
 }
 
 export function changeEmail(userId, data) {
-  return post(routesBe.updateUserEmail.url, {
+  return post<IUpdateUserEmailReq, void>(routesBe.updateUserEmail.url, {
     userId,
     ...data,
   });

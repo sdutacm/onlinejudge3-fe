@@ -51,8 +51,7 @@ export default {
         userId = session.user.userId;
       }
       const formattedQuery = {
-        orderBy: 'favoriteId',
-        orderDirection: 'DESC',
+        order: [['favoriteId', 'DESC']],
         ...formatListQuery(query, true),
         // limit: limits.favorites.list,
       };

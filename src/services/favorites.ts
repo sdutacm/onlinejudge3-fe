@@ -1,30 +1,25 @@
-import { del, get, post } from '@/utils/request';
-import api from '@/configs/apis';
-import { urlf } from '@/utils/format';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
+import {
+  IGetFavoriteListReq,
+  IGetFavoriteListResp,
+  IAddFavoriteReq,
+  IAddFavoriteResp,
+  IDeleteFavoriteReq,
+} from '@/common/contracts/favorite';
 
 export function getList(userId, query) {
-  const url = urlf(api.users.favorites, {
-    param: {
-      id: userId,
-    },
-    query: {
-      ...query,
-      // page: query.page || 1,
-    },
+  return post<IGetFavoriteListReq, IGetFavoriteListResp>(routesBe.getFavoriteList.url, {
+    ...query,
   });
-  return get(url);
 }
 
 export function addFavorite(data) {
-  const url = urlf(api.favorites.base);
-  return post(url, data);
+  return post<IAddFavoriteReq, IAddFavoriteResp>(routesBe.addFavorite.url, data);
 }
 
-export function deleteFavorite(id) {
-  const url = urlf(api.favorites.detail, {
-    param: {
-      id,
-    },
+export function deleteFavorite(favoriteId) {
+  return post<IDeleteFavoriteReq, void>(routesBe.deleteFavorite.url, {
+    favoriteId,
   });
-  return del(url);
 }

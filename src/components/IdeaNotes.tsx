@@ -263,7 +263,7 @@ class IdeaNotes extends React.Component<Props> {
                       <Tag>{title}</Tag>
                     </Link> : null}
                     <p className={styles.footer}>
-                      <TimeBar time={item.createdAt * 1000} />
+                      <TimeBar time={new Date(item.createdAt).getTime()} />
                       <a
                         className={classNames('ml-md-lg', styles.delete)}
                         onClick={() => this.deleteNote(item.noteId)}

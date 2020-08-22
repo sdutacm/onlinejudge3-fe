@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Avatar, List, Icon, Skeleton, Upload, Button, Select } from 'antd';
+import { Row, Col, Card, Avatar, Icon, Skeleton, Upload, Button, Select } from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './$id.less';
 import { formatAvatarUrl, urlf } from '@/utils/format';
@@ -25,6 +25,7 @@ import GeneralFormModal from '@/components/GeneralFormModal';
 import langs from '@/configs/solutionLanguages';
 import ChangeEmailModal from '@/components/ChangeEmailModal';
 import tracker from '@/utils/tracker';
+import { routesBe } from '@/common/routes';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -101,10 +102,11 @@ class UserDetail extends React.Component<Props, State> {
       return;
     }
     const imageExtIndex = data.bannerImage.lastIndexOf('.');
+    const ext = data.bannerImage.substring(imageExtIndex + 1) || 'jpg';
     const thumbUrl = `${constants.bannerImageUrlPrefix}min_${data.bannerImage.substring(
       0,
       imageExtIndex,
-    )}.jpg`;
+    )}.${ext}`;
     const fullUrl = `${constants.bannerImageUrlPrefix}${data.bannerImage}`;
     // 设置缩略图
     try {
@@ -347,7 +349,7 @@ class UserDetail extends React.Component<Props, State> {
               <Upload
                 name="bannerImage"
                 accept="image/jpeg,image/bmp,image/png"
-                action={urlf(`${api.base}${api.users.bannerImage}`, { param: { id } })}
+                action={`${api.base}${routesBe.uploadUserBannerImage.url}`}
                 beforeUpload={this.validateBannerImage}
                 onChange={this.handleBannerImageChange}
                 showUploadList={false}
@@ -368,7 +370,7 @@ class UserDetail extends React.Component<Props, State> {
                     name="avatar"
                     accept="image/jpeg,image/bmp,image/png"
                     className={classNames('upload-mask', { hold: uploadAvatarLoading || loading })}
-                    action={urlf(`${api.base}${api.users.avatar}`, { param: { id } })}
+                    action={`${api.base}${routesBe.uploadUserAvatar.url}`}
                     beforeUpload={this.validateAvatar}
                     onChange={this.handleAvatarChange}
                     showUploadList={false}

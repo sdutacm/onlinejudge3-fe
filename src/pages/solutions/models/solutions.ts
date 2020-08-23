@@ -49,13 +49,17 @@ export default {
     },
   },
   effects: {
-    * getList({ payload: query }, { call, put, select }) {
+    *getList({ payload: query }, { call, put, select }) {
       const formattedQuery = formatListQuery(query);
-      const savedState = yield select(state => state.solutions.list);
+      formattedQuery.solutionId && (formattedQuery.solutionId = +formattedQuery.solutionId);
+      formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
+      formattedQuery.problemId && (formattedQuery.problemId = +formattedQuery.problemId);
+      formattedQuery.result && (formattedQuery.result = +formattedQuery.result);
+      const savedState = yield select((state) => state.solutions.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<ISolution> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<ISolution>> = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -67,47 +71,53 @@ export default {
       }
       return ret;
     },
-    * getListByIds({ payload }, { call, put, select }) {
+    *getListByIds({ payload }, { call, put, select }) {
       const { type, solutionIds } = payload;
-      const ret: IApiResponse<IList<ISolution> > = yield call(service.getListByIds, { solutionIds });
+      const ret: IApiResponse<IList<ISolution>> = yield call(service.getListByIds, { solutionIds });
       if (ret.success) {
+        const rows = ret.data?.rows || [];
+        const map: Record<number, ISolution> = {};
+        rows.forEach((solution) => {
+          map[solution.solutionId] = solution;
+        });
         const state = yield select();
         if (type === 'list') {
           let hasChange = false;
           const list: IList<ISolution> = state.solutions.list;
-          const rows = list.rows.map(row => {
-            if (ret.data[row.solutionId]) {
+          const rows = list.rows.map((row) => {
+            if (map[row.solutionId]) {
               hasChange = true;
-              return ret.data[row.solutionId];
+              return map[row.solutionId];
             }
             return row;
           });
-          hasChange && (yield put({
-            type: 'updateList',
-            payload: {
-              data: {
-                ...list,
-                rows: rows,
+          hasChange &&
+            (yield put({
+              type: 'updateList',
+              payload: {
+                data: {
+                  ...list,
+                  rows: rows,
+                },
               },
-            },
-          }));
-        }
-        else if (type === 'detail') {
+            }));
+        } else if (type === 'detail') {
           const solutionId = solutionIds[0];
-          ret.data && ret.data[solutionId] && (yield put({
-            type: 'updateDetail',
-            payload: {
-              id: solutionId,
-              data: ret.data[solutionId],
-            },
-          }));
+          map[solutionId] &&
+            (yield put({
+              type: 'updateDetail',
+              payload: {
+                id: solutionId,
+                data: map[solutionId],
+              },
+            }));
         }
       }
       return ret;
     },
-    * getDetail({ payload: { id, force = false }}, { call, put, select }) {
+    *getDetail({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.solutions.detail[id]);
+        const savedState = yield select((state) => state.solutions.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -127,7 +137,7 @@ export default {
       }
       return ret;
     },
-    * getDetailForCompilationInfo({ payload: { id } }, { call, put }) {
+    *getDetailForCompilationInfo({ payload: { id } }, { call, put }) {
       const ret: IApiResponse<ISolution> = yield call(service.getDetail, id);
       if (ret.success) {
         yield put({
@@ -140,10 +150,10 @@ export default {
       }
       return ret;
     },
-    * submit({ payload: data }, { call, put }) {
+    *submit({ payload: data }, { call, put }) {
       return yield call(service.submit, data);
     },
-    * changeShared({ payload: { id, shared } }, { call, put }) {
+    *changeShared({ payload: { id, shared } }, { call, put }) {
       const ret: IApiResponse<any> = yield call(service.changeShared, id, shared);
       if (ret.success) {
         yield put({
@@ -168,7 +178,7 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] }});
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
         }
       });
     },

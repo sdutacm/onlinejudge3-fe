@@ -1,42 +1,45 @@
-import { get, patch, post } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import {
+  IGetSolutionListReq,
+  IGetSolutionListResp,
+  IGetSolutionDetailReq,
+  IGetSolutionDetailResp,
+  ISubmitSolutionReq,
+  ISubmitSolutionResp,
+  IUpdateSolutionShareReq,
+} from '@/common/contracts/solution';
 
 export function getList(query) {
-  const url = urlf(api.solutions.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.solutions.list,
-      orderDirection: 'DESC',
-    } as IListQuery,
+  return post<IGetSolutionListReq, IGetSolutionListResp>(routesBe.getSolutionList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.solutions.list,
+    order: [['solutionId', 'DESC']],
   });
-  return get(url);
 }
 
-export function getListByIds(query) {
-  const url = urlf(api.solutions.base, {
-    query,
+export function getListByIds({ solutionIds }) {
+  return post<IGetSolutionListReq, IGetSolutionListResp>(routesBe.getSolutionList.url, {
+    limit: limits.solutions.list,
+    solutionIds,
   });
-  return get(url);
 }
 
-export function getDetail(id) {
-  const url = urlf(api.solutions.detail, {
-    param: { id },
+export function getDetail(solutionId) {
+  return post<IGetSolutionDetailReq, IGetSolutionDetailResp>(routesBe.getSolutionDetail.url, {
+    solutionId,
   });
-  return get(url, 1000);
 }
 
 export function submit(data) {
-  const url = api.solutions.base;
-  return post(url, data);
+  return post<ISubmitSolutionReq, ISubmitSolutionResp>(routesBe.submitSolution.url, data);
 }
 
-export function changeShared(id, shared) {
-  const url = urlf(api.solutions.shared, {
-    param: { id },
+export function changeShared(solutionId, shared) {
+  return post<IUpdateSolutionShareReq, void>(routesBe.updateSolutionShare.url, {
+    solutionId,
+    shared,
   });
-  return patch(url, { shared });
 }

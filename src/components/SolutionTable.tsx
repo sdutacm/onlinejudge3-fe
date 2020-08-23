@@ -226,7 +226,7 @@ class SolutionTable extends React.Component<Props, State> {
           <Table.Column
             title="At"
             key="At"
-            render={(text, record: ISolution) => <TimeBar time={record.createdAt * 1000} />}
+            render={(text, record: ISolution) => <TimeBar time={new Date(record.createdAt).getTime()} />}
           />
           {!isDetail && (
             <Table.Column

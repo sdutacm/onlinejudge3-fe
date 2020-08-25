@@ -8,7 +8,7 @@ import constants from '@/configs/constants';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import moment from 'moment';
-import { toLongTs, urlf } from '@/utils/format';
+import { urlf } from '@/utils/format';
 import classNames from 'classnames';
 import { ContestTypes } from '@/configs/contestTypes';
 import TimeStatusBadge from '@/components/TimeStatusBadge';

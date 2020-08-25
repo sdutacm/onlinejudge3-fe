@@ -69,8 +69,11 @@ export function formatListQuery(query: IListQuery, ignorePagination = false): IL
   return formattedQuery;
 }
 
-export function toLongTs(timestamp: ITimestamp): ITimestamp {
-  return timestamp * 1000;
+export function toLongTs(time: ITimestamp | string): ITimestamp {
+  if (typeof time === 'string') {
+    return new Date(time).getTime();
+  }
+  return time * 1000;
 }
 
 export function formatFullTime(timestamp: ITimestamp): string {

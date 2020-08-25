@@ -8,7 +8,7 @@ import { Form, Input, Button } from 'antd';
 import { FormProps, ReduxProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import { Codes } from '@/configs/codes/codes';
+import { Codes } from '@/common/codes';
 import styles from './index.less';
 import msg from '@/utils/msg';
 import router from 'umi/router';
@@ -129,13 +129,13 @@ class ContestHome extends React.Component<Props, State> {
     const { session } = this.props;
     let tab: TabType = '';
     switch (session._code) {
-      case Codes.R_CONTESTS_NEED_LOGIN_OJ:
+      case Codes.CONTEST_NEED_LOGIN_OJ:
         tab = 'loginGlobal';
         break;
-      case Codes.R_CONTESTS_NEED_LOGIN_PRIVATE_CONTEST:
+      case Codes.CONTEST_NEED_LOGIN_PRIVATE_CONTEST:
         tab = 'enterPassword';
         break;
-      case Codes.R_CONTESTS_NEED_LOGIN_REGISTER_CONTEST:
+      case Codes.CONTEST_NEED_LOGIN_REGISTER_CONTEST:
         tab = 'loginContest';
         break;
     }

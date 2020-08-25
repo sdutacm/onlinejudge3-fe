@@ -1,116 +1,156 @@
-import { get, post, patch, del } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import {
+  IGetContestListReq,
+  IGetContestListResp,
+  IGetContestUserListReq,
+  IGetContestUserListResp,
+  IGetContestSessionReq,
+  IGetContestSessionResp,
+  IRequestContestSessionReq,
+  IRequestContestSessionResp,
+  ILogoutContestReq,
+  IGetContestDetailReq,
+  IGetContestDetailResp,
+  IGetContestProblemsReq,
+  IGetContestProblemsResp,
+  IGetContestProblemSolutionStatsReq,
+  IGetContestProblemSolutionStatsResp,
+  IGetContestUserDetailReq,
+  IGetContestUserDetailResp,
+  ICreateContestUserReq,
+  ICreateContestUserResp,
+  IUpdateContestUserReq,
+  IGetContestRanklistReq,
+  IGetContestRanklistResp,
+  IEndContestReq,
+  IGetContestRatingStatusReq,
+  IGetContestRatingStatusResp,
+} from '@/common/contracts/contest';
 
 export function getList(query) {
-  const url = urlf(api.contests.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: query.limit || limits.contests.list,
-    },
+  return post<IGetContestListReq, IGetContestListResp>(routesBe.getContestList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.contests.list,
   });
-  return get(url);
 }
 
-export function getUserList(query, id) {
-  const url = urlf(api.contests.users, {
-    param: { id },
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.contests.list,
-    },
+export function getUserList(query, contestId) {
+  return post<IGetContestUserListReq, IGetContestUserListResp>(routesBe.getContestUserList.url, {
+    contestId,
+    ...query,
+    page: query.page || 1,
+    limit: limits.contests.list,
   });
-  return get(url);
 }
 
-export function getSession(id) {
-  const url = urlf(api.contests.session, { param: { id } });
-  return get(url);
-}
-
-export function login(id, data) {
-  const url = urlf(api.contests.session, { param: { id } });
-  return post(url, data);
-}
-
-export function logout(id) {
-  const url = urlf(api.contests.session, { param: { id } });
-  return del(url);
-}
-
-export function getDetail(id) {
-  const url = urlf(api.contests.detail, { param: { id } });
-  return get(url, 1000);
-}
-
-export function getProblems(id) {
-  const url = urlf(api.contests.problems, { param: { id } });
-  return get(url);
-}
-
-export function getProblemResultStats(id) {
-  const url = urlf(api.contests.problemResultStats, { param: { id } });
-  return get(url);
-}
-
-export function getUsers(id) {
-  const url = urlf(api.contests.users, { param: { id } });
-  return get(url);
-}
-
-export function getUserDetail(id, uid) {
-  const url = urlf(api.contests.userDetail, { param: { id, uid } });
-  return get(url);
-}
-
-export function registerUser(id, data) {
-  const url = urlf(api.contests.users, { param: { id } });
-  return post(url, data);
-}
-
-export function modifyUser(id, uid, data) {
-  const url = urlf(api.contests.userDetail, { param: { id, uid } });
-  return patch(url, data);
-}
-
-export function getRanklist(id) {
-  const url = urlf(api.contests.ranklist, { param: { id } });
-  return get(url);
-}
-
-export function addContestUser(id, data) {
-  const url = urlf(api.contests.users, { param: { id } });
-  return post(url, data);
-}
-
-export function getContestUser(id, uid) {
-  const url = urlf(api.contests.userDetail, { param: { id, uid } });
-  return get(url);
-}
-
-export function updateContestUser(id, uid, data) {
-  const url = urlf(api.contests.userDetail, { param: { id, uid } });
-  return patch(url, data);
-}
-
-export function endContest(id) {
-  const url = urlf(api.contests.end, { param: { id } });
-  return post(url);
-}
-
-export function getRatingStatus(id) {
-  const url = urlf(api.contests.ratingStatus, { param: { id } });
-  return get(url);
-}
-
-export function getContest(id) {
-  const url = urlf(api.contests.base, {
-    query: {
-      contestId: id,
-    },
+export function getSession(contestId) {
+  return post<IGetContestSessionReq, IGetContestSessionResp>(routesBe.getContestSession.url, {
+    contestId,
   });
-  return get(url);
+}
+
+export function login(contestId, data) {
+  return post<IRequestContestSessionReq, IRequestContestSessionResp>(
+    routesBe.requestContestSession.url,
+    {
+      contestId,
+      ...data,
+    },
+  );
+}
+
+export function logout(contestId) {
+  return post<ILogoutContestReq, void>(routesBe.logoutContest.url, {
+    contestId,
+  });
+}
+
+export function getDetail(contestId) {
+  return post<IGetContestDetailReq, IGetContestDetailResp>(routesBe.getContestDetail.url, {
+    contestId,
+  });
+}
+
+export function getProblems(contestId) {
+  return post<IGetContestProblemsReq, IGetContestProblemsResp>(routesBe.getContestProblems.url, {
+    contestId,
+  });
+}
+
+export function getProblemResultStats(contestId) {
+  return post<IGetContestProblemSolutionStatsReq, IGetContestProblemSolutionStatsResp>(
+    routesBe.getContestProblemSolutionStats.url,
+    {
+      contestId,
+    },
+  );
+}
+
+export function registerUser(contestId, data) {
+  return post<ICreateContestUserReq, ICreateContestUserResp>(routesBe.createContestUser.url, {
+    contestId,
+    ...data,
+  });
+}
+
+export function modifyUser(contestId, contestUserId, data) {
+  return post<IUpdateContestUserReq, void>(routesBe.updateContestUser.url, {
+    contestId,
+    contestUserId,
+    ...data,
+  });
+}
+
+export function getRanklist(contestId) {
+  return post<IGetContestRanklistReq, IGetContestRanklistResp>(routesBe.getContestRanklist.url, {
+    contestId,
+  });
+}
+
+export function addContestUser(contestId, data) {
+  return post<ICreateContestUserReq, ICreateContestUserResp>(routesBe.createContestUser.url, {
+    contestId,
+    ...data,
+  });
+}
+
+export function getContestUser(contestUserId) {
+  return post<IGetContestUserDetailReq, IGetContestUserDetailResp>(
+    routesBe.getContestUserDetail.url,
+    {
+      contestUserId,
+    },
+  );
+}
+
+export function updateContestUser(contestId, contestUserId, data) {
+  return post<IUpdateContestUserReq, void>(routesBe.updateContestUser.url, {
+    contestId,
+    contestUserId,
+    ...data,
+  });
+}
+
+export function endContest(contestId) {
+  return post<IEndContestReq, void>(routesBe.endContest.url, {
+    contestId,
+  });
+}
+
+export function getRatingStatus(contestId) {
+  return post<IGetContestRatingStatusReq, IGetContestRatingStatusResp>(
+    routesBe.getContestRatingStatus.url,
+    {
+      contestId,
+    },
+  );
+}
+
+export function getContest(contestId) {
+  return post<IGetContestListReq, IGetContestListResp>(routesBe.getContestList.url, {
+    contestId,
+  });
 }

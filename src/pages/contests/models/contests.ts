@@ -117,11 +117,14 @@ export default {
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = {
+      const formattedQuery: IListQuery = {
         ...formatListQuery(query),
-        orderBy: 'contestId',
-        orderDirection: 'DESC',
+        order: [['contestId', 'DESC']],
       };
+      formattedQuery.contestId && (formattedQuery.contestId = +formattedQuery.contestId);
+      formattedQuery.type && (formattedQuery.type = +formattedQuery.type);
+      formattedQuery.category && (formattedQuery.category = +formattedQuery.category);
+      formattedQuery.mode && (formattedQuery.mode = +formattedQuery.mode);
       const savedState = yield select((state) => state.contests.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
@@ -139,11 +142,15 @@ export default {
       return ret;
     },
     *getListData({ payload: query }, { call, put, select }) {
-      const formattedQuery = {
-        orderBy: 'contestId',
-        orderDirection: 'DESC',
+      const formattedQuery: IListQuery = {
+        order: [['contestId', 'DESC']],
         ...formatListQuery(query),
       };
+      formattedQuery.contestId && (formattedQuery.contestId = +formattedQuery.contestId);
+      formattedQuery.type && (formattedQuery.type = +formattedQuery.type);
+      formattedQuery.category && (formattedQuery.category = +formattedQuery.category);
+      formattedQuery.mode && (formattedQuery.mode = +formattedQuery.mode);
+      const savedState = yield select((state) => state.contests.list);
       const ret: IApiResponse<IList<IContest>> = yield call(service.getList, formattedQuery);
       return ret;
     },
@@ -155,7 +162,7 @@ export default {
         }
       }
       const ret: IApiResponse<ISession> = yield call(service.getSession, id);
-      if (ret.success) {
+      if (ret.success && ret.data) {
         yield put({
           type: 'setSession',
           payload: {
@@ -307,8 +314,7 @@ export default {
     *getUserList({ payload: prams }, { call, put, select }) {
       const formattedQuery = {
         ...formatListQuery(prams.query),
-        orderBy: 'contestUserId',
-        orderDirection: 'DESC',
+        order: [['contestUserId', 'DESC']],
       };
       const ret: IApiResponse<IList<IContest>> = yield call(
         service.getUserList,
@@ -332,7 +338,7 @@ export default {
     },
 
     *getContestUser({ payload: { id, uid } }, { call, put }) {
-      const ret: IApiResponse<IContestUser> = yield call(service.getContestUser, id, uid);
+      const ret: IApiResponse<IContestUser> = yield call(service.getContestUser, uid);
       if (ret.success) {
         yield put({
           type: 'setContestUser',
@@ -404,11 +410,11 @@ export default {
         if (matchContestUserDetail) {
           requestEffect(dispatch, {
             type: 'getUserList',
-            payload: { query, cid: matchContestUserDetail.params['id'] },
+            payload: { query, cid: +matchContestUserDetail.params['id'] },
           });
           requestEffect(dispatch, {
             type: 'getContest',
-            payload: { id: matchContestUserDetail.params['id'] },
+            payload: { id: +matchContestUserDetail.params['id'] },
           });
         }
         // const matchContest = matchPath(pathname, {

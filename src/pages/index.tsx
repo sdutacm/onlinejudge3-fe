@@ -127,8 +127,8 @@ class Index extends React.Component<Props, State> {
                                   Start:
                                 </td>
                                 <td>
-                                  {moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm:ss Z')}{' '}
-                                  ({moment(toLongTs(record.startAt)).from(serverTime)})
+                                  {moment(record.startAt).format('YYYY-MM-DD HH:mm:ss Z')}{' '}
+                                  ({moment(record.startAt).from(serverTime)})
                                 </td>
                               </tr>
                               <tr>
@@ -136,8 +136,8 @@ class Index extends React.Component<Props, State> {
                                   End:
                                 </td>
                                 <td>
-                                  {moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm:ss Z')} (
-                                  {moment(toLongTs(record.endAt)).from(serverTime)})
+                                  {moment(record.endAt).format('YYYY-MM-DD HH:mm:ss Z')} (
+                                  {moment(record.endAt).from(serverTime)})
                                 </td>
                               </tr>
                             </tbody>
@@ -145,8 +145,8 @@ class Index extends React.Component<Props, State> {
                         }
                       >
                         <span>
-                          {moment(toLongTs(record.startAt)).format('YYYY-MM-DD HH:mm')} ~{' '}
-                          {moment(toLongTs(record.endAt)).format('YYYY-MM-DD HH:mm')}
+                          {moment(record.startAt).format('YYYY-MM-DD HH:mm')} ~{' '}
+                          {moment(record.endAt).format('YYYY-MM-DD HH:mm')}
                         </span>
                       </Popover>
                     )}
@@ -156,12 +156,12 @@ class Index extends React.Component<Props, State> {
                     key="status"
                     render={(text, record: any) => (
                       <TimeStatusBadge
-                        start={toLongTs(record.startAt)}
-                        end={toLongTs(record.endAt)}
+                        start={new Date(record.startAt).getTime()}
+                        end={new Date(record.endAt).getTime()}
                         cur={serverTime}
                       />
                     )}
-                  ></Table.Column>
+                  />
                 </Table>
               </Card>
             </Col>

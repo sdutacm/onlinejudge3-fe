@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import constants from '@/configs/constants';
-import { codeMsgs } from '@/configs/codes/codes';
+import { codeMsgs } from '@/common/codes';
 
 function success(msg: string) {
   msg && message.success(msg, constants.msgDuration.success);

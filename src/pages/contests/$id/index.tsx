@@ -56,7 +56,7 @@ class ContestHome extends React.Component<Props, State> {
               })(<Input type="password" />)}
             </Form.Item>
 
-            {!globalSession.loggedIn && session._code === Codes.R_CONTESTS_NEED_LOGIN_REGISTER_CONTEST &&
+            {!globalSession.loggedIn && session._code === Codes.CONTEST_NEED_LOGIN_REGISTER_CONTEST &&
             <Form.Item>
               Switch to <a onClick={e => this.switchTab(e, 'loginContest')}>Login Contest</a>
             </Form.Item>}

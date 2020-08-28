@@ -97,12 +97,12 @@ class ContestList extends React.Component<Props, State> {
     );
   };
 
-  canRegister = (registerStartAt: ITimestamp, registerEndAt: ITimestamp) => {
+  canRegister = (registerStartAt: Date, registerEndAt: Date) => {
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       this.props.session.loggedIn &&
-      registerStartAt * 1000 <= serverTime &&
-      serverTime < registerEndAt * 1000
+      registerStartAt.getTime() <= serverTime &&
+      serverTime < registerEndAt.getTime()
     );
   };
 
@@ -453,8 +453,8 @@ class ContestList extends React.Component<Props, State> {
                                   Start:
                                 </td>
                                 <td>
-                                  {moment(record.startAt).format('YYYY-MM-DD HH:mm:ss Z')}{' '}
-                                  ({moment(record.startAt).from(serverTime)})
+                                  {moment(record.startAt).format('YYYY-MM-DD HH:mm:ss Z')} (
+                                  {moment(record.startAt).from(serverTime)})
                                 </td>
                               </tr>
                               <tr>
@@ -500,7 +500,10 @@ class ContestList extends React.Component<Props, State> {
                       }
                       return (
                         <>
-                          {this.canRegister(record.registerStartAt, record.registerEndAt) ? (
+                          {this.canRegister(
+                            new Date(record.registerStartAt),
+                            new Date(record.registerEndAt),
+                          ) ? (
                             <GeneralFormModal
                               loadingEffect="contests/addContestUser"
                               title="Register Contest"

@@ -152,5 +152,6 @@ export function getRatingStatus(contestId) {
 export function getContest(contestId) {
   return post<IGetContestListReq, IGetContestListResp>(routesBe.getContestList.url, {
     contestId,
+    limit: 1,
   });
 }

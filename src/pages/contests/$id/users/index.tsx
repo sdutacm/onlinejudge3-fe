@@ -394,8 +394,9 @@ class ContestUserList extends React.Component<Props, State> {
 
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     const regInProgress =
-      contestDetail.registerStartAt * 1000 <= serverTime &&
-      serverTime < contestDetail.registerEndAt * 1000;
+      new Date(contestDetail.registerStartAt).getTime() <= serverTime &&
+      serverTime < new Date(contestDetail.registerEndAt).getTime();
+    const isTeam = contestDetail.team;
 
     let this_ = this;
     return (
@@ -429,12 +430,12 @@ class ContestUserList extends React.Component<Props, State> {
                   title="Info"
                   key="info"
                   render={(text, user: IContestUser) => {
-                    return user.members.map((item) => {
+                    return user.members.map((item, index) => {
                       let str = [item.name, item.school, item.class]
                         .filter((item) => item)
                         .join(' | ');
                       return (
-                        <span key={str}>
+                        <span key={`${index}_${str}`}>
                           {str}
                           <br />
                         </span>
@@ -494,7 +495,7 @@ class ContestUserList extends React.Component<Props, State> {
                             autoMsg
                             items={
                               contestUser[text.contestUserId]
-                                ? text.members.length === 3
+                                ? isTeam
                                   ? this_.addTeamUserFormItems(contestUser, text.contestUserId)
                                   : this_.addUserFormItems(contestUser, text.contestUserId)
                                 : []
@@ -505,7 +506,7 @@ class ContestUserList extends React.Component<Props, State> {
                               data['password'] = values['password'];
                               data['unofficial'] = values['unofficial'] === 'false' ? false : true;
                               let members = [];
-                              if (text.members.length === 3) {
+                              if (isTeam) {
                                 members = [{}, {}, {}];
                                 for (let i = 0; i < 3; i++) {
                                   for (let j = 0; j < this.formList.length; j++) {

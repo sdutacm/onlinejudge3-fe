@@ -1,55 +1,59 @@
-import { get, post } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import {
+  IGetTopicListReq,
+  IGetTopicListResp,
+  IGetTopicDetailReq,
+  IGetTopicDetailResp,
+  ICreateTopicReq,
+  ICreateTopicResp,
+} from '@/common/contracts/topic';
+import {
+  IGetReplyListReq,
+  IGetReplyListResp,
+  ICreateReplyReq,
+  ICreateReplyResp,
+} from '@/common/contracts/reply';
 
 export function getList(query) {
-  const url = urlf(api.topics.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.topics.list,
-    },
+  return post<IGetTopicListReq, IGetTopicListResp>(routesBe.getTopicList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.topics.list,
   });
-  return get(url);
 }
 
-export function getDetail(id) {
-  const url = urlf(api.topics.detail, { param: { id } });
-  return get(url, 1000);
+export function getDetail(topicId) {
+  return post<IGetTopicDetailReq, IGetTopicDetailResp>(routesBe.getTopicDetail.url, {
+    topicId,
+  });
 }
 
-export function getTopicReplies(id, query) {
-  const url = urlf(api.topics.replies, {
-    param: {
-      id,
-    },
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.topics.replies,
-    },
+export function getTopicReplies(topicId, query) {
+  return post<IGetReplyListReq, IGetReplyListResp>(routesBe.getReplyList.url, {
+    ...query,
+    topicId,
+    page: query.page || 1,
+    limit: query.limit || limits.topics.replies,
   });
-  return get(url);
 }
 
 export function getReplies(query) {
-  const url = urlf(api.replies.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.replies.inUserDetailList,
-    },
+  return post<IGetReplyListReq, IGetReplyListResp>(routesBe.getReplyList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.replies.inUserDetailList,
   });
-  return get(url);
 }
 
 export function addTopic(data) {
-  const url = urlf(api.topics.base);
-  return post(url, data);
+  return post<ICreateTopicReq, ICreateTopicResp>(routesBe.createTopic.url, data);
 }
 
-export function addTopicReply(id, data) {
-  const url = urlf(api.topics.replies, { param: { id } });
-  return post(url, data);
+export function addTopicReply(topicId, data) {
+  return post<ICreateReplyReq, ICreateReplyResp>(routesBe.createReply.url, {
+    topicId,
+    ...data,
+  });
 }

@@ -60,17 +60,19 @@ export default {
     },
   },
   effects: {
-    * getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = {
+    *getList({ payload: query }, { call, put, select }) {
+      const formattedQuery: IListQuery = {
         ...formatListQuery(query),
-        orderBy: 'topicId',
-        orderDirection: 'DESC',
+        order: [['topicId', 'DESC']],
       };
-      const savedState = yield select(state => state.topics.list);
+      formattedQuery.topicId && (formattedQuery.topicId = +formattedQuery.probletopicIdmId);
+      formattedQuery.problemId && (formattedQuery.problemId = +formattedQuery.problemId);
+      formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
+      const savedState = yield select((state) => state.topics.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<ITopic> > = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IList<ITopic>> = yield call(service.getList, formattedQuery);
       if (ret.success) {
         yield put({
           type: 'setList',
@@ -82,9 +84,9 @@ export default {
       }
       return ret;
     },
-    * getDetail({ payload: { id, force = false } }, { call, put, select }) {
+    *getDetail({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
-        const savedState = yield select(state => state.topics.detail[id]);
+        const savedState = yield select((state) => state.topics.detail[id]);
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -104,23 +106,30 @@ export default {
       }
       return ret;
     },
-    * getTopicReplies({ payload: { id, query = {} as any, getLast = false } }, { call, put, select }) {
-      const savedState = yield select(state => state.topics.topicReplies);
+    *getTopicReplies(
+      { payload: { id, query = {} as any, getLast = false } },
+      { call, put, select },
+    ) {
+      const savedState = yield select((state) => state.topics.topicReplies);
       if (id !== savedState._topicId) {
         yield put({
           type: 'clearTopicReplies',
         });
       }
-      const formattedQuery = !getLast ? {
-        ...formatListQuery(query),
-        orderBy: 'replyId',
-        orderDirection: query.orderDirection || 'ASC',
-      } : {
-        page: 1,
-        orderBy: 'replyId',
-        orderDirection: 'DESC',
-      };
-      const ret: IApiResponse<IList<IReply> > = yield call(service.getTopicReplies, id, formattedQuery);
+      const formattedQuery = !getLast
+        ? {
+            ...formatListQuery(query),
+            order: [['replyId', query.orderDirection || 'ASC']],
+          }
+        : {
+            page: 1,
+            order: [['replyId', 'DESC']],
+          };
+      const ret: IApiResponse<IList<IReply>> = yield call(
+        service.getTopicReplies,
+        id,
+        formattedQuery,
+      );
       if (ret.success) {
         let rows = [...ret.data.rows];
         const { limit, count } = ret.data;
@@ -135,7 +144,9 @@ export default {
             id,
             data: {
               ...ret.data,
-              page: !getLast ? ret.data.page : Math.floor(Math.max(ret.data.count - 1, 0) / ret.data.limit) + 1,
+              page: !getLast
+                ? ret.data.page
+                : Math.floor(Math.max(ret.data.count - 1, 0) / ret.data.limit) + 1,
               rows,
             },
           },
@@ -143,10 +154,10 @@ export default {
       }
       return ret;
     },
-    * addTopic({ payload: { data } }, { call }) {
+    *addTopic({ payload: { data } }, { call }) {
       return yield call(service.addTopic, data);
     },
-    * addReply({ payload: { id, data } }, { call }) {
+    *addReply({ payload: { id, data } }, { call }) {
       return yield call(service.addTopicReply, id, data);
     },
   },
@@ -161,8 +172,14 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
-          requestEffect(dispatch, { type: 'getTopicReplies', payload: { id: +matchDetail.params['id'], query } });
+          requestEffect(dispatch, {
+            type: 'getDetail',
+            payload: { id: +matchDetail.params['id'] },
+          });
+          requestEffect(dispatch, {
+            type: 'getTopicReplies',
+            payload: { id: +matchDetail.params['id'], query },
+          });
         }
       });
     },

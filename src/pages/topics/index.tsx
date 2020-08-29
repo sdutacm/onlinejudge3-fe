@@ -137,7 +137,7 @@ class TopicList extends React.Component<Props, State> {
                   title="At"
                   key="Time"
                   render={(text, record: ITopic) => (
-                    <TimeBar time={record.createdAt * 1000} />
+                    <TimeBar time={new Date(record.createdAt).getTime()} />
                   )}
                 />
               </Table>

@@ -124,7 +124,7 @@ class TopicDetail extends React.Component<Props, State> {
                   <p>
                     <UserBar user={data.user} className="ant-comment-content-author-name" />
                     <span className="ml-md" />
-                    <TimeBar time={data.createdAt * 1000} className="ant-comment-content-author-time" />
+                    <TimeBar time={new Date(data.createdAt).getTime()} className="ant-comment-content-author-time" />
                   </p>
                   <div
                     dangerouslySetInnerHTML={{ __html: xss(data.content) }}
@@ -153,7 +153,7 @@ class TopicDetail extends React.Component<Props, State> {
                           className="content-area"
                           style={{ wordWrap: 'break-word', marginTop: '8px' }}
                         />}
-                        datetime={<TimeBar time={item.createdAt * 1000} />}
+                        datetime={<TimeBar time={new Date(item.createdAt).getTime()} />}
                       />
                     </List.Item>
                   )}

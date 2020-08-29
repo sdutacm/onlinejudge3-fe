@@ -1,20 +1,18 @@
-import { get } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import { IGetPostListReq, IGetPostListResp, IGetPostDetailReq, IGetPostDetailResp } from '@/common/contracts/post';
 
 export function getList(query) {
-  const url = urlf(api.posts.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: limits.posts.list,
-    },
+  return post<IGetPostListReq, IGetPostListResp>(routesBe.getPostList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.posts.list,
   });
-  return get(url);
 }
 
-export function getDetail(id) {
-  const url = urlf(api.posts.detail, { param: { id } });
-  return get(url, 1000);
+export function getDetail(postId) {
+  return post<IGetPostDetailReq, IGetPostDetailResp>(routesBe.getPostDetail.url, {
+    postId,
+  });
 }

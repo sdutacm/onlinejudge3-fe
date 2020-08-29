@@ -83,7 +83,7 @@ class PostList extends React.Component<Props, State> {
                   title="At"
                   key="Time"
                   render={(text, record: IPost) => (
-                    <TimeBar time={record.createdAt * 1000} />
+                    <TimeBar time={new Date(record.createdAt).getTime()} />
                   )}
                 />
               </Table>

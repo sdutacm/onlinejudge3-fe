@@ -48,8 +48,7 @@ export default {
     * getList({ payload: query }, { call, put, select }) {
       const formattedQuery = {
         ...formatListQuery(query),
-        orderBy: 'postId',
-        orderDirection: 'DESC',
+        order: [['postId', 'DESC']],
       };
       const savedState = yield select(state => state.posts.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {

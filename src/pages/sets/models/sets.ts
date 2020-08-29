@@ -46,7 +46,10 @@ export default {
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = formatListQuery(query);
+      const formattedQuery: IListQuery = {
+        ...formatListQuery(query),
+        order: [['setId', 'DESC']],
+      };
       const savedState = yield select((state) => state.sets.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
@@ -107,7 +110,7 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchDetail.params['id'] } });
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
           requestEffect(dispatch, { type: 'users/getProblemResultStats' });
         }
 
@@ -116,7 +119,7 @@ export default {
           exact: true,
         });
         if (matchStats) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: matchStats.params['id'] } });
+          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchStats.params['id'] } });
         }
       });
     },

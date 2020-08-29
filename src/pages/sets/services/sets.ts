@@ -1,36 +1,44 @@
-import { get, del, post, patch } from '@/utils/request';
-import api from '@/configs/apis';
+import { post } from '@/utils/request';
+import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
-import { urlf } from '@/utils/format';
+import {
+  IGetSetListReq,
+  IGetSetListResp,
+  IGetSetDetailReq,
+  IGetSetDetailResp,
+  ICreateSetReq,
+  ICreateSetResp,
+  IUpdateSetReq,
+  IDeleteSetReq,
+} from '@/common/contracts/set';
 
 export function getList(query) {
-  const url = urlf(api.sets.base, {
-    query: {
-      ...query,
-      page: query.page || 1,
-      limit: query.limit || limits.sets.list,
-      orderDirection: query.orderDirection || 'DESC',
-    },
+  return post<IGetSetListReq, IGetSetListResp>(routesBe.getSetList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.sets.list,
   });
-  return get(url);
 }
 
-export function getDetail(id) {
-  const url = urlf(api.sets.detail, { param: { id } });
-  return get(url);
+export function getDetail(setId) {
+  return post<IGetSetDetailReq, IGetSetDetailResp>(routesBe.getSetDetail.url, {
+    setId,
+  });
 }
 
 export function addSet(data) {
-  const url = urlf(api.sets.base);
-  return post(url, data);
+  return post<ICreateSetReq, ICreateSetResp>(routesBe.createSet.url, data);
 }
 
-export function updateSet(id: number, data) {
-  const url = urlf(api.sets.detail, { param: { id } });
-  return patch(url, data);
+export function updateSet(setId: number, data) {
+  return post<IUpdateSetReq, void>(routesBe.updateSet.url, {
+    setId,
+    ...data,
+  });
 }
 
-export function deleteSet(id: number) {
-  const url = urlf(api.sets.detail, { param: { id } });
-  return del(url);
+export function deleteSet(setId: number) {
+  return post<IDeleteSetReq, void>(routesBe.deleteSet.url, {
+    setId,
+  });
 }

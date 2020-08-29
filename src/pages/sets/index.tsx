@@ -73,7 +73,7 @@ class SetList extends React.Component<Props> {
                 <Table.Column
                   title="Author"
                   key="Author"
-                  render={(text, record: ISet) => <UserBar user={record.author} />}
+                  render={(text, record: ISet) => <UserBar user={record.user} />}
                 />
               </Table>
               <Pagination

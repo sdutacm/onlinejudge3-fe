@@ -132,14 +132,14 @@ class SetDetail extends React.Component<Props, State> {
                     <div className="flex-justify-space-between mt-md">
                       <div />
                       <div className="pointer">
-                        {isSelf(session, detail.author.userId) || isAdminDog(session) ? (
+                        {isSelf(session, detail.user.userId) || isAdminDog(session) ? (
                           <ImportSetModal type="update" setId={id}>
                             <a className="ml-lg normal-text-link">
                               <Icon type="edit" /> Update
                             </a>
                           </ImportSetModal>
                         ) : null}
-                        {isSelf(session, detail.author.userId) || isAdminDog(session) ? (
+                        {isSelf(session, detail.user.userId) || isAdminDog(session) ? (
                           <a
                             className="ml-lg normal-text-link text-danger"
                             onClick={this.deleteSet}

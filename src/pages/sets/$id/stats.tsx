@@ -302,7 +302,7 @@ class SetStats extends React.Component<Props, State> {
           type: 'favorites/getList',
           payload: {
             query: {
-              orderDirection: 'ASC',
+              order: [['favoriteId', 'ASC']],
             },
           },
         }),

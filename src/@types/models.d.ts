@@ -308,7 +308,7 @@ interface ISet {
   type: 'standard';
   props: any;
   hidden?: boolean;
-  author: IUserLite;
+  user: IUserLite;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }

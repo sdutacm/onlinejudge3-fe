@@ -208,7 +208,7 @@ export default {
       if (!session.loggedIn) {
         return;
       }
-      return yield call(service.deleteGroupMember, id, session.user.userId);
+      return yield call(service.exitGroup, id);
     },
   },
   subscriptions: {
@@ -229,11 +229,11 @@ export default {
         if (matchDetail) {
           requestEffect(dispatch, {
             type: 'getDetail',
-            payload: { id: matchDetail.params['id'] },
+            payload: { id: +matchDetail.params['id'] },
           });
           requestEffect(dispatch, {
             type: 'getMembers',
-            payload: { id: matchDetail.params['id'] },
+            payload: { id: +matchDetail.params['id'] },
           });
         }
       });

@@ -649,7 +649,7 @@ class GroupDetail extends React.Component<Props, State> {
         <Table.Column
           title="Joined At"
           key="Time"
-          render={(text, record: IGroupMember) => <TimeBar time={record.joinedAt * 1000} />}
+          render={(text, record: IGroupMember) => <TimeBar time={new Date(record.joinedAt).getTime()} />}
         />
         <Table.Column
           title={<div className="mr-md">Actions</div>}

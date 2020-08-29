@@ -34,12 +34,6 @@ class AddFavorite extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount(): void {
-    this.props.dispatch({
-      type: 'problems/getTagList',
-    });
-  }
-
   handleAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     const { dispatch, type, id, loading } = this.props;

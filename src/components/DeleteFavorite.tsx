@@ -31,12 +31,6 @@ class DeleteFavorite extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount(): void {
-    this.props.dispatch({
-      type: 'problems/getTagList',
-    });
-  }
-
   handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     const { dispatch, favoriteId, loading } = this.props;

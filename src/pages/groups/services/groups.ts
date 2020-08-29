@@ -20,6 +20,7 @@ import {
   IJoinGroupReq,
   IUpdateGroupMemberReq,
   IDeleteGroupMemberReq,
+  IExitGroupReq,
 } from '@/common/contracts/group';
 
 export function getList(query) {
@@ -113,5 +114,11 @@ export function deleteGroupMember(groupId: number, userId: number) {
   return post<IDeleteGroupMemberReq, void>(routesBe.deleteGroupMember.url, {
     groupId,
     userId,
+  });
+}
+
+export function exitGroup(groupId: number) {
+  return post<IExitGroupReq, void>(routesBe.exitGroup.url, {
+    groupId,
   });
 }

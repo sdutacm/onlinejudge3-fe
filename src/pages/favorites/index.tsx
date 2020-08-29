@@ -86,7 +86,7 @@ class FavoriteListPage extends React.Component<Props, State> {
                             title={<ProblemBar problem={item.target} display="id-title" />}
                             description={<pre>{item.note}</pre>}
                           />
-                          <TimeBar time={item.createdAt * 1000} />
+                          <TimeBar time={new Date(item.createdAt).getTime()} />
                         </List.Item>
                       );
                   }
@@ -105,7 +105,7 @@ class FavoriteListPage extends React.Component<Props, State> {
                         title={item.target.title}
                         description={<pre>{item.note}</pre>}
                       />
-                      <TimeBar time={item.createdAt * 1000} />
+                      <TimeBar time={new Date(item.createdAt).getTime()} />
                     </List.Item>
                   );
                 }}

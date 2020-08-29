@@ -1,6 +1,3 @@
-[submodule "src/configs/codes"]
-	path = src/configs/codes
-	url = git@github.com:sdutacm/onlinejudge2-api.git
 [submodule "src/common"]
 	path = src/common
 	url = git@github.com:sdutacm/onlinejudge3-common.git

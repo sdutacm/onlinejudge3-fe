@@ -10,6 +10,7 @@ import 'braft-editor/dist/index.css';
 import api from '@/configs/apis';
 import constants from '@/configs/constants';
 import tracker from '@/utils/tracker';
+import { routesBe } from '@/common/routes';
 
 interface Props {
   form: WrappedFormUtils;
@@ -90,7 +91,7 @@ class RtEditor extends React.Component<Props, State> {
           <Upload
             name="image"
             accept="image/jpeg,image/bmp,image/png"
-            action={`${api.base}${api.common.media}`}
+            action={`${api.base}${routesBe.uploadMedia.url}`}
             beforeUpload={this.validateMedia}
             onChange={this.handleUploadMediaChange}
             fileList={this.state.fileList}

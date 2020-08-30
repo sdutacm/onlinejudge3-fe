@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import constants from '@/configs/constants';
 import api from '@/configs/apis';
 import { isBot } from '@/utils/userAgent';
+import Cookies from 'js-cookie';
 
 function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   const axiosInstance: AxiosInstance = axios.create({
@@ -41,9 +42,15 @@ async function request(
   initOptions: AxiosRequestConfig = {},
 ): Promise<IApiResponse<any>> {
   const axiosInstance = initAxios(initOptions);
+  const headers = { ...options.headers };
+  const method = (options.method || '').toLowerCase();
+  if (['post', 'put', 'patch', 'delete'].includes(method)) {
+    headers['x-csrf-token'] = Cookies.get('csrfToken');
+  }
   const response = await axiosInstance({
     url,
     ...options,
+    headers,
   });
   checkStatus(response);
   (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();

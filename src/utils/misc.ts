@@ -1,4 +1,5 @@
 import XLSX from 'xlsx';
+import Cookies from 'js-cookie';
 
 export interface TimeFlag {
   _t: number; // now time
@@ -180,4 +181,13 @@ export function sheet2Excel(sheet: XLSX.Sheet, saveName: string, sheetName?: str
  */
 export function workbook2Excel(workbook: XLSX.WorkBook, saveName: string) {
   openDownloadDialog(workbook2blob(workbook), saveName);
+}
+
+/**
+ * Get header with csrf token
+ */
+export function getCsrfHeader() {
+  return {
+    'x-csrf-token': Cookies.get('csrfToken'),
+  };
 }

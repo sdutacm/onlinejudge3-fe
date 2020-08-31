@@ -26,6 +26,7 @@ import langs from '@/configs/solutionLanguages';
 import ChangeEmailModal from '@/components/ChangeEmailModal';
 import tracker from '@/utils/tracker';
 import { routesBe } from '@/common/routes';
+import { getCsrfHeader } from '@/utils/misc';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -353,6 +354,7 @@ class UserDetail extends React.Component<Props, State> {
                 beforeUpload={this.validateBannerImage}
                 onChange={this.handleBannerImageChange}
                 showUploadList={false}
+                headers={getCsrfHeader()}
               >
                 <Button ghost loading={uploadBannerImageLoading}>
                   Change Banner
@@ -374,6 +376,7 @@ class UserDetail extends React.Component<Props, State> {
                     beforeUpload={this.validateAvatar}
                     onChange={this.handleAvatarChange}
                     showUploadList={false}
+                    headers={getCsrfHeader()}
                   >
                     {uploadAvatarLoading || loading ? (
                       <Icon type="loading" className="upload-mask-icon" />

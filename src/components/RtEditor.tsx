@@ -5,12 +5,13 @@ import { WrappedFormUtils } from 'antd/lib/form/Form';
 import msg from '@/utils/msg';
 import { validateFile } from '@/utils/validate';
 import BraftEditor from 'braft-editor';
-import { ContentUtils } from 'braft-utils'
+import { ContentUtils } from 'braft-utils';
 import 'braft-editor/dist/index.css';
 import api from '@/configs/apis';
 import constants from '@/configs/constants';
 import tracker from '@/utils/tracker';
 import { routesBe } from '@/common/routes';
+import { getCsrfHeader } from '@/utils/misc';
 
 interface Props {
   form: WrappedFormUtils;
@@ -31,11 +32,13 @@ class RtEditor extends React.Component<Props, State> {
 
   static genEmptyContent = () => BraftEditor.createEditorState(null);
 
-  private validateMedia = validateFile([
-    { name: 'JPG', type: 'image/jpeg' },
-    { name: 'BMP', type: 'image/bmp' },
-    { name: 'PNG', type: 'image/png' }],
-    8
+  private validateMedia = validateFile(
+    [
+      { name: 'JPG', type: 'image/jpeg' },
+      { name: 'BMP', type: 'image/bmp' },
+      { name: 'PNG', type: 'image/png' },
+    ],
+    8,
   );
 
   constructor(props) {
@@ -63,12 +66,14 @@ class RtEditor extends React.Component<Props, State> {
       msg.auto(resp);
       if (resp.success) {
         const editorStateBefore = form.getFieldValue(fieldName);
-        const editorState = ContentUtils.insertMedias(editorStateBefore, [{
-          type: 'IMAGE',
-          url: `${constants.mediaUrlPrefix}${resp.data.url}`,
-        }]);
+        const editorState = ContentUtils.insertMedias(editorStateBefore, [
+          {
+            type: 'IMAGE',
+            url: `${constants.mediaUrlPrefix}${resp.data.url}`,
+          },
+        ]);
         form.setFieldsValue({
-          [fieldName]: editorState
+          [fieldName]: editorState,
         });
         tracker.event({
           category: 'component.RtEditor',
@@ -76,7 +81,7 @@ class RtEditor extends React.Component<Props, State> {
         });
       }
     }
-    const newFileList = fileList.filter(f => f.status === 'uploading');
+    const newFileList = fileList.filter((f) => f.status === 'uploading');
     this.setState({
       fileList: newFileList,
     });
@@ -95,8 +100,13 @@ class RtEditor extends React.Component<Props, State> {
             beforeUpload={this.validateMedia}
             onChange={this.handleUploadMediaChange}
             fileList={this.state.fileList}
+            headers={getCsrfHeader()}
           >
-            <button type="button" className="control-item button upload-button" data-title="Insert Image">
+            <button
+              type="button"
+              className="control-item button upload-button"
+              data-title="Insert Image"
+            >
               <Icon type="picture" theme="filled" />
             </button>
           </Upload>
@@ -116,8 +126,15 @@ class RtEditor extends React.Component<Props, State> {
       // @ts-ignore
       <BraftEditor
         controls={[
-          'headings', 'bold', 'italic', 'underline', 'list-ul', 'list-ol',
-          'link', 'emoji', 'code',
+          'headings',
+          'bold',
+          'italic',
+          'underline',
+          'list-ul',
+          'list-ol',
+          'link',
+          'emoji',
+          'code',
         ]}
         extendControls={editorExtendControls}
         className={`rt-editor ${this.props.className}`}

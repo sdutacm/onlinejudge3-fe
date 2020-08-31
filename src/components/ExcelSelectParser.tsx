@@ -3,6 +3,7 @@ import { Upload, Icon } from 'antd';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
 import XLSX from 'xlsx';
 import tracker from '@/utils/tracker';
+import { getCsrfHeader } from '@/utils/misc';
 
 export interface Props {
   templateUrl: string;
@@ -59,6 +60,7 @@ class ExcelSelectParser extends React.Component<Props, State> {
         showUploadList={{ showRemoveIcon: false }}
         fileList={fileList}
         beforeUpload={this.beforeUpload}
+        headers={getCsrfHeader()}
       >
         <p className="ant-upload-drag-icon">
           <Icon type="inbox" />

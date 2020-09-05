@@ -6,10 +6,15 @@ import router from 'umi/router';
 import gStyles from '@/general.less';
 import tracker from '@/utils/tracker';
 
+export interface FilterCardFieldSelectOptionItem {
+  displayName: string;
+  fieldName: string | number | boolean;
+}
+
 export interface FilterCardFieldOption {
   displayName: string;
   fieldName: string | number;
-  options?: FilterCardFieldOption[];
+  options?: FilterCardFieldSelectOptionItem[];
 }
 
 export interface Props extends RouteProps, FormProps {
@@ -24,7 +29,7 @@ class FilterCard extends React.Component<Props, any> {
     disableActionTrigger: false,
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -48,7 +53,7 @@ class FilterCard extends React.Component<Props, any> {
     });
   };
 
-  handleReset = e => {
+  handleReset = (e) => {
     e.preventDefault();
     this.props.form.resetFields();
     if (this.props.disableActionTrigger) {
@@ -58,33 +63,58 @@ class FilterCard extends React.Component<Props, any> {
   };
 
   render() {
-    const { location: { query }, fields, form: { getFieldDecorator } } = this.props;
+    const {
+      location: { query },
+      fields,
+      form: { getFieldDecorator },
+    } = this.props;
     return (
       <Form
         layout="vertical"
         hideRequiredMark={true}
         onSubmit={this.handleSubmit}
         onReset={this.handleReset}
-        className={gStyles.cardForm}>
+        className={gStyles.cardForm}
+      >
         {fields.map((field: FilterCardFieldOption) => (
           <Form.Item label={field.displayName} key={field.fieldName}>
             {getFieldDecorator(field.fieldName, { initialValue: query[field.fieldName] })(
-              field.options ? <Select>
-                {field.options.map(f => (<Select.Option key={f.fieldName.toString()}>{f.displayName}</Select.Option>))}
-              </Select> : <Input />)}
+              field.options ? (
+                <Select>
+                  {field.options.map((f) => (
+                    <Select.Option key={f.fieldName.toString()}>{f.displayName}</Select.Option>
+                  ))}
+                </Select>
+              ) : (
+                <Input />
+              ),
+            )}
           </Form.Item>
         ))}
-        {fields.length ?
+        {fields.length ? (
           <Form.Item>
             <Button.Group style={{ width: '100%' }}>
-              <Button htmlType="reset" className="text-ellipsis" style={{ width: '50%' }} title="Clear">Clear</Button>
               <Button
-                htmlType="submit" className="text-ellipsis" style={{ width: '50%' }}
-                title="Filter">Filter</Button>
+                htmlType="reset"
+                className="text-ellipsis"
+                style={{ width: '50%' }}
+                title="Clear"
+              >
+                Clear
+              </Button>
+              <Button
+                htmlType="submit"
+                className="text-ellipsis"
+                style={{ width: '50%' }}
+                title="Filter"
+              >
+                Filter
+              </Button>
             </Button.Group>
           </Form.Item>
-          : <div />
-        }
+        ) : (
+          <div />
+        )}
       </Form>
     );
   }

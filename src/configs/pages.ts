@@ -49,6 +49,12 @@ export default {
     index: '/groups',
     detail: '/groups/:id',
   },
+  admin: {
+    index: '/admin',
+    problems: '/admin/problems',
+    contests: '/admin/contests',
+    users: '/admin/users',
+  },
   beta: '/beta',
   OJBK: '/OJBK',
 };

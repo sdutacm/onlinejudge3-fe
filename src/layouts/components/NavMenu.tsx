@@ -16,6 +16,7 @@ import SettingsModal from '@/components/SettingsModal';
 import IdeaNotes from '@/components/IdeaNotes';
 import NoteSvg from '@/assets/svg/note.svg';
 import tracker from '@/utils/tracker';
+import { isAdminDog } from '@/utils/permission';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -248,6 +249,13 @@ class NavMenu extends React.Component<Props, State> {
               {/* <Menu.Item key="favorites"> */}
               {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
               {/* </Menu.Item> */}
+              {isAdminDog(session) && (
+                <Menu.Item key="admin">
+                  <Link to={urlf(pages.admin.index)} onClick={onLinkClick}>
+                    Admin
+                  </Link>
+                </Menu.Item>
+              )}
               <Menu.Item
                 key="logout"
                 onClick={(e) => {
@@ -295,6 +303,11 @@ class NavMenu extends React.Component<Props, State> {
             <Menu.Item key="favorites">
               <Link to={urlf(pages.favorites.index)}>Favorites</Link>
             </Menu.Item>
+            {isAdminDog(session) && (
+              <Menu.Item key="admin">
+                <Link to={urlf(pages.admin.index)}>Admin</Link>
+              </Menu.Item>
+            )}
             {/* <Menu.Item key="favorites"> */}
             {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
             {/* </Menu.Item> */}

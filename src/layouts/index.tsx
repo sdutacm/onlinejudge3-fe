@@ -152,7 +152,7 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { children, location } = this.props;
+    const { children, location, session } = this.props;
     const { Header, Content, Footer } = Layout;
     if (this.state.error) {
       return (
@@ -195,6 +195,9 @@ class Index extends React.Component<Props, State> {
         path: pages.groups.detail,
         exact: true,
       });
+    const inAdminPage = matchPath(location.pathname, {
+      path: pages.admin.index,
+    });
     return (
       <Layout
         className={classNames({
@@ -204,9 +207,13 @@ class Index extends React.Component<Props, State> {
         <Header>
           <Row>
             <Col>
-              <Link to={pages.index} className={styles.logo}>
-                {constants.siteName}
-              </Link>
+              {!inAdminPage ? (
+                <Link to={pages.index} className={styles.logo}>
+                  {constants.siteName}
+                </Link>
+              ) : (
+                <span className={classNames(styles.logo, 'cursor-default')}>{session.user?.username || '--'}@sdutoj:/#</span>
+              )}
             </Col>
             <Col>{this.state.sessionLoaded && <NavContainer />}</Col>
           </Row>

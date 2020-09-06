@@ -15,6 +15,7 @@ import { getCsrfHeader } from '@/utils/misc';
 
 interface Props {
   form: WrappedFormUtils;
+  value: any;
   disabled?: boolean;
   className?: string;
   contentStyle?: React.CSSProperties;
@@ -52,7 +53,7 @@ class RtEditor extends React.Component<Props, State> {
     // @ts-ignore
     const fieldName: string = this.props.id; // from antd form
     this.props.form.setFieldsValue({
-      [fieldName]: BraftEditor.createEditorState(null),
+      [fieldName]: BraftEditor.createEditorState(this.props.value || null),
     });
   }
 

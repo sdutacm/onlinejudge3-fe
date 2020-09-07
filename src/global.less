@@ -1497,6 +1497,44 @@ a {
   }
 }
 
+// form drawer
+
+.form-drawer {
+  .ant-drawer-header {
+    background-color: @component-background;
+    position: absolute;
+    z-index: 1090;
+    width: 100%;
+  }
+
+  .ant-drawer-close {
+    z-index: 1091;
+  }
+
+  .form-drawer-content {
+    margin-top: 55px;
+    margin-bottom: 64px;
+  }
+
+  .form-drawer-bottom {
+    border-top: @border-width-base @border-style-base @border-color-split;
+    background-color: @component-background;
+    position: absolute;
+    z-index: 1090;
+    width: 100%;
+
+    &.pos-bottom-right {
+      right: 0;
+      bottom: 0;
+
+      .actions {
+        padding: 16px 24px;
+        text-align: right;
+      }
+    }
+  }
+}
+
 // mobile
 
 @media only screen and (max-width: 767px) {

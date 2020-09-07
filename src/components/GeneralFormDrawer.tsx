@@ -1,16 +1,19 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Modal } from 'antd';
+import { Form, Drawer, Button, Spin } from 'antd';
 import { FormProps, ReduxProps } from '@/@types/props';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
 import GeneralForm, { IGeneralFormItem } from './GeneralForm';
 
-export interface IGeneralFormModalProps extends ReduxProps, FormProps {
+export interface IGeneralFormDrawerProps extends ReduxProps, FormProps {
   loadings: {
     [x: string]: boolean;
   };
+  loading?: boolean;
   loadingEffect?: string;
+  fetchLoading?: boolean;
+  fetchLoadingEffect?: string;
   title: string;
   items: IGeneralFormItem[];
   initialValues?: object;
@@ -19,10 +22,12 @@ export interface IGeneralFormModalProps extends ReduxProps, FormProps {
   cancelText?: string;
   autoMsg?: boolean;
   className?: string;
+  width?: number;
   disabled?: boolean;
+  maskClosable?: boolean;
   submit(dispatch: ReduxProps['dispatch'], values): Promise<IApiResponse<any>>;
   onSuccess?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
-  onSuccessModalClosed?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
+  onSuccessAndClosed?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
   onFail?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
 }
 
@@ -30,8 +35,8 @@ interface State {
   visible: boolean;
 }
 
-class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
-  constructor(props: IGeneralFormModalProps) {
+class GeneralFormDrawer extends React.Component<IGeneralFormDrawerProps, State> {
+  constructor(props: IGeneralFormDrawerProps) {
     super(props);
     this.state = {
       visible: false,
@@ -45,7 +50,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
       hiddenValues,
       submit,
       onSuccess,
-      onSuccessModalClosed,
+      onSuccessAndClosed,
       onFail,
       autoMsg,
     } = this.props;
@@ -56,11 +61,11 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
           autoMsg && msg.auto(ret);
           if (ret.success) {
             onSuccess?.(dispatch, ret);
-            this.handleHideModel();
-            onSuccessModalClosed &&
+            this.handleHideDrawer();
+            onSuccessAndClosed &&
               setTimeout(
-                () => onSuccessModalClosed(dispatch, ret),
-                constants.modalAnimationDurationFade,
+                () => onSuccessAndClosed(dispatch, ret),
+                constants.drawerAnimationDuration + 100,
               );
           } else {
             onFail?.(dispatch, ret);
@@ -70,7 +75,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
     });
   };
 
-  handleShowModel = (e) => {
+  handleShowDrawer = (e) => {
     if (e) {
       e.stopPropagation();
     }
@@ -79,7 +84,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
     }
   };
 
-  handleHideModel = () => {
+  handleHideDrawer = () => {
     this.setState({ visible: false });
   };
 
@@ -88,31 +93,55 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
       children,
       form,
       loadings,
+      loading,
       loadingEffect,
+      fetchLoading,
+      fetchLoadingEffect,
       title,
       items,
       initialValues,
       okText,
       cancelText,
       className,
+      width,
+      maskClosable,
     } = this.props;
+    const submitLoading = loading || loadings[loadingEffect] || false;
+    const getLoading = fetchLoading || loadings[fetchLoadingEffect] || false;
 
     return (
       <>
-        <span className={className} onClick={this.handleShowModel}>
+        <span className={className} onClick={this.handleShowDrawer}>
           {children}
         </span>
-        <Modal
+        <Drawer
           title={title}
+          width={width}
+          onClose={this.handleHideDrawer}
           visible={this.state.visible}
-          okText={okText || 'Submit'}
-          cancelText={cancelText || 'Cancel'}
-          confirmLoading={loadings[loadingEffect] || false}
-          onOk={this.handleOk}
-          onCancel={this.handleHideModel}
+          className="form-drawer"
+          maskClosable={maskClosable}
         >
-          <GeneralForm form={form} items={items} initialValues={initialValues} />
-        </Modal>
+          <div className="form-drawer-content">
+            {getLoading ? (
+              <Spin spinning={getLoading}>
+                <div style={{ height: '320px' }} />
+              </Spin>
+            ) : (
+              <GeneralForm form={form} items={items} initialValues={initialValues} />
+            )}
+          </div>
+          <div className="form-drawer-bottom pos-bottom-right">
+            <div className="actions">
+              <Button onClick={this.handleHideDrawer} style={{ marginRight: 8 }}>
+                {cancelText || 'Cancel'}
+              </Button>
+              <Button onClick={this.handleOk} type="primary" loading={submitLoading}>
+                {okText || 'Submit'}
+              </Button>
+            </div>
+          </div>
+        </Drawer>
       </>
     );
   }
@@ -124,4 +153,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Form.create()(GeneralFormModal));
+export default connect(mapStateToProps)(Form.create()(GeneralFormDrawer));

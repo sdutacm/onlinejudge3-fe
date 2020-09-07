@@ -43,6 +43,9 @@ const limits = {
     search: 12,
     members: 10,
   },
+  admin: {
+    problemList: 50,
+  },
 };
 
 export default limits;

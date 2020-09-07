@@ -91,6 +91,7 @@ interface IProblem {
   difficulty: number;
   accepted?: number;
   submitted?: number;
+  display: boolean;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }

@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { urlf } from '@/utils/format';
 import pages from '@/configs/pages';
 import TimeBar from '@/components/TimeBar';
+import { IGeneralFormItem } from '@/components/GeneralForm';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -74,7 +75,7 @@ class AdminProblemList extends React.Component<Props, State> {
   getProblemDetailFormItems(problemId?: number) {
     const { detailMap } = this.props;
     const detail = detailMap[problemId];
-    const items = [
+    const items: IGeneralFormItem[] = [
       {
         name: 'Title',
         field: 'title',
@@ -101,33 +102,53 @@ class AdminProblemList extends React.Component<Props, State> {
         field: 'source',
         component: 'input',
         initialValue: detail?.source || '',
+        rules: [],
       },
       {
         name: 'Description',
         field: 'description',
         component: 'richtext',
         initialValue: detail?.description || '',
+        rules: [],
         contentStyle: { height: '250px' },
+        uploadTarget: 'asset',
+        uploadOption: {
+          prefix: 'problem',
+          maxSize: 32,
+        },
       },
       {
         name: 'Input',
         field: 'input',
         component: 'richtext',
         initialValue: detail?.input || '',
+        rules: [],
         contentStyle: { height: '250px' },
+        uploadTarget: 'asset',
+        uploadOption: {
+          prefix: 'problem',
+          maxSize: 32,
+        },
       },
       {
         name: 'Output',
         field: 'output',
         component: 'richtext',
         initialValue: detail?.output || '',
+        rules: [],
         contentStyle: { height: '250px' },
+        uploadTarget: 'asset',
+        uploadOption: {
+          prefix: 'problem',
+          maxSize: 32,
+        },
       },
       {
         name: 'Sample Input',
         field: 'sampleInput',
         component: 'textarea',
         initialValue: detail?.sampleInput || '',
+        rules: [],
         rows: 5,
       },
       {
@@ -135,6 +156,7 @@ class AdminProblemList extends React.Component<Props, State> {
         field: 'sampleOutput',
         component: 'textarea',
         initialValue: detail?.sampleOutput || '',
+        rules: [],
         rows: 5,
       },
       {
@@ -142,7 +164,13 @@ class AdminProblemList extends React.Component<Props, State> {
         field: 'hint',
         component: 'richtext',
         initialValue: detail?.hint || '',
+        rules: [],
         contentStyle: { height: '250px' },
+        uploadTarget: 'asset',
+        uploadOption: {
+          prefix: 'problem',
+          maxSize: 32,
+        },
       },
       {
         name: 'Display',

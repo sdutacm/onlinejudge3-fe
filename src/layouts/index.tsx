@@ -225,7 +225,7 @@ class Index extends React.Component<Props, State> {
         <Footer className={styles.footer} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
           <Row gutter={20}>
             <Col xs={24} md={8} className="mb-md-lg">
-              <h3>About SDUT OJ v{pkg.version}</h3>
+              <h3>SDUT OJ v{pkg.version}</h3>
               <p>
                 <ExtLink
                   className="normal-text-link"

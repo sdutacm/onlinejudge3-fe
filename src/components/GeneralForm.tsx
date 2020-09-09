@@ -16,9 +16,15 @@ export interface IGeneralFormItem {
   type?: string; // for input
   rows?: number; // for textarea
   contentStyle?: React.CSSProperties; // for richtext
+  uploadTarget?: 'media' | 'asset'; // for richtext, default 'media'
+  uploadOption?: {
+    // for richtext
+    prefix?: string;
+    maxSize?: number; // MiB
+  };
   options?: {
     // for select
-    value: string;
+    value: string | number | boolean;
     name: string;
   }[];
 }
@@ -142,6 +148,8 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                       form={form}
                       disabled={item.disabled}
                       contentStyle={item.contentStyle}
+                      uploadTarget={item.uploadTarget}
+                      uploadOption={item.uploadOption}
                     />,
                   )}
                 </Form.Item>

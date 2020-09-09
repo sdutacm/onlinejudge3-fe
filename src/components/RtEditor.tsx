@@ -19,6 +19,11 @@ interface Props {
   disabled?: boolean;
   className?: string;
   contentStyle?: React.CSSProperties;
+  uploadTarget?: 'media' | 'asset';
+  uploadOption?: {
+    prefix?: string;
+    maxSize?: number; // MiB
+  };
 }
 
 interface State {
@@ -29,6 +34,8 @@ class RtEditor extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     disabled: false,
     className: '',
+    uploadTarget: 'media',
+    uploadOption: {},
   };
 
   static genEmptyContent = () => BraftEditor.createEditorState(null);
@@ -39,7 +46,7 @@ class RtEditor extends React.Component<Props, State> {
       { name: 'BMP', type: 'image/bmp' },
       { name: 'PNG', type: 'image/png' },
     ],
-    8,
+    this.props.uploadOption?.maxSize || 8,
   );
 
   constructor(props) {
@@ -70,7 +77,7 @@ class RtEditor extends React.Component<Props, State> {
         const editorState = ContentUtils.insertMedias(editorStateBefore, [
           {
             type: 'IMAGE',
-            url: `${constants.mediaUrlPrefix}${resp.data.url}`,
+            url: `${constants.imageDirPrefix}${resp.data.url}`,
           },
         ]);
         form.setFieldsValue({
@@ -89,6 +96,14 @@ class RtEditor extends React.Component<Props, State> {
   };
 
   render() {
+    const uploadUrl =
+      this.props.uploadTarget === 'asset'
+        ? `${api.base}${routesBe.uploadAsset.url}`
+        : `${api.base}${routesBe.uploadMedia.url}`;
+    const uploadOption = this.props.uploadOption;
+    const extraData = {
+      prefix: uploadOption.prefix,
+    };
     const editorExtendControls = [
       {
         key: 'media-uploader',
@@ -97,11 +112,12 @@ class RtEditor extends React.Component<Props, State> {
           <Upload
             name="image"
             accept="image/jpeg,image/bmp,image/png"
-            action={`${api.base}${routesBe.uploadMedia.url}`}
+            action={uploadUrl}
             beforeUpload={this.validateMedia}
             onChange={this.handleUploadMediaChange}
             fileList={this.state.fileList}
             headers={getCsrfHeader()}
+            data={extraData}
           >
             <button
               type="button"

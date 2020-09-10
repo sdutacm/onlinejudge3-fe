@@ -73,47 +73,60 @@ export default {
     },
     *getListByIds({ payload }, { call, put, select }) {
       const { type, solutionIds } = payload;
-      const ret: IApiResponse<IList<ISolution>> = yield call(service.getListByIds, { solutionIds });
-      if (ret.success) {
-        const rows = ret.data?.rows || [];
-        const map: Record<number, ISolution> = {};
-        rows.forEach((solution) => {
-          map[solution.solutionId] = solution;
-        });
-        const state = yield select();
-        if (type === 'list') {
-          let hasChange = false;
-          const list: IList<ISolution> = state.solutions.list;
-          const rows = list.rows.map((row) => {
-            if (map[row.solutionId]) {
-              hasChange = true;
-              return map[row.solutionId];
-            }
-            return row;
+      switch (type) {
+        case 'list': {
+          const ret: IApiResponse<IList<ISolution>> = yield call(service.getListByIds, {
+            solutionIds,
           });
-          hasChange &&
-            (yield put({
-              type: 'updateList',
-              payload: {
-                data: {
-                  ...list,
-                  rows: rows,
+          if (ret.success) {
+            const map: Record<number, ISolution> = {};
+            (ret.data?.rows || []).forEach((solution) => {
+              map[solution.solutionId] = solution;
+            });
+            const state = yield select();
+            let hasChange = false;
+            const list: IList<ISolution> = state.solutions.list;
+            const rows = list.rows.map((row) => {
+              if (map[row.solutionId]) {
+                hasChange = true;
+                return map[row.solutionId];
+              }
+              return row;
+            });
+            hasChange &&
+              (yield put({
+                type: 'updateList',
+                payload: {
+                  data: {
+                    ...list,
+                    rows,
+                  },
                 },
-              },
-            }));
-        } else if (type === 'detail') {
+              }));
+          }
+          return ret;
+        }
+        case 'detail': {
           const solutionId = solutionIds[0];
-          map[solutionId] &&
-            (yield put({
+          const ret: IApiResponse<ISolution> = yield call(service.getDetail, solutionId);
+          if (ret.success) {
+            yield put({
               type: 'updateDetail',
               payload: {
                 id: solutionId,
-                data: map[solutionId],
+                data: ret.data,
               },
-            }));
+            });
+            return {
+              page: 1,
+              limit: 1,
+              count: 1,
+              rows: [ret.data],
+            };
+          }
+          return ret;
         }
       }
-      return ret;
     },
     *getDetail({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
@@ -178,7 +191,10 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
+          requestEffect(dispatch, {
+            type: 'getDetail',
+            payload: { id: +matchDetail.params['id'] },
+          });
         }
       });
     },

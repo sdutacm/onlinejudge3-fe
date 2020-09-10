@@ -9,6 +9,8 @@ import {
   ISubmitSolutionReq,
   ISubmitSolutionResp,
   IUpdateSolutionShareReq,
+  IBatchGetSolutionDetailReq,
+  IBatchGetSolutionDetailResp,
 } from '@/common/contracts/solution';
 
 export function getList(query) {
@@ -31,6 +33,15 @@ export function getDetail(solutionId) {
   return post<IGetSolutionDetailReq, IGetSolutionDetailResp>(routesBe.getSolutionDetail.url, {
     solutionId,
   });
+}
+
+export function batchGetDetail(solutionIds) {
+  return post<IBatchGetSolutionDetailReq, IBatchGetSolutionDetailResp>(
+    routesBe.batchGetSolutionDetail.url,
+    {
+      solutionIds,
+    },
+  );
 }
 
 export function submit(data) {

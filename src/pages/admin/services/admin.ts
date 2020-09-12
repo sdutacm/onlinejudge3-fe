@@ -27,6 +27,7 @@ import {
   ICreateContestResp,
   IUpdateContestDetailReq,
 } from '@/common/contracts/contest';
+import { IGetPostListReq, IGetPostListResp, IGetPostDetailReq, IGetPostDetailResp, ICreatePostReq, ICreatePostResp, IUpdatePostDetailReq } from '@/common/contracts/post';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -108,6 +109,35 @@ export function createContest(data) {
 export function updateContestDetail(contestId, data) {
   return post<IUpdateContestDetailReq, void>(routesBe.updateContestDetail.url, {
     contestId,
+    ...data,
+  });
+}
+
+export function getPostList(query) {
+  return post<IGetPostListReq, IGetPostListResp>(routesBe.getPostList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.admin.postList,
+    _scope: null,
+  });
+}
+
+export function getPostDetail(postId) {
+  return post<IGetPostDetailReq, IGetPostDetailResp>(routesBe.getPostDetail.url, {
+    postId,
+    _scope: null,
+  });
+}
+
+export function createPost(data) {
+  return post<ICreatePostReq, ICreatePostResp>(routesBe.createPost.url, {
+    ...data,
+  });
+}
+
+export function updatePostDetail(postId, data) {
+  return post<IUpdatePostDetailReq, void>(routesBe.updatePostDetail.url, {
+    postId,
     ...data,
   });
 }

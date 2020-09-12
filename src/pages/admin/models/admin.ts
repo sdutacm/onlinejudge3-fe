@@ -21,6 +21,12 @@ const initialState = {
     rows: [],
   },
   contestDetail: {},
+  postList: {
+    page: 1,
+    count: 0,
+    rows: [],
+  },
+  postDetail: {},
 };
 
 export default {
@@ -48,6 +54,16 @@ export default {
     },
     setContestDetail(state, { payload: { id, data } }) {
       state.contestDetail[id] = {
+        ...data,
+      };
+    },
+    setPostList(state, { payload: { data } }) {
+      state.postList = {
+        ...data,
+      };
+    },
+    setPostDetail(state, { payload: { id, data } }) {
+      state.postDetail[id] = {
         ...data,
       };
     },
@@ -146,6 +162,42 @@ export default {
     *updateContestDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateContestDetail, id, data);
     },
+    *getPostList({ payload: query }, { call, put }) {
+      const formattedQuery = formatListQuery(query);
+      formattedQuery.postId && (formattedQuery.postId = +formattedQuery.postId);
+      formattedQuery.display && (formattedQuery.display = formattedQuery.display === 'true');
+      formattedQuery.order = [['postId', 'DESC']];
+      const ret: IApiResponse<IList<IPost>> = yield call(service.getPostList, formattedQuery);
+      if (ret.success) {
+        yield put({
+          type: 'setPostList',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
+    },
+    *getPostDetail({ payload: { id } }, { all, call, put }) {
+      const detailRet: IApiResponse<any> = yield call(service.getPostDetail, id);
+      if (detailRet.success) {
+        yield put({
+          type: 'setPostDetail',
+          payload: {
+            id,
+            data: detailRet.data,
+          },
+        });
+      }
+      return detailRet;
+    },
+    *createPost({ payload: { data } }, { call }) {
+      return yield call(service.createPost, data);
+    },
+    *updatePostDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updatePostDetail, id, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -157,6 +209,8 @@ export default {
           requestEffect(dispatch, { type: 'getTagList' });
         } else if (pathname === pages.admin.contests) {
           requestEffect(dispatch, { type: 'getContestList', payload: query });
+        } else if (pathname === pages.admin.posts) {
+          requestEffect(dispatch, { type: 'getPostList', payload: query });
         }
       });
     },

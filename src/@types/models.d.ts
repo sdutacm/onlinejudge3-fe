@@ -234,6 +234,7 @@ interface IPost {
   content?: string;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
+  display: boolean;
 }
 
 interface ITag {

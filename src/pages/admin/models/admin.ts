@@ -15,6 +15,12 @@ const initialState = {
     count: 0,
     rows: [],
   },
+  contestList: {
+    page: 1,
+    count: 0,
+    rows: [],
+  },
+  contestDetail: {},
 };
 
 export default {
@@ -35,17 +41,20 @@ export default {
         ...data,
       };
     },
+    setContestList(state, { payload: { data } }) {
+      state.contestList = {
+        ...data,
+      };
+    },
+    setContestDetail(state, { payload: { id, data } }) {
+      state.contestDetail[id] = {
+        ...data,
+      };
+    },
   },
   effects: {
     *getProblemList({ payload: query }, { call, put }) {
-      if (query.tagIds && typeof query.tagIds === 'string') {
-        query.tagIds = [query.tagIds];
-      }
-      if (query.tagIds && Array.isArray(query.tagIds)) {
-        query.tagIds = query.tagIds.map((tagId) => +tagId);
-      }
       const formattedQuery = formatListQuery(query);
-      console.log('f', JSON.stringify(formattedQuery));
       formattedQuery.problemId && (formattedQuery.problemId = +formattedQuery.problemId);
       formattedQuery.display && (formattedQuery.display = formattedQuery.display === 'true');
       const ret: IApiResponse<IList<IProblem>> = yield call(service.getProblemList, formattedQuery);
@@ -73,6 +82,15 @@ export default {
       }
       return detailRet;
     },
+    *createProblem({ payload: { data } }, { call }) {
+      return yield call(service.createProblem, data);
+    },
+    *updateProblemDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateProblemDetail, id, data);
+    },
+    *setProblemTags({ payload: { id, tagIds } }, { call }) {
+      return yield call(service.setProblemTags, id, { tagIds });
+    },
     *getTagList(action, { call, put }) {
       const ret: IApiResponse<IFullList<ITag>> = yield call(service.getTagList);
       if (ret.success) {
@@ -83,20 +101,50 @@ export default {
       }
       return ret;
     },
-    *createProblem({ payload: { data } }, { call }) {
-      return yield call(service.createProblem, data);
-    },
-    *updateProblemDetail({ payload: { id, data } }, { call }) {
-      return yield call(service.updateProblemDetail, id, data);
-    },
-    *setProblemTags({ payload: { id, tagIds } }, { call }) {
-      return yield call(service.setProblemTags, id, { tagIds });
-    },
     *createTag({ payload: { data } }, { call }) {
       return yield call(service.createTag, data);
     },
     *updateTagDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateTagDetail, id, data);
+    },
+    *getContestList({ payload: query }, { call, put }) {
+      const formattedQuery = formatListQuery(query);
+      formattedQuery.contestId && (formattedQuery.contestId = +formattedQuery.contestId);
+      formattedQuery.type && (formattedQuery.type = +formattedQuery.type);
+      formattedQuery.category && (formattedQuery.category = +formattedQuery.category);
+      formattedQuery.mode && (formattedQuery.mode = +formattedQuery.mode);
+      formattedQuery.hidden && (formattedQuery.hidden = formattedQuery.hidden === 'true');
+      formattedQuery.order = [['contestId', 'DESC']];
+      const ret: IApiResponse<IList<IContest>> = yield call(service.getContestList, formattedQuery);
+      if (ret.success) {
+        yield put({
+          type: 'setContestList',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
+    },
+    *getContestDetail({ payload: { id } }, { all, call, put }) {
+      const detailRet: IApiResponse<any> = yield call(service.getContestDetail, id);
+      if (detailRet.success) {
+        yield put({
+          type: 'setContestDetail',
+          payload: {
+            id,
+            data: detailRet.data,
+          },
+        });
+      }
+      return detailRet;
+    },
+    *createContest({ payload: { data } }, { call }) {
+      return yield call(service.createContest, data);
+    },
+    *updateContestDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateContestDetail, id, data);
     },
   },
   subscriptions: {
@@ -107,6 +155,8 @@ export default {
           requestEffect(dispatch, { type: 'getTagList' });
         } else if (pathname === pages.admin.tags) {
           requestEffect(dispatch, { type: 'getTagList' });
+        } else if (pathname === pages.admin.contests) {
+          requestEffect(dispatch, { type: 'getContestList', payload: query });
         }
       });
     },

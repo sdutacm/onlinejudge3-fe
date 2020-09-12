@@ -5,7 +5,7 @@ export enum ContestModes {
 
 export const contestModesMap = {
   [ContestModes.None]: {
-    name: '--',
+    name: 'Normal',
   },
   [ContestModes.Rating]: {
     name: 'Rating',
@@ -15,7 +15,7 @@ export const contestModesMap = {
 const contestModes = [
   {
     id: ContestModes.None,
-    name: '--',
+    name: 'Normal',
   },
   {
     id: ContestModes.Rating,

@@ -45,6 +45,10 @@ const limits = {
   },
   admin: {
     problemList: 50,
+    contestList: 50,
+    userList: 50,
+    postList: 50,
+    groupList: 50,
   },
 };
 

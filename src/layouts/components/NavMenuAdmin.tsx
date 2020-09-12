@@ -94,12 +94,6 @@ class NavMenuAdmin extends React.Component<Props, State> {
           </Link>
         </Menu.Item>
 
-        <Menu.Item key={pages.admin.judger}>
-          <Link to={pages.admin.judger} onClick={onLinkClick}>
-            Judger
-          </Link>
-        </Menu.Item>
-
         <Menu.Item key="settings" className="float-right">
           <SettingsModal>
             <Icon type="setting" />

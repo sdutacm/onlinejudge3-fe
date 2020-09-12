@@ -116,8 +116,15 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                 <Form.Item key={item.field} label={item.name}>
                   {getFieldDecorator(item.field, {
                     rules: item.rules,
-                    initialValue: moment(initialValues[item.field] || item.initialValue),
-                  })(<DatePicker showTime placeholder={item.placeholder || 'Choose Time'} />)}
+                    initialValue: (initialValues[item.field] || item.initialValue) ? moment(initialValues[item.field] || item.initialValue) : undefined,
+                  })(
+                    <DatePicker
+                      showTime={{ format: 'HH:mm:ss' }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      placeholder={item.placeholder || 'Choose time'}
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               );
             case 'richtext':

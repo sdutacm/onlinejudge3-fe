@@ -64,6 +64,12 @@ class NavMenuAdmin extends React.Component<Props, State> {
           </Link>
         </Menu.Item>
 
+        <Menu.Item key={pages.admin.tags}>
+          <Link to={pages.admin.tags} onClick={onLinkClick}>
+            Tags
+          </Link>
+        </Menu.Item>
+
         <Menu.Item key={pages.admin.contests}>
           <Link to={pages.admin.contests} onClick={onLinkClick}>
             Contests
@@ -73,6 +79,24 @@ class NavMenuAdmin extends React.Component<Props, State> {
         <Menu.Item key={pages.admin.users}>
           <Link to={pages.admin.users} onClick={onLinkClick}>
             Users
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key={pages.admin.posts}>
+          <Link to={pages.admin.posts} onClick={onLinkClick}>
+            Posts
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key={pages.admin.groups}>
+          <Link to={pages.admin.groups} onClick={onLinkClick}>
+            Groups
+          </Link>
+        </Menu.Item>
+
+        <Menu.Item key={pages.admin.judger}>
+          <Link to={pages.admin.judger} onClick={onLinkClick}>
+            Judger
           </Link>
         </Menu.Item>
 

@@ -242,6 +242,7 @@ interface ITag {
   nameZhHans: string;
   nameZhHant: string;
   createdAt: ITimestamp;
+  hidden: boolean;
 }
 
 interface IMessage {

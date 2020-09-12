@@ -92,12 +92,20 @@ export default {
     *setProblemTags({ payload: { id, tagIds } }, { call }) {
       return yield call(service.setProblemTags, id, { tagIds });
     },
+    *createTag({ payload: { data } }, { call }) {
+      return yield call(service.createTag, data);
+    },
+    *updateTagDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateTagDetail, id, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
       return history.listen(({ pathname, query }) => {
         if (pathname === pages.admin.problems) {
           requestEffect(dispatch, { type: 'getProblemList', payload: query });
+          requestEffect(dispatch, { type: 'getTagList' });
+        } else if (pathname === pages.admin.tags) {
           requestEffect(dispatch, { type: 'getTagList' });
         }
       });

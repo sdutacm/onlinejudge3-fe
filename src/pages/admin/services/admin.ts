@@ -11,7 +11,13 @@ import {
   ICreateProblemReq,
   ICreateProblemResp,
 } from '@/common/contracts/problem';
-import { IGetTagFullListReq, IGetTagFullListResp } from '@/common/contracts/tag';
+import {
+  IGetTagFullListReq,
+  IGetTagFullListResp,
+  ICreateTagReq,
+  ICreateTagResp,
+  IUpdateTagDetailReq,
+} from '@/common/contracts/tag';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -50,5 +56,20 @@ export function setProblemTags(problemId, data) {
 }
 
 export function getTagList() {
-  return post<IGetTagFullListReq, IGetTagFullListResp>(routesBe.getTagFullList.url);
+  return post<IGetTagFullListReq, IGetTagFullListResp>(routesBe.getTagFullList.url, {
+    _scope: null,
+  });
+}
+
+export function createTag(data) {
+  return post<ICreateTagReq, ICreateTagResp>(routesBe.createTag.url, {
+    ...data,
+  });
+}
+
+export function updateTagDetail(tagId, data) {
+  return post<IUpdateTagDetailReq, void>(routesBe.updateTagDetail.url, {
+    tagId,
+    ...data,
+  });
 }

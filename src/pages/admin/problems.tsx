@@ -66,7 +66,7 @@ class AdminProblemList extends React.Component<Props, State> {
                 id: problemId,
               },
             }),
-          constants.drawerAnimationDuration + 100,
+          constants.drawerAnimationDuration,
         );
       },
     );
@@ -193,6 +193,19 @@ class AdminProblemList extends React.Component<Props, State> {
     return items;
   }
 
+  gethandledDataFromForm(values) {
+    return {
+      ...values,
+      timeLimit: +values.timeLimit,
+      memoryLimit: +values.memoryLimit,
+      description: values.description.toHTML(),
+      input: values.input.toHTML(),
+      output: values.output.toHTML(),
+      hint: values.hint.toHTML(),
+      display: values.display === 'true',
+    };
+  }
+
   render() {
     const {
       listLoading,
@@ -278,7 +291,7 @@ class AdminProblemList extends React.Component<Props, State> {
                         loading={record.problemId === currentProblemId && submitLoading}
                         // fetchLoadingEffect="admin/getProblemDetail"
                         // loadingEffect="admin/updateProblemDetail"
-                        title={`Edit Problem ${record.problemId}`}
+                        title={`Edit Problem #${record.problemId}`}
                         autoMsg
                         cancelText="Cancel (discard changes)"
                         width={600}
@@ -289,16 +302,7 @@ class AdminProblemList extends React.Component<Props, State> {
                             category: 'admin',
                             action: 'updateProblem',
                           });
-                          const data = {
-                            ...values,
-                            timeLimit: +values.timeLimit,
-                            memoryLimit: +values.memoryLimit,
-                            description: values.description.toHTML(),
-                            input: values.input.toHTML(),
-                            output: values.output.toHTML(),
-                            hint: values.hint.toHTML(),
-                            display: values.display === 'true',
-                          };
+                          const data = this.gethandledDataFromForm(values);
                           console.log('data', data);
                           return dispatch({
                             type: 'admin/updateProblemDetail',
@@ -360,16 +364,7 @@ class AdminProblemList extends React.Component<Props, State> {
                     category: 'admin',
                     action: 'createProblem',
                   });
-                  const data = {
-                    ...values,
-                    timeLimit: +values.timeLimit,
-                    memoryLimit: +values.memoryLimit,
-                    description: values.description.toHTML(),
-                    input: values.input.toHTML(),
-                    output: values.output.toHTML(),
-                    hint: values.hint.toHTML(),
-                    display: values.display === 'true',
-                  };
+                  const data = this.gethandledDataFromForm(values);
                   console.log('data', data);
                   return dispatch({
                     type: 'admin/createProblem',
@@ -382,7 +377,7 @@ class AdminProblemList extends React.Component<Props, State> {
                   dispatch: ReduxProps['dispatch'],
                   ret: IApiResponse<{ problemId: number }>,
                 ) => {
-                  msg.success(`Create problem ${ret.data.problemId} successfully`);
+                  msg.success(`Create problem #${ret.data.problemId} successfully`);
                 }}
                 onSuccessAndClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
                   dispatch({

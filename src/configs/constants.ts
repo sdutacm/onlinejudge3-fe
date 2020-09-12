@@ -26,7 +26,7 @@ const constants = {
   navbarHeight: 64,
   setStatsUserMaxSelect: 1000,
   setStatsUserMaxSelectPermission: 5000,
-  drawerAnimationDuration: 300,
+  drawerAnimationDuration: 300 + 100,
 };
 
 export default constants;

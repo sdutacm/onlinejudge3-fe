@@ -52,8 +52,13 @@ export default {
   admin: {
     index: '/admin',
     problems: '/admin/problems',
+    tags: '/admin/tags',
     contests: '/admin/contests',
     users: '/admin/users',
+    posts: '/admin/posts',
+    sets: '/admin/sets',
+    groups: '/admin/groups',
+    judger: '/admin/judger',
   },
   beta: '/beta',
   OJBK: '/OJBK',

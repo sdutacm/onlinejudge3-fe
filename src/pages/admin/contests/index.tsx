@@ -88,7 +88,7 @@ class AdminContestList extends React.Component<Props, State> {
         name: 'Type',
         field: 'type',
         component: 'select',
-        initialValue: `${detail?.type || ContestTypes.Public}`,
+        initialValue: `${detail?.type ?? ContestTypes.Public}`,
         options: contestTypes.map((p) => ({
           value: p.id,
           name: p.name,
@@ -99,7 +99,7 @@ class AdminContestList extends React.Component<Props, State> {
         name: 'Category',
         field: 'category',
         component: 'select',
-        initialValue: `${detail?.category || ContestCategories.Test}`,
+        initialValue: `${detail?.category ?? ContestCategories.Test}`,
         options: contestCategories.map((p) => ({
           value: p.id,
           name: p.name,
@@ -110,7 +110,7 @@ class AdminContestList extends React.Component<Props, State> {
         name: 'Mode',
         field: 'mode',
         component: 'select',
-        initialValue: `${detail?.mode || ContestModes.None}`,
+        initialValue: `${detail?.mode ?? ContestModes.None}`,
         options: contestModes.map((p) => ({
           value: p.id,
           name: p.name,

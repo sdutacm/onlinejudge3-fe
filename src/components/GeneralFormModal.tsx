@@ -58,10 +58,10 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
             onSuccess?.(dispatch, ret);
             this.handleHideModel();
             onSuccessModalClosed &&
-              setTimeout(
-                () => onSuccessModalClosed(dispatch, ret),
-                constants.modalAnimationDurationFade,
-              );
+              setTimeout(() => {
+                onSuccessModalClosed(dispatch, ret);
+                form.resetFields();
+              }, constants.modalAnimationDurationFade);
           } else {
             onFail?.(dispatch, ret);
           }

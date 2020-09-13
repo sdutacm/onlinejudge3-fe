@@ -63,10 +63,10 @@ class GeneralFormDrawer extends React.Component<IGeneralFormDrawerProps, State> 
             onSuccess?.(dispatch, ret);
             this.handleHideDrawer();
             onSuccessAndClosed &&
-              setTimeout(
-                () => onSuccessAndClosed(dispatch, ret),
-                constants.drawerAnimationDuration,
-              );
+              setTimeout(() => {
+                onSuccessAndClosed(dispatch, ret);
+                form.resetFields();
+              }, constants.drawerAnimationDuration);
           } else {
             onFail?.(dispatch, ret);
           }

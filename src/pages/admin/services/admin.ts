@@ -27,7 +27,24 @@ import {
   ICreateContestResp,
   IUpdateContestDetailReq,
 } from '@/common/contracts/contest';
-import { IGetPostListReq, IGetPostListResp, IGetPostDetailReq, IGetPostDetailResp, ICreatePostReq, ICreatePostResp, IUpdatePostDetailReq } from '@/common/contracts/post';
+import {
+  IGetPostListReq,
+  IGetPostListResp,
+  IGetPostDetailReq,
+  IGetPostDetailResp,
+  ICreatePostReq,
+  ICreatePostResp,
+  IUpdatePostDetailReq,
+} from '@/common/contracts/post';
+import {
+  IGetGroupListReq,
+  IGetGroupListResp,
+  IGetGroupDetailReq,
+  IGetGroupDetailResp,
+  ICreateGroupReq,
+  ICreateGroupResp,
+  IUpdateGroupDetailReq,
+} from '@/common/contracts/group';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -138,6 +155,33 @@ export function createPost(data) {
 export function updatePostDetail(postId, data) {
   return post<IUpdatePostDetailReq, void>(routesBe.updatePostDetail.url, {
     postId,
+    ...data,
+  });
+}
+
+export function getGroupList(query) {
+  return post<IGetGroupListReq, IGetGroupListResp>(routesBe.getGroupList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.admin.groupList,
+  });
+}
+
+export function getGroupDetail(groupId) {
+  return post<IGetGroupDetailReq, IGetGroupDetailResp>(routesBe.getGroupDetail.url, {
+    groupId,
+  });
+}
+
+export function createGroup(data) {
+  return post<ICreateGroupReq, ICreateGroupResp>(routesBe.createGroup.url, {
+    ...data,
+  });
+}
+
+export function updateGroupDetail(groupId, data) {
+  return post<IUpdateGroupDetailReq, void>(routesBe.updateGroupDetail.url, {
+    groupId,
     ...data,
   });
 }

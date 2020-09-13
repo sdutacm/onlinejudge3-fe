@@ -27,6 +27,12 @@ const initialState = {
     rows: [],
   },
   postDetail: {},
+  groupList: {
+    page: 1,
+    count: 0,
+    rows: [],
+  },
+  groupDetail: {},
 };
 
 export default {
@@ -64,6 +70,16 @@ export default {
     },
     setPostDetail(state, { payload: { id, data } }) {
       state.postDetail[id] = {
+        ...data,
+      };
+    },
+    setGroupList(state, { payload: { data } }) {
+      state.groupList = {
+        ...data,
+      };
+    },
+    setGroupDetail(state, { payload: { id, data } }) {
+      state.groupDetail[id] = {
         ...data,
       };
     },
@@ -198,6 +214,44 @@ export default {
     *updatePostDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updatePostDetail, id, data);
     },
+    *getGroupList({ payload: query }, { call, put }) {
+      const formattedQuery = formatListQuery(query);
+      formattedQuery.groupId && (formattedQuery.groupId = +formattedQuery.groupId);
+      formattedQuery.joinChannel && (formattedQuery.joinChannel = +formattedQuery.joinChannel);
+      formattedQuery.verified && (formattedQuery.verified = formattedQuery.verified === 'true');
+      formattedQuery.private && (formattedQuery.private = formattedQuery.private === 'true');
+      formattedQuery.order = [['groupId', 'DESC']];
+      const ret: IApiResponse<IList<IGroup>> = yield call(service.getGroupList, formattedQuery);
+      if (ret.success) {
+        yield put({
+          type: 'setGroupList',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
+    },
+    *getGroupDetail({ payload: { id } }, { all, call, put }) {
+      const detailRet: IApiResponse<any> = yield call(service.getGroupDetail, id);
+      if (detailRet.success) {
+        yield put({
+          type: 'setGroupDetail',
+          payload: {
+            id,
+            data: detailRet.data,
+          },
+        });
+      }
+      return detailRet;
+    },
+    *createGroup({ payload: { data } }, { call }) {
+      return yield call(service.createGroup, data);
+    },
+    *updateGroupDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateGroupDetail, id, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -211,6 +265,8 @@ export default {
           requestEffect(dispatch, { type: 'getContestList', payload: query });
         } else if (pathname === pages.admin.posts) {
           requestEffect(dispatch, { type: 'getPostList', payload: query });
+        } else if (pathname === pages.admin.groups) {
+          requestEffect(dispatch, { type: 'getGroupList', payload: query });
         }
       });
     },

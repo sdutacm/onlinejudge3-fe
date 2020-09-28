@@ -33,6 +33,10 @@ interface IUser {
   solutionCalendar?: ISolutionCalendar;
   defaultLanguage?: string;
   groups?: IGroup[];
+  forbidden: number;
+  lastIp?: string;
+  lastTime?: string | null;
+  createdAt?: string;
 }
 
 interface IUserLite {

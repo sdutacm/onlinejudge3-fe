@@ -211,7 +211,7 @@ class AdminContestList extends React.Component<Props, State> {
     return items;
   }
 
-  gethandledDataFromForm(values) {
+  getHandledDataFromForm(values) {
     return {
       ...values,
       type: +values.type,
@@ -312,7 +312,7 @@ class AdminContestList extends React.Component<Props, State> {
                             category: 'admin',
                             action: 'updateContest',
                           });
-                          const data = this.gethandledDataFromForm(values);
+                          const data = this.getHandledDataFromForm(values);
                           console.log('data', data);
                           return dispatch({
                             type: 'admin/updateContestDetail',
@@ -372,7 +372,7 @@ class AdminContestList extends React.Component<Props, State> {
                     category: 'admin',
                     action: 'createContest',
                   });
-                  const data = this.gethandledDataFromForm(values);
+                  const data = this.getHandledDataFromForm(values);
                   console.log('data', data);
                   return dispatch({
                     type: 'admin/createContest',

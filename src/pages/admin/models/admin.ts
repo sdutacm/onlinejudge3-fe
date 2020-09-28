@@ -21,6 +21,12 @@ const initialState = {
     rows: [],
   },
   contestDetail: {},
+  userList: {
+    page: 1,
+    count: 0,
+    rows: [],
+  },
+  userDetail: {},
   postList: {
     page: 1,
     count: 0,
@@ -60,6 +66,16 @@ export default {
     },
     setContestDetail(state, { payload: { id, data } }) {
       state.contestDetail[id] = {
+        ...data,
+      };
+    },
+    setUserList(state, { payload: { data } }) {
+      state.userList = {
+        ...data,
+      };
+    },
+    setUserDetail(state, { payload: { id, data } }) {
+      state.userDetail[id] = {
         ...data,
       };
     },
@@ -178,6 +194,46 @@ export default {
     *updateContestDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateContestDetail, id, data);
     },
+    *getUserList({ payload: query }, { call, put }) {
+      const formattedQuery = formatListQuery(query);
+      formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
+      formattedQuery.forbidden && (formattedQuery.forbidden = +formattedQuery.forbidden);
+      formattedQuery.verified && (formattedQuery.verified = formattedQuery.verified === 'true');
+      formattedQuery.order = [['userId', 'ASC']];
+      const ret: IApiResponse<IList<IUser>> = yield call(service.getUserList, formattedQuery);
+      if (ret.success) {
+        yield put({
+          type: 'setUserList',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
+    },
+    *getUserDetail({ payload: { id } }, { all, call, put }) {
+      const detailRet: IApiResponse<any> = yield call(service.getUserDetail, id);
+      if (detailRet.success) {
+        yield put({
+          type: 'setUserDetail',
+          payload: {
+            id,
+            data: detailRet.data,
+          },
+        });
+      }
+      return detailRet;
+    },
+    *createUser({ payload: { data } }, { call }) {
+      return yield call(service.createUser, data);
+    },
+    *updateUserDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateUserDetail, id, data);
+    },
+    *resetUserPasswordByAdmin({ payload: { id, password } }, { call }) {
+      return yield call(service.resetUserPasswordByAdmin, id, password);
+    },
     *getPostList({ payload: query }, { call, put }) {
       const formattedQuery = formatListQuery(query);
       formattedQuery.postId && (formattedQuery.postId = +formattedQuery.postId);
@@ -263,6 +319,8 @@ export default {
           requestEffect(dispatch, { type: 'getTagList' });
         } else if (pathname === pages.admin.contests) {
           requestEffect(dispatch, { type: 'getContestList', payload: query });
+        } else if (pathname === pages.admin.users) {
+          requestEffect(dispatch, { type: 'getUserList', payload: query });
         } else if (pathname === pages.admin.posts) {
           requestEffect(dispatch, { type: 'getPostList', payload: query });
         } else if (pathname === pages.admin.groups) {

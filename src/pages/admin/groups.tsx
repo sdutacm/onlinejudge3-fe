@@ -139,7 +139,7 @@ class AdminGroupList extends React.Component<Props, State> {
     return items;
   }
 
-  gethandledDataFromForm(values) {
+  getHandledDataFromForm(values) {
     return {
       ...values,
       verified: values.verified === 'true',
@@ -220,7 +220,7 @@ class AdminGroupList extends React.Component<Props, State> {
                             category: 'admin',
                             action: 'updateGroup',
                           });
-                          const data = this.gethandledDataFromForm(values);
+                          const data = this.getHandledDataFromForm(values);
                           console.log('data', data);
                           return dispatch({
                             type: 'admin/updateGroupDetail',
@@ -283,7 +283,7 @@ class AdminGroupList extends React.Component<Props, State> {
                     category: 'admin',
                     action: 'createGroup',
                   });
-                  const data = this.gethandledDataFromForm(values);
+                  const data = this.getHandledDataFromForm(values);
                   console.log('data', data);
                   return dispatch({
                     type: 'admin/createGroup',

@@ -45,6 +45,16 @@ import {
   ICreateGroupResp,
   IUpdateGroupDetailReq,
 } from '@/common/contracts/group';
+import {
+  IGetUserListReq,
+  IGetUserListResp,
+  IGetUserDetailReq,
+  IGetUserDetailResp,
+  ICreateUserReq,
+  ICreateUserResp,
+  IUpdateUserDetailReq,
+  IResetUserPasswordByAdminReq,
+} from '@/common/contracts/user';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -126,6 +136,42 @@ export function createContest(data) {
 export function updateContestDetail(contestId, data) {
   return post<IUpdateContestDetailReq, void>(routesBe.updateContestDetail.url, {
     contestId,
+    ...data,
+  });
+}
+
+export function getUserList(query) {
+  return post<IGetUserListReq, IGetUserListResp>(routesBe.getUserList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.admin.userList,
+    _scope: null,
+  });
+}
+
+export function getUserDetail(userId) {
+  return post<IGetUserDetailReq, IGetUserDetailResp>(routesBe.getUserDetail.url, {
+    userId,
+    _scope: null,
+  });
+}
+
+export function createUser(data) {
+  return post<ICreateUserReq, ICreateUserResp>(routesBe.createUser.url, {
+    ...data,
+  });
+}
+
+export function resetUserPasswordByAdmin(userId, password) {
+  return post<IResetUserPasswordByAdminReq, void>(routesBe.resetUserPasswordByAdmin.url, {
+    userId,
+    password,
+  });
+}
+
+export function updateUserDetail(userId, data) {
+  return post<IUpdateUserDetailReq, void>(routesBe.updateUserDetail.url, {
+    userId,
     ...data,
   });
 }

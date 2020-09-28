@@ -193,7 +193,7 @@ class AdminProblemList extends React.Component<Props, State> {
     return items;
   }
 
-  gethandledDataFromForm(values) {
+  getHandledDataFromForm(values) {
     return {
       ...values,
       timeLimit: +values.timeLimit,
@@ -302,7 +302,7 @@ class AdminProblemList extends React.Component<Props, State> {
                             category: 'admin',
                             action: 'updateProblem',
                           });
-                          const data = this.gethandledDataFromForm(values);
+                          const data = this.getHandledDataFromForm(values);
                           console.log('data', data);
                           return dispatch({
                             type: 'admin/updateProblemDetail',
@@ -364,7 +364,7 @@ class AdminProblemList extends React.Component<Props, State> {
                     category: 'admin',
                     action: 'createProblem',
                   });
-                  const data = this.gethandledDataFromForm(values);
+                  const data = this.getHandledDataFromForm(values);
                   console.log('data', data);
                   return dispatch({
                     type: 'admin/createProblem',

@@ -96,7 +96,7 @@ class AdminTagList extends React.Component<Props, State> {
     return items;
   }
 
-  gethandledDataFromForm(values) {
+  getHandledDataFromForm(values) {
     return {
       ...values,
       hidden: values.hidden === 'true',
@@ -166,7 +166,7 @@ class AdminTagList extends React.Component<Props, State> {
                             category: 'admin',
                             action: 'updateTag',
                           });
-                          const data = this.gethandledDataFromForm(values);
+                          const data = this.getHandledDataFromForm(values);
                           console.log('data', data);
                           return dispatch({
                             type: 'admin/updateTagDetail',
@@ -212,7 +212,7 @@ class AdminTagList extends React.Component<Props, State> {
                     category: 'admin',
                     action: 'createTag',
                   });
-                  const data = this.gethandledDataFromForm(values);
+                  const data = this.getHandledDataFromForm(values);
                   console.log('data', data);
                   return dispatch({
                     type: 'admin/createTag',

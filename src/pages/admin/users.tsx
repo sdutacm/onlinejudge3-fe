@@ -1,5 +1,5 @@
 /**
- * title: Admin Posts
+ * title: Admin Users
  */
 
 import React from 'react';
@@ -19,27 +19,28 @@ import { urlf } from '@/utils/format';
 import pages from '@/configs/pages';
 import TimeBar from '@/components/TimeBar';
 import { IGeneralFormItem } from '@/components/GeneralForm';
+import userForbidden, { UserForbidden } from '@/configs/userForbidden';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
-  list: IList<IPost>;
-  detailMap: ITypeObject<IPost>;
+  list: IList<IUser>;
+  detailMap: ITypeObject<IUser>;
   listLoading: boolean;
   detailLoading: boolean;
   submitLoading: boolean;
 }
 
 interface State {
-  currentPostId?: number;
+  currentUserId?: number;
 }
 
-class AdminPostList extends React.Component<Props, State> {
+class AdminUserList extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
 
   constructor(props) {
     super(props);
     this.state = {
-      currentPostId: undefined,
+      currentUserId: undefined,
     };
   }
 
@@ -50,18 +51,18 @@ class AdminPostList extends React.Component<Props, State> {
     });
   };
 
-  editPost = (postId) => {
+  editUser = (userId) => {
     this.setState(
       {
-        currentPostId: postId,
+        currentUserId: userId,
       },
       () => {
         setTimeout(
           () =>
             this.props.dispatch({
-              type: 'admin/getPostDetail',
+              type: 'admin/getUserDetail',
               payload: {
-                id: postId,
+                id: userId,
               },
             }),
           constants.drawerAnimationDuration,
@@ -70,56 +71,86 @@ class AdminPostList extends React.Component<Props, State> {
     );
   };
 
-  getPostDetailFormItems(postId?: number) {
+  getUserDetailFormItems(userId?: number) {
     const { detailMap } = this.props;
-    const detail = detailMap[postId];
+    const detail = detailMap[userId];
     const items: IGeneralFormItem[] = [
       {
-        name: 'Title',
-        field: 'title',
+        name: 'Username',
+        field: 'username',
         component: 'input',
-        initialValue: detail?.title || '',
+        initialValue: detail?.username || '',
+        disabled: !!detail?.username,
         rules: [{ required: true, message: 'Please input the field' }],
       },
       {
-        name: 'Content',
-        field: 'content',
-        component: 'richtext',
-        initialValue: detail?.content || '',
-        rules: [],
-        contentStyle: { height: '250px' },
-        uploadTarget: 'asset',
-        uploadOption: {
-          prefix: 'post',
-          maxSize: 32,
-        },
+        name: 'Nickname',
+        field: 'nickname',
+        component: 'input',
+        initialValue: detail?.nickname || '',
+        disabled: !!detail?.nickname,
+        rules: [{ required: true, message: 'Please input the field' }],
       },
       {
-        name: 'Display',
-        field: 'display',
+        name: 'School',
+        field: 'school',
+        component: 'input',
+        initialValue: detail?.school || '',
+        rules: [],
+      },
+      {
+        name: 'College',
+        field: 'college',
+        component: 'input',
+        initialValue: detail?.college || '',
+        rules: [],
+      },
+      {
+        name: 'Major',
+        field: 'major',
+        component: 'input',
+        initialValue: detail?.major || '',
+        rules: [],
+      },
+      {
+        name: 'Class',
+        field: 'class',
+        component: 'input',
+        initialValue: detail?.class || '',
+        rules: [],
+      },
+      {
+        name: 'Password',
+        field: 'password',
+        component: 'input',
+        type: 'password',
+        initialValue: '',
+        rules: [{ required: true, message: 'Please input the field' }],
+      },
+      {
+        name: 'Forbidden',
+        field: 'forbidden',
         component: 'select',
-        initialValue: `${!!(detail?.display ?? true)}`,
-        options: [
-          {
-            value: true,
-            name: 'Yes',
-          },
-          {
-            value: false,
-            name: 'No',
-          },
-        ],
+        initialValue: `${detail?.forbidden ?? UserForbidden.normal}`,
+        options: userForbidden.map((item) => ({
+          value: item.id,
+          name: item.name,
+        })),
         rules: [{ required: true }],
       },
     ];
+    if (detail) {
+      items.splice(6, 1);
+    } else {
+      items.splice(7, 1);
+    }
     return items;
   }
 
   getHandledDataFromForm(values) {
     return {
       ...values,
-      content: values.content.toHTML(),
-      display: values.display === 'true',
+      forbidden: +values.forbidden,
     };
   }
 
@@ -131,8 +162,8 @@ class AdminPostList extends React.Component<Props, State> {
       list: { page, count, rows },
       detailMap,
     } = this.props;
-    const { currentPostId } = this.state;
-    const detail = detailMap[currentPostId];
+    const { currentUserId } = this.state;
+    const detail = detailMap[currentUserId];
     return (
       <PageAnimation>
         <Row gutter={16} className="list-view">
@@ -140,7 +171,7 @@ class AdminPostList extends React.Component<Props, State> {
             <Card bordered={false} className="list-card">
               <Table
                 dataSource={rows}
-                rowKey="postId"
+                rowKey="userId"
                 loading={listLoading}
                 pagination={false}
                 className="responsive-table"
@@ -149,73 +180,107 @@ class AdminPostList extends React.Component<Props, State> {
                   title="ID"
                   key="ID"
                   width={48}
-                  render={(text, record: IPost) => (
-                    <span className={record.display ? '' : 'text-secondary'}>{record.postId}</span>
+                  render={(text, record: IUser) => (
+                    <span
+                      className={record.forbidden === UserForbidden.normal ? '' : 'text-secondary'}
+                    >
+                      {record.userId}
+                    </span>
                   )}
                 />
                 <Table.Column
-                  title="Title"
-                  key="Title"
-                  render={(text, record: IPost) => (
-                      <span className={record.display ? '' : 'text-secondary'}>{record.title}</span>
+                  title="Username"
+                  key="Username"
+                  render={(text, record: IUser) => (
+                    <span
+                      className={record.forbidden === UserForbidden.normal ? '' : 'text-secondary'}
+                    >
+                      {record.username}
+                    </span>
                   )}
                 />
                 <Table.Column
-                  title="Added at"
+                  title="Nickname"
+                  key="Nickname"
+                  render={(text, record: IUser) => (
+                    <span
+                      className={record.forbidden === UserForbidden.normal ? '' : 'text-secondary'}
+                    >
+                      {record.nickname}
+                    </span>
+                  )}
+                />
+                <Table.Column
+                  title="Last Login"
+                  key="LastLogin"
+                  render={(text, record: IUser) =>
+                    record.lastTime && (
+                      <span>
+                        <TimeBar time={new Date(record.lastTime).getTime()} />
+                        <span className="ml-md">({record.lastIp})</span>
+                      </span>
+                    )
+                  }
+                />
+                <Table.Column
+                  title="Register at"
                   key="CreatedAt"
-                  render={(text, record: IPost) => (
+                  render={(text, record: IUser) => (
                     <TimeBar time={new Date(record.createdAt).getTime()} />
                   )}
                 />
                 <Table.Column
                   title="Actions"
                   key="Actions"
-                  render={(text, record: IPost) => (
+                  render={(text, record: IUser) => (
                     <div>
                       <GeneralFormDrawer
-                        fetchLoading={record.postId === currentPostId && (!detail || detailLoading)}
-                        loading={record.postId === currentPostId && submitLoading}
-                        // fetchLoadingEffect="admin/getPostDetail"
-                        // loadingEffect="admin/updatePostDetail"
-                        title={`Edit Post #${record.postId}`}
+                        fetchLoading={record.userId === currentUserId && (!detail || detailLoading)}
+                        loading={record.userId === currentUserId && submitLoading}
+                        // fetchLoadingEffect="admin/getUserDetail"
+                        // loadingEffect="admin/updateUserDetail"
+                        title={`Edit User #${record.userId}`}
                         autoMsg
                         cancelText="Cancel (discard changes)"
                         width={600}
                         maskClosable={false}
-                        items={this.getPostDetailFormItems(record.postId)}
+                        items={this.getUserDetailFormItems(record.userId)}
                         submit={(dispatch: ReduxProps['dispatch'], values) => {
                           tracker.event({
                             category: 'admin',
-                            action: 'updatePost',
+                            action: 'updateUser',
                           });
                           const data = this.getHandledDataFromForm(values);
+                          delete data.username;
+                          delete data.nickname;
+                          delete data.password;
                           console.log('data', data);
                           return dispatch({
-                            type: 'admin/updatePostDetail',
+                            type: 'admin/updateUserDetail',
                             payload: {
-                              id: record.postId,
+                              id: record.userId,
                               data,
                             },
                           });
                         }}
                         onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
-                          msg.success('Update post successfully');
+                          msg.success('Update user successfully');
                         }}
                         onSuccessAndClosed={(
                           dispatch: ReduxProps['dispatch'],
                           ret: IApiResponse,
                         ) => {
                           dispatch({
-                            type: 'admin/getPostList',
+                            type: 'admin/getUserList',
                             payload: this.props.location.query,
                           });
                         }}
                       >
-                        <a onClick={() => this.editPost(record.postId)}>Edit</a>
+                        <a onClick={() => this.editUser(record.userId)}>Edit</a>
                       </GeneralFormDrawer>
-                      {record.display && (
+                      {record.forbidden === UserForbidden.normal && (
                         <Link
-                          to={urlf(pages.posts.detail, { param: { id: record.postId } })}
+                          to={urlf(pages.users.detail, { param: { id: record.userId } })}
                           target="_blank"
                           className="ml-md-lg"
                         >
@@ -230,7 +295,7 @@ class AdminPostList extends React.Component<Props, State> {
                 className="ant-table-pagination"
                 total={count}
                 current={page}
-                pageSize={limits.admin.postList}
+                pageSize={limits.admin.userList}
                 onChange={this.handlePageChange}
               />
             </Card>
@@ -238,22 +303,23 @@ class AdminPostList extends React.Component<Props, State> {
           <Col xs={24} md={6} xxl={4}>
             <Card bordered={false}>
               <GeneralFormDrawer
-                loadingEffect="admin/createPost"
-                title="Add Post"
+                loadingEffect="admin/createUser"
+                title="Add User"
                 autoMsg
                 cancelText="Cancel"
                 width={600}
                 maskClosable={false}
-                items={this.getPostDetailFormItems()}
+                items={this.getUserDetailFormItems()}
                 submit={(dispatch: ReduxProps['dispatch'], values) => {
                   tracker.event({
                     category: 'admin',
-                    action: 'createPost',
+                    action: 'createUser',
                   });
                   const data = this.getHandledDataFromForm(values);
+                  delete data.forbidden;
                   console.log('data', data);
                   return dispatch({
-                    type: 'admin/createPost',
+                    type: 'admin/createUser',
                     payload: {
                       data,
                     },
@@ -261,28 +327,38 @@ class AdminPostList extends React.Component<Props, State> {
                 }}
                 onSuccess={(
                   dispatch: ReduxProps['dispatch'],
-                  ret: IApiResponse<{ postId: number }>,
+                  ret: IApiResponse<{ userId: number }>,
                 ) => {
-                  msg.success(`Create post #${ret.data.postId} successfully`);
+                  msg.success(`Create user #${ret.data.userId} successfully`);
                 }}
                 onSuccessAndClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
                   dispatch({
-                    type: 'admin/getPostList',
+                    type: 'admin/getUserList',
                     payload: this.props.location.query,
                   });
                 }}
               >
-                <Button block>Add Post</Button>
+                <Button block>Add User</Button>
               </GeneralFormDrawer>
             </Card>
             <Card bordered={false}>
               <FilterCard
                 fields={[
-                  { displayName: 'Post ID', fieldName: 'postId' },
-                  { displayName: 'Title', fieldName: 'title' },
+                  { displayName: 'User ID', fieldName: 'userId' },
+                  { displayName: 'Username', fieldName: 'username' },
+                  { displayName: 'Nickname', fieldName: 'nickname' },
+                  { displayName: 'Grade', fieldName: 'grade' },
                   {
-                    displayName: 'Display',
-                    fieldName: 'display',
+                    displayName: 'Forbidden',
+                    fieldName: 'forbidden',
+                    options: userForbidden.map((item) => ({
+                      displayName: item.name,
+                      fieldName: item.id,
+                    })),
+                  },
+                  {
+                    displayName: 'Verified',
+                    fieldName: 'verified',
                     options: [
                       {
                         displayName: 'Yes',
@@ -307,12 +383,12 @@ class AdminPostList extends React.Component<Props, State> {
 function mapStateToProps(state) {
   return {
     session: state.session,
-    listLoading: !!state.loading.effects['admin/getPostList'],
-    detailLoading: !!state.loading.effects['admin/getPostDetail'],
-    submitLoading: !!state.loading.effects['admin/updatePostDetail'],
-    list: state.admin.postList,
-    detailMap: state.admin.postDetail,
+    listLoading: !!state.loading.effects['admin/getUserList'],
+    detailLoading: !!state.loading.effects['admin/getUserDetail'],
+    submitLoading: !!state.loading.effects['admin/updateUserDetail'],
+    list: state.admin.userList,
+    detailMap: state.admin.userDetail,
   };
 }
 
-export default connect(mapStateToProps)(AdminPostList);
+export default connect(mapStateToProps)(AdminUserList);

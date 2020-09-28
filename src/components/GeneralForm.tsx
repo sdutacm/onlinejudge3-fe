@@ -116,7 +116,10 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                 <Form.Item key={item.field} label={item.name}>
                   {getFieldDecorator(item.field, {
                     rules: item.rules,
-                    initialValue: (initialValues[item.field] || item.initialValue) ? moment(initialValues[item.field] || item.initialValue) : undefined,
+                    initialValue:
+                      initialValues[item.field] || item.initialValue
+                        ? moment(initialValues[item.field] || item.initialValue)
+                        : undefined,
                   })(
                     <DatePicker
                       showTime={{ format: 'HH:mm:ss' }}

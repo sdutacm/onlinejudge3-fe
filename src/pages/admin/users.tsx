@@ -20,6 +20,7 @@ import pages from '@/configs/pages';
 import TimeBar from '@/components/TimeBar';
 import { IGeneralFormItem } from '@/components/GeneralForm';
 import userForbidden, { UserForbidden } from '@/configs/userForbidden';
+import GeneralFormModal from '@/components/GeneralFormModal';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -154,6 +155,23 @@ class AdminUserList extends React.Component<Props, State> {
     };
   }
 
+  resetPasswordFormItems = [
+    {
+      name: 'New Password',
+      field: 'password',
+      component: 'input',
+      type: 'password',
+      rules: [{ required: true, message: 'Please input new password' }],
+    },
+    {
+      name: 'Confirm Password',
+      field: 'confirmPassword',
+      component: 'input',
+      type: 'password',
+      rules: [{ required: true, message: 'Please confirm new password' }],
+    },
+  ];
+
   render() {
     const {
       listLoading,
@@ -278,6 +296,35 @@ class AdminUserList extends React.Component<Props, State> {
                       >
                         <a onClick={() => this.editUser(record.userId)}>Edit</a>
                       </GeneralFormDrawer>
+                      <GeneralFormModal
+                        loadingEffect="admin/resetUserPasswordByAdmin"
+                        title={`Reset Password for ${record.nickname}`}
+                        autoMsg
+                        items={this.resetPasswordFormItems}
+                        submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          if (values.password !== values.confirmPassword) {
+                            msg.error('Two passwords are inconsistent');
+                            return;
+                          } else {
+                            tracker.event({
+                              category: 'admin',
+                              action: 'resetUserPasswordByAdmin',
+                            });
+                            return dispatch({
+                              type: 'admin/resetUserPasswordByAdmin',
+                              payload: {
+                                id: record.userId,
+                                password: values.password,
+                              },
+                            });
+                          }
+                        }}
+                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          msg.success('Reset password successfully');
+                        }}
+                      >
+                        <a className="ml-md-lg">Reset Password</a>
+                      </GeneralFormModal>
                       {record.forbidden === UserForbidden.normal && (
                         <Link
                           to={urlf(pages.users.detail, { param: { id: record.userId } })}

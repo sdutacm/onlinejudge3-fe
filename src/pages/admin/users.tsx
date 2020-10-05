@@ -21,6 +21,7 @@ import TimeBar from '@/components/TimeBar';
 import { IGeneralFormItem } from '@/components/GeneralForm';
 import userForbidden, { UserForbidden } from '@/configs/userForbidden';
 import GeneralFormModal from '@/components/GeneralFormModal';
+import userPermission, { UserPermission } from '@/configs/userPermission';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -139,11 +140,22 @@ class AdminUserList extends React.Component<Props, State> {
         })),
         rules: [{ required: true }],
       },
+      {
+        name: 'Permission',
+        field: 'permission',
+        component: 'select',
+        initialValue: `${detail?.permission ?? UserPermission.normal}`,
+        options: userPermission.map((item) => ({
+          value: item.id,
+          name: item.name,
+        })),
+        rules: [{ required: true }],
+      },
     ];
     if (detail) {
       items.splice(6, 1);
     } else {
-      items.splice(7, 1);
+      items.splice(7);
     }
     return items;
   }
@@ -152,6 +164,7 @@ class AdminUserList extends React.Component<Props, State> {
     return {
       ...values,
       forbidden: +values.forbidden,
+      permission: +values.permission,
     };
   }
 
@@ -364,6 +377,7 @@ class AdminUserList extends React.Component<Props, State> {
                   });
                   const data = this.getHandledDataFromForm(values);
                   delete data.forbidden;
+                  delete data.permission;
                   console.log('data', data);
                   return dispatch({
                     type: 'admin/createUser',
@@ -399,6 +413,14 @@ class AdminUserList extends React.Component<Props, State> {
                     displayName: 'Forbidden',
                     fieldName: 'forbidden',
                     options: userForbidden.map((item) => ({
+                      displayName: item.name,
+                      fieldName: item.id,
+                    })),
+                  },
+                  {
+                    displayName: 'Permission',
+                    fieldName: 'permission',
+                    options: userPermission.map((item) => ({
                       displayName: item.name,
                       fieldName: item.id,
                     })),

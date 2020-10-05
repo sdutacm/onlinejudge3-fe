@@ -198,6 +198,7 @@ export default {
       const formattedQuery = formatListQuery(query);
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
       formattedQuery.forbidden && (formattedQuery.forbidden = +formattedQuery.forbidden);
+      formattedQuery.permission && (formattedQuery.permission = +formattedQuery.permission);
       formattedQuery.verified && (formattedQuery.verified = formattedQuery.verified === 'true');
       formattedQuery.order = [['userId', 'ASC']];
       const ret: IApiResponse<IList<IUser>> = yield call(service.getUserList, formattedQuery);

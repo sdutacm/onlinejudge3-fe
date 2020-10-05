@@ -34,6 +34,7 @@ interface IUser {
   defaultLanguage?: string;
   groups?: IGroup[];
   forbidden: number;
+  permission?: number;
   lastIp?: string;
   lastTime?: string | null;
   createdAt?: string;

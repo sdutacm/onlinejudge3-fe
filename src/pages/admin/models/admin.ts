@@ -229,6 +229,9 @@ export default {
     *createUser({ payload: { data } }, { call }) {
       return yield call(service.createUser, data);
     },
+    *batchCreateUsers({ payload: { data } }, { call }) {
+      return yield call(service.batchCreateUsers, data);
+    },
     *updateUserDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateUserDetail, id, data);
     },

@@ -22,6 +22,7 @@ import { IGeneralFormItem } from '@/components/GeneralForm';
 import userForbidden, { UserForbidden } from '@/configs/userForbidden';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import userPermission, { UserPermission } from '@/configs/userPermission';
+import ImportUserModal from '@/components/ImportUserModal';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -401,6 +402,9 @@ class AdminUserList extends React.Component<Props, State> {
               >
                 <Button block>Add User</Button>
               </GeneralFormDrawer>
+              <ImportUserModal>
+                <Button block className="mt-md">Import Users</Button>
+              </ImportUserModal>
             </Card>
             <Card bordered={false}>
               <FilterCard

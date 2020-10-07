@@ -54,6 +54,7 @@ import {
   ICreateUserResp,
   IUpdateUserDetailReq,
   IResetUserPasswordByAdminReq,
+  IBatchCreateUsersReq,
 } from '@/common/contracts/user';
 
 export function getProblemList(query) {
@@ -158,6 +159,12 @@ export function getUserDetail(userId) {
 
 export function createUser(data) {
   return post<ICreateUserReq, ICreateUserResp>(routesBe.createUser.url, {
+    ...data,
+  });
+}
+
+export function batchCreateUsers(data) {
+  return post<IBatchCreateUsersReq, void>(routesBe.batchCreateUsers.url, {
     ...data,
   });
 }

@@ -417,7 +417,7 @@ class ContestUserList extends React.Component<Props, State> {
           value: item.id,
         })),
         initialValue: `${contestUser[uid]?.status ?? ContestUserStatus.accepted}`,
-        rules: [{ required: true, message: 'Please ' }],
+        rules: [{ required: true, message: 'Please select status' }],
       });
     }
     return items;
@@ -434,6 +434,30 @@ class ContestUserList extends React.Component<Props, State> {
     'tel',
     'email',
     'clothing',
+  ];
+
+  auditFormItems = [
+    {
+      name: 'Result',
+      field: 'status',
+      component: 'select',
+      options: contestUserStatus
+        .filter((item) => item.id !== ContestUserStatus.waiting)
+        .map((item) => ({
+          name: item.name,
+          value: item.id,
+        })),
+      initialValue: `${ContestUserStatus.accepted}`,
+      rules: [{ required: true, message: 'Please select status' }],
+    },
+    {
+      name: 'Reason',
+      field: 'reason',
+      component: 'input',
+      initialValue: '',
+      placeholder: 'Reason to notice user (no need to fiil if selected "Accepted")',
+      rules: [],
+    },
   ];
 
   render() {
@@ -504,28 +528,28 @@ class ContestUserList extends React.Component<Props, State> {
                 render={(text, user: IContestUser) => {
                   if (user.status === ContestUserStatus.waiting) {
                     return (
-                      <span>
+                      <span className="nowrap">
                         <Icon type="question" /> Pending
                       </span>
                     );
                   }
                   if (user.status === ContestUserStatus.accepted) {
                     return (
-                      <span>
+                      <span className="nowrap">
                         <Icon type="check" /> Accepted
                       </span>
                     );
                   }
                   if (user.status === ContestUserStatus.return) {
                     return (
-                      <span>
+                      <span className="nowrap">
                         <Icon type="exclamation" /> Modification Required
                       </span>
                     );
                   }
                   if (user.status === ContestUserStatus.rejected) {
                     return (
-                      <span>
+                      <span className="nowrap">
                         <Icon type="close" /> Rejected
                       </span>
                     );
@@ -536,14 +560,15 @@ class ContestUserList extends React.Component<Props, State> {
                 title=""
                 key="actions"
                 render={(text, user: IContestUser) => {
+                  const actions: React.ReactNode[] = [];
                   if (
                     (regInProgress &&
                       this.props.session.loggedIn &&
                       user.username === session.user.username) ||
                     isAdminDog(session)
                   ) {
-                    return (
-                      <span>
+                    actions.push(
+                      <span key="edit" className="nowrap">
                         <GeneralFormModal
                           loadingEffect="contests/updateContestUser"
                           title="Edit Register Info"
@@ -610,11 +635,57 @@ class ContestUserList extends React.Component<Props, State> {
                             <Icon type="edit" />
                           </a>
                         </GeneralFormModal>
-                      </span>
+                      </span>,
                     );
-                  } else {
-                    return '';
                   }
+                  if (isAdminDog(session)) {
+                    actions.push(
+                      <span key="audit" className="nowrap">
+                        <GeneralFormModal
+                          loadingEffect="admin/auditContestUser"
+                          title="Audit Registration"
+                          autoMsg
+                          items={this.auditFormItems}
+                          submit={(dispatch: ReduxProps['dispatch'], values) => {
+                            const data = {
+                              contestId: id,
+                              contestUserId: user.contestUserId,
+                              status: +values.status,
+                              reason: values.reason,
+                            };
+                            return dispatch({
+                              type: 'admin/auditContestUser',
+                              payload: data,
+                            });
+                          }}
+                          onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                            msg.success('Audit successfully');
+                            tracker.event({
+                              category: 'admin',
+                              action: 'auditContestUser',
+                            });
+                          }}
+                          onSuccessModalClosed={(
+                            dispatch: ReduxProps['dispatch'],
+                            ret: IApiResponse<any>,
+                          ) => {
+                            dispatch({
+                              type: 'contests/getUserList',
+                              payload: {
+                                cid: id,
+                                query,
+                              },
+                            });
+                          }}
+                        >
+                          <a className="ml-md-lg">
+                            <Icon type="schedule" />
+                          </a>
+                        </GeneralFormModal>
+                      </span>,
+                    );
+                  }
+                  return actions;
                 }}
               />
             </Table>
@@ -672,7 +743,7 @@ class ContestUserList extends React.Component<Props, State> {
                 onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
                   msg.success('Add contest user successfully');
                   tracker.event({
-                    category: 'contests',
+                    category: 'admin',
                     action: 'addContestUser',
                   });
                 }}

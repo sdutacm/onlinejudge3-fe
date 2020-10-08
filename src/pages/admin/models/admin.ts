@@ -194,6 +194,9 @@ export default {
     *updateContestDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateContestDetail, id, data);
     },
+    *auditContestUser({ payload: data }, { call }) {
+      return yield call(service.auditContestUser, data);
+    },
     *getUserList({ payload: query }, { call, put }) {
       const formattedQuery = formatListQuery(query);
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);

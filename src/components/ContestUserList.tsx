@@ -16,6 +16,7 @@ import msg from '@/utils/msg';
 import { matchPath, withRouter } from 'react-router';
 import { get as safeGet } from 'lodash';
 import tracker from '@/utils/tracker';
+import contestUserStatus, { ContestUserStatus } from '@/configs/contestUserStatus';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -67,7 +68,8 @@ class ContestUserList extends React.Component<Props, State> {
   };
 
   addUserFormItems = (contestUser: any = {}, uid?: number) => {
-    let items = [
+    const { isAdmin } = this.props;
+    let items: any[] = [
       {
         name: 'Nickname',
         field: 'nickname',
@@ -166,10 +168,24 @@ class ContestUserList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input username' }],
       });
     }
+    if (isAdmin) {
+      items.push({
+        name: 'Status',
+        field: 'status',
+        component: 'select',
+        options: contestUserStatus.map((item) => ({
+          name: item.name,
+          value: item.id,
+        })),
+        initialValue: `${contestUser[uid]?.status ?? ContestUserStatus.accepted}`,
+        rules: [{ required: true, message: 'Please ' }],
+      });
+    }
     return items;
   };
   addTeamUserFormItems = (contestUser: any = {}, uid?: number) => {
-    const items = [
+    const { isAdmin } = this.props;
+    const items: any[] = [
       {
         name: 'Nickname',
         field: 'nickname',
@@ -391,6 +407,19 @@ class ContestUserList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input username' }],
       });
     }
+    if (isAdmin) {
+      items.push({
+        name: 'Status',
+        field: 'status',
+        component: 'select',
+        options: contestUserStatus.map((item) => ({
+          name: item.name,
+          value: item.id,
+        })),
+        initialValue: `${contestUser[uid]?.status ?? ContestUserStatus.accepted}`,
+        rules: [{ required: true, message: 'Please ' }],
+      });
+    }
     return items;
   };
 
@@ -473,28 +502,28 @@ class ContestUserList extends React.Component<Props, State> {
                 title="Status"
                 key="status"
                 render={(text, user: IContestUser) => {
-                  if (user.status === 0) {
+                  if (user.status === ContestUserStatus.waiting) {
                     return (
                       <span>
                         <Icon type="question" /> Pending
                       </span>
                     );
                   }
-                  if (user.status === 1) {
+                  if (user.status === ContestUserStatus.accepted) {
                     return (
                       <span>
                         <Icon type="check" /> Accepted
                       </span>
                     );
                   }
-                  if (user.status === 2) {
+                  if (user.status === ContestUserStatus.return) {
                     return (
                       <span>
                         <Icon type="exclamation" /> Modification Required
                       </span>
                     );
                   }
-                  if (user.status === 3) {
+                  if (user.status === ContestUserStatus.rejected) {
                     return (
                       <span>
                         <Icon type="close" /> Rejected
@@ -546,6 +575,7 @@ class ContestUserList extends React.Component<Props, State> {
                               }
                             }
                             data['members'] = members;
+                            isAdmin && (data['status'] = +values['status']);
 
                             return dispatch({
                               type: 'contests/updateContestUser',
@@ -626,6 +656,7 @@ class ContestUserList extends React.Component<Props, State> {
                     }
                   }
                   data['members'] = members;
+                  isAdmin && (data['status'] = +values['status']);
                   if (values.username) {
                     data.username = values.username;
                   }

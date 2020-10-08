@@ -19,20 +19,14 @@ export interface Props extends ReduxProps, RouteProps {
 
 interface State {}
 
-class ContestUserListPage extends React.Component<Props, State> {
+class AdminContestUserList extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   render() {
-    const {
-      loading,
-      data,
-      id,
-      contestUser,
-      contestDetail,
-    } = this.props;
+    const { loading, data, id, contestUser, contestDetail } = this.props;
     return (
       <PageAnimation>
         <ContestUserList
@@ -41,6 +35,7 @@ class ContestUserListPage extends React.Component<Props, State> {
           contestUser={contestUser}
           contestDetail={contestDetail}
           loading={loading}
+          isAdmin
         />
       </PageAnimation>
     );
@@ -48,14 +43,14 @@ class ContestUserListPage extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
-  const id = getPathParamId(state.routing.location.pathname, pages.contests.home);
+  const id = getPathParamId(state.routing.location.pathname, pages.admin.contestHome);
   return {
     id,
     loading: !!state.loading.effects['contests/getUserList'],
     data: state.contests.userlist,
     contestUser: state.contests.contestUserDetail,
-    contestDetail: state.contests.contest[id] || {},
+    contestDetail: state.admin.contestDetail[id] || {},
   };
 }
 
-export default connect(mapStateToProps)(ContestUserListPage);
+export default connect(mapStateToProps)(AdminContestUserList);

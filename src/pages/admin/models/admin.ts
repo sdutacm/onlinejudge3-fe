@@ -330,6 +330,20 @@ export default {
         } else if (pathname === pages.admin.groups) {
           requestEffect(dispatch, { type: 'getGroupList', payload: query });
         }
+        const matchContestUserList = matchPath(pathname, {
+          path: pages.admin.contestUsers,
+          exact: true,
+        });
+        if (matchContestUserList) {
+          requestEffect(dispatch, {
+            type: 'contests/getUserList',
+            payload: { query, cid: +matchContestUserList.params['id'] },
+          });
+          requestEffect(dispatch, {
+            type: 'getContestDetail',
+            payload: { id: +matchContestUserList.params['id'] },
+          });
+        }
       });
     },
   },

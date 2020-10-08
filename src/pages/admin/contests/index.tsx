@@ -293,7 +293,7 @@ class AdminContestList extends React.Component<Props, State> {
                   title="Actions"
                   key="Actions"
                   render={(text, record: IContest) => (
-                    <div>
+                    <div className="nowrap">
                       <GeneralFormDrawer
                         fetchLoading={
                           record.contestId === currentContestId && (!detail || detailLoading)
@@ -344,6 +344,20 @@ class AdminContestList extends React.Component<Props, State> {
                       >
                         View
                       </Link>
+                      <Link
+                        to={urlf(pages.admin.contestProblems, { param: { id: record.contestId } })}
+                        className="ml-md-lg"
+                      >
+                        Prob.
+                      </Link>
+                      {record.type === ContestTypes.Register && (
+                        <Link
+                          to={urlf(pages.admin.contestUsers, { param: { id: record.contestId } })}
+                          className="ml-md-lg"
+                        >
+                          Users
+                        </Link>
+                      )}
                     </div>
                   )}
                 />

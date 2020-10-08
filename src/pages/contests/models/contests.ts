@@ -314,8 +314,10 @@ export default {
     *getUserList({ payload: prams }, { call, put, select }) {
       const formattedQuery = {
         ...formatListQuery(prams.query),
-        order: [['contestUserId', 'DESC']],
+        // order: [['contestUserId', 'DESC']],
       };
+      formattedQuery.contestUserId &&
+        (formattedQuery.contestUserId = +formattedQuery.contestUserId);
       const ret: IApiResponse<IList<IContest>> = yield call(
         service.getUserList,
         formattedQuery,
@@ -402,19 +404,19 @@ export default {
         if (pathname === pages.contests.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
         }
-        const matchContestUserDetail = matchPath(pathname, {
+        const matchContestUserList = matchPath(pathname, {
           path: pages.contests.users,
           exact: true,
         });
 
-        if (matchContestUserDetail) {
+        if (matchContestUserList) {
           requestEffect(dispatch, {
             type: 'getUserList',
-            payload: { query, cid: +matchContestUserDetail.params['id'] },
+            payload: { query, cid: +matchContestUserList.params['id'] },
           });
           requestEffect(dispatch, {
             type: 'getContest',
-            payload: { id: +matchContestUserDetail.params['id'] },
+            payload: { id: +matchContestUserList.params['id'] },
           });
         }
         // const matchContest = matchPath(pathname, {

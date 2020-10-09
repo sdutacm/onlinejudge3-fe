@@ -27,6 +27,7 @@ import {
   ICreateContestResp,
   IUpdateContestDetailReq,
   IAuditContestUserReq,
+  IBatchCreateContestUsersReq,
 } from '@/common/contracts/contest';
 import {
   IGetPostListReq,
@@ -131,6 +132,12 @@ export function getContestDetail(contestId) {
 
 export function createContest(data) {
   return post<ICreateContestReq, ICreateContestResp>(routesBe.createContest.url, {
+    ...data,
+  });
+}
+
+export function batchCreateContestUsers(data) {
+  return post<IBatchCreateContestUsersReq, void>(routesBe.batchCreateContestUsers.url, {
     ...data,
   });
 }

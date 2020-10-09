@@ -17,6 +17,7 @@ import { matchPath, withRouter } from 'react-router';
 import { get as safeGet } from 'lodash';
 import tracker from '@/utils/tracker';
 import contestUserStatus, { ContestUserStatus } from '@/configs/contestUserStatus';
+import ImportContestUserModal from './ImportContestUserModal';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -502,9 +503,24 @@ class ContestUserList extends React.Component<Props, State> {
                   }
                 }}
               />
-              <Table.Column title="ID" key="contestUserId" dataIndex="contestUserId" />
-              <Table.Column title="Username" key="username" dataIndex="username" />
-              <Table.Column title="Nickname" key="nickname" dataIndex="nickname" />
+              <Table.Column
+                title="ID"
+                key="contestUserId"
+                dataIndex="contestUserId"
+                className="nowrap"
+              />
+              <Table.Column
+                title="Username"
+                key="username"
+                dataIndex="username"
+                className="nowrap"
+              />
+              <Table.Column
+                title="Nickname"
+                key="nickname"
+                dataIndex="nickname"
+                className="nowrap"
+              />
               <Table.Column
                 title="Info"
                 key="info"
@@ -525,31 +541,32 @@ class ContestUserList extends React.Component<Props, State> {
               <Table.Column
                 title="Status"
                 key="status"
+                className="nowrap"
                 render={(text, user: IContestUser) => {
                   if (user.status === ContestUserStatus.waiting) {
                     return (
-                      <span className="nowrap">
+                      <span>
                         <Icon type="question" /> Pending
                       </span>
                     );
                   }
                   if (user.status === ContestUserStatus.accepted) {
                     return (
-                      <span className="nowrap">
+                      <span>
                         <Icon type="check" /> Accepted
                       </span>
                     );
                   }
                   if (user.status === ContestUserStatus.return) {
                     return (
-                      <span className="nowrap">
+                      <span>
                         <Icon type="exclamation" /> Modification Required
                       </span>
                     );
                   }
                   if (user.status === ContestUserStatus.rejected) {
                     return (
-                      <span className="nowrap">
+                      <span>
                         <Icon type="close" /> Rejected
                       </span>
                     );
@@ -559,6 +576,7 @@ class ContestUserList extends React.Component<Props, State> {
               <Table.Column
                 title=""
                 key="actions"
+                className="nowrap"
                 render={(text, user: IContestUser) => {
                   const actions: React.ReactNode[] = [];
                   if (
@@ -640,7 +658,7 @@ class ContestUserList extends React.Component<Props, State> {
                   }
                   if (isAdminDog(session)) {
                     actions.push(
-                      <span key="audit" className="nowrap">
+                      <span key="audit">
                         <GeneralFormModal
                           loadingEffect="admin/auditContestUser"
                           title="Audit Registration"
@@ -762,6 +780,11 @@ class ContestUserList extends React.Component<Props, State> {
               >
                 <Button block>Add User</Button>
               </GeneralFormModal>
+              <ImportContestUserModal contestId={id}>
+                <Button block className="mt-md">
+                  Import Users
+                </Button>
+              </ImportContestUserModal>
             </Card>
           )}
           <Card bordered={false}>

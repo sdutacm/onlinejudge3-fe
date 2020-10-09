@@ -83,9 +83,7 @@ class ImportUserModal extends React.Component<Props, State> {
         try {
           const ret: IApiResponse = await dispatch({
             type: 'admin/batchCreateUsers',
-            payload: {
-              data: d,
-            },
+            payload: d,
           });
           msg.auto(ret);
           tracker.event({
@@ -157,7 +155,7 @@ class ImportUserModal extends React.Component<Props, State> {
                         dataSource={data}
                         rowKey="username"
                         pagination={false}
-                        className="responsive-table"
+                        className="responsive-table nowrap"
                         style={{ overflow: 'auto' }}
                       >
                         <Table.Column
@@ -167,7 +165,7 @@ class ImportUserModal extends React.Component<Props, State> {
                         />
                         <Table.Column
                           title="Nickname"
-                          key="Nickname"
+                          key="nickname"
                           render={(text, record: IImportUser) => <span>{record.nickname}</span>}
                         />
                         <Table.Column

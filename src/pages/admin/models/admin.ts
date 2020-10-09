@@ -197,6 +197,9 @@ export default {
     *auditContestUser({ payload: data }, { call }) {
       return yield call(service.auditContestUser, data);
     },
+    *batchCreateContestUsers({ payload: data }, { call }) {
+      return yield call(service.batchCreateContestUsers, data);
+    },
     *getUserList({ payload: query }, { call, put }) {
       const formattedQuery = formatListQuery(query);
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
@@ -232,7 +235,7 @@ export default {
     *createUser({ payload: { data } }, { call }) {
       return yield call(service.createUser, data);
     },
-    *batchCreateUsers({ payload: { data } }, { call }) {
+    *batchCreateUsers({ payload: data }, { call }) {
       return yield call(service.batchCreateUsers, data);
     },
     *updateUserDetail({ payload: { id, data } }, { call }) {

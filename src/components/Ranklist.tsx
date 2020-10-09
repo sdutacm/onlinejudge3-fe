@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Popover } from 'antd';
+import { Table, Popover, Icon } from 'antd';
 import { numberToAlphabet, urlf } from '@/utils/format';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
@@ -11,10 +11,14 @@ import { withRouter } from 'react-router';
 import { RouteProps } from '@/@types/props';
 import { get as safeGet } from 'lodash';
 import { getRatingLevel } from '@/utils/rating';
+import tracker from '@/utils/tracker';
+import moment from 'moment';
+import { aoa2Excel } from '@/utils/misc';
 
 export interface Props extends RouteProps {
   id: number;
   data: IRanklist;
+  contest: IContest;
   loading: boolean;
   problemNum: number;
   userCellRender: (user: IUser) => React.ReactNode;
@@ -33,6 +37,8 @@ interface State {
 
 class Ranklist extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
+
+  private exportLoading = false;
 
   private saveViewportDimensions = throttle(() => {
     let contentWidth = window.innerWidth;
@@ -84,7 +90,7 @@ class Ranklist extends React.Component<Props, State> {
     window.removeEventListener('resize', this.saveViewportDimensions);
   }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -95,14 +101,86 @@ class Ranklist extends React.Component<Props, State> {
     }
   };
 
+  handleExport = async () => {
+    const { id, data, contest, problemNum } = this.props;
+    if (!data || !contest || this.exportLoading) {
+      return;
+    }
+    tracker.event({
+      category: 'contests',
+      action: 'exportRanklist',
+    });
+    this.exportLoading = true;
+    try {
+      const problemIndex = Array(problemNum)
+        .fill(undefined)
+        .map((value, index) => index);
+      const aoa: any[][] = [
+        [
+          `${contest.title} (${moment(contest.startAt).format('YYYY-MM-DD HH:mm:ss')} ~ ${moment(
+            contest.endAt,
+          ).format('YYYY-MM-DD HH:mm:ss')})`,
+        ],
+        [
+          'Rank',
+          'Username',
+          'Nickname',
+          'Solved',
+          'Time',
+          ...problemIndex.map((pIndex) => numberToAlphabet(pIndex)),
+        ],
+      ];
+      data.forEach((d) => {
+        const row = [
+          d.rank,
+          d.user?.username || '',
+          d.user?.nickname || '',
+          d.solved,
+          Math.floor(d.time / 60),
+        ];
+        problemIndex.map((pIndex) => {
+          const stat = d.stats[pIndex];
+          let statText = '';
+          if (stat.attempted) {
+            statText = `${stat.attempted}`;
+          }
+          if (stat.result === 'AC' || stat.result === 'FB') {
+            statText += `/${Math.floor(stat.time / 60)}`;
+          }
+          if (stat.result === 'FB') {
+            statText += ' (FB)';
+          }
+          row.push(statText);
+        });
+        aoa.push(row);
+      });
+      console.log(aoa);
+      aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} contest_ranklist_${id}.xlsx`);
+    } finally {
+      this.exportLoading = false;
+    }
+  };
+
   render() {
-    const { id, data, loading, problemNum, userCellRender, existedHeaderClassName, session, location: { query }, rating } = this.props;
+    const {
+      id,
+      data,
+      loading,
+      problemNum,
+      userCellRender,
+      existedHeaderClassName,
+      session,
+      location: { query },
+      rating,
+    } = this.props;
     const { contentWidth } = this.state;
     // const contentWidth = 0;
     if (!data || !problemNum) {
       return null;
     }
-    const problemIndex = Array(problemNum).fill(undefined).map((value, index) => index);
+    const problemIndex = Array(problemNum)
+      .fill(undefined)
+      .map((value, index) => index);
     const width = {
       rank: 64,
       user: 250,
@@ -125,11 +203,18 @@ class Ranklist extends React.Component<Props, State> {
       const contentMargin = 20 + 20;
       const ranklistMargin = 64;
       const ranklistTheadHeight = 45;
-      availableHeight = docHeight - headerHeight - footerHeight - contentMargin - existedHeaderHeight - ranklistMargin - ranklistTheadHeight - 1;
-    }
-    catch (e) {}
+      availableHeight =
+        docHeight -
+        headerHeight -
+        footerHeight -
+        contentMargin -
+        existedHeaderHeight -
+        ranklistMargin -
+        ranklistTheadHeight -
+        1;
+    } catch (e) {}
 
-    const canFixLeft = contentWidth > (infoWidth + width.stat) && contentWidth < widthSum;
+    const canFixLeft = contentWidth > infoWidth + width.stat && contentWidth < widthSum;
 
     // const d = [...data];
     // d.sort(() => 0.5 - Math.random());
@@ -145,123 +230,145 @@ class Ranklist extends React.Component<Props, State> {
     const hasRatingDelta = !!safeGet(ranklist, [0, 'user', 'newRating'], 0);
 
     return (
-      <Table
-        dataSource={ranklist}
-        rowKey={(record, index) => `${record._self ? '_self' : record.user && record.user.userId}`}
-        loading={loading}
-        // pagination={false}
-        className="ranklist"
-        rowClassName={(record) => record._self ? 'self-rank-row' : ''}
-        scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
-        pagination={{
-          // className: 'ant-table-pagination',
-          total: ranklist.length,
-          current: +query.page || 1,
-          pageSize: limits.contests.ranklist,
-          onChange: this.handlePageChange,
-        }}
-      >
-        <Table.Column
-          title="Rank"
-          key="Rank"
-          align={'right'}
-          width={width.rank}
-          fixed={canFixLeft}
-          render={(text, record: IRanklistRow) => (
-            <div>{record.rank}</div>
-          )}
-        />
-        <Table.Column
-          title="User"
-          key="User"
-          width={width.user}
-          fixed={canFixLeft}
-          render={(text, record: IRanklistRow) => (
-            userCellRender(record.user)
-          )}
-        />
-        {rating && hasRatingDelta && <Table.Column
-          title="Δ"
-          key="Delta"
-          width={width.delta}
-          fixed={canFixLeft}
-          render={(text, record: IRanklistRow) => {
-            if (record.user && record.user.oldRating && record.user.newRating) {
-              const { oldRating, newRating } = record.user;
-              const oldRatingLevel = getRatingLevel(oldRating);
-              const newRatingLevel = getRatingLevel(newRating);
-              return <Popover content={`Δ: ${newRating >= oldRating ? '+' : ''}${newRating - oldRating}`}>
-                <span style={{ color: oldRatingLevel.color }}>{oldRating}</span>
-                <span className="ml-sm">→</span>
-                <span style={{ color: newRatingLevel.color }} className="ml-sm">{newRating}</span>
-              </Popover>;
-            }
-            return null;
+      <div>
+        <Table
+          dataSource={ranklist}
+          rowKey={(record, index) =>
+            `${record._self ? '_self' : record.user && record.user.userId}`
+          }
+          loading={loading}
+          // pagination={false}
+          className="ranklist"
+          rowClassName={(record) => (record._self ? 'self-rank-row' : '')}
+          scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
+          pagination={{
+            // className: 'ant-table-pagination',
+            total: ranklist.length,
+            current: +query.page || 1,
+            pageSize: limits.contests.ranklist,
+            onChange: this.handlePageChange,
           }}
-        />}
-
-        <Table.Column
-          title="Slv."
-          key="Solved"
-          align={'right'}
-          width={width.solved}
-          fixed={canFixLeft}
-          render={(text, record: IRanklistRow) => (
-            <div><Link to={urlf(pages.contests.solutions, {
-              param: { id },
-              query: { userId: record.user && record.user.userId },
-            })}>{record.solved}</Link></div>
-          )}
-        />
-        <Table.Column
-          title="Time"
-          align={'right'}
-          key="Time"
-          width={width.time}
-          fixed={canFixLeft}
-          render={(text, record: IRanklistRow) => (
-            <div>{Math.floor(record.time / 60)}</div>
-          )}
-        />
-        {problemIndex.map(index =>
+        >
           <Table.Column
-            title={numberToAlphabet(index)}
-            key={`prob-${index}`}
-            className="stat"
-            align={'center'}
-            width={width.stat}
-            render={(text, record: IRanklistRow) => {
-              const stat = record.stats[index];
-              let statText = '';
-              const classList: string[] = [];
-              if (stat.attempted) {
-                statText = `${stat.attempted}`;
-              }
-              if (stat.result === 'AC' || stat.result === 'FB') {
-                statText += `/${Math.floor(stat.time / 60)}`;
-              }
-              switch (stat.result) {
-                case 'AC':
-                  classList.push('accepted');
-                  break;
-                case 'FB':
-                  classList.push('fb');
-                  break;
-                case 'X':
-                  classList.push('failed');
-                  break;
-                case '?':
-                  classList.push('frozen');
-                  break;
-              }
-              return (
-                <div className={classNames('stat-inner', classList)}>
-                  <span>{statText}</span>
-                </div>
-              );
-            }}
-          />)}
-      </Table>
+            title="Rank"
+            key="Rank"
+            align="right"
+            width={width.rank}
+            fixed={canFixLeft}
+            render={(text, record: IRanklistRow) => <div>{record.rank}</div>}
+          />
+          <Table.Column
+            title="User"
+            key="User"
+            width={width.user}
+            fixed={canFixLeft}
+            render={(text, record: IRanklistRow) => userCellRender(record.user)}
+          />
+          {rating && hasRatingDelta && (
+            <Table.Column
+              title="Δ"
+              key="Delta"
+              width={width.delta}
+              fixed={canFixLeft}
+              render={(text, record: IRanklistRow) => {
+                if (record.user && record.user.oldRating && record.user.newRating) {
+                  const { oldRating, newRating } = record.user;
+                  const oldRatingLevel = getRatingLevel(oldRating);
+                  const newRatingLevel = getRatingLevel(newRating);
+                  return (
+                    <Popover
+                      content={`Δ: ${newRating >= oldRating ? '+' : ''}${newRating - oldRating}`}
+                    >
+                      <span style={{ color: oldRatingLevel.color }}>{oldRating}</span>
+                      <span className="ml-sm">→</span>
+                      <span style={{ color: newRatingLevel.color }} className="ml-sm">
+                        {newRating}
+                      </span>
+                    </Popover>
+                  );
+                }
+                return null;
+              }}
+            />
+          )}
+
+          <Table.Column
+            title="Slv."
+            key="Solved"
+            align="right"
+            width={width.solved}
+            fixed={canFixLeft}
+            render={(text, record: IRanklistRow) => (
+              <div>
+                <Link
+                  to={urlf(pages.contests.solutions, {
+                    param: { id },
+                    query: { userId: record.user && record.user.userId },
+                  })}
+                >
+                  {record.solved}
+                </Link>
+              </div>
+            )}
+          />
+          <Table.Column
+            title="Time"
+            align="right"
+            key="Time"
+            width={width.time}
+            fixed={canFixLeft}
+            render={(text, record: IRanklistRow) => <div>{Math.floor(record.time / 60)}</div>}
+          />
+          {problemIndex.map((index) => (
+            <Table.Column
+              title={numberToAlphabet(index)}
+              key={`prob-${index}`}
+              className="stat"
+              align="center"
+              width={width.stat}
+              render={(text, record: IRanklistRow) => {
+                const stat = record.stats[index];
+                let statText = '';
+                const classList: string[] = [];
+                if (stat.attempted) {
+                  statText = `${stat.attempted}`;
+                }
+                if (stat.result === 'AC' || stat.result === 'FB') {
+                  statText += `/${Math.floor(stat.time / 60)}`;
+                }
+                switch (stat.result) {
+                  case 'AC':
+                    classList.push('accepted');
+                    break;
+                  case 'FB':
+                    classList.push('fb');
+                    break;
+                  case 'X':
+                    classList.push('failed');
+                    break;
+                  case '?':
+                    classList.push('frozen');
+                    break;
+                }
+                return (
+                  <div className={classNames('stat-inner', classList)}>
+                    <span>{statText}</span>
+                  </div>
+                );
+              }}
+            />
+          ))}
+        </Table>
+        {!loading && data && (
+          <a
+            className="normal-text-link"
+            style={{ position: 'absolute', bottom: '16px', lineHeight: '32px', marginLeft: '16px' }}
+            onClick={this.handleExport}
+          >
+            <Icon type="export" /> Export Ranklist
+          </a>
+        )}
+      </div>
     );
     // return (
     //   <div className="ant-table-wrapper responsive-table">

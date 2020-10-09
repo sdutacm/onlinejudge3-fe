@@ -234,6 +234,7 @@ class ContestRanklist extends React.Component<Props, State> {
                 <Ranklist
                   id={id}
                   data={ranklist}
+                  contest={detail}
                   loading={ranklistLoading}
                   problemNum={problems.count || 0}
                   session={session}

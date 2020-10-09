@@ -219,6 +219,9 @@ export default {
       }
       return ret;
     },
+    *getContestUsers({ payload: { id, status } }, { call }) {
+      return yield call(service.getContestUsers, id, status);
+    },
     *getUserDetail({ payload: { id } }, { all, call, put }) {
       const detailRet: IApiResponse<any> = yield call(service.getUserDetail, id);
       if (detailRet.success) {

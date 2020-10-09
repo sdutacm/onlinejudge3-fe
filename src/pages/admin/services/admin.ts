@@ -28,6 +28,8 @@ import {
   IUpdateContestDetailReq,
   IAuditContestUserReq,
   IBatchCreateContestUsersReq,
+  IGetContestUsersReq,
+  IGetContestUsersResp,
 } from '@/common/contracts/contest';
 import {
   IGetPostListReq,
@@ -120,6 +122,13 @@ export function getContestList(query) {
     page: query.page || 1,
     limit: query.limit || limits.admin.contestList,
     _scope: null,
+  });
+}
+
+export function getContestUsers(contestId, status) {
+  return post<IGetContestUsersReq, IGetContestUsersResp>(routesBe.getContestUsers.url, {
+    contestId,
+    status,
   });
 }
 

@@ -1,5 +1,5 @@
 /**
- * title: Contest Users
+ * title: Admin Contest Users
  */
 
 import React from 'react';

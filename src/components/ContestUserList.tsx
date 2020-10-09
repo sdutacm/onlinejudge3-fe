@@ -18,6 +18,10 @@ import { get as safeGet } from 'lodash';
 import tracker from '@/utils/tracker';
 import contestUserStatus, { ContestUserStatus } from '@/configs/contestUserStatus';
 import ImportContestUserModal from './ImportContestUserModal';
+import { aoa2Excel } from '@/utils/misc';
+import moment from 'moment';
+
+const MAX_MEMBER_NUM = 3;
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -30,7 +34,9 @@ export interface Props extends ReduxProps, RouteProps {
   session: ISessionStatus;
 }
 
-interface State {}
+interface State {
+  exportLoading: boolean;
+}
 
 class ContestUserList extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
@@ -39,7 +45,9 @@ class ContestUserList extends React.Component<Props, State> {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      exportLoading: false,
+    };
   }
 
   handlePageChange = (page) => {
@@ -64,6 +72,111 @@ class ContestUserList extends React.Component<Props, State> {
           id,
           uid,
         },
+      });
+    }
+  };
+
+  getAllContestUsers = () => {
+    const { dispatch, id } = this.props;
+    return dispatch({
+      type: 'admin/getContestUsers',
+      payload: {
+        id,
+        status: ContestUserStatus.accepted,
+      },
+    }).then((ret: IApiResponse<any>) => {
+      msg.auto(ret);
+      if (ret.success) {
+        return ret.data.rows;
+      }
+      return [];
+    });
+  };
+
+  handleExport = async () => {
+    const { id } = this.props;
+    if (this.state.exportLoading) {
+      return;
+    }
+    tracker.event({
+      category: 'admin',
+      action: 'exportContestUsers',
+    });
+    this.setState({
+      exportLoading: true,
+    });
+    try {
+      const users = await this.getAllContestUsers();
+      console.log('users', users);
+      const aoa: any[][] = [
+        [
+          '用户名',
+          '昵称',
+          '二级昵称',
+          '座号',
+          '是否打星',
+          '密码',
+          '学号1',
+          '姓名1',
+          '学校1',
+          '学院1',
+          '专业1',
+          '班级1',
+          '电话1',
+          '邮箱1',
+          '衣服尺码1',
+          '学号2',
+          '姓名2',
+          '学校2',
+          '学院2',
+          '专业2',
+          '班级2',
+          '电话2',
+          '邮箱2',
+          '衣服尺码2',
+          '学号3',
+          '姓名3',
+          '学校3',
+          '学院3',
+          '专业3',
+          '班级3',
+          '电话3',
+          '邮箱3',
+          '衣服尺码3',
+        ],
+      ];
+      users.forEach((user) => {
+        const row = [
+          user.username,
+          user.nickname,
+          user.subname || '',
+          user.sitNo || '',
+          user.unofficial ? 'Y' : 'N',
+          user.password,
+        ];
+        const _m = new Array(MAX_MEMBER_NUM).fill(undefined);
+        _m.forEach((_item, index) => {
+          row.push(
+            ...[
+              user.members[index]?.schoolNo || '',
+              user.members[index]?.name || '',
+              user.members[index]?.school || '',
+              user.members[index]?.college || '',
+              user.members[index]?.major || '',
+              user.members[index]?.class || '',
+              user.members[index]?.tel || '',
+              user.members[index]?.email || '',
+              user.members[index]?.clothing || '',
+            ],
+          );
+        });
+        aoa.push(row);
+      });
+      console.log(aoa);
+      aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} contest_users_${id}.xlsx`);
+    } finally {
+      this.setState({
+        exportLoading: false,
       });
     }
   };
@@ -184,6 +297,7 @@ class ContestUserList extends React.Component<Props, State> {
     }
     return items;
   };
+
   addTeamUserFormItems = (contestUser: any = {}, uid?: number) => {
     const { isAdmin } = this.props;
     const items: any[] = [
@@ -785,6 +899,9 @@ class ContestUserList extends React.Component<Props, State> {
                   Import Users
                 </Button>
               </ImportContestUserModal>
+              <Button block className="mt-md" onClick={this.handleExport}>
+                Export Users
+              </Button>
             </Card>
           )}
           <Card bordered={false}>

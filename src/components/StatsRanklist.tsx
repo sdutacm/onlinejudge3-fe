@@ -120,9 +120,7 @@ class StatsRanklist extends React.Component<Props, State> {
       category: 'sets',
       action: 'exportStatsRanklist',
     });
-    this.setState({
-      exportLoading: true,
-    });
+    this.exportLoading = true;
     const groupRanklists = calcStatsPerGroup?.() || [];
     const ranklists = [
       {

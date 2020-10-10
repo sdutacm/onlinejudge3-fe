@@ -21,6 +21,7 @@ const initialState = {
     rows: [],
   },
   contestDetail: {},
+  contestProblems: {},
   userList: {
     page: 1,
     count: 0,
@@ -68,6 +69,9 @@ export default {
       state.contestDetail[id] = {
         ...data,
       };
+    },
+    setContestProblems(state, { payload: { id, data } }) {
+      state.contestProblems[id] = data;
     },
     setUserList(state, { payload: { data } }) {
       state.userList = {
@@ -200,6 +204,25 @@ export default {
     *batchCreateContestUsers({ payload: data }, { call }) {
       return yield call(service.batchCreateContestUsers, data);
     },
+    *getContestUsers({ payload: { id, status } }, { call }) {
+      return yield call(service.getContestUsers, id, status);
+    },
+    *getContestProblemConfig({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<any> = yield call(service.getContestProblemConfig, id);
+      if (ret.success) {
+        yield put({
+          type: 'setContestProblems',
+          payload: {
+            id,
+            data: ret.data.rows,
+          },
+        });
+      }
+      return ret;
+    },
+    *setContestProblemConfig({ payload: { id, problems } }, { call }) {
+      return yield call(service.setContestProblemConfig, id, problems);
+    },
     *getUserList({ payload: query }, { call, put }) {
       const formattedQuery = formatListQuery(query);
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
@@ -218,9 +241,6 @@ export default {
         });
       }
       return ret;
-    },
-    *getContestUsers({ payload: { id, status } }, { call }) {
-      return yield call(service.getContestUsers, id, status);
     },
     *getUserDetail({ payload: { id } }, { all, call, put }) {
       const detailRet: IApiResponse<any> = yield call(service.getUserDetail, id);
@@ -351,6 +371,20 @@ export default {
           requestEffect(dispatch, {
             type: 'getContestDetail',
             payload: { id: +matchContestUserList.params['id'] },
+          });
+        }
+        const matchContestProblemList = matchPath(pathname, {
+          path: pages.admin.contestProblems,
+          exact: true,
+        });
+        if (matchContestProblemList) {
+          requestEffect(dispatch, {
+            type: 'getContestProblemConfig',
+            payload: { id: +matchContestProblemList.params['id'] },
+          });
+          requestEffect(dispatch, {
+            type: 'getContestDetail',
+            payload: { id: +matchContestProblemList.params['id'] },
           });
         }
       });

@@ -29,6 +29,9 @@ class AdminContestUserList extends React.Component<Props, State> {
     const { loading, data, id, contestUser, contestDetail } = this.props;
     return (
       <PageAnimation>
+        <h4 className="mb-md-lg">
+          Users of {id} - {contestDetail.title}
+        </h4>
         <ContestUserList
           id={id}
           data={data}

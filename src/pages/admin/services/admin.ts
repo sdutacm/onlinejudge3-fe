@@ -30,6 +30,9 @@ import {
   IBatchCreateContestUsersReq,
   IGetContestUsersReq,
   IGetContestUsersResp,
+  IGetContestProblemConfigReq,
+  IGetContestProblemConfigResp,
+  ISetContestProblemConfigReq,
 } from '@/common/contracts/contest';
 import {
   IGetPostListReq,
@@ -161,6 +164,22 @@ export function updateContestDetail(contestId, data) {
 export function auditContestUser(data) {
   return post<IAuditContestUserReq, void>(routesBe.auditContestUser.url, {
     ...data,
+  });
+}
+
+export function getContestProblemConfig(contestId) {
+  return post<IGetContestProblemConfigReq, IGetContestProblemConfigResp>(
+    routesBe.getContestProblemConfig.url,
+    {
+      contestId,
+    },
+  );
+}
+
+export function setContestProblemConfig(contestId, problems) {
+  return post<ISetContestProblemConfigReq, void>(routesBe.setContestProblemConfig.url, {
+    contestId,
+    problems,
   });
 }
 

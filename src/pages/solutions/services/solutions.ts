@@ -14,8 +14,10 @@ import {
 } from '@/common/contracts/solution';
 
 export function getList(query) {
+  const q = { ...query };
+  delete q._r;
   return post<IGetSolutionListReq, IGetSolutionListResp>(routesBe.getSolutionList.url, {
-    ...query,
+    ...q,
     page: query.page || 1,
     limit: query.limit || limits.solutions.list,
     order: [['solutionId', 'DESC']],

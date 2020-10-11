@@ -63,6 +63,7 @@ import {
   IResetUserPasswordByAdminReq,
   IBatchCreateUsersReq,
 } from '@/common/contracts/user';
+import { IRejudgeSolutionReq } from '@/common/contracts/solution';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -180,6 +181,12 @@ export function setContestProblemConfig(contestId, problems) {
   return post<ISetContestProblemConfigReq, void>(routesBe.setContestProblemConfig.url, {
     contestId,
     problems,
+  });
+}
+
+export function rejudgeSolution(data) {
+  return post<IRejudgeSolutionReq, void>(routesBe.rejudgeSolution.url, {
+    ...data,
   });
 }
 

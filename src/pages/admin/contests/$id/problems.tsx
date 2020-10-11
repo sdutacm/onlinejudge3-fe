@@ -141,12 +141,30 @@ class AdminContestProblemList extends React.Component<Props, State> {
     });
   };
 
+  handleRejudge = (problemId) => {
+    const { id, dispatch } = this.props;
+    dispatch({
+      type: 'admin/rejudgeSolution',
+      payload: {
+        contestId: id,
+        problemId,
+      },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Rejudged');
+      }
+    });
+  };
+
   render() {
     const { loading, id, contestDetail } = this.props;
     const { data } = this.state;
     return (
       <PageAnimation>
-        <h4 className="mb-md-lg">Problems of {id} - {contestDetail.title}</h4>
+        <h4 className="mb-md-lg">
+          Problems of {id} - {contestDetail.title}
+        </h4>
         <Row gutter={16} className="list-view">
           <Col xs={24} md={18} xxl={20}>
             <Card bordered={false} className="list-card">
@@ -185,7 +203,7 @@ class AdminContestProblemList extends React.Component<Props, State> {
                 <Table.Column
                   title="Actions"
                   key="Actions"
-                  render={(text, record: IContest, index) => (
+                  render={(text, record: IProblemConfig, index) => (
                     <div className="nowrap">
                       <a
                         className={classNames({ 'text-disabled': index === 0 })}
@@ -204,7 +222,9 @@ class AdminContestProblemList extends React.Component<Props, State> {
                       >
                         <Icon type="down" />
                       </a>
-                      <a className="ml-md-lg">Rejudge</a>
+                      <a className="ml-md-lg" onClick={() => this.handleRejudge(record.problemId)}>
+                        Rejudge
+                      </a>
                       <a className="ml-md-lg text-danger" onClick={() => this.handleDelete(index)}>
                         Delete
                       </a>

@@ -223,6 +223,9 @@ export default {
     *setContestProblemConfig({ payload: { id, problems } }, { call }) {
       return yield call(service.setContestProblemConfig, id, problems);
     },
+    *rejudgeSolution({ payload: data }, { call }) {
+      return yield call(service.rejudgeSolution, data);
+    },
     *getUserList({ payload: query }, { call, put }) {
       const formattedQuery = formatListQuery(query);
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);

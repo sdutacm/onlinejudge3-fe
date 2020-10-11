@@ -149,7 +149,7 @@ class ProblemList extends React.Component<Props, State> {
                 loading={loading}
                 onChange={this.handleTableChange}
                 pagination={false}
-                className="responsive-table"
+                className="responsive-table no-header-table listlike-table"
                 rowClassName={(record: IProblem) =>
                   classNames(
                     'problem-result-mark-row',
@@ -193,49 +193,47 @@ class ProblemList extends React.Component<Props, State> {
                   //   }, () => searchInput && searchInput.focus());
                   // }}
                   render={(text, record: IProblem) => (
-                    <div>
-                      <Link to={urlf(pages.problems.detail, { param: { id: record.problemId } })}>
-                        {record.problemId} - {record.title}
-                      </Link>
-                      {record.tags.length ? (
-                        <div className="float-right">
-                          {record.tags.map((tag) => (
-                            <Popover
-                              key={tag.tagId}
-                              content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
-                            >
-                              <a onClick={() => this.toggleTag(tag.tagId, true)}>
-                                <Tag>{tag.nameEn}</Tag>
-                              </a>
-                            </Popover>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="float-right" style={{ visibility: 'hidden' }}>
-                          <Tag>&nbsp;</Tag>
-                        </div>
-                      )}
+                    <div className="listlike-table-info">
+                      <div className="listlike-table-info-primary">
+                        <Link
+                          className="listlike-table-info-title"
+                          to={urlf(pages.problems.detail, { param: { id: record.problemId } })}
+                        >
+                          {record.problemId} - {record.title}
+                        </Link>
+                        {record.tags.length ? (
+                          <div className="float-right">
+                            {record.tags.map((tag) => (
+                              <Popover
+                                key={tag.tagId}
+                                content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
+                              >
+                                <a onClick={() => this.toggleTag(tag.tagId, true)}>
+                                  <Tag>{tag.nameEn}</Tag>
+                                </a>
+                              </Popover>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="float-right" style={{ visibility: 'hidden' }}>
+                            <Tag>&nbsp;</Tag>
+                          </div>
+                        )}
+                      </div>
+                      <div className="listlike-table-info-secondary">
+                        <SolutionResultStats
+                          accepted={record.accepted}
+                          submitted={record.submitted}
+                          toSolutionsLink={urlf(pages.solutions.index, {
+                            query: { problemId: record.problemId },
+                          })}
+                          className="display-inline-block mr-md"
+                          // style={{ minWidth: '40px' }}
+                        />
+                        <span>{(record.source || '').trim()}</span>
+                      </div>
                     </div>
                   )}
-                />
-                <Table.Column
-                  title="Stats"
-                  key="Statistics"
-                  className="no-wrap"
-                  render={(text, record: IProblem) => (
-                    <SolutionResultStats
-                      accepted={record.accepted}
-                      submitted={record.submitted}
-                      toSolutionsLink={urlf(pages.solutions.index, {
-                        query: { problemId: record.problemId },
-                      })}
-                    />
-                  )}
-                />
-                <Table.Column
-                  title="Source"
-                  key="Source"
-                  render={(text, record: IProblem) => <span>{record.source}</span>}
                 />
               </Table>
               <Pagination
@@ -273,9 +271,7 @@ class ProblemList extends React.Component<Props, State> {
                         content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
                       >
                         <a onClick={() => this.toggleTag(tag.tagId)}>
-                          <Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>
-                            {tag.nameEn}
-                          </Tag>
+                          <Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.nameEn}</Tag>
                         </a>
                       </Popover>
                     ))}

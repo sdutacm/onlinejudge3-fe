@@ -11,6 +11,7 @@
 @bg-color: #f4f4f4;
 //@bg-color: rgb(45, 46, 48); // dark
 //@font-color: rgb(223, 223, 223); // dark
+@font-color: rgba(0, 0, 0, 0.85);
 
 //rgb(34, 34, 34)
 
@@ -500,6 +501,15 @@ ul {
     :global(.ant-table-body) {
       width: auto;
     }
+  }
+}
+
+.no-header-table {
+  thead {
+    display: none;
+  }
+  tbody>tr.problem-result-mark-row {
+    border-left-width: 4px !important;
   }
 }
 
@@ -1546,6 +1556,32 @@ a {
     }
   }
 }
+
+// listlike-table
+
+.listlike-table {
+  .listlike-table-info {
+    a {
+      color: @font-color;
+    }
+    .listlike-table-info-primary {
+      line-height: 1.8;
+
+      .listlike-table-info-title {
+        font-weight: 500;
+      }
+    }
+
+    .listlike-table-info-secondary {
+      font-size: 12px;
+
+      span {
+        opacity: .8;
+      }
+    }
+  }
+}
+
 
 // mobile
 

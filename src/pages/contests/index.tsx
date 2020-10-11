@@ -411,7 +411,7 @@ class ContestList extends React.Component<Props, State> {
                   rowKey="contestId"
                   loading={loading}
                   pagination={false}
-                  className="responsive-table"
+                  className="responsive-table no-header-table listlike-table"
                 >
                   <Table.Column
                     title=""
@@ -424,57 +424,26 @@ class ContestList extends React.Component<Props, State> {
                       </span>
                     )}
                   />
-                  {proMode && (
-                    <Table.Column
-                      title="ID"
-                      key="ID"
-                      render={(text, record: IContest) => <span>{record.contestId}</span>}
-                    />
-                  )}
                   <Table.Column
                     title="Title"
                     key="Title"
                     render={(text, record: IContest) => (
-                      <Link to={urlf(pages.contests.home, { param: { id: record.contestId } })}>
-                        {record.title}
-                      </Link>
-                    )}
-                  />
-                  <Table.Column
-                    title="Time"
-                    key="Time"
-                    render={(text, record: any) => (
-                      <Popover
-                        content={
-                          <table>
-                            <tbody>
-                              <tr>
-                                <td className={classNames(gStyles.textRight, gStyles.textBold)}>
-                                  Start:
-                                </td>
-                                <td>
-                                  {moment(record.startAt).format('YYYY-MM-DD HH:mm:ss Z')} (
-                                  {moment(record.startAt).from(serverTime)})
-                                </td>
-                              </tr>
-                              <tr>
-                                <td className={classNames(gStyles.textRight, gStyles.textBold)}>
-                                  End:
-                                </td>
-                                <td>
-                                  {moment(record.endAt).format('YYYY-MM-DD HH:mm:ss Z')} (
-                                  {moment(record.endAt).from(serverTime)})
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        }
-                      >
-                        <span>
-                          {moment(record.startAt).format('YYYY-MM-DD HH:mm')} ~{' '}
-                          {moment(record.endAt).format('YYYY-MM-DD HH:mm')}
-                        </span>
-                      </Popover>
+                      <div className="listlike-table-info">
+                        <div className="listlike-table-info-primary">
+                          <Link
+                            className="listlike-table-info-title"
+                            to={urlf(pages.contests.home, { param: { id: record.contestId } })}
+                          >
+                            {proMode ? `${record.contestId} - ` : ''}{record.title}
+                          </Link>
+                        </div>
+                        <div className="listlike-table-info-secondary">
+                          <span>
+                            {moment(record.startAt).format('YYYY-MM-DD HH:mm:ss')} ~{' '}
+                            {moment(record.endAt).format('YYYY-MM-DD HH:mm:ss')}
+                          </span>
+                        </div>
+                      </div>
                     )}
                   />
                   <Table.Column

@@ -9,20 +9,22 @@ export interface Props {
   accepted: number;
   submitted: number;
   toSolutionsLink?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutionsLink }) => {
+const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutionsLink, className, style }) => {
   const inner = (
     <>
       <Progress
         className="mini-ratio-progress stats-progress"
         type="circle"
-        percent={accepted / submitted * 100 || 0}
+        percent={(accepted / submitted) * 100 || 0}
         width={12}
         strokeWidth={12}
         showInfo={false}
       />
-      <span className="ml-sm-md">{shortNumber(accepted)}</span>
+      <span className={`ml-sm-md ${className}`} style={style}>{shortNumber(accepted)}</span>
     </>
   );
   return (
@@ -38,11 +40,15 @@ const SolutionResultStats: React.FC<Props> = ({ accepted, submitted, toSolutions
         }
       }}
     >
-      {toSolutionsLink ?
-        <Link to={toSolutionsLink} onClick={e => e.stopPropagation()}>{inner}</Link> :
-        <a>{inner}</a>}
+      {toSolutionsLink ? (
+        <Link to={toSolutionsLink} onClick={(e) => e.stopPropagation()}>
+          {inner}
+        </Link>
+      ) : (
+        <a>{inner}</a>
+      )}
     </Popover>
   );
-}
+};
 
 export default SolutionResultStats;

@@ -181,7 +181,7 @@ class ImportContestUserModal extends React.Component<Props, State> {
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Upload Sheet">
               <ExcelSelectParser
-                templateUrl={staticUrls.templates.user}
+                templateUrl={staticUrls.templates.contestUser}
                 onChange={this.handleExcelChange}
               />
             </Form.Item>

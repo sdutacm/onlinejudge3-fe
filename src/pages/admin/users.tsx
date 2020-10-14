@@ -91,7 +91,6 @@ class AdminUserList extends React.Component<Props, State> {
         field: 'nickname',
         component: 'input',
         initialValue: detail?.nickname || '',
-        disabled: !!detail?.nickname,
         rules: [{ required: true, message: 'Please input the field' }],
       },
       {
@@ -284,7 +283,6 @@ class AdminUserList extends React.Component<Props, State> {
                           });
                           const data = this.getHandledDataFromForm(values);
                           delete data.username;
-                          delete data.nickname;
                           delete data.password;
                           console.log('data', data);
                           return dispatch({

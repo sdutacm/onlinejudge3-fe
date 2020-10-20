@@ -44,7 +44,7 @@ class UserSelect extends React.Component<Props, State> {
         type: 'users/searchUser',
         payload: {
           nickname,
-          limit: 50,
+          limit: 200,
         },
       })
       .then((ret: IApiResponse<IList<IUser>>) => {

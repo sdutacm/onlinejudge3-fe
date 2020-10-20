@@ -157,6 +157,36 @@ class AdminContestProblemList extends React.Component<Props, State> {
     });
   };
 
+  getContestProblemConfig = (contestId) => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'admin/getContestProblemConfig',
+      payload: {
+        id: contestId,
+      },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        return ret.data?.rows || [];
+      }
+      return [];
+    });
+  };
+
+  cloneContestProblems = (contestId) => {
+    this.getContestProblemConfig(contestId).then((ret) => {
+      if (ret.length) {
+        msg.success('Clone successfully');
+        this.setState({
+          data: [
+            ...this.state.data,
+            ...ret.filter(r => !this.state.data.find(p => p.problemId === r.problemId)),
+          ],
+        });
+      }
+    });
+  };
+
   render() {
     const { loading, id, contestDetail } = this.props;
     const { data } = this.state;
@@ -245,6 +275,14 @@ class AdminContestProblemList extends React.Component<Props, State> {
                 label="Add Problem"
                 placeholder="Problem ID"
                 onAdd={this.handleAdd}
+              />
+            </Card>
+            <Card bordered={false}>
+              <AddItemByIdCard
+                label="Clone Problems"
+                placeholder="Contest ID"
+                buttonText="Clone"
+                onAdd={this.cloneContestProblems}
               />
             </Card>
           </Col>

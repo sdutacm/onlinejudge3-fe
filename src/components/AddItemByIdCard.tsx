@@ -5,6 +5,7 @@ import gStyles from '@/general.less';
 export interface Props {
   label: string;
   placeholder: string;
+  buttonText?: string;
   disableActionTrigger?: boolean;
   onAdd?: (number) => void | Promise<void>;
 }
@@ -17,6 +18,7 @@ class AddItemByIdCard extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     label: '',
     placeholder: '',
+    buttonText: 'Add',
     disableActionTrigger: false,
     onAdd: () => {},
   };
@@ -39,12 +41,12 @@ class AddItemByIdCard extends React.Component<Props, State> {
   };
 
   render() {
-    const { label, placeholder } = this.props;
+    const { label, placeholder, buttonText } = this.props;
     return (
       <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
         <Form.Item label={label}>
           <Input.Search
-            enterButton="Add"
+            enterButton={buttonText}
             placeholder={placeholder}
             className="input-button"
             onChange={(e) => this.setState({ value: e.target.value })}

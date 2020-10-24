@@ -143,7 +143,7 @@ class AdminGroupList extends React.Component<Props, State> {
     return {
       ...values,
       verified: values.verified === 'true',
-      private: values.verified === 'true',
+      private: values.private === 'true',
       joinChannel: +values.joinChannel,
     };
   }

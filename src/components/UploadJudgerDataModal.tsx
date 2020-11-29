@@ -190,8 +190,11 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
 
           <div>
             <p>
-              <strong>Caution</strong>: all files in data directory will be replaced by files
-              in archive.
+              <strong>Caution</strong>: all files in data directory will be replaced by files in
+              archive.
+            </p>
+            <p>
+              DO NOT use Windows Notepad and other CRLF mode editors to edit file.
             </p>
             <p>Everytime you upload data archive, you must input all fields above.</p>
             <ul>

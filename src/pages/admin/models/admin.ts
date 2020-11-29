@@ -11,6 +11,7 @@ const initialState = {
     rows: [],
   },
   problemDetail: {},
+  problemDataFiles: {},
   tagList: {
     count: 0,
     rows: [],
@@ -54,6 +55,9 @@ export default {
       state.problemDetail[id] = {
         ...data,
       };
+    },
+    setProblemDataFiles(state, { payload: { id, data } }) {
+      state.problemDataFiles[id] = data;
     },
     setTagList(state, { payload: { data } }) {
       state.tagList = {
@@ -133,6 +137,31 @@ export default {
         });
       }
       return detailRet;
+    },
+    *getProblemDataFiles({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<any> = yield call(service.getJudgerDataFile, `${id}`);
+      if (ret.success) {
+        yield put({
+          type: 'setProblemDataFiles',
+          payload: {
+            id,
+            data: ret.data?.files || [],
+          },
+        });
+      }
+      return ret;
+    },
+    *getDataFileDetail({ payload: { path } }, { call }) {
+      return yield call(service.getJudgerDataFile, path);
+    },
+    *getJudgerDataArchive({ payload: { problemId } }, { call }) {
+      return yield call(service.getJudgerDataArchive, { problemId });
+    },
+    *prepareJudgerDataUpdate(action, { call }) {
+      return yield call(service.prepareJudgerDataUpdate);
+    },
+    *uploadJudgerData({ payload: { data } }, { call }) {
+      return yield call(service.uploadJudgerData, data);
     },
     *createProblem({ payload: { data } }, { call }) {
       return yield call(service.createProblem, data);
@@ -361,6 +390,20 @@ export default {
           requestEffect(dispatch, { type: 'getPostList', payload: query });
         } else if (pathname === pages.admin.groups) {
           requestEffect(dispatch, { type: 'getGroupList', payload: query });
+        }
+        const matchProblemDataFileList = matchPath(pathname, {
+          path: pages.admin.problemDataFiles,
+          exact: true,
+        });
+        if (matchProblemDataFileList) {
+          requestEffect(dispatch, {
+            type: 'getProblemDataFiles',
+            payload: { id: +matchProblemDataFileList.params['id'] },
+          });
+          requestEffect(dispatch, {
+            type: 'getProblemDetail',
+            payload: { id: +matchProblemDataFileList.params['id'] },
+          });
         }
         const matchContestUserList = matchPath(pathname, {
           path: pages.admin.contestUsers,

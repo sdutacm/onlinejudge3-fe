@@ -52,6 +52,8 @@ export default {
   admin: {
     index: '/admin',
     problems: '/admin/problems',
+    problemsHome: '/admin/problems/:id',
+    problemDataFiles: '/admin/problems/:id/data',
     tags: '/admin/tags',
     contests: '/admin/contests',
     contestHome: '/admin/contests/:id',

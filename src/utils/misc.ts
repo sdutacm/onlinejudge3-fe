@@ -191,3 +191,12 @@ export function getCsrfHeader() {
     'x-csrf-token': Cookies.get('csrfToken'),
   };
 }
+
+/**
+ * 转换 base64 到 blob（async）
+ * @param base64
+ * @param type
+ */
+export function b64toBlob(base64, type = 'application/octet-stream') {
+  return fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
+}

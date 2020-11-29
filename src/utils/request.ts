@@ -34,6 +34,7 @@ function checkStatus(response: AxiosResponse) {
  * Send a request and get API response
  * @param {string} url
  * @param {AxiosRequestConfig} options
+ * @param {AxiosRequestConfig} initOptions
  * @returns {Promise<IApiResponse<any>>}
  */
 async function request(
@@ -55,6 +56,34 @@ async function request(
   checkStatus(response);
   (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
   return response.data;
+}
+
+/**
+ * Send a request and get API response (with original original response object)
+ * @param {string} url
+ * @param {AxiosRequestConfig} options
+ * @param {AxiosRequestConfig} initOptions
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export async function originalRequest(
+  url: string,
+  options: AxiosRequestConfig = {},
+  initOptions: AxiosRequestConfig = {},
+): Promise<AxiosResponse<any>> {
+  const axiosInstance = initAxios(initOptions);
+  const headers = { ...options.headers };
+  const method = (options.method || '').toLowerCase();
+  if (['post', 'put', 'patch', 'delete'].includes(method)) {
+    headers['x-csrf-token'] = Cookies.get('csrfToken');
+  }
+  const response = await axiosInstance({
+    url,
+    ...options,
+    headers,
+  });
+  checkStatus(response);
+  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
+  return response;
 }
 
 export async function get<O = any>(url: string, minDuration?: number): Promise<IApiResponse<O>> {

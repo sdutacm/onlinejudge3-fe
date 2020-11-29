@@ -327,6 +327,12 @@ class AdminProblemList extends React.Component<Props, State> {
                       >
                         <a onClick={() => this.editProblem(record.problemId)}>Edit</a>
                       </GeneralFormDrawer>
+                      <Link
+                        to={urlf(pages.admin.problemDataFiles, { param: { id: record.problemId } })}
+                        className="ml-md-lg"
+                      >
+                        Data
+                      </Link>
                       {record.display && (
                         <Link
                           to={urlf(pages.problems.detail, { param: { id: record.problemId } })}

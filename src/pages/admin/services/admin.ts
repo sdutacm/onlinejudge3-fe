@@ -1,4 +1,4 @@
-import { post } from '@/utils/request';
+import { post, originalRequest } from '@/utils/request';
 import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
 import {
@@ -64,6 +64,10 @@ import {
   IBatchCreateUsersReq,
 } from '@/common/contracts/user';
 import { IRejudgeSolutionReq } from '@/common/contracts/solution';
+import {
+  IGetJudgerDataFileReq,
+  IGetJudgerDataFileResp,
+} from '@/common/contracts/judger';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -285,5 +289,33 @@ export function updateGroupDetail(groupId, data) {
   return post<IUpdateGroupDetailReq, void>(routesBe.updateGroupDetail.url, {
     groupId,
     ...data,
+  });
+}
+
+export function getJudgerDataFile(path: string) {
+  return post<IGetJudgerDataFileReq, IGetJudgerDataFileResp>(routesBe.getJudgerDataFile.url, {
+    path,
+  });
+}
+
+export function getJudgerDataArchive(data) {
+  return originalRequest(routesBe.getJudgerDataArchive.url, {
+    method: 'post',
+    data,
+    responseType: 'blob',
+  });
+}
+
+export function prepareJudgerDataUpdate() {
+  return post<void, void>(routesBe.prepareJudgerDataUpdate.url);
+}
+
+export function uploadJudgerData(data) {
+  return originalRequest(routesBe.uploadJudgerData.url, {
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'multipart/form-data;charset=UTF-8',
+    },
   });
 }

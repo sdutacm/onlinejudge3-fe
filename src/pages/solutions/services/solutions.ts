@@ -1,4 +1,4 @@
-import { post } from '@/utils/request';
+import { post, get } from '@/utils/request';
 import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
 import {
@@ -12,6 +12,7 @@ import {
   IBatchGetSolutionDetailReq,
   IBatchGetSolutionDetailResp,
 } from '@/common/contracts/solution';
+import { IGetLanguageConfigResp } from '@/common/contracts/judger';
 
 export function getList(query) {
   const q = { ...query };
@@ -55,4 +56,8 @@ export function changeShared(solutionId, shared) {
     solutionId,
     shared,
   });
+}
+
+export function getLanguageConfig() {
+  return post<void, IGetLanguageConfigResp>(routesBe.getLanguageConfig.url);
 }

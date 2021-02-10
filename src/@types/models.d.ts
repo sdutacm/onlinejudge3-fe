@@ -587,3 +587,10 @@ interface IJudgeStatus {
   current: number;
   total: number;
 }
+
+interface IJudgerLanguageConfigItem {
+  language: string;
+  compile: string;
+  run: string;
+  version: string;
+}

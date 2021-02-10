@@ -15,6 +15,7 @@ export interface Props extends ReduxProps, FormProps {
   problemIndex?: number;
   contestId?: number;
   title: string;
+  languageConfig: IJudgerLanguageConfigItem[];
   location?: RouteLocation;
 }
 
@@ -28,6 +29,14 @@ class SubmitSolutionModal extends React.Component<Props, State> {
     this.state = {
       visible: false,
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'solutions/getLanguageConfig',
+      payload: {},
+    });
   }
 
   handleOk = () => {
@@ -78,8 +87,12 @@ class SubmitSolutionModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, loading, form, problemId, problemIndex, title } = this.props;
+    const { children, loading, form, problemId, problemIndex, title, languageConfig } = this.props;
     const { getFieldDecorator } = form;
+    const selectedLanguage = form.getFieldValue('language');
+    const selectedLanguageConfig = languageConfig.find(
+      (lang) => lang.language === selectedLanguage,
+    );
 
     return (
       <>
@@ -104,14 +117,15 @@ class SubmitSolutionModal extends React.Component<Props, State> {
             <Form.Item label="Language">
               {getFieldDecorator('language', {
                 rules: [{ required: true, message: 'Please select language' }],
-                initialValue: 'g++', // TODO 判断用户默认语言设置
+                initialValue: 'C++', // TODO 判断用户默认语言设置
               })(
                 <Select placeholder="Select a language">
-                  {langs.map((lang) => (
-                    <Select.Option key={lang.fieldName}>{lang.displayFullName}</Select.Option>
+                  {languageConfig.map((lang) => (
+                    <Select.Option key={lang.language}>{lang.language}</Select.Option>
                   ))}
                 </Select>,
               )}
+              <p className="mt-md">{selectedLanguageConfig?.version}</p>
             </Form.Item>
 
             <Form.Item label="Code">
@@ -129,6 +143,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
 function mapStateToProps(state) {
   return {
     loading: !!state.loading.effects['solutions/submit'],
+    languageConfig: state.solutions.languageConfig,
   };
 }
 

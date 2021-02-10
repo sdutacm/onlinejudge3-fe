@@ -97,6 +97,14 @@ class Index extends React.Component<Props, State> {
     }
   };
 
+  fetchLanguageConfig = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'solutions/getLanguageConfig',
+      payload: {},
+    });
+  };
+
   async componentDidMount() {
     const settings = this.props.settings;
     document.body.classList.remove('auto');
@@ -132,6 +140,8 @@ class Index extends React.Component<Props, State> {
     // viewport
     this.saveViewportDimensions();
     window.addEventListener('resize', this.saveViewportDimensions);
+    // language config
+    this.fetchLanguageConfig();
     // set some methods to window
     // @ts-ignore
     window._router = router;

@@ -29,6 +29,7 @@ export interface Props extends ReduxProps, RouteProps {
   problems: IFullList<IProblem>;
   data: IList<ISolution>;
   proMode: boolean;
+  languageConfig: IJudgerLanguageConfigItem[];
 }
 
 interface State {
@@ -100,6 +101,7 @@ class ContestSolutions extends React.Component<Props, State> {
       dispatch,
       location: { query },
       proMode,
+      languageConfig,
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
@@ -156,8 +158,8 @@ class ContestSolutions extends React.Component<Props, State> {
                     {
                       displayName: 'Language',
                       fieldName: 'language',
-                      options: langs.map((lang) => {
-                        return { fieldName: lang.fieldName, displayName: lang.displayShortName };
+                      options: languageConfig.map((lang) => {
+                        return { fieldName: lang.language, displayName: lang.language };
                       }),
                     },
                     {
@@ -220,6 +222,7 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['solutions/getList'],
     data: state.solutions.list,
     proMode: !!state.settings.proMode,
+    languageConfig: state.solutions.languageConfig,
   };
 }
 

@@ -25,6 +25,7 @@ export interface Props extends ReduxProps, RouteProps {
   data: IList<ISolution>;
   session: ISessionStatus;
   proMode: boolean;
+  languageConfig: IJudgerLanguageConfigItem[];
 }
 
 interface State {
@@ -74,7 +75,7 @@ class SolutionList extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, dispatch, session, proMode } = this.props;
+    const { loading, data, dispatch, session, proMode, languageConfig } = this.props;
     return (
       <PageAnimation>
         <Row gutter={16} className="list-view">
@@ -106,8 +107,8 @@ class SolutionList extends React.Component<Props, State> {
                   {
                     displayName: 'Language',
                     fieldName: 'language',
-                    options: langs.map((lang) => {
-                      return { fieldName: lang.fieldName, displayName: lang.displayShortName };
+                    options: languageConfig.map((lang) => {
+                      return { fieldName: lang.language, displayName: lang.language };
                     }),
                   },
                   {
@@ -163,6 +164,7 @@ function mapStateToProps(state) {
     data: state.solutions.list,
     session: state.session,
     proMode: !!state.settings.proMode,
+    languageConfig: state.solutions.languageConfig,
   };
 }
 

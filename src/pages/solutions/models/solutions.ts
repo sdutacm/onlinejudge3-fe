@@ -14,6 +14,7 @@ const initialState = {
     _query: {},
   },
   detail: {},
+  languageConfig: [],
 };
 
 export default {
@@ -46,6 +47,9 @@ export default {
     },
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
+    },
+    setLanguageConfig(state, { payload: { data } }) {
+      state.languageConfig = data;
     },
   },
   effects: {
@@ -174,6 +178,24 @@ export default {
           payload: {
             id,
             data: { shared },
+          },
+        });
+      }
+      return ret;
+    },
+    *getLanguageConfig({ payload: { force = false } }, { call, put, select }) {
+      // if (!force) {
+      //   const savedState = yield select((state) => state.solutions.languageConfig);
+      //   if (!isStateExpired(savedState)) {
+      //     return;
+      //   }
+      // }
+      const ret: IApiResponse<IJudgerLanguageConfigItem[]> = yield call(service.getLanguageConfig);
+      if (ret.success) {
+        yield put({
+          type: 'setLanguageConfig',
+          payload: {
+            data: ret.data,
           },
         });
       }

@@ -1,6 +1,6 @@
 {
   "name": "onlinejudge3-fe",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "",
   "scripts": {
     "dev": "gulp dev",
@@ -57,6 +57,7 @@
     "react-syntax-highlighter": "^9.0.0",
     "react-tooltip": "^3.9.2",
     "short-number": "^1.0.6",
+    "socket.io-client": "^2.4.0",
     "url-assembler": "^1.2.10",
     "xlsx": "^0.15.5",
     "xss": "^1.0.3"
@@ -69,6 +70,7 @@
     "@types/promise-queue": "^2.2.0",
     "@types/react": "16.8.8",
     "@types/react-dom": "^16.0.11",
+    "@types/socket.io-client": "^1.4.35",
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
     "cloc": "^2.4.0",

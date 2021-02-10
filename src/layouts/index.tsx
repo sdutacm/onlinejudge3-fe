@@ -27,6 +27,9 @@ import ExtLink from '@/components/ExtLink';
 import throttle from 'lodash.throttle';
 import ShowDiscussionModal from '@/components/ShowDiscussionModal';
 import NoticeModal from '@/components/NoticeModal';
+import io from 'socket.io-client';
+import socketConfig from '@/configs/socket';
+import { decodeJudgeStatusBuffer } from '@/utils/judger';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -132,6 +135,24 @@ class Index extends React.Component<Props, State> {
     // set some methods to window
     // @ts-ignore
     window._router = router;
+    // socket
+    const sockets: Record<string, SocketIOClient.Socket> = {};
+    sockets.judger = io(socketConfig.judger.url);
+    sockets.judger.on('connect', () => {
+      // console.log('judger socket connected');
+      // sockets.judger.emit('subscribe', [4597206]);
+    });
+    sockets.judger.on('s', (b) => {
+      const event = new CustomEvent('status', { detail: decodeJudgeStatusBuffer(b) });
+      // @ts-ignore
+      window._eventSource.judger.dispatchEvent(event);
+    });
+    // @ts-ignore
+    window._sockets = sockets;
+    // @ts-ignore
+    window._eventSource = {
+      judger: document.getElementById('event-source-judger'),
+    };
   }
 
   componentWillUnmount() {
@@ -212,7 +233,9 @@ class Index extends React.Component<Props, State> {
                   {constants.siteName}
                 </Link>
               ) : (
-                <span className={classNames(styles.logo, 'cursor-default')}>{session.user?.username || '--'}@sdutoj:/#</span>
+                <span className={classNames(styles.logo, 'cursor-default')}>
+                  {session.user?.username || '--'}@sdutoj:/#
+                </span>
               )}
             </Col>
             <Col>{this.state.sessionLoaded && <NavContainer />}</Col>

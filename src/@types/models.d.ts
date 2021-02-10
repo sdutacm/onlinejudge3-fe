@@ -579,3 +579,11 @@ type INoticeId = string;
 interface INotices {
   read: Record<INoticeId, boolean>;
 }
+
+interface IJudgeStatus {
+  solutionId: number;
+  type: number;
+  result: number;
+  current: number;
+  total: number;
+}

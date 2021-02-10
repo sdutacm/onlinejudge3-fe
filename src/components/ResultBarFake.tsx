@@ -9,8 +9,6 @@ export interface Props {
   timeLimit: number;
   result: number;
   colorSettings: ISettingsColor;
-  current?: number;
-  total?: number;
 }
 
 interface State {
@@ -22,10 +20,10 @@ interface State {
 }
 
 function isFinished(result) {
-  return result !== Results.WT && result !== Results.JG && result !== Results.RPD;
+  return result !== Results.WT && result !== Results.JG;
 }
 
-class ResultBar extends React.Component<Props, State> {
+class ResultBarFake extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     percent: 0,
     timeLimit: 1000,
@@ -46,9 +44,7 @@ class ResultBar extends React.Component<Props, State> {
   updateProgress = () => {
     // console.log('upd progress');
     const r = this.props.timeLimit / 1000;
-    const d =
-      Math.log(this.state.updateCnt / Math.pow(r, 1.75) + 3) -
-      Math.log(this.state.updateCnt / Math.pow(r, 1.75) + 2);
+    const d = Math.log(this.state.updateCnt / Math.pow(r, 1.75) + 3) - Math.log(this.state.updateCnt / Math.pow(r, 1.75) + 2);
     const x = d / 0.01352 / Math.pow(r, 0.86283);
     // console.log(d, x, this.state.percent + x);
     const maxPercent = 90;
@@ -65,48 +61,36 @@ class ResultBar extends React.Component<Props, State> {
   componentDidMount() {
     const { result } = this.props;
     if (!isFinished(result)) {
-      // setTimeout(() => {
-      //   const timer: any = setInterval(this.updateProgress, this.state.updateItv);
-      //   this.setState({ timer });
-      // }, 250 + Math.random() * 500);
+      setTimeout(() => {
+        const timer: any = setInterval(this.updateProgress, this.state.updateItv);
+        this.setState({ timer });
+      }, 250 + Math.random() * 500);
     }
   }
 
   componentWillUnmount() {
-    // clearInterval(this.state.timer);
+    clearInterval(this.state.timer);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.result !== nextProps.result && isFinished(nextProps.result)) {
       // console.log('judged!');
-      // clearInterval(this.state.timer);
+      clearInterval(this.state.timer);
       const resultInfo = resultsMap[nextProps.result] || {};
       if (resultInfo.shortName === 'AC') {
         this.setState({ percent: 100, lockAnim: true });
         setTimeout(() => this.setState({ lockAnim: false }), 400);
-      } else {
+      }
+      else {
         this.setState({ lockAnim: false });
       }
-    }
-    if (nextProps.percent && this.props.percent !== nextProps.percent) {
-      this.setState({
-        percent: nextProps.percent,
-      });
     }
   }
 
   render() {
-    const { result, colorSettings, current, total } = this.props;
+    const { result, colorSettings } = this.props;
     if (!isFinished(result) || this.state.lockAnim) {
-      return (
-        <Popover title="Judging" content={total ? `Running test ${current}/${total}` : 'Ready to run tests'}>
-          <div className="progress-container">
-            <div className="progress" style={{ width: this.state.percent + '%' }}>
-              &nbsp;
-            </div>
-          </div>
-        </Popover>
-      );
+      return <div className="progress" style={{ width: this.state.percent + '%' }}>&nbsp;</div>;
     }
     const resultInfo = resultsMap[result] || {};
     return (
@@ -122,11 +106,7 @@ class ResultBar extends React.Component<Props, State> {
           }
         }}
       >
-        <div
-          className={`result bg-${
-            colorSettings === 'colorful' ? resultInfo.colorfulColor : resultInfo.normalColor
-          }`}
-        >
+        <div className={`result bg-${colorSettings === 'colorful' ? resultInfo.colorfulColor : resultInfo.normalColor}`}>
           <span>{resultInfo.shortName}</span>
         </div>
       </Popover>
@@ -140,4 +120,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ResultBar);
+export default connect(mapStateToProps)(ResultBarFake);

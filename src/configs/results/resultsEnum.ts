@@ -10,6 +10,7 @@ enum Results {
   PE = 8,
   SE = 11,
   JG = 12,
+  RPD = -1,
 }
 
 export default Results;

@@ -16,6 +16,7 @@ import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
 import ProblemBar from '@/components/ProblemBar';
 import { isPermissionDog } from '@/utils/permission';
+import { isFinishedResult } from '@/utils/judger';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -32,6 +33,7 @@ export interface Props extends ReduxProps, RouteProps {
 interface State {
   timer: number;
   updateItv: number;
+  judgeStatusMap: Record<number, IJudgeStatus>;
 }
 
 class SolutionTable extends React.Component<Props, State> {
@@ -40,17 +42,75 @@ class SolutionTable extends React.Component<Props, State> {
     this.state = {
       timer: 0,
       updateItv: 2000,
+      judgeStatusMap: {},
     };
   }
 
   componentDidMount() {
     const timer: any = setInterval(this.updatePendingSolutions, this.state.updateItv);
     this.setState({ timer });
+    this.subscribe();
+    // @ts-ignore
+    window._eventSource.judger.addEventListener('status', this.onJudgeStatus);
   }
 
   componentWillUnmount() {
     clearInterval(this.state.timer);
+    // @ts-ignore
+    window._eventSource.judger.removeEventListener('status', this.onJudgeStatus);
   }
+
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+    if (this.props.data !== nextProps.data) {
+      this.subscribe(nextProps.data);
+    }
+  }
+
+  onJudgeStatus = async (e) => {
+    const status = e.detail as IJudgeStatus;
+    console.log(status);
+    this.setState({
+      judgeStatusMap: {
+        ...this.state.judgeStatusMap,
+        [status.solutionId]: status,
+      },
+    });
+    if (isFinishedResult(status.result)) {
+      const { data } = await this.props.dispatch({
+        type: 'solutions/getListByIds',
+        payload: {
+          type: this.props.isDetail ? 'detail' : 'list',
+          solutionIds: [status.solutionId],
+        },
+      });
+
+      if (this.props.isDetail) {
+        for (const item in data) {
+          if (data[item].result === Results.CE) {
+            this.props.dispatch({
+              type: 'solutions/getDetailForCompilationInfo',
+              payload: {
+                id: item,
+              },
+            });
+          }
+        }
+      }
+    }
+  };
+
+  subscribe = (data?: Props['data']) => {
+    const { rows } = data || this.props.data;
+    const solutionIds: number[] = [];
+    for (const row of rows) {
+      if (row.result === Results.WT || row.result === Results.JG || row.result === Results.RPD) {
+        solutionIds.unshift(row.solutionId);
+      }
+    }
+    // @ts-ignore
+    window._sockets.judger.emit('subscribe', solutionIds);
+    console.log('subscribe', solutionIds);
+  };
 
   updatePendingSolutions = async () => {
     const { rows } = this.props.data;
@@ -148,12 +208,12 @@ class SolutionTable extends React.Component<Props, State> {
           }}
         >
           {(isDetail || showId) && (
-              <Table.Column
-                title="ID"
-                key="ID"
-                render={(text, record: ISolution) => <span>{record.solutionId}</span>}
-              />
-            )}
+            <Table.Column
+              title="ID"
+              key="ID"
+              render={(text, record: ISolution) => <span>{record.solutionId}</span>}
+            />
+          )}
           <Table.Column
             title="User"
             key="User"
@@ -192,9 +252,18 @@ class SolutionTable extends React.Component<Props, State> {
             key="Result"
             dataIndex="solutionId"
             className="result-bar"
-            render={(text, record: ISolution) => (
-              <ResultBar percent={0} timeLimit={record.problem.timeLimit} result={record.result} />
-            )}
+            render={(text, record: ISolution) => {
+              const { current = 0, total = 0 } = this.state.judgeStatusMap[record.solutionId] || {};
+              return (
+                <ResultBar
+                  percent={total ? (current / total) * 100 : 0}
+                  current={current}
+                  total={total}
+                  timeLimit={record.problem.timeLimit}
+                  result={record.result}
+                />
+              );
+            }}
           />
           <Table.Column
             title="Time"
@@ -226,7 +295,9 @@ class SolutionTable extends React.Component<Props, State> {
           <Table.Column
             title="At"
             key="At"
-            render={(text, record: ISolution) => <TimeBar time={new Date(record.createdAt).getTime()} />}
+            render={(text, record: ISolution) => (
+              <TimeBar time={new Date(record.createdAt).getTime()} />
+            )}
           />
           {!isDetail && (
             <Table.Column

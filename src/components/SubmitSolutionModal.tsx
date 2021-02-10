@@ -37,7 +37,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
         dispatch({
           type: 'solutions/submit',
           payload: { ...values, contestId },
-        }).then(ret => {
+        }).then((ret) => {
           msg.auto(ret);
           if (ret.success) {
             msg.success('Submit successfully');
@@ -47,19 +47,26 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               action: 'submit',
               label: values.language,
             });
+            const solutionId = ret.data.solutionId;
+            // @ts-ignore
+            window._sockets.judger.emit('subscribe', [solutionId]);
+            console.log('subscribe', [solutionId]);
             const url = contestId
-              ? urlf(pages.contests.solutionDetail, { param: { id: contestId, sid: ret.data.solutionId } })
-              : urlf(pages.solutions.detail, { param: { id: ret.data.solutionId }, query: { from: location.query.from } });
-            setTimeout(() => router.push(url),
-              constants.modalAnimationDurationFade
-            );
+              ? urlf(pages.contests.solutionDetail, {
+                  param: { id: contestId, sid: solutionId },
+                })
+              : urlf(pages.solutions.detail, {
+                  param: { id: solutionId },
+                  query: { from: location.query.from },
+                });
+            setTimeout(() => router.push(url), constants.modalAnimationDurationFade);
           }
         });
       }
     });
   };
 
-  handleShowModel = e => {
+  handleShowModel = (e) => {
     if (e) {
       e.stopPropagation();
     }
@@ -87,8 +94,11 @@ class SubmitSolutionModal extends React.Component<Props, State> {
         >
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Problem">
-              {getFieldDecorator('problemId', { initialValue: problemId })(<span
-                className="ant-form-text">{problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}</span>)}
+              {getFieldDecorator('problemId', { initialValue: problemId })(
+                <span className="ant-form-text">
+                  {problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}
+                </span>,
+              )}
             </Form.Item>
 
             <Form.Item label="Language">
@@ -97,8 +107,10 @@ class SubmitSolutionModal extends React.Component<Props, State> {
                 initialValue: 'g++', // TODO 判断用户默认语言设置
               })(
                 <Select placeholder="Select a language">
-                  {langs.map(lang => (<Select.Option key={lang.fieldName}>{lang.displayFullName}</Select.Option>))}
-                </Select>
+                  {langs.map((lang) => (
+                    <Select.Option key={lang.fieldName}>{lang.displayFullName}</Select.Option>
+                  ))}
+                </Select>,
               )}
             </Form.Item>
 

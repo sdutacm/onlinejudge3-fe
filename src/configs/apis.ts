@@ -1,6 +1,6 @@
 const api = {
   // base: '/api',
-  base: process.env.OJ3_BUILD4 === 'test' ? '/onlinejudge3/api_test' : '/onlinejudge3/api',
+  base: '/onlinejudge3/api',
   general: {
     csrf: '/csrf',
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Popover, Icon } from 'antd';
+import { Table, Popover, Icon, Switch, Divider } from 'antd';
 import { numberToAlphabet, urlf } from '@/utils/format';
 import throttle from 'lodash.throttle';
 import classNames from 'classnames';
@@ -14,6 +14,10 @@ import { getRatingLevel } from '@/utils/rating';
 import tracker from '@/utils/tracker';
 import moment from 'moment';
 import { aoa2Excel } from '@/utils/misc';
+
+const cached = {
+  showAll: false,
+};
 
 export interface Props extends RouteProps {
   id: number;
@@ -33,6 +37,7 @@ export interface Props extends RouteProps {
 interface State {
   timer: number;
   contentWidth: number;
+  showAll: boolean;
 }
 
 class Ranklist extends React.Component<Props, State> {
@@ -56,6 +61,7 @@ class Ranklist extends React.Component<Props, State> {
     this.state = {
       timer: 0,
       contentWidth: 0,
+      showAll: cached.showAll,
     };
   }
 
@@ -173,7 +179,7 @@ class Ranklist extends React.Component<Props, State> {
       location: { query },
       rating,
     } = this.props;
-    const { contentWidth } = this.state;
+    const { contentWidth, showAll } = this.state;
     // const contentWidth = 0;
     if (!data || !problemNum) {
       return null;
@@ -238,14 +244,17 @@ class Ranklist extends React.Component<Props, State> {
           }
           loading={loading}
           // pagination={false}
-          className="ranklist"
+          className={classNames('ranklist', { 'hide-pagination': showAll })}
           rowClassName={(record) => (record._self ? 'self-rank-row' : '')}
-          scroll={{ x: contentWidth < widthSum ? widthSum : undefined, y: availableHeight }}
+          scroll={{
+            x: contentWidth < widthSum ? widthSum : undefined,
+            y: showAll ? undefined : availableHeight,
+          }}
           pagination={{
             // className: 'ant-table-pagination',
             total: ranklist.length,
-            current: +query.page || 1,
-            pageSize: limits.contests.ranklist,
+            current: showAll ? 1 : +query.page || 1,
+            pageSize: showAll ? ranklist.length : limits.contests.ranklist,
             onChange: this.handlePageChange,
           }}
         >
@@ -360,13 +369,42 @@ class Ranklist extends React.Component<Props, State> {
           ))}
         </Table>
         {!loading && data && (
-          <a
-            className="normal-text-link"
-            style={{ position: 'absolute', bottom: '16px', lineHeight: '32px', marginLeft: '16px' }}
-            onClick={this.handleExport}
-          >
-            <Icon type="export" /> Export Ranklist
-          </a>
+          <span>
+            <span
+              style={{
+                position: 'absolute',
+                bottom: '16px',
+                lineHeight: '32px',
+                marginLeft: '16px',
+              }}
+            >
+              <Popover content="Show all in one page. May cause performance issues">
+                Show All
+              </Popover>
+              <Switch
+                size="small"
+                className="ml-md"
+                checked={showAll}
+                onChange={(checked) => {
+                  this.setState({ showAll: checked });
+                  cached.showAll = checked;
+                }}
+              />
+            </span>
+            <a
+              className="normal-text-link"
+              style={{
+                position: 'absolute',
+                bottom: '16px',
+                left: '108px',
+                lineHeight: '32px',
+                marginLeft: '36px',
+              }}
+              onClick={this.handleExport}
+            >
+              Export Ranklist
+            </a>
+          </span>
         )}
       </div>
     );

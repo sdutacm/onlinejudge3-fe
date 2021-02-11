@@ -193,9 +193,8 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
               <strong>Caution</strong>: all files in data directory will be replaced by files in
               archive.
             </p>
-            <p>
-              DO NOT use Windows Notepad and other CRLF mode editors to edit file.
-            </p>
+            <p>DO NOT use Windows Notepad and other CRLF mode editors to edit file.</p>
+            <p>The maximum number of test cases is 255, and the maximum archive size is 50 MiB.</p>
             <p>Everytime you upload data archive, you must input all fields above.</p>
             <ul>
               <li>
@@ -212,7 +211,7 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
               <li>
                 <strong>Git Email</strong>: Your GitHub email address. If you don't know which is,
                 browse{' '}
-                <ExtLink href="https://github.com/settings/email">
+                <ExtLink href="https://github.com/settings/emails">
                   https://github.com/settings/emails
                 </ExtLink>{' '}
                 to review it

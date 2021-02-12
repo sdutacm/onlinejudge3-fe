@@ -26,3 +26,15 @@ export function isFinishedResult(result: Results): boolean {
       return true;
   }
 }
+
+export function isIgnoredResult(result: Results): boolean {
+  return result === Results.CE || result === Results.SE;
+}
+
+export function isAcceptedResult(result: Results): boolean {
+  return result === Results.AC;
+}
+
+export function isRejectedResult(result: Results): boolean {
+  return isFinishedResult(result) && !isIgnoredResult(result) && !isAcceptedResult(result);
+}

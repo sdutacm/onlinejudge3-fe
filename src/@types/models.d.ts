@@ -106,6 +106,24 @@ interface IProblemLite {
   title: string;
 }
 
+interface ISolutionJudgeInfoDetailCase {
+  result: number;
+  time: number;
+  memory: number;
+  compileInfo?: string;
+}
+
+interface ISolutionJudgeInfoDetail {
+  cases: ISolutionJudgeInfoDetailCase[];
+}
+
+interface ISolutionJudgeInfo {
+  lastCase: number;
+  totalCase: number;
+  detail: ISolutionJudgeInfoDetail | null;
+  finishedAt: Date;
+}
+
 interface ISolution {
   solutionId: number;
   user: IUserLite;
@@ -128,6 +146,7 @@ interface ISolution {
   createdAt: ITimestamp;
   code?: string;
   compileInfo?: string;
+  judgeInfo?: ISolutionJudgeInfo;
 }
 
 interface IContest {

@@ -261,6 +261,7 @@ class SolutionTable extends React.Component<Props, State> {
                   total={total}
                   timeLimit={record.problem.timeLimit}
                   result={record.result}
+                  judgeInfo={record.judgeInfo}
                 />
               );
             }}

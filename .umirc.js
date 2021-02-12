@@ -14,9 +14,9 @@ const buildConfig = {
     outputPath: './onlinejudge3_exp',
   },
   test: {
-    base: '/onlinejudge3_barkalways/',
-    publicPath: '/onlinejudge3_barkalways/',
-    outputPath: './onlinejudge3_barkalways',
+    base: '/onlinejudge3_test/',
+    publicPath: '/onlinejudge3_test/',
+    outputPath: './onlinejudge3_test',
   },
 };
 

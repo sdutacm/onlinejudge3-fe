@@ -181,7 +181,7 @@ class ResultBar extends React.Component<Props, State> {
                   return (
                     <Col xs={12} md={4} key={index} style={{ padding: '6px' }}>
                       <div
-                        className={isAcceptedResult(j.result) ? 'bg-green' : 'bg-red'}
+                        className={'text-white' + (isAcceptedResult(j.result) ? ' bg-green' : ' bg-red')}
                         style={{ padding: '6px' }}
                       >
                         <p style={{ margin: 0, position: 'absolute', fontSize: '8px' }}>

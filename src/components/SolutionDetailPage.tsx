@@ -37,6 +37,14 @@ const langsMap4Hljs = {
   python2: 'python',
   python3: 'python',
   'c#': 'cs',
+  C: 'cpp',
+  'C++': 'cpp',
+  Java: 'java',
+  Python: 'python',
+  JavaScript: 'javascript',
+  TypeScript: 'typescript',
+  Go: 'go',
+  Rest: 'rust',
 };
 
 const highlighterLineNumberStyle = {

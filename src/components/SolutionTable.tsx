@@ -10,17 +10,18 @@ import ResultBar from '@/components/ResultBar';
 import { langsMap } from '@/configs/solutionLanguages';
 import TimeBar from '@/components/TimeBar';
 import limits from '@/configs/limits';
-import { Table, Pagination, Icon } from 'antd';
+import { Table, Icon } from 'antd';
 import classNames from 'classnames';
 import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
 import ProblemBar from '@/components/ProblemBar';
 import { isPermissionDog } from '@/utils/permission';
 import { isFinishedResult } from '@/utils/judger';
+import IdBasedPagination from './IdBasedPagination';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
-  data: IList<ISolution>;
+  data: IIdPaginationList<ISolution>;
   showPagination: boolean;
   isDetail: boolean;
   contestId?: number;
@@ -152,6 +153,74 @@ class SolutionTable extends React.Component<Props, State> {
     });
   };
 
+  get limit() {
+    return +this.props.location.query.limit || limits.solutions.list;
+  }
+
+  get rows() {
+    return this.props.data?.rows || [];
+  }
+
+  get count() {
+    return this.rows.length;
+  }
+
+  get paginationMode() {
+    return this.props.location.query.lt
+      ? 'has_to_next'
+      : this.props.location.query.gt
+      ? 'has_to_prev'
+      : 'initial';
+  }
+
+  get hasPrev() {
+    switch (this.paginationMode) {
+      case 'initial':
+        return false;
+      case 'has_to_next':
+        return true;
+      case 'has_to_prev':
+        return this.count >= this.limit;
+      default:
+        return false;
+    }
+  }
+
+  get hasNext() {
+    switch (this.paginationMode) {
+      case 'initial':
+        return this.count >= this.limit;
+      case 'has_to_next':
+        return this.count >= this.limit;
+      case 'has_to_prev':
+        return true;
+      default:
+        return true;
+    }
+  }
+
+  handleGoPrev = () => {
+    if (this.paginationMode === 'has_to_next' && this.count === 0) {
+      router.goBack();
+      return;
+    }
+    const query = { ...this.props.location.query, gt: this.rows[0]?.solutionId };
+    delete query.lt;
+    router.push({
+      pathname: this.props.location.pathname,
+      query,
+    });
+  };
+
+  handleGoNext = () => {
+    const query = { ...this.props.location.query, lt: this.rows[this.rows.length - 1]?.solutionId };
+    delete query.gt;
+    router.push({
+      pathname: this.props.location.pathname,
+      query,
+    });
+  };
+
   canViewDetail = (solution: ISolution) => {
     const { isDetail, session } = this.props;
     if (isDetail || !session || !session.loggedIn) {
@@ -170,7 +239,7 @@ class SolutionTable extends React.Component<Props, State> {
   render() {
     const {
       loading,
-      data: { page, count, rows },
+      data: { rows },
       showPagination,
       isDetail,
       contestId,
@@ -325,12 +394,18 @@ class SolutionTable extends React.Component<Props, State> {
           )}
         </Table>
         {showPagination ? (
-          <Pagination
-            className="ant-table-pagination"
-            total={count}
-            current={page}
-            pageSize={limits.solutions.list}
-            onChange={this.handlePageChange}
+          // <Pagination
+          //   className="ant-table-pagination"
+          //   total={count}
+          //   current={page}
+          //   pageSize={limits.solutions.list}
+          //   onChange={this.handlePageChange}
+          // />
+          <IdBasedPagination
+            hasPrev={this.hasPrev}
+            hasNext={this.hasNext}
+            onGoPrev={this.handleGoPrev}
+            onGoNext={this.handleGoNext}
           />
         ) : (
           <div />

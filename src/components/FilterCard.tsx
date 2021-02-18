@@ -21,6 +21,7 @@ export interface Props extends RouteProps, FormProps {
   fields: FilterCardFieldOption[];
   initQuery?: any;
   disableActionTrigger?: boolean;
+  setSubmitQuery?: (query: any, values: any) => any;
 }
 
 class FilterCard extends React.Component<Props, any> {
@@ -43,11 +44,13 @@ class FilterCard extends React.Component<Props, any> {
         });
         router.replace({
           pathname,
-          query: {
-            ...query,
-            ...values,
-            page: 1,
-          },
+          query: this.props.setSubmitQuery
+            ? this.props.setSubmitQuery(query, values)
+            : {
+                ...query,
+                ...values,
+                page: 1,
+              },
         });
       }
     });

@@ -55,6 +55,13 @@ export default {
   effects: {
     *getList({ payload: query }, { call, put, select }) {
       const formattedQuery = formatListQuery(query);
+      delete formattedQuery.page;
+      if (formattedQuery.lt) {
+        formattedQuery.lt = +formattedQuery.lt;
+      }
+      if (formattedQuery.gt) {
+        formattedQuery.gt = +formattedQuery.gt;
+      }
       formattedQuery.solutionId && (formattedQuery.solutionId = +formattedQuery.solutionId);
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
       formattedQuery.problemId && (formattedQuery.problemId = +formattedQuery.problemId);
@@ -63,7 +70,10 @@ export default {
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;
       }
-      const ret: IApiResponse<IList<ISolution>> = yield call(service.getList, formattedQuery);
+      const ret: IApiResponse<IIdPaginationList<ISolution>> = yield call(
+        service.getList,
+        formattedQuery,
+      );
       if (ret.success) {
         yield put({
           type: 'setList',

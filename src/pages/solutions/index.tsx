@@ -9,7 +9,6 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import { urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
-import langs from '@/configs/solutionLanguages';
 import SolutionTable from '@/components/SolutionTable';
 import results, { Results } from '@/configs/results';
 import pages from '@/configs/pages';
@@ -22,7 +21,7 @@ import tracker from '@/utils/tracker';
 import RefreshCard from '@/components/RefreshCard';
 
 export interface Props extends ReduxProps, RouteProps {
-  data: IList<ISolution>;
+  data: IIdPaginationList<ISolution>;
   session: ISessionStatus;
   proMode: boolean;
   languageConfig: IJudgerLanguageConfigItem[];
@@ -74,6 +73,16 @@ class SolutionList extends React.Component<Props, State> {
     );
   };
 
+  handleFilterSetQuery = (query, values) => {
+    const q = {
+      ...query,
+      ...values,
+    };
+    delete q.lt;
+    delete q.gt;
+    return q;
+  };
+
   render() {
     const { loading, data, dispatch, session, proMode, languageConfig } = this.props;
     return (
@@ -123,6 +132,7 @@ class SolutionList extends React.Component<Props, State> {
                       }),
                   },
                 ]}
+                setSubmitQuery={this.handleFilterSetQuery}
               />
             </Card>
             {proMode && (

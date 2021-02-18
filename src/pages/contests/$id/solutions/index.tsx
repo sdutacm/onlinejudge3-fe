@@ -1,14 +1,13 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Spin, Form, Switch } from 'antd';
+import { Row, Col, Card, Form, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import SolutionTable from '@/components/SolutionTable';
 import ToDetailCard from '@/components/ToDetailCard';
-import { numberToAlphabet, toLongTs, urlf } from '@/utils/format';
+import { numberToAlphabet, urlf } from '@/utils/format';
 import FilterCard from '@/components/FilterCard';
-import langs from '@/configs/solutionLanguages';
 import results, { Results } from '@/configs/results';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
@@ -27,7 +26,7 @@ export interface Props extends ReduxProps, RouteProps {
   detailLoading: boolean;
   detail: IContest;
   problems: IFullList<IProblem>;
-  data: IList<ISolution>;
+  data: IIdPaginationList<ISolution>;
   proMode: boolean;
   languageConfig: IJudgerLanguageConfigItem[];
 }
@@ -87,6 +86,16 @@ class ContestSolutions extends React.Component<Props, State> {
         }),
       constants.switchAnimationDuration,
     );
+  };
+
+  handleFilterSetQuery = (query, values) => {
+    const q = {
+      ...query,
+      ...values,
+    };
+    delete q.lt;
+    delete q.gt;
+    return q;
   };
 
   render() {
@@ -174,6 +183,7 @@ class ContestSolutions extends React.Component<Props, State> {
                         }),
                     },
                   ]}
+                  setSubmitQuery={this.handleFilterSetQuery}
                 />
               </Card>
               {proMode && (

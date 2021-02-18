@@ -17,6 +17,13 @@ interface IFullList<T> {
   rows: T[];
 }
 
+interface IIdPaginationList<T> {
+  lt?: number | null;
+  gt?: number;
+  limit: number;
+  rows: T[];
+}
+
 interface IListQuery {
   page?: number;
   orderBy?: string;

@@ -16,10 +16,12 @@ import { IGetLanguageConfigResp } from '@/common/contracts/judger';
 
 export function getList(query) {
   const q = { ...query };
+  if (q.lt === undefined && q.gt === undefined) {
+    q.lt = null;
+  }
   delete q._r;
   return post<IGetSolutionListReq, IGetSolutionListResp>(routesBe.getSolutionList.url, {
     ...q,
-    page: query.page || 1,
     limit: query.limit || limits.solutions.list,
     order: [['solutionId', 'DESC']],
   });

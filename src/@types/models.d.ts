@@ -97,6 +97,7 @@ interface IProblem {
   accepted?: number;
   submitted?: number;
   display: boolean;
+  spj: boolean;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }
@@ -111,6 +112,8 @@ interface ISolutionJudgeInfoDetailCase {
   time: number;
   memory: number;
   compileInfo?: string;
+  errMsg?: string;
+  outMsg?: string;
 }
 
 interface ISolutionJudgeInfoDetail {

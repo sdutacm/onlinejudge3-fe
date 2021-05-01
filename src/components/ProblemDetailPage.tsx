@@ -174,7 +174,7 @@ const ProblemDetailPage: React.FC<Props> = ({
                   <td>Mem. Limit</td>
                   <td>{data.memoryLimit || 0} KiB</td>
                 </tr>
-                {!!data.source && (
+                {!!data.source?.trim() && (
                   <tr>
                     <td>Source</td>
                     <td>
@@ -189,12 +189,18 @@ const ProblemDetailPage: React.FC<Props> = ({
                             });
                           }}
                         >
-                          {data.source}
+                          {data.source.trim()}
                         </Link>
                       ) : (
-                        <span>{data.source}</span>
+                        <span>{data.source.trim()}</span>
                       )}
                     </td>
+                  </tr>
+                )}
+                {!!data.spj && (
+                  <tr>
+                    <td>SPJ</td>
+                    <td>Yes</td>
                   </tr>
                 )}
               </tbody>

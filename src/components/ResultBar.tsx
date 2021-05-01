@@ -118,6 +118,24 @@ class ResultBar extends React.Component<Props, State> {
     e?.stopPropagation();
   };
 
+  renderJudgeInfoCase = (j: ISolutionJudgeInfoDetailCase, index: number) => {
+    return (
+      <div
+        className={'text-white' + (isAcceptedResult(j.result) ? ' bg-green' : ' bg-red')}
+        style={{ padding: '6px' }}
+      >
+        <p style={{ margin: 0, position: 'absolute', fontSize: '8px' }}>#{index + 1}</p>
+        <div className="text-center">
+          <p className="text-bold" style={{ fontSize: '16px', marginBottom: '4px' }}>
+            {resultsMap[j.result]?.shortName}
+          </p>
+          <p style={{ fontSize: '12px', marginBottom: 0 }}>{j.time} ms</p>
+          <p style={{ fontSize: '12px' }}>{j.memory} KiB</p>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { result, colorSettings, current, total, judgeInfo } = this.props;
     if (!isFinishedResult(result) || this.state.lockAnim) {
@@ -180,24 +198,16 @@ class ResultBar extends React.Component<Props, State> {
                 {judgeInfo.detail?.cases.map((j, index) => {
                   return (
                     <Col xs={12} md={4} key={index} style={{ padding: '6px' }}>
-                      <div
-                        className={'text-white' + (isAcceptedResult(j.result) ? ' bg-green' : ' bg-red')}
-                        style={{ padding: '6px' }}
-                      >
-                        <p style={{ margin: 0, position: 'absolute', fontSize: '8px' }}>
-                          #{index + 1}
-                        </p>
-                        <div className="text-center">
-                          <p
-                            className="text-bold"
-                            style={{ fontSize: '16px', marginBottom: '4px' }}
-                          >
-                            {resultsMap[j.result]?.shortName}
-                          </p>
-                          <p style={{ fontSize: '12px', marginBottom: 0 }}>{j.time} ms</p>
-                          <p style={{ fontSize: '12px' }}>{j.memory} KiB</p>
-                        </div>
-                      </div>
+                      {j.errMsg || j.outMsg ? (
+                        <Popover
+                          content={<pre>{[j.outMsg, j.errMsg].filter((f) => f).join('\n')}</pre>}
+                          overlayStyle={{ zIndex: 1099 }}
+                        >
+                          {this.renderJudgeInfoCase(j, index)}
+                        </Popover>
+                      ) : (
+                        this.renderJudgeInfoCase(j, index)
+                      )}
                     </Col>
                   );
                 })}

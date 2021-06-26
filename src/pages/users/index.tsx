@@ -130,6 +130,7 @@ class Standings extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.users.list}
+                showTotal={(total) => `${total} users`}
                 onChange={this.handlePageChange}
               />
             </Card>

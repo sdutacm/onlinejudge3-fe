@@ -826,6 +826,7 @@ class ContestUserList extends React.Component<Props, State> {
               total={count}
               current={page}
               pageSize={limits.posts.list}
+              showTotal={(total) => `${total} users`}
               onChange={this.handlePageChange}
             />
           </Card>

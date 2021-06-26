@@ -434,7 +434,8 @@ class ContestList extends React.Component<Props, State> {
                             className="listlike-table-info-title"
                             to={urlf(pages.contests.home, { param: { id: record.contestId } })}
                           >
-                            {proMode ? `${record.contestId} - ` : ''}{record.title}
+                            {proMode ? `${record.contestId} - ` : ''}
+                            {record.title}
                           </Link>
                         </div>
                         <div className="listlike-table-info-secondary">
@@ -552,6 +553,7 @@ class ContestList extends React.Component<Props, State> {
                   total={count}
                   current={page}
                   pageSize={limits.contests.list}
+                  showTotal={(total) => `${total} ${this.categoryName.toLowerCase()}`}
                   onChange={this.handlePageChange}
                 />
               </Card>

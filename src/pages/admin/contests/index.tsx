@@ -367,6 +367,7 @@ class AdminContestList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.admin.contestList}
+                showTotal={(total) => `${total} items`}
                 onChange={this.handlePageChange}
               />
             </Card>

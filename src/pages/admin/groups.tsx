@@ -261,6 +261,7 @@ class AdminGroupList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.admin.groupList}
+                showTotal={(total) => `${total} items`}
                 onChange={this.handlePageChange}
               />
             </Card>

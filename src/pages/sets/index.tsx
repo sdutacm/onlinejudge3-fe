@@ -81,6 +81,7 @@ class SetList extends React.Component<Props> {
                 total={count}
                 current={page}
                 pageSize={limits.sets.list}
+                showTotal={(total) => `${total} sets`}
                 onChange={this.handlePageChange}
               />
             </Card>

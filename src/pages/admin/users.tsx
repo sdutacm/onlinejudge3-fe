@@ -355,6 +355,7 @@ class AdminUserList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.admin.userList}
+                showTotal={(total) => `${total} items`}
                 onChange={this.handlePageChange}
               />
             </Card>
@@ -401,7 +402,9 @@ class AdminUserList extends React.Component<Props, State> {
                 <Button block>Add User</Button>
               </GeneralFormDrawer>
               <ImportUserModal>
-                <Button block className="mt-md">Import Users</Button>
+                <Button block className="mt-md">
+                  Import Users
+                </Button>
               </ImportUserModal>
             </Card>
             <Card bordered={false}>

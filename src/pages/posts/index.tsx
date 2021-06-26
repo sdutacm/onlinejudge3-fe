@@ -21,14 +21,12 @@ export interface Props extends ReduxProps, RouteProps {
   session: ISessionStatus;
 }
 
-interface State {
-}
+interface State {}
 
 class PostList extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   // componentDidUpdate(prevProps) {
@@ -37,7 +35,7 @@ class PostList extends React.Component<Props, State> {
   //   }
   // }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -50,7 +48,8 @@ class PostList extends React.Component<Props, State> {
 
   render() {
     const {
-      loading, data: { page, count, rows },
+      loading,
+      data: { page, count, rows },
     } = this.props;
     return (
       <PageAnimation>
@@ -69,7 +68,9 @@ class PostList extends React.Component<Props, State> {
                   title="Title"
                   key="Title"
                   render={(text, record: IPost) => (
-                    <Link to={urlf(pages.posts.detail, { param: { id: record.postId } })}>{record.title}</Link>
+                    <Link to={urlf(pages.posts.detail, { param: { id: record.postId } })}>
+                      {record.title}
+                    </Link>
                   )}
                 />
                 {/* <Table.Column
@@ -92,6 +93,7 @@ class PostList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.posts.list}
+                showTotal={(total) => `${total} posts`}
                 onChange={this.handlePageChange}
               />
             </Card>
@@ -99,11 +101,7 @@ class PostList extends React.Component<Props, State> {
 
           <Col xs={24} md={6} xxl={4}>
             <Card bordered={false}>
-              <FilterCard
-                fields={[
-                  { displayName: 'Title', fieldName: 'title' },
-                ]}
-              />
+              <FilterCard fields={[{ displayName: 'Title', fieldName: 'title' }]} />
             </Card>
           </Col>
         </Row>

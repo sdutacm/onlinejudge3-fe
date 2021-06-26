@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Form, Row, Col, Card, Tag, Popover, Badge } from 'antd';
+import { Table, Pagination, Form, Row, Col, Card, Tag, Popover } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
@@ -241,6 +241,7 @@ class ProblemList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.problems.list}
+                showTotal={(total) => `${total} problems`}
                 onChange={this.handlePageChange}
               />
             </Card>

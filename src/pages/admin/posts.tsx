@@ -157,7 +157,7 @@ class AdminPostList extends React.Component<Props, State> {
                   title="Title"
                   key="Title"
                   render={(text, record: IPost) => (
-                      <span className={record.display ? '' : 'text-secondary'}>{record.title}</span>
+                    <span className={record.display ? '' : 'text-secondary'}>{record.title}</span>
                   )}
                 />
                 <Table.Column
@@ -231,6 +231,7 @@ class AdminPostList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.admin.postList}
+                showTotal={(total) => `${total} items`}
                 onChange={this.handlePageChange}
               />
             </Card>

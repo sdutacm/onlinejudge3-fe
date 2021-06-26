@@ -25,14 +25,12 @@ export interface Props extends ReduxProps, RouteProps, FormProps {
   session: ISessionStatus;
 }
 
-interface State {
-}
+interface State {}
 
 class TopicList extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   // componentDidUpdate(prevProps) {
@@ -41,7 +39,7 @@ class TopicList extends React.Component<Props, State> {
   //   }
   // }
 
-  handlePageChange = page => {
+  handlePageChange = (page) => {
     router.push({
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
@@ -67,7 +65,7 @@ class TopicList extends React.Component<Props, State> {
           payload: {
             data: v,
           },
-        }).then(ret => {
+        }).then((ret) => {
           msg.auto(ret);
           if (ret.success) {
             dispatch({
@@ -80,7 +78,7 @@ class TopicList extends React.Component<Props, State> {
               category: 'topics',
               action: 'add',
             });
-            router.push(urlf(pages.topics.detail, { param: { id: ret.data.topicId } }))
+            router.push(urlf(pages.topics.detail, { param: { id: ret.data.topicId } }));
           }
         });
       }
@@ -89,7 +87,11 @@ class TopicList extends React.Component<Props, State> {
 
   render() {
     const {
-      loading, data: { page, count, rows }, session, location: { query }, form,
+      loading,
+      data: { page, count, rows },
+      session,
+      location: { query },
+      form,
     } = this.props;
     const { getFieldDecorator } = form;
     return (
@@ -109,29 +111,27 @@ class TopicList extends React.Component<Props, State> {
                   title="Topic"
                   key="Title"
                   render={(text, record: ITopic) => (
-                    <Link to={urlf(pages.topics.detail, { param: { id: record.topicId } })}>{record.title}</Link>
+                    <Link to={urlf(pages.topics.detail, { param: { id: record.topicId } })}>
+                      {record.title}
+                    </Link>
                   )}
                 />
-                {!query.problemId && <Table.Column
-                  title="Problem"
-                  key="Problem"
-                  render={(text, record: ITopic) => (
-                    <ProblemBar problem={record.problem} />
-                  )}
-                />}
+                {!query.problemId && (
+                  <Table.Column
+                    title="Problem"
+                    key="Problem"
+                    render={(text, record: ITopic) => <ProblemBar problem={record.problem} />}
+                  />
+                )}
                 <Table.Column
                   title="Author"
                   key="Author"
-                  render={(text, record: ITopic) => (
-                    <UserBar user={record.user} />
-                  )}
+                  render={(text, record: ITopic) => <UserBar user={record.user} />}
                 />
                 <Table.Column
                   title="Re."
                   key="Replies"
-                  render={(text, record: ITopic) => (
-                    record.replyCount
-                  )}
+                  render={(text, record: ITopic) => record.replyCount}
                 />
                 <Table.Column
                   title="At"
@@ -146,16 +146,20 @@ class TopicList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.topics.list}
+                showTotal={(total) => `${total} topics`}
                 onChange={this.handlePageChange}
               />
             </Card>
 
             <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark={true}>
-                {query.problemId ? <Form.Item label="Problem">
-                  {getFieldDecorator('problemId', { initialValue: +query.problemId })(<span
-                    className="ant-form-text">{query.problemId}</span>)}
-                </Form.Item> : null}
+                {query.problemId ? (
+                  <Form.Item label="Problem">
+                    {getFieldDecorator('problemId', { initialValue: +query.problemId })(
+                      <span className="ant-form-text">{query.problemId}</span>,
+                    )}
+                  </Form.Item>
+                ) : null}
 
                 <Form.Item label="Title">
                   {getFieldDecorator('topicTitle', {
@@ -166,26 +170,30 @@ class TopicList extends React.Component<Props, State> {
                 <Form.Item label="Content">
                   {getFieldDecorator('content', {
                     validateTrigger: 'onBlur',
-                    rules: [{
-                      required: true,
-                      validator: (_, value, callback) => {
-                        if (value.isEmpty()) {
-                          callback('Please input content');
-                        } else {
-                          callback();
-                        }
+                    rules: [
+                      {
+                        required: true,
+                        validator: (_, value, callback) => {
+                          if (value.isEmpty()) {
+                            callback('Please input content');
+                          } else {
+                            callback();
+                          }
+                        },
                       },
-                    }],
+                    ],
                   })(
                     <RtEditor
                       form={form}
                       disabled={!session.loggedIn}
                       contentStyle={{ height: 220 }}
-                    />
+                    />,
                   )}
                 </Form.Item>
               </Form>
-              <Button type="primary" onClick={this.handleSubmit} disabled={!session.loggedIn}>{session.loggedIn ? 'Post' : 'Login to Post'}</Button>
+              <Button type="primary" onClick={this.handleSubmit} disabled={!session.loggedIn}>
+                {session.loggedIn ? 'Post' : 'Login to Post'}
+              </Button>
             </Card>
           </Col>
 
@@ -203,9 +211,7 @@ class TopicList extends React.Component<Props, State> {
             {/*</Card>*/}
             <Card bordered={false}>
               <FilterCard
-                fields={[
-                  { displayName: 'Title', fieldName: 'title' },
-                ]}
+                fields={[{ displayName: 'Title', fieldName: 'title' }]}
                 initQuery={{ problemId: query.problemId }}
               />
             </Card>

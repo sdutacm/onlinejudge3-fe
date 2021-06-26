@@ -351,6 +351,7 @@ class AdminProblemList extends React.Component<Props, State> {
                 total={count}
                 current={page}
                 pageSize={limits.admin.problemList}
+                showTotal={(total) => `${total} items`}
                 onChange={this.handlePageChange}
               />
             </Card>

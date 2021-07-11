@@ -36,6 +36,7 @@ const VIEWPORT_CHANGE_THROTTLE = 250;
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
   session: ISessionStatus;
+  activeUserCount: number;
 }
 
 interface State {
@@ -183,7 +184,7 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { children, location, session } = this.props;
+    const { children, location, session, activeUserCount } = this.props;
     const { Header, Content, Footer } = Layout;
     if (this.state.error) {
       return (
@@ -285,6 +286,7 @@ class Index extends React.Component<Props, State> {
                   Contact us
                 </a>
               </p>
+              <p>Current Active Users: {activeUserCount}</p>
             </Col>
 
             <Col xs={24} md={8} className="mb-md-lg">
@@ -353,6 +355,7 @@ function mapStateToProps(state) {
   return {
     session: state.session,
     settings: state.settings,
+    activeUserCount: state.stats.activeUserCount.count,
   };
 }
 

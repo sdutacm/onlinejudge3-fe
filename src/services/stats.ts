@@ -8,6 +8,7 @@ import {
   IGetUserSubmittedProblemsReq,
   IGetUserSubmittedProblemsResp,
 } from '@/common/contracts/stat';
+import { IGetActiveUserCountResp } from '@/common/contracts/user';
 
 export function getUserACRank(type: 'day' | 'week' | 'month') {
   return post<IGetUserACRankReq, IGetUserACRankResp>(routesBe.getUserACRank.url, {
@@ -31,4 +32,8 @@ export function getUserSubmittedProblems(userIds: number[]) {
       userIds,
     },
   );
+}
+
+export function getActiveUserCount() {
+  return post<void, IGetActiveUserCountResp>(routesBe.getActiveUserCount.url);
 }

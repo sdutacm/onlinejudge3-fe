@@ -11,6 +11,16 @@ interface ISessionStatus {
   user: ISession;
 }
 
+interface ISessionListItem {
+  sessionId: string;
+  isCurrent: boolean;
+  loginUa: string;
+  loginIp: string;
+  loginAt: string; // iso string
+  lastAccessIp: string;
+  lastAccessAt: string; // iso string
+}
+
 interface IUser {
   userId: number;
   username: string;

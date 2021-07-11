@@ -27,6 +27,7 @@ import ChangeEmailModal from '@/components/ChangeEmailModal';
 import tracker from '@/utils/tracker';
 import { routesBe } from '@/common/routes';
 import { getCsrfHeader } from '@/utils/misc';
+import ManageSessionModal from '@/components/ManageSessionModal';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
@@ -658,6 +659,14 @@ class UserDetail extends React.Component<Props, State> {
                             Change Password
                           </Button>
                         </GeneralFormModal>
+
+                        <ManageSessionModal
+                          userId={data.userId}
+                        >
+                          <Button block className="mt-md">
+                            Manage Session
+                          </Button>
+                        </ManageSessionModal>
                       </Card>
                     )}
 

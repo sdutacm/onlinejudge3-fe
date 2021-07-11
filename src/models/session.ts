@@ -3,13 +3,19 @@ import { endInterception, initInterceptor, startInterception } from '@/utils/eff
 import OJBK from '@/utils/OJBK';
 import { genTimeFlag } from '@/utils/misc';
 
-const initialState = {
-  loggedIn: false,
-  user: {},
-};
+function genInitialState() {
+  return {
+    loggedIn: false,
+    user: {},
+    sessionList: {
+      count: 0,
+      rows: [],
+    },
+  };
+}
 
 export default {
-  state: initialState,
+  state: genInitialState(),
   reducers: {
     // save(state, { payload: { item, ret } }) {
     //   let newState = { ...state };
@@ -30,12 +36,17 @@ export default {
       state._et = timeFlag._et;
     },
     reset() {
-      return { ...initialState };
+      return genInitialState();
+    },
+    setSessionList(state, { payload: { data } }) {
+      state.sessionList = {
+        ...data,
+      };
     },
     // TODO session 改变后清理掉 contestSession 以及所有登录态相关数据
   },
   effects: {
-    * fetch(action, { call, put }) {
+    *fetch(action, { call, put }) {
       startInterception();
       const ret: IApiResponse<ISession> = yield call(service.fetch);
       if (ret.success && ret.data) {
@@ -59,13 +70,13 @@ export default {
       endInterception();
       return ret;
     },
-    * reload(action, { put }) {
+    *reload(action, { put }) {
       yield put({ type: 'reset' });
     },
-    * getSession(action, { select }) {
-      return yield select(state => state.session);
+    *getSession(action, { select }) {
+      return yield select((state) => state.session);
     },
-    * login({ payload: data }, { call, put }) {
+    *login({ payload: data }, { call, put }) {
       const ret: IApiResponse<any> = yield call(service.login, data);
       if (ret.success) {
         const userId = ret.data.userId;
@@ -92,7 +103,7 @@ export default {
       }
       return ret;
     },
-    * logout(action, { call, put }) {
+    *logout(action, { call, put }) {
       const ret: IApiResponse<ISession> = yield call(service.logout);
       if (ret.success) {
         yield put({
@@ -118,6 +129,21 @@ export default {
         });
       }
       return ret;
+    },
+    *getSessionList({ payload }, { call, put }) {
+      const ret: IApiResponse<any> = yield call(service.getSessionList);
+      if (ret.success) {
+        yield put({
+          type: 'setSessionList',
+          payload: {
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
+    *clearSession({ payload: { sessionId } }, { call }) {
+      return yield call(service.clearSession, sessionId);
     },
   },
   subscriptions: {

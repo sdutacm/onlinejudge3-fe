@@ -39,6 +39,9 @@ function genInitialState() {
       _updatedAt: 0,
       _query: {},
     },
+    activeUserCount: {
+      count: 0,
+    },
   };
 }
 
@@ -64,6 +67,12 @@ export default {
     },
     clearAllUASP(state) {
       state.uasp = genInitialState().uasp;
+    },
+    setActiveUserCount(state, { payload: { data } }) {
+      state.activeUserCount = {
+        ...data,
+        ...genTimeFlag(5 * 60 * 1000),
+      };
     },
   },
   effects: {
@@ -182,6 +191,24 @@ export default {
       }
       return ret;
     },
+    *getActiveUserCount({ payload: { force = false } = { force: false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.stats.activeUserCount);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const res = yield call(service.getActiveUserCount);
+      if (res.success) {
+        yield put({
+          type: 'setActiveUserCount',
+          payload: {
+            data: res.data,
+          },
+        });
+      }
+      return res;
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -189,6 +216,7 @@ export default {
         if (pathname === pages.index) {
           requestEffect(dispatch, { type: 'getAllUserACRank', payload: {} });
         }
+        requestEffect(dispatch, { type: 'getActiveUserCount', payload: {} });
       });
     },
   },

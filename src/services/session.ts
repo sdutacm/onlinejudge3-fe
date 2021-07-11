@@ -1,7 +1,12 @@
 import { get, post } from '@/utils/request';
 import { routesBe } from '@/common/routes';
 import { urlf } from '@/utils/format';
-import { ILoginReq, ILoginResp } from '@/common/contracts/user';
+import {
+  ILoginReq,
+  ILoginResp,
+  IGetSessionListResp,
+  IClearSessionReq,
+} from '@/common/contracts/user';
 
 export function fetch() {
   return get(
@@ -17,4 +22,14 @@ export function login(data) {
 
 export function logout() {
   return post<void, void>(routesBe.logout.url);
+}
+
+export function getSessionList() {
+  return post<void, IGetSessionListResp>(routesBe.getSessionList.url);
+}
+
+export function clearSession(sessionId) {
+  return post<IClearSessionReq, void>(routesBe.clearSession.url, {
+    sessionId,
+  });
 }

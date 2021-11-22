@@ -89,6 +89,9 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
             },
           });
           msg.auto(ret);
+          if (!ret.success) {
+            return;
+          }
           tracker.event({
             category: 'admin',
             action: 'UploadJudgerData',

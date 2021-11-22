@@ -1,4 +1,4 @@
-import { post, originalRequest } from '@/utils/request';
+import request, { post, originalRequest } from '@/utils/request';
 import { routesBe } from '@/common/routes';
 import limits from '@/configs/limits';
 import {
@@ -311,7 +311,7 @@ export function prepareJudgerDataUpdate() {
 }
 
 export function uploadJudgerData(data) {
-  return originalRequest(routesBe.uploadJudgerData.url, {
+  return request(routesBe.uploadJudgerData.url, {
     method: 'post',
     data,
     headers: {

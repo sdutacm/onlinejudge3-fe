@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Form, Button, Input } from 'antd';
+import { Table, Pagination, Row, Col, Card, Form, Button, Input, Alert } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
@@ -97,6 +97,14 @@ class TopicList extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <Row gutter={16} className="list-view">
+          <Col xs={24} className="mb-lg">
+            <Alert
+              message="Announcement"
+              description="Due to policy risks, the topic area will temporarily stop posting new content."
+              type="warning"
+              showIcon
+            />
+          </Col>
           <Col xs={24} md={18} xxl={20}>
             <Card bordered={false} className="list-card">
               <Table
@@ -151,7 +159,7 @@ class TopicList extends React.Component<Props, State> {
               />
             </Card>
 
-            <Card bordered={false}>
+            {false && <Card bordered={false}>
               <Form layout="vertical" hideRequiredMark={true}>
                 {query.problemId ? (
                   <Form.Item label="Problem">
@@ -194,7 +202,7 @@ class TopicList extends React.Component<Props, State> {
               <Button type="primary" onClick={this.handleSubmit} disabled={!session.loggedIn}>
                 {session.loggedIn ? 'Post' : 'Login to Post'}
               </Button>
-            </Card>
+            </Card>}
           </Col>
 
           <Col xs={24} md={6} xxl={4}>

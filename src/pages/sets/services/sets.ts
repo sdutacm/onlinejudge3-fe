@@ -8,7 +8,7 @@ import {
   IGetSetDetailResp,
   ICreateSetReq,
   ICreateSetResp,
-  IUpdateSetReq,
+  IUpdateSetDetailReq,
   IDeleteSetReq,
 } from '@/common/contracts/set';
 
@@ -31,7 +31,7 @@ export function addSet(data) {
 }
 
 export function updateSet(setId: number, data) {
-  return post<IUpdateSetReq, void>(routesBe.updateSetDetail.url, {
+  return post<IUpdateSetDetailReq, void>(routesBe.updateSetDetail.url, {
     setId,
     ...data,
   });

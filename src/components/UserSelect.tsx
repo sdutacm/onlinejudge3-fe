@@ -59,13 +59,21 @@ class UserSelect extends React.Component<Props, State> {
       });
   };
 
-  handleChange = (...args) => {
+  handleChange = (value, ...rest) => {
+    const selectedItem = this.state.data.find((item) => +value.key === item.userId);
     this.setState({
       data: [],
       fetching: false,
     });
     // @ts-ignore
-    this.props.onChange(...args);
+    this.props.onChange(
+      {
+        ...value,
+        value: selectedItem,
+      },
+      // @ts-ignore
+      ...rest,
+    );
   };
 
   render() {

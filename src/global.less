@@ -1607,6 +1607,19 @@ a {
   }
 }
 
+// bg-selection
+
+.bg-selection {
+  transition: all 0.3s, border 0s;
+
+  &:hover {
+    background-color: @table-row-hover-bg;
+  }
+  &.selected {
+    background-image: linear-gradient(90deg, fade(@blue-3, 50%) 0%, fade(@blue-5, 50%) 100%);
+  }
+}
+
 
 // mobile
 

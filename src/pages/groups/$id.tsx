@@ -37,7 +37,7 @@ import {
   groupJoinChannels,
   groupMemberPermissions,
 } from '@/configs/groups';
-import { isAdminDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import { memoize } from '@/utils/decorators';
 import TimeBar from '@/components/TimeBar';
 import UserBar from '@/components/UserBar';
@@ -47,6 +47,7 @@ import { isEqual } from 'lodash';
 import AddGroupMemberModal from '@/components/AddGroupMemberModal';
 import AddFavorite from '@/components/AddFavorite';
 import DeleteFavorite from '@/components/DeleteFavorite';
+import { EPerm } from '@/common/configs/perm.config';
 
 const MAX_PERMISSION = 999;
 
@@ -121,7 +122,7 @@ class GroupDetail extends React.Component<Props, State> {
   @memoize
   hasAdminPermImpl(membersRows: IGroupMember[], session: ISessionStatus) {
     const selfInfo = this.selfInfoImpl(membersRows, session);
-    return selfInfo?.permission >= GroupMemberPermission.Admin || isAdminDog(session);
+    return selfInfo?.permission >= GroupMemberPermission.Admin || checkPerms(session, EPerm.WriteGroup);
   }
 
   get hasAdminPerm() {
@@ -148,7 +149,10 @@ class GroupDetail extends React.Component<Props, State> {
   }
 
   canOpMember = (member: IGroupMember) => {
-    return isAdminDog(this.props.session) || member.permission < this.selfInfo.permission;
+    return (
+      checkPerms(this.props.session, EPerm.WriteGroup) ||
+      member.permission < this.selfInfo.permission
+    );
   };
 
   get groupDetailFormItems() {
@@ -196,7 +200,7 @@ class GroupDetail extends React.Component<Props, State> {
         rules: [{ required: true }],
       },
     ];
-    if (isAdminDog(session)) {
+    if (checkPerms(session, EPerm.WriteGroup)) {
       items.splice(2, 0, {
         name: 'Verified',
         field: 'verified',
@@ -220,7 +224,9 @@ class GroupDetail extends React.Component<Props, State> {
 
   genGroupMemberFormItems = (member: IGroupMember) => {
     const { session } = this.props;
-    const selfPermission = isAdminDog(session) ? MAX_PERMISSION : this.selfInfo.permission;
+    const selfPermission = checkPerms(session, EPerm.WriteGroup)
+      ? MAX_PERMISSION
+      : this.selfInfo.permission;
     const items = [
       {
         name: 'Permission',
@@ -649,7 +655,9 @@ class GroupDetail extends React.Component<Props, State> {
         <Table.Column
           title="Joined At"
           key="Time"
-          render={(text, record: IGroupMember) => <TimeBar time={new Date(record.joinedAt).getTime()} />}
+          render={(text, record: IGroupMember) => (
+            <TimeBar time={new Date(record.joinedAt).getTime()} />
+          )}
         />
         <Table.Column
           title={<div className="mr-md">Actions</div>}
@@ -872,7 +880,7 @@ class GroupDetail extends React.Component<Props, State> {
                         </GeneralFormModal>
                       )}
                       {this.renderFavoriteButton()}
-                      {(this.isGroupMaster || isAdminDog(session)) && (
+                      {(this.isGroupMaster || checkPerms(session, EPerm.DeleteGroup)) && (
                         <Button
                           className="button-block-group"
                           block

@@ -29,6 +29,10 @@ const initialState = {
     rows: [],
   },
   userDetail: {},
+  allUserPermissions: {
+    count: 0,
+    rows: [],
+  },
   postList: {
     page: 1,
     count: 0,
@@ -84,6 +88,11 @@ export default {
     },
     setUserDetail(state, { payload: { id, data } }) {
       state.userDetail[id] = {
+        ...data,
+      };
+    },
+    setAllUserPermissions(state, { payload: { data } }) {
+      state.allUserPermissions = {
         ...data,
       };
     },
@@ -299,6 +308,21 @@ export default {
     *resetUserPasswordByAdmin({ payload: { id, password } }, { call }) {
       return yield call(service.resetUserPasswordByAdmin, id, password);
     },
+    *getAllUserPermissions({ payload }, { all, call, put }) {
+      const ret: IApiResponse<any> = yield call(service.getAllUserPermissionsMap);
+      if (ret.success) {
+        yield put({
+          type: 'setAllUserPermissions',
+          payload: {
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
+    *setUserPermissions({ payload: { userId, permissions } }, { call }) {
+      return yield call(service.setUserPermissions, userId, permissions);
+    },
     *getPostList({ payload: query }, { call, put }) {
       const formattedQuery = formatListQuery(query);
       formattedQuery.postId && (formattedQuery.postId = +formattedQuery.postId);
@@ -386,6 +410,8 @@ export default {
           requestEffect(dispatch, { type: 'getContestList', payload: query });
         } else if (pathname === pages.admin.users) {
           requestEffect(dispatch, { type: 'getUserList', payload: query });
+        } else if (pathname === pages.admin.userPermissions) {
+          requestEffect(dispatch, { type: 'getAllUserPermissions' });
         } else if (pathname === pages.admin.posts) {
           requestEffect(dispatch, { type: 'getPostList', payload: query });
         } else if (pathname === pages.admin.groups) {

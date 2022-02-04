@@ -10,7 +10,7 @@ import PageLoading from '@/components/PageLoading';
 import { Link } from 'react-router-dom';
 import { urlf } from '@/utils/format';
 import PageAnimation from '@/components/PageAnimation';
-import { isPermissionDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import router from 'umi/router';
@@ -25,6 +25,7 @@ import StatsRanklist from '@/components/StatsRanklist';
 import setStatePromise from '@/utils/setStatePromise';
 import locale from 'antd/es/date-picker/locale/en_US';
 import { Results } from '@/configs/results';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -247,7 +248,7 @@ class SetStats extends React.Component<Props, State> {
 
   @memoize
   isPermissionDogImpl(session: ISessionStatus) {
-    return isPermissionDog(session);
+    return checkPerms(session, EPerm.ReadSet);
   }
 
   get isPermissionDog() {

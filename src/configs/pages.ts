@@ -60,6 +60,7 @@ export default {
     contestUsers: '/admin/contests/:id/users',
     contestProblems: '/admin/contests/:id/problems',
     users: '/admin/users',
+    userPermissions: '/admin/userPermissions',
     posts: '/admin/posts',
     sets: '/admin/sets',
     groups: '/admin/groups',

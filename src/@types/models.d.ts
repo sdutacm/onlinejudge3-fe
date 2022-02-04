@@ -4,6 +4,7 @@ interface ISession {
   nickname: string;
   avatar: string;
   permission: number;
+  permissions: string[];
 }
 
 interface ISessionStatus {
@@ -473,6 +474,7 @@ interface IGroup {
   membersCount: number;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
+  deleted?: boolean;
 }
 
 interface IGroupMember {

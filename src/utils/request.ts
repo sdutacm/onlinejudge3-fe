@@ -3,11 +3,13 @@ import constants from '@/configs/constants';
 import api from '@/configs/apis';
 import { isBot } from '@/utils/userAgent';
 import Cookies from 'js-cookie';
+import { RequestError } from '@/lib/global/error';
 
 function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   const axiosInstance: AxiosInstance = axios.create({
     baseURL: api.base,
     timeout: constants.requestTimeout,
+    validateStatus: null,
     ...options,
   });
   axiosInstance.interceptors.request.use(function(config) {
@@ -25,9 +27,7 @@ function checkStatus(response: AxiosResponse) {
     return response;
   }
 
-  const error: any = new Error(response.statusText);
-  error.response = response;
-  throw error;
+  throw new RequestError(`Request failed with status code ${response.status}`, response);
 }
 
 /**

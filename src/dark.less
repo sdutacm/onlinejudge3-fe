@@ -204,7 +204,7 @@ a {
   color: @disabled-color;
 }
 
-.ant-input-search:not(.dark .ant-input-search-small)>.ant-input-suffix {
+.ant-input-search:not(.dark .ant-input-search-small) > .ant-input-suffix {
   right: 0;
 }
 
@@ -354,6 +354,15 @@ li.ant-calendar-time-picker-select-option-selected {
   background: @time-picker-selected-bg;
 }
 
+.ant-checkbox-indeterminate .ant-checkbox-inner {
+  background-color: @component-background;
+}
+
+.ant-list-sm .ant-list-item {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 .message-list {
   background: transparent;
 
@@ -388,7 +397,6 @@ li.ant-calendar-time-picker-select-option-selected {
 .code-area {
   border-color: #777;
 }
-
 
 .bg-green {
   background-color: @color-green;
@@ -758,6 +766,17 @@ a {
     a {
       color: @font-color;
     }
+  }
+}
+
+// bg-selection
+
+.bg-selection {
+  &:hover {
+    background-color: @table-row-hover-bg;
+  }
+  &.selected {
+    background-image: linear-gradient(90deg, fade(@blue-5, 50%) 0%, fade(@blue-7, 50%) 100%);
   }
 }
 

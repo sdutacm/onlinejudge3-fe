@@ -16,7 +16,8 @@ import SettingsModal from '@/components/SettingsModal';
 import IdeaNotes from '@/components/IdeaNotes';
 import NoteSvg from '@/assets/svg/note.svg';
 import tracker from '@/utils/tracker';
-import { isAdminDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
+import { EPerm } from '@/common/configs/perm.config';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -249,7 +250,7 @@ class NavMenu extends React.Component<Props, State> {
               {/* <Menu.Item key="favorites"> */}
               {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
               {/* </Menu.Item> */}
-              {isAdminDog(session) && (
+              {checkPerms(session, EPerm.AdminAccess) && (
                 <Menu.Item key="admin">
                   <Link to={urlf(pages.admin.index)} onClick={onLinkClick}>
                     Admin
@@ -303,7 +304,7 @@ class NavMenu extends React.Component<Props, State> {
             <Menu.Item key="favorites">
               <Link to={urlf(pages.favorites.index)}>Favorites</Link>
             </Menu.Item>
-            {isAdminDog(session) && (
+            {checkPerms(session, EPerm.AdminAccess) && (
               <Menu.Item key="admin">
                 <Link to={urlf(pages.admin.index)}>Admin</Link>
               </Menu.Item>

@@ -23,6 +23,8 @@ import userForbidden, { UserForbidden } from '@/configs/userForbidden';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import userPermission, { UserPermission } from '@/configs/userPermission';
 import ImportUserModal from '@/components/ImportUserModal';
+import { checkPerms } from '@/utils/permission';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -52,6 +54,10 @@ class AdminUserList extends React.Component<Props, State> {
       pathname: this.props.location.pathname,
       query: { ...this.props.location.query, page },
     });
+  };
+
+  handleToPermissions = () => {
+    router.push(pages.admin.userPermissions);
   };
 
   editUser = (userId) => {
@@ -141,7 +147,7 @@ class AdminUserList extends React.Component<Props, State> {
         rules: [{ required: true }],
       },
       {
-        name: 'Permission',
+        name: 'Permission (deprecated, please use permissions)',
         field: 'permission',
         component: 'select',
         initialValue: `${detail?.permission ?? UserPermission.normal}`,
@@ -361,6 +367,13 @@ class AdminUserList extends React.Component<Props, State> {
             </Card>
           </Col>
           <Col xs={24} md={6} xxl={4}>
+            {checkPerms(this.props.session, EPerm.ReadUserPermission) && (
+              <Card bordered={false}>
+                <Button block onClick={this.handleToPermissions}>
+                  Manage Permissions
+                </Button>
+              </Card>
+            )}
             <Card bordered={false}>
               <GeneralFormDrawer
                 loadingEffect="admin/createUser"
@@ -423,7 +436,7 @@ class AdminUserList extends React.Component<Props, State> {
                     })),
                   },
                   {
-                    displayName: 'Permission',
+                    displayName: 'Permission (deprecated)',
                     fieldName: 'permission',
                     options: userPermission.map((item) => ({
                       displayName: item.name,

@@ -15,8 +15,9 @@ import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import PageAnimation from '@/components/PageAnimation';
 import UserBar from '@/components/UserBar';
-import { isPermissionDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import ImportSetModal from '@/components/ImportSetModal';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<ISet>;
@@ -97,7 +98,7 @@ class SetList extends React.Component<Props> {
             <Card bordered={false}>
               <FilterCard fields={[{ displayName: 'Title', fieldName: 'title' }]} />
             </Card>
-            {isPermissionDog(session) && (
+            {checkPerms(session, EPerm.WriteSet) && (
               <Card bordered={false}>
                 <ImportSetModal type="add">
                   <Button block>Import Set</Button>

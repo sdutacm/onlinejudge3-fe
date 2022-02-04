@@ -15,9 +15,10 @@ import classNames from 'classnames';
 import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
 import ProblemBar from '@/components/ProblemBar';
-import { isPermissionDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import { isFinishedResult } from '@/utils/judger';
 import IdBasedPagination from './IdBasedPagination';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -229,7 +230,7 @@ class SolutionTable extends React.Component<Props, State> {
     if (
       solution.shared ||
       solution.user.userId === session.user.userId ||
-      isPermissionDog(session)
+      checkPerms(session, EPerm.ReadSolution)
     ) {
       return true;
     }

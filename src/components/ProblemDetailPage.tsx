@@ -9,7 +9,7 @@ import SubmissionModal from '@/components/SubmitSolutionModal';
 import gStyles from '@/general.less';
 import NotFound from '@/pages/404';
 import EditProblemPropModal from '@/components/EditProblemPropModal';
-import { isPermissionDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import AddFavorite from '@/components/AddFavorite';
 import DeleteFavorite from '@/components/DeleteFavorite';
 import PageTitle from '@/components/PageTitle';
@@ -19,6 +19,7 @@ import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import { connect } from 'dva';
 import { ContestTimeStatus } from '@/utils/getSetTimeStatus';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends RouteProps {
   loading: boolean;
@@ -235,7 +236,7 @@ const ProblemDetailPage: React.FC<Props> = ({
             </Form>
           </Card>
         )}
-        {!contestId && !loading && isPermissionDog(session) && (
+        {!contestId && !loading && checkPerms(session, EPerm.WriteProblem, EPerm.WriteProblemTag) && (
           <Card bordered={false}>
             <EditProblemPropModal data={data}>
               <Button block>Modify Prop.</Button>

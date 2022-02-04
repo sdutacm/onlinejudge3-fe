@@ -31,7 +31,7 @@ export function addSet(data) {
 }
 
 export function updateSet(setId: number, data) {
-  return post<IUpdateSetReq, void>(routesBe.updateSet.url, {
+  return post<IUpdateSetReq, void>(routesBe.updateSetDetail.url, {
     setId,
     ...data,
   });

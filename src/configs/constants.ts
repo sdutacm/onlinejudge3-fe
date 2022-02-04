@@ -10,6 +10,7 @@ const constants = {
   requestTimeout: 60 * 1000,
   msgDuration: {
     success: 3,
+    warn: 5,
     error: 5,
   },
   indicatorDisplayDelay: 250,

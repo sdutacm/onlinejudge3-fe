@@ -12,11 +12,12 @@ import { Link } from 'react-router-dom';
 import { urlf } from '@/utils/format';
 import classNames from 'classnames';
 import PageAnimation from '@/components/PageAnimation';
-import { isSelf, isAdminDog } from '@/utils/permission';
+import { isSelf, checkPerms } from '@/utils/permission';
 import ImportSetModal from '@/components/ImportSetModal';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import router from 'umi/router';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -132,14 +133,14 @@ class SetDetail extends React.Component<Props, State> {
                     <div className="flex-justify-space-between mt-md">
                       <div />
                       <div className="pointer">
-                        {isSelf(session, detail.user.userId) || isAdminDog(session) ? (
+                        {isSelf(session, detail.user.userId) || checkPerms(session, EPerm.WriteSet) ? (
                           <ImportSetModal type="update" setId={id}>
                             <a className="ml-lg normal-text-link">
                               <Icon type="edit" /> Update
                             </a>
                           </ImportSetModal>
                         ) : null}
-                        {isSelf(session, detail.user.userId) || isAdminDog(session) ? (
+                        {isSelf(session, detail.user.userId) || checkPerms(session, EPerm.DeleteSet) ? (
                           <a
                             className="ml-lg normal-text-link text-danger"
                             onClick={this.deleteSet}

@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { isAdminDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import msg from '@/utils/msg';
 import router from 'umi/router';
 import pages from '@/configs/pages';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -32,7 +33,7 @@ class AdminBase extends React.Component<Props, State> {
   }
 
   checkBasePermission(props: Props) {
-    if (!isAdminDog(props.session)) {
+    if (!checkPerms(props.session, EPerm.AdminAccess)) {
       msg.error('No Permission');
       router.replace(pages.index);
     }

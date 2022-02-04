@@ -13,11 +13,12 @@ import GeneralFormModal from '@/components/GeneralFormModal';
 import tracker from '@/utils/tracker';
 import GroupList from '@/components/GroupList';
 import { groupJoinChannels, GroupJoinChannel } from '@/configs/groups';
-import { isAdminDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import msg from '@/utils/msg';
 import pages from '@/configs/pages';
 import { urlf } from '@/utils/format';
 import ImportGroupModal from '@/components/ImportGroupModal';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends ReduxProps, RouteProps {
   searchList: IList<IGroup>;
@@ -107,7 +108,7 @@ class GroupIndex extends React.Component<Props, State> {
         rules: [{ required: true }],
       },
     ];
-    if (isAdminDog(session)) {
+    if (checkPerms(session, EPerm.WriteGroup)) {
       items.splice(2, 0, {
         name: 'Verified',
         field: 'verified',
@@ -177,7 +178,7 @@ class GroupIndex extends React.Component<Props, State> {
             onChange={this.handleCategoryChange}
             tabBarExtraContent={
               <div>
-                {isAdminDog(session) && (
+                {checkPerms(session, EPerm.WriteGroup) && (
                   <ImportGroupModal>
                     <Button className="mr-md">
                       <Icon type="import" /> Import

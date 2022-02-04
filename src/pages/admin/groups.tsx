@@ -174,14 +174,22 @@ class AdminGroupList extends React.Component<Props, State> {
                   title="ID"
                   key="ID"
                   width={48}
-                  render={(text, record: IGroup) => <span>{record.groupId}</span>}
+                  render={(text, record: IGroup) => (
+                    <span className={record.deleted ? 'text-secondary' : ''}>{record.groupId}</span>
+                  )}
                 />
                 <Table.Column
                   title="Name"
                   key="Name"
                   render={(text, record: IGroup) => (
                     <div className="display-flex">
-                      <div className="text-ellipsis">{record.name}</div>
+                      <div
+                        className={
+                          record.deleted ? 'text-ellipsis text-secondary' : 'text-ellipsis'
+                        }
+                      >
+                        {record.name}
+                      </div>
                       {record.verified && (
                         <div className="verified-badge ml-sm-md" title="Verified">
                           V
@@ -200,60 +208,65 @@ class AdminGroupList extends React.Component<Props, State> {
                 <Table.Column
                   title="Actions"
                   key="Actions"
-                  render={(text, record: IGroup) => (
-                    <div>
-                      <GeneralFormDrawer
-                        fetchLoading={
-                          record.groupId === currentGroupId && (!detail || detailLoading)
-                        }
-                        loading={record.groupId === currentGroupId && submitLoading}
-                        // fetchLoadingEffect="admin/getGroupDetail"
-                        // loadingEffect="admin/updateGroupDetail"
-                        title={`Edit Group #${record.groupId}`}
-                        autoMsg
-                        cancelText="Cancel (discard changes)"
-                        width={600}
-                        maskClosable={false}
-                        items={this.getGroupDetailFormItems(record.groupId)}
-                        submit={(dispatch: ReduxProps['dispatch'], values) => {
-                          tracker.event({
-                            category: 'admin',
-                            action: 'updateGroup',
-                          });
-                          const data = this.getHandledDataFromForm(values);
-                          console.log('data', data);
-                          return dispatch({
-                            type: 'admin/updateGroupDetail',
-                            payload: {
-                              id: record.groupId,
-                              data,
-                            },
-                          });
-                        }}
-                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
-                          msg.success('Update group successfully');
-                        }}
-                        onSuccessAndClosed={(
-                          dispatch: ReduxProps['dispatch'],
-                          ret: IApiResponse,
-                        ) => {
-                          dispatch({
-                            type: 'admin/getGroupList',
-                            payload: this.props.location.query,
-                          });
-                        }}
-                      >
-                        <a onClick={() => this.editGroup(record.groupId)}>Edit</a>
-                      </GeneralFormDrawer>
-                      <Link
-                        to={urlf(pages.groups.detail, { param: { id: record.groupId } })}
-                        target="_blank"
-                        className="ml-md-lg"
-                      >
-                        View
-                      </Link>
-                    </div>
-                  )}
+                  render={(text, record: IGroup) => {
+                    if (record.deleted) {
+                      return null;
+                    }
+                    return (
+                      <div>
+                        <GeneralFormDrawer
+                          fetchLoading={
+                            record.groupId === currentGroupId && (!detail || detailLoading)
+                          }
+                          loading={record.groupId === currentGroupId && submitLoading}
+                          // fetchLoadingEffect="admin/getGroupDetail"
+                          // loadingEffect="admin/updateGroupDetail"
+                          title={`Edit Group #${record.groupId}`}
+                          autoMsg
+                          cancelText="Cancel (discard changes)"
+                          width={600}
+                          maskClosable={false}
+                          items={this.getGroupDetailFormItems(record.groupId)}
+                          submit={(dispatch: ReduxProps['dispatch'], values) => {
+                            tracker.event({
+                              category: 'admin',
+                              action: 'updateGroup',
+                            });
+                            const data = this.getHandledDataFromForm(values);
+                            console.log('data', data);
+                            return dispatch({
+                              type: 'admin/updateGroupDetail',
+                              payload: {
+                                id: record.groupId,
+                                data,
+                              },
+                            });
+                          }}
+                          onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
+                            msg.success('Update group successfully');
+                          }}
+                          onSuccessAndClosed={(
+                            dispatch: ReduxProps['dispatch'],
+                            ret: IApiResponse,
+                          ) => {
+                            dispatch({
+                              type: 'admin/getGroupList',
+                              payload: this.props.location.query,
+                            });
+                          }}
+                        >
+                          <a onClick={() => this.editGroup(record.groupId)}>Edit</a>
+                        </GeneralFormDrawer>
+                        <Link
+                          to={urlf(pages.groups.detail, { param: { id: record.groupId } })}
+                          target="_blank"
+                          className="ml-md-lg"
+                        >
+                          View
+                        </Link>
+                      </div>
+                    );
+                  }}
                 />
               </Table>
               <Pagination

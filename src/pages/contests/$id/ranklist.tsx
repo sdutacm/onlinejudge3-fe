@@ -15,10 +15,11 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import { ContestModes } from '@/configs/contestModes';
-import { isAdminDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import { ContestRatingStatus, contestRatingStatusMap } from '@/configs/contestRatingStatus';
+import { EPerm } from '@/common/configs/perm.config';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -202,7 +203,7 @@ class ContestRanklist extends React.Component<Props, State> {
     const ranklist = rows || ([] as IRanklist);
     const isRating = detail.mode === ContestModes.Rating;
     const canEndContest =
-      isRating && timeStatus === 'Ended' && !detail['ended'] && isAdminDog(session);
+      isRating && timeStatus === 'Ended' && !detail['ended'] && checkPerms(session, EPerm.EndContest);
 
     return (
       <PageAnimation>

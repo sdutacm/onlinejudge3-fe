@@ -62,12 +62,11 @@ import {
   IUpdateUserDetailReq,
   IResetUserPasswordByAdminReq,
   IBatchCreateUsersReq,
+  IGetAllUserPermissionsMapResp,
+  ISetUserPermissionsReq,
 } from '@/common/contracts/user';
 import { IRejudgeSolutionReq } from '@/common/contracts/solution';
-import {
-  IGetJudgerDataFileReq,
-  IGetJudgerDataFileResp,
-} from '@/common/contracts/judger';
+import { IGetJudgerDataFileReq, IGetJudgerDataFileResp } from '@/common/contracts/judger';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -236,6 +235,17 @@ export function updateUserDetail(userId, data) {
   });
 }
 
+export function getAllUserPermissionsMap() {
+  return post<void, IGetAllUserPermissionsMapResp>(routesBe.getAllUserPermissionsMap.url);
+}
+
+export function setUserPermissions(userId, permissions) {
+  return post<ISetUserPermissionsReq, void>(routesBe.setUserPermissions.url, {
+    userId,
+    permissions,
+  });
+}
+
 export function getPostList(query) {
   return post<IGetPostListReq, IGetPostListResp>(routesBe.getPostList.url, {
     ...query,
@@ -270,6 +280,7 @@ export function getGroupList(query) {
     ...query,
     page: query.page || 1,
     limit: query.limit || limits.admin.groupList,
+    _scope: null,
   });
 }
 

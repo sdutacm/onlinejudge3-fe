@@ -10,7 +10,7 @@ import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import FilterCard from '@/components/FilterCard';
-import { isAdminDog } from '@/utils/permission';
+import { checkPerms } from '@/utils/permission';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import msg from '@/utils/msg';
 import { matchPath, withRouter } from 'react-router';
@@ -20,6 +20,7 @@ import contestUserStatus, { ContestUserStatus } from '@/configs/contestUserStatu
 import ImportContestUserModal from './ImportContestUserModal';
 import { aoa2Excel } from '@/utils/misc';
 import moment from 'moment';
+import { EPerm } from '@/common/configs/perm.config';
 
 const MAX_MEMBER_NUM = 3;
 
@@ -697,7 +698,7 @@ class ContestUserList extends React.Component<Props, State> {
                     (regInProgress &&
                       this.props.session.loggedIn &&
                       user.username === session.user.username) ||
-                    isAdminDog(session)
+                    checkPerms(session, EPerm.WriteContestUser)
                   ) {
                     actions.push(
                       <span key="edit" className="nowrap">
@@ -770,7 +771,7 @@ class ContestUserList extends React.Component<Props, State> {
                       </span>,
                     );
                   }
-                  if (isAdminDog(session)) {
+                  if (checkPerms(session, EPerm.AuditContestUser)) {
                     actions.push(
                       <span key="audit">
                         <GeneralFormModal

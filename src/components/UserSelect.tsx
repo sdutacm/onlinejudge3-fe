@@ -8,6 +8,7 @@ import UserBar from './UserBar';
 
 export interface Props extends ReduxProps, SelectProps {
   multiple: boolean;
+  nameFormat?: (user: IUser) => string;
 }
 
 interface State {
@@ -77,7 +78,7 @@ class UserSelect extends React.Component<Props, State> {
   };
 
   render() {
-    const { multiple } = this.props;
+    const { multiple, nameFormat } = this.props;
     const { fetching, data } = this.state;
     return (
       <Select
@@ -95,7 +96,7 @@ class UserSelect extends React.Component<Props, State> {
       >
         {data.map((d) => (
           <Select.Option key={`${d.userId}`} title={d.nickname}>
-            <UserBar user={d} showAsText />
+            <UserBar user={d} showAsText nameFormat={nameFormat} />
           </Select.Option>
         ))}
       </Select>

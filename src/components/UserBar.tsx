@@ -10,21 +10,23 @@ export interface Props {
   user: IUser | IUserLite;
   isContestUser?: boolean;
   hideAvatar?: boolean;
-  hideUsername?: boolean;
+  hideName?: boolean;
   className?: string;
   disableJump?: boolean;
   showAsText?: boolean;
   showRating?: boolean;
+  nameFormat?: (user: IUser) => string;
 }
 
 const UserBar: React.FC<Props> = ({
   user,
   isContestUser = false,
   hideAvatar = false,
-  hideUsername = false,
+  hideName = false,
   disableJump = false,
   showAsText = false,
   showRating = false,
+  nameFormat,
   className,
 }) => {
   if (!user) {
@@ -33,8 +35,8 @@ const UserBar: React.FC<Props> = ({
   const avatar = !hideAvatar ? (
     <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} />
   ) : null;
-  const username = !hideUsername ? (
-    <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{user.nickname}</span>
+  const username = !hideName ? (
+    <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{nameFormat?.(user) ?? user.nickname}</span>
   ) : null;
   const rating = user.rating;
   const userRatingLevel = getRatingLevel(rating);

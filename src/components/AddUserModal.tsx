@@ -68,7 +68,7 @@ class AddUserModal extends React.Component<Props, State> {
             <Form.Item label={multiple ? 'Users' : 'User'}>
               {getFieldDecorator('users', {
                 rules: [{ required: true, message: 'Please select user' }],
-              })(<UserSelect multiple={multiple} placeholder="Input nickname to search" />)}
+              })(<UserSelect multiple={multiple} placeholder="Input nickname to search" nameFormat={(user: IUser) => `${user.nickname} (${user.username})`} />)}
             </Form.Item>
           </Form>
         </Modal>

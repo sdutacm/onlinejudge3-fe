@@ -65,6 +65,8 @@ export default {
     sets: '/admin/sets',
     groups: '/admin/groups',
     judger: '/admin/judger',
+    fields: '/admin/fields',
+    fieldSettings: '/admin/fields/:id/settings',
   },
   beta: '/beta',
   OJBK: '/OJBK',

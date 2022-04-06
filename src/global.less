@@ -1620,6 +1620,44 @@ a {
   }
 }
 
+// field seat arrangement
+
+.field-seat-arrangement {
+  .field-seat-arrangement-row {
+    display: flex;
+    margin-bottom: 12px;
+
+    .field-seat-arrangement-col {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgb(192, 192, 192);
+      border-radius: 4px;
+      font-size: 13px;
+
+      &:not(:first-child) {
+        margin-left: 8px;
+      }
+
+      &.set {
+        border-color: rgb(54, 54, 54);
+      }
+
+      &.info {
+        border-color: @primary-6;
+      }
+    }
+  }
+}
+
+.field-seat-input-action {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
 
 // mobile
 

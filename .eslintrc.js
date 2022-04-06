@@ -75,6 +75,7 @@ module.exports = {
     // '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/consistent-type-assertions': 'off',
     '@typescript-eslint/member-ordering': 'off',
+    '@typescript-eslint/no-invalid-void-type': 'off',
 
     // React
     // 'react/jsx-indent': 'off',

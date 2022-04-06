@@ -45,6 +45,12 @@ const initialState = {
     rows: [],
   },
   groupDetail: {},
+  fieldList: {
+    page: 1,
+    count: 0,
+    rows: [],
+  },
+  fieldDetail: {},
 };
 
 export default {
@@ -113,6 +119,16 @@ export default {
     },
     setGroupDetail(state, { payload: { id, data } }) {
       state.groupDetail[id] = {
+        ...data,
+      };
+    },
+    setFieldList(state, { payload: { data } }) {
+      state.fieldList = {
+        ...data,
+      };
+    },
+    setFieldDetail(state, { payload: { id, data } }) {
+      state.fieldDetail[id] = {
         ...data,
       };
     },
@@ -397,6 +413,45 @@ export default {
     *updateGroupDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateGroupDetail, id, data);
     },
+    *getFieldList({ payload: query }, { call, put }) {
+      const formattedQuery = formatListQuery(query);
+      formattedQuery.fieldId && (formattedQuery.fieldId = +formattedQuery.fieldId);
+      formattedQuery.display && (formattedQuery.display = formattedQuery.display === 'true');
+      formattedQuery.order = [['fieldId', 'DESC']];
+      const ret: IApiResponse<IList<IField>> = yield call(service.getFieldList, formattedQuery);
+      if (ret.success) {
+        yield put({
+          type: 'setFieldList',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
+    },
+    *getFieldDetail({ payload: { id } }, { all, call, put }) {
+      const detailRet: IApiResponse<any> = yield call(service.getFieldDetail, id);
+      if (detailRet.success) {
+        yield put({
+          type: 'setFieldDetail',
+          payload: {
+            id,
+            data: detailRet.data,
+          },
+        });
+      }
+      return detailRet;
+    },
+    *createField({ payload: { data } }, { call }) {
+      return yield call(service.createField, data);
+    },
+    *updateFieldDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateFieldDetail, id, data);
+    },
+    *deleteField({ payload: { id } }, { call }) {
+      return yield call(service.deleteField, id);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -416,6 +471,8 @@ export default {
           requestEffect(dispatch, { type: 'getPostList', payload: query });
         } else if (pathname === pages.admin.groups) {
           requestEffect(dispatch, { type: 'getGroupList', payload: query });
+        } else if (pathname === pages.admin.fields) {
+          requestEffect(dispatch, { type: 'getFieldList', payload: query });
         }
         const matchProblemDataFileList = matchPath(pathname, {
           path: pages.admin.problemDataFiles,
@@ -457,6 +514,16 @@ export default {
           requestEffect(dispatch, {
             type: 'getContestDetail',
             payload: { id: +matchContestProblemList.params['id'] },
+          });
+        }
+        const matchFieldSettings = matchPath(pathname, {
+          path: pages.admin.fieldSettings,
+          exact: true,
+        });
+        if (matchFieldSettings) {
+          requestEffect(dispatch, {
+            type: 'getFieldDetail',
+            payload: { id: +matchFieldSettings.params['id'] },
           });
         }
       });

@@ -628,3 +628,25 @@ interface IJudgerLanguageConfigItem {
   run: string;
   version: string;
 }
+
+interface IFieldSeatingArrangement {
+  seatMap: {
+    row: number;
+    col: number;
+    arrangement: (number | null)[][];
+  };
+  seats: {
+    seatNo: number;
+    boundIp?: string;
+    disabled?: boolean;
+  }[];
+}
+
+interface IField {
+  fieldId: number;
+  name: string;
+  shortName: string;
+  seatingArrangement: IFieldSeatingArrangement | null;
+  createdAt: ITimestamp;
+  updatedAt: ITimestamp;
+}

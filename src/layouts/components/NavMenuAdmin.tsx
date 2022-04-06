@@ -76,6 +76,12 @@ class NavMenuAdmin extends React.Component<Props, State> {
           </Link>
         </Menu.Item>
 
+        <Menu.Item key={pages.admin.fields}>
+          <Link to={pages.admin.fields} onClick={onLinkClick}>
+            Fields
+          </Link>
+        </Menu.Item>
+
         <Menu.Item key={pages.admin.users}>
           <Link to={pages.admin.users} onClick={onLinkClick}>
             Users

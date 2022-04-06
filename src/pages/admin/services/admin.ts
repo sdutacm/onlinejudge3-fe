@@ -67,6 +67,16 @@ import {
 } from '@/common/contracts/user';
 import { IRejudgeSolutionReq } from '@/common/contracts/solution';
 import { IGetJudgerDataFileReq, IGetJudgerDataFileResp } from '@/common/contracts/judger';
+import {
+  IGetFieldListReq,
+  IGetFieldListResp,
+  IGetFieldDetailReq,
+  IGetFieldDetailResp,
+  ICreateFieldReq,
+  ICreateFieldResp,
+  IUpdateFieldDetailReq,
+  IDeleteFieldReq,
+} from '@/common/contracts/field';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -328,5 +338,40 @@ export function uploadJudgerData(data) {
     headers: {
       'Content-Type': 'multipart/form-data;charset=UTF-8',
     },
+  });
+}
+
+export function getFieldList(query) {
+  return post<IGetFieldListReq, IGetFieldListResp>(routesBe.getFieldList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.admin.postList,
+    _scope: null,
+  });
+}
+
+export function getFieldDetail(fieldId) {
+  return post<IGetFieldDetailReq, IGetFieldDetailResp>(routesBe.getFieldDetail.url, {
+    fieldId,
+    _scope: null,
+  });
+}
+
+export function createField(data) {
+  return post<ICreateFieldReq, ICreateFieldResp>(routesBe.createField.url, {
+    ...data,
+  });
+}
+
+export function updateFieldDetail(fieldId, data) {
+  return post<IUpdateFieldDetailReq, void>(routesBe.updateFieldDetail.url, {
+    fieldId,
+    ...data,
+  });
+}
+
+export function deleteField(fieldId) {
+  return post<IDeleteFieldReq, void>(routesBe.deleteField.url, {
+    fieldId,
   });
 }

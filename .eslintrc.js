@@ -55,6 +55,7 @@ module.exports = {
     'no-unused-expressions': 'off',
     'max-depth': 'off',
     'max-params': 'off',
+    'no-return-assign': 'off',
 
     // TypeScript
     // '@typescript-eslint/indent': [
@@ -76,6 +77,7 @@ module.exports = {
     '@typescript-eslint/consistent-type-assertions': 'off',
     '@typescript-eslint/member-ordering': 'off',
     '@typescript-eslint/no-invalid-void-type': 'off',
+    '@typescript-eslint/no-invalid-this': 'off',
 
     // React
     // 'react/jsx-indent': 'off',

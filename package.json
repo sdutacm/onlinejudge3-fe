@@ -1,6 +1,6 @@
 {
   "name": "onlinejudge3-fe",
-  "version": "3.4.5",
+  "version": "3.4.6",
   "description": "",
   "scripts": {
     "dev": "gulp dev",
@@ -37,6 +37,7 @@
     "highcharts": "^7.0.1",
     "highcharts-react-official": "^2.0.0",
     "image-promise": "^5.0.1",
+    "js-base64": "^3.7.2",
     "js-cookie": "^2.2.0",
     "jscookie": "^1.1.0",
     "katex": "^0.10.0",

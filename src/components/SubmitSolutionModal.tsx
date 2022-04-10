@@ -9,6 +9,7 @@ import router from 'umi/router';
 import pages from '@/configs/pages';
 import { numberToAlphabet, urlf } from '@/utils/format';
 import tracker from '@/utils/tracker';
+import { encode } from 'js-base64';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -45,7 +46,12 @@ class SubmitSolutionModal extends React.Component<Props, State> {
       if (!err) {
         dispatch({
           type: 'solutions/submit',
-          payload: { ...values, contestId },
+          payload: {
+            ...values,
+            codeFormat: 'base64',
+            code: encode(values.code),
+            contestId,
+          },
         }).then((ret) => {
           msg.auto(ret);
           if (ret.success) {

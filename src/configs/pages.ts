@@ -49,6 +49,12 @@ export default {
     index: '/groups',
     detail: '/groups/:id',
   },
+  competitions: {
+    index: '/competitions',
+    public: {
+      intro: '/competitions-public/:id/intro',
+    },
+  },
   admin: {
     index: '/admin',
     problems: '/admin/problems',

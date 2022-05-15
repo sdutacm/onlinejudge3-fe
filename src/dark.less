@@ -22,6 +22,10 @@ h6 {
   color: @font-color; // dark
 }
 
+.svg-fill {
+  fill: @font-color;
+}
+
 //.ant-card {
 //  color: @font-color; // dark
 //  background-color: rgb(34, 34, 34); // dark
@@ -361,6 +365,10 @@ li.ant-calendar-time-picker-select-option-selected {
 .ant-list-sm .ant-list-item {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+
+.ant-alert.ant-alert-no-icon {
+  padding: 8px 15px;
 }
 
 .message-list {
@@ -784,7 +792,6 @@ a {
 
 .field-seat-arrangement {
   .field-seat-arrangement-row {
-
     .field-seat-arrangement-col {
       border-color: rgb(64, 64, 64);
 
@@ -796,6 +803,14 @@ a {
         border-color: @primary-7;
       }
     }
+  }
+}
+
+// competition
+
+.competition-intro {
+  .competition-intro-content {
+    background-color: rgba(@component-background, 0.5);
   }
 }
 

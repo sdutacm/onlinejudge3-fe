@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Marcellus';
+    font-style: normal;
+    font-weight: 400;
+    src: url(Marcellus_400_normal.eot); /* http://fonts.gstatic.com/s/marcellus/v13/wEO_EBrOk8hQLDvIAF8FUA.eot */
+    src: local('☺'),
+        url(Marcellus_400_normal.eot?#iefix) format('embedded-opentype'), /* http://fonts.gstatic.com/s/marcellus/v13/wEO_EBrOk8hQLDvIAF8FUA.eot */
+        url(Marcellus_400_normal.woff2) format('woff2'), /* http://fonts.gstatic.com/s/marcellus/v13/wEO_EBrOk8hQLDvIAF8FVA.woff2 */
+        url(Marcellus_400_normal.woff) format('woff'), /* http://fonts.gstatic.com/s/marcellus/v13/wEO_EBrOk8hQLDvIAF8FUg.woff */
+        url(Marcellus_400_normal.ttf) format('truetype'); /* http://fonts.gstatic.com/s/marcellus/v13/wEO_EBrOk8hQLDvIAF8FUfAN3Eo.ttf */
+}

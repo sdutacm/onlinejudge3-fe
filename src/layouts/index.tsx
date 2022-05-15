@@ -226,7 +226,15 @@ class Index extends React.Component<Props, State> {
       matchPath(location.pathname, {
         path: pages.groups.detail,
         exact: true,
+      }) ||
+      matchPath(location.pathname, {
+        path: pages.competitions.public.intro,
+        exact: true,
       });
+    const inFullHeightPage = matchPath(location.pathname, {
+      path: pages.competitions.public.intro,
+      exact: true,
+    });
     const inAdminPage = matchPath(location.pathname, {
       path: pages.admin.index,
     });
@@ -234,6 +242,7 @@ class Index extends React.Component<Props, State> {
       <Layout
         className={classNames({
           'full-width-page': inFullWidthPage,
+          'full-height-page': inFullHeightPage,
         })}
       >
         <Header>

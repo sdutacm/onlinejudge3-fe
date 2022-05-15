@@ -33,6 +33,10 @@ ul {
   padding-inline-start: 1em;
 }
 
+.svg-fill {
+  fill: @font-color;
+}
+
 //h1, h2, h3, h4, h5, h6 {
 //  color: @font-color; // dark
 //}
@@ -117,6 +121,13 @@ ul {
 
   .ant-layout-content {
     padding: 0;
+  }
+}
+
+.full-height-page {
+  .ant-layout-content {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -413,6 +424,14 @@ ul {
   font-weight: 600;
 }
 
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-uppercase-bigger-first {
+  font-size: 125%;
+}
+
 .pointer {
   cursor: pointer !important;
 }
@@ -512,7 +531,7 @@ ul {
   thead {
     display: none;
   }
-  tbody>tr.problem-result-mark-row {
+  tbody > tr.problem-result-mark-row {
     border-left-width: 4px !important;
   }
 }
@@ -764,7 +783,8 @@ ul {
 
 // problem content
 
-.problem-content, .code-area {
+.problem-content,
+.code-area {
   h3 {
     margin-top: 16px;
   }
@@ -1395,6 +1415,10 @@ a {
   color: @color-green;
 }
 
+.text-warning {
+  color: @color-yellow;
+}
+
 .text-danger {
   color: @color-red;
 }
@@ -1404,7 +1428,7 @@ a {
 }
 
 .text-disabled {
-  opacity: .5;
+  opacity: 0.5;
   cursor: not-allowed !important;
   &:hover {
     color: inherit;
@@ -1601,7 +1625,7 @@ a {
       font-size: 12px;
 
       span {
-        opacity: .8;
+        opacity: 0.8;
       }
     }
   }
@@ -1659,6 +1683,51 @@ a {
   justify-content: space-between;
 }
 
+// competition
+
+@import url('./assets/fonts/Marcellus/Marcellus.css');
+
+.competition-intro {
+  padding-top: 94px;
+
+  .competition-logo {
+    height: 256px;
+    text-align: center;
+    img {
+      height: 100%;
+    }
+  }
+
+  .competition-intro-content {
+    padding: 16px 16px 64px;
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    // background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(@component-background, 0.7);
+  }
+
+  .competition-intro-header {
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .competition-sign-up {
+    .competition-sign-up-status {
+      font-family: 'Marcellus', serif;
+      font-size: 25px;
+      text-transform: uppercase;
+    }
+  }
+}
+
+// competition for sdutpc
+.competition-theme-sdutpc {
+  &.competition-intro {
+    background-image: url('./assets/images/sdutacm_bg_desktop.jpg');
+    background-size: contain;
+  }
+}
+
 // mobile
 
 @media only screen and (max-width: 767px) {
@@ -1684,6 +1753,14 @@ a {
     .group-info {
       padding-left: 20px;
       padding-right: 20px;
+    }
+  }
+
+  .competition-intro {
+    padding-top: 84px;
+
+    .competition-logo {
+      height: 160px;
     }
   }
 }

@@ -4,6 +4,8 @@ import { Radio, Modal, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import tracker from '@/utils/tracker';
 import Explanation from './Explanation';
+import { matchPath, withRouter } from 'react-router';
+import pages from '@/configs/pages';
 
 export interface Props extends ReduxProps, RouteProps {
   settings: ISettings;
@@ -99,7 +101,11 @@ class SettingsModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, settings } = this.props;
+    const { children, settings, location } = this.props;
+    const matchForceDarkPage = matchPath(location.pathname, {
+      path: pages.competitions.public.intro,
+      // exact: true,
+    });
 
     return (
       <>
@@ -115,9 +121,10 @@ class SettingsModal extends React.Component<Props, State> {
             <span>Theme</span>
             <Radio.Group
               onChange={this.handleThemeChange}
-              defaultValue={settings.theme}
+              value={settings.theme}
               size="small"
               className="float-right"
+              disabled={!!matchForceDarkPage}
             >
               <Radio.Button value="auto">Auto</Radio.Button>
               <Radio.Button value="light">Light</Radio.Button>
@@ -200,4 +207,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(SettingsModal);
+export default connect(mapStateToProps)(withRouter(SettingsModal));

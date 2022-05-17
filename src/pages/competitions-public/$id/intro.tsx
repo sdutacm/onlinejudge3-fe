@@ -135,15 +135,17 @@ class CompetitionIntro extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input real name' }],
       },
       {
-        name: 'School No.',
-        field: 'schoolNo',
+        name: 'Student No.',
+        field: 'studentNo',
+        placeholder: 'e.g., 21110501000',
         component: 'input',
-        initialValue: data?.info?.schoolNo || '',
-        rules: [{ required: true, message: 'Please input School No.' }],
+        initialValue: data?.info?.studentNo || '',
+        rules: [{ required: true, message: 'Please input Student No.' }],
       },
       {
         name: 'School',
         field: 'school',
+        placeholder: 'e.g., 山东理工大学',
         component: 'input',
         initialValue: data?.info?.school || '',
         rules: [{ required: true, message: 'Please input school' }],
@@ -163,6 +165,7 @@ class CompetitionIntro extends React.Component<Props, State> {
       {
         name: 'Class',
         field: 'class',
+        placeholder: 'e.g., 计科2101',
         component: 'input',
         initialValue: data?.info?.class || '',
         rules: [{ required: true, message: 'Please input class' }],
@@ -170,6 +173,7 @@ class CompetitionIntro extends React.Component<Props, State> {
       {
         name: 'Tel',
         field: 'tel',
+        placeholder: 'e.g., 13512345678',
         component: 'input',
         initialValue: data?.info?.tel || '',
       },

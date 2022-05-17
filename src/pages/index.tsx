@@ -85,7 +85,7 @@ class Index extends React.Component<Props, State> {
             </Col>
 
             {/* Banner for SDUTPC14 */}
-            {/* <Col xs={24} className="mt-lg">
+            <Col xs={24} className="mt-lg">
               <Alert
                 message={
                   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -107,7 +107,7 @@ class Index extends React.Component<Props, State> {
                 type="info"
                 showIcon={false}
               />
-            </Col> */}
+            </Col>
 
             <Col xs={24} className="mt-xl">
               <h3 className="full-width-inner-content">Recent Contests</h3>

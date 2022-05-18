@@ -14,6 +14,8 @@ import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import { ICompetitionUser } from '@/common/interfaces/competition';
 import PageAnimation from '@/components/PageAnimation';
 import GeneralFormModal from '@/components/GeneralFormModal';
+import { urlf } from '@/utils/format';
+import Link from 'umi/link';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -183,7 +185,11 @@ class CompetitionAudit extends React.Component<Props, State> {
               <Table.Column
                 title="UID"
                 key="UID"
-                render={(text, record: ICompetitionUser) => <span>{record.userId}</span>}
+                render={(text, record: ICompetitionUser) => (
+                  <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
+                    {record.userId}
+                  </Link>
+                )}
               />
               <Table.Column
                 title="Info"

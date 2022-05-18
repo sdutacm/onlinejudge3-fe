@@ -650,3 +650,13 @@ interface IField {
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }
+
+interface ICompetitionSessionStatus {
+  loggedIn: boolean;
+  user: {
+    userId: number;
+    nickname: string;
+    subname: string;
+    role: number;
+  };
+}

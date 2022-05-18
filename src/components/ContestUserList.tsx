@@ -571,7 +571,7 @@ class ContestUserList extends React.Component<Props, State> {
       field: 'reason',
       component: 'input',
       initialValue: '',
-      placeholder: 'Reason to notice user (no need to fiil if selected "Accepted")',
+      placeholder: 'Reason to notice user (no need to fill if selected "Accepted")',
       rules: [],
     },
   ];

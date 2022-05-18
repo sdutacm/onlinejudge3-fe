@@ -51,6 +51,18 @@ export default {
   },
   competitions: {
     index: '/competitions',
+    home: '/competitions/:id',
+    overview: '/competitions/:id/overview',
+    problemDetail: '/competitions/:id/problems/:index',
+    solutions: '/competitions/:id/solutions',
+    solutionDetail: '/competitions/:id/solutions/:sid',
+    ranklist: '/competitions/:id/ranklist',
+    users: '/competitions/:id/users',
+    audit: '/competitions/:id/audit',
+    qa: '/competitions/:id/qa',
+    userManagement: '/competitions/:id/userManagement',
+    problemSettings: '/competitions/:id/problemSettings',
+    fieldSettings: '/competitions/:id/fieldSettings',
     public: {
       intro: '/competitions-public/:id/intro',
     },

@@ -108,7 +108,7 @@ class CompetitionIntro extends React.Component<Props, State> {
   getSelfParticipantFormItems = (data?: ICompetitionSelfParticipantForm) => {
     return [
       {
-        name: 'Nickname',
+        name: 'Nickname (VERY IMPORTANT)',
         field: 'nickname',
         placeholder: '起个有意思的昵称，将会在比赛和颁奖仪式展示',
         component: 'input',

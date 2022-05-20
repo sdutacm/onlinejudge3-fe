@@ -65,6 +65,7 @@ export default {
     fieldSettings: '/competitions/:id/fieldSettings',
     public: {
       intro: '/competitions-public/:id/intro',
+      participants: '/competitions-public/:id/participants',
     },
   },
   admin: {

@@ -1686,6 +1686,11 @@ a {
 // competition
 
 @import url('./assets/fonts/Marcellus/Marcellus.css');
+@import url('./assets/fonts/ZCOOL+XiaoWei/ZCOOL+XiaoWei.css');
+
+.font-family-amaz-chinese {
+  font-family: 'ZCOOL XiaoWei', serif;
+}
 
 .competition-intro {
   padding-top: 94px;
@@ -1716,6 +1721,36 @@ a {
       font-family: 'Marcellus', serif;
       font-size: 25px;
       text-transform: uppercase;
+    }
+  }
+}
+
+.competition-participant-list {
+  .competition-participant-item {
+    .competition-participant-name {
+      font-size: 16px;
+      margin-bottom: 0;
+      .competition-participant-name-secondary {
+        font-size: 14px;
+        margin-left: 8px;
+      }
+    }
+    .competition-participant-slogan {
+      font-size: 20px;
+      margin-top: 12px;
+      text-align: center;
+      &::before {
+        content: '「';
+        opacity: 0.75;
+        font-size: 1em;
+        margin-right: 8px;
+      }
+      &::after {
+        content: '」';
+        opacity: 0.75;
+        font-size: 1em;
+        margin-left: 8px;
+      }
     }
   }
 }

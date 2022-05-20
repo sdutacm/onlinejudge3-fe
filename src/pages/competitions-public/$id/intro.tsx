@@ -20,6 +20,8 @@ import { Codes } from '@/common/codes';
 import SdutpcLogo from '../../../assets/images/sdutpc_logo_shadow.png';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import tracker from '@/utils/tracker';
+import Link from 'umi/link';
+import { urlf } from '@/utils/format';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -62,7 +64,7 @@ class CompetitionIntro extends React.Component<Props, State> {
 
   componentWillReceiveProps(np: Props) {
     const p = this.props;
-    if ((np.session.loggedIn && !p.session.loggedIn) || np.id !== p.id) {
+    if ((np.session.loggedIn && !p.session.loggedIn) || (np.id !== p.id && np.id)) {
       this.fetch(np.id, np.dispatch);
     }
     if (!np.session.loggedIn) {
@@ -406,6 +408,11 @@ class CompetitionIntro extends React.Component<Props, State> {
               <Divider style={{ margin: '16px 0' }} />
               {/* sign up area */}
               {this.renderSignUpArea(data)}
+              <div className="text-center mt-md-lg">
+                <Link to={urlf(pages.competitions.public.participants, { param: { id } })}>
+                  <Button>View Accepted Participants</Button>
+                </Link>
+              </div>
             </div>
           </div>
         </PageTitle>

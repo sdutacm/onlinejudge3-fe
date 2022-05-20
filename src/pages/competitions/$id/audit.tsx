@@ -66,7 +66,7 @@ class CompetitionAudit extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(np: Props) {
-    if (this.props.id !== np.id) {
+    if (this.props.id !== np.id && np.ip) {
       this.fetch(np);
     }
   }

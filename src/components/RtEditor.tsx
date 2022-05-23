@@ -45,6 +45,7 @@ class RtEditor extends React.Component<Props, State> {
       { name: 'JPG', type: 'image/jpeg' },
       { name: 'BMP', type: 'image/bmp' },
       { name: 'PNG', type: 'image/png' },
+      { name: 'GIF', type: 'image/gif' },
     ],
     this.props.uploadOption?.maxSize || 8,
   );
@@ -111,7 +112,7 @@ class RtEditor extends React.Component<Props, State> {
         component: (
           <Upload
             name="image"
-            accept="image/jpeg,image/bmp,image/png"
+            accept="image/jpeg,image/bmp,image/png,image/gif"
             action={uploadUrl}
             beforeUpload={this.validateMedia}
             onChange={this.handleUploadMediaChange}

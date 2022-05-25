@@ -77,6 +77,12 @@ class NavMenuCompetition extends React.Component<Props, State> {
             id,
           },
         });
+        dispatch({
+          type: 'competitions/clearSelfUserDetail',
+          payload: {
+            id,
+          },
+        });
       }, constants.menuAnimationDurationFade);
     });
   };

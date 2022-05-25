@@ -87,6 +87,9 @@ export default {
           type: 'competitions/clearAllSessions',
         });
         yield put({
+          type: 'competitions/clearAllSelfUserDetail',
+        });
+        yield put({
           type: 'users/getProblemResultStats',
           payload: { userId },
         });
@@ -117,6 +120,9 @@ export default {
         });
         yield put({
           type: 'competitions/clearAllSessions',
+        });
+        yield put({
+          type: 'competitions/clearAllSelfUserDetail',
         });
         yield put({
           type: 'users/clearProblemResultStats',

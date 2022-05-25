@@ -83,6 +83,10 @@ class CompetitionLayout extends React.Component<Props, State> {
       type: 'competitions/getDetail',
       payload: { id },
     });
+    dispatch({
+      type: 'competitions/getSettings',
+      payload: { id },
+    });
     if (session && session.loggedIn) {
       // dispatch({
       //   type: 'competitions/getProblems',
@@ -129,7 +133,6 @@ class CompetitionLayout extends React.Component<Props, State> {
       // if (!canEnter) {
       //   router.replace(urlf(pages.competitions.home, { param: { id } }));
       // }
-
       // dispatch({
       //   type: 'competitions/getDetail',
       //   payload: {
@@ -228,7 +231,8 @@ function mapStateToProps(state) {
     loading:
       !state.competitions.session[id] ||
       !!state.loading.effects['competitions/getSession'] ||
-      !!state.loading.effects['competitions/getDetail'],
+      !!state.loading.effects['competitions/getDetail'] ||
+      !!state.loading.effects['competitions/getSettings'],
     session: state.competitions.session[id],
     detail: state.competitions.detail[id],
   };

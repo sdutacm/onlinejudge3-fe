@@ -6,7 +6,7 @@ import tracker from '@/utils/tracker';
 import { getCsrfHeader } from '@/utils/misc';
 
 export interface Props {
-  templateUrl: string;
+  templateUrl?: string;
   onChange?(aoa: any[][], worksheet: XLSX.WorkSheet, workbook: XLSX.WorkBook): void;
 }
 
@@ -66,13 +66,15 @@ class ExcelSelectParser extends React.Component<Props, State> {
           <Icon type="inbox" />
         </p>
         <p className="ant-upload-text">Click or drag an XLS/XLSX file to this area to upload</p>
-        <p className="ant-upload-hint">
-          If you don't know what to upload, download{' '}
-          <a target="_blank" href={templateUrl} onClick={(e) => e.stopPropagation()}>
-            template
-          </a>{' '}
-          and fill it.
-        </p>
+        {templateUrl && (
+          <p className="ant-upload-hint">
+            If you don't know what to upload, download{' '}
+            <a target="_blank" href={templateUrl} onClick={(e) => e.stopPropagation()}>
+              template
+            </a>{' '}
+            and fill it.
+          </p>
+        )}
       </Upload.Dragger>
     );
   }

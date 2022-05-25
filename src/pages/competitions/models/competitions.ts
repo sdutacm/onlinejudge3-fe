@@ -5,7 +5,11 @@ import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/util
 import { isEqual } from 'lodash';
 import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
-import { ICompetition } from '@/common/interfaces/competition';
+import {
+  ICompetition,
+  ICompetitionSettings,
+  ICompetitionUser,
+} from '@/common/interfaces/competition';
 import { ECompetitionUserRole } from '@/common/enums';
 
 function genInitialState() {
@@ -17,7 +21,11 @@ function genInitialState() {
       _query: {},
     },
     detail: {},
+    settings: {},
+    problems: {},
+    problemResultStats: {},
     session: {},
+    selfUserDetail: {},
     users: {},
   };
 }
@@ -56,6 +64,21 @@ export default {
     clearExpiredSession(state) {
       state.session = clearExpiredStateProperties(state.session);
     },
+    setSelfUserDetail(state, { payload: { id, data } }) {
+      state.selfUserDetail[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearSelfUserDetail(state, { payload: { id } }) {
+      state.selfUserDetail[id] = undefined;
+    },
+    clearAllSelfUserDetail(state) {
+      state.selfUserDetail = {};
+    },
+    clearExpiredSelfUserDetail(state) {
+      state.selfUserDetail = clearExpiredStateProperties(state.selfUserDetail);
+    },
     setDetail(state, { payload: { id, data } }) {
       state.detail[id] = {
         ...data,
@@ -64,6 +87,33 @@ export default {
     },
     clearExpiredDetail(state) {
       state.detail = clearExpiredStateProperties(state.detail);
+    },
+    setSettings(state, { payload: { id, data } }) {
+      state.settings[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearExpiredSettings(state) {
+      state.settings = clearExpiredStateProperties(state.settings);
+    },
+    setProblems(state, { payload: { id, data } }) {
+      state.problems[id] = {
+        ...data,
+        ...genTimeFlag(60 * 60 * 1000),
+      };
+    },
+    clearExpiredProblems(state) {
+      state.problems = clearExpiredStateProperties(state.problems);
+    },
+    setProblemResultStats(state, { payload: { id, data } }) {
+      state.problemResultStats[id] = {
+        ...data,
+        ...genTimeFlag(25 * 1000),
+      };
+    },
+    clearExpiredProblemResultStats(state) {
+      state.problemResultStats = clearExpiredStateProperties(state.problemResultStats);
     },
     setUsers(state, { payload: { id, data } }) {
       state.users[id] = {
@@ -102,6 +152,22 @@ export default {
       }
       const ret: IApiResponse<ISession> = yield call(service.getSession, id);
       if (ret.success && ret.data) {
+        const selfUserDetailRet: IApiResponse<ICompetitionUser> = yield call(
+          service.getSelfUserDetail,
+          id,
+        );
+        if (selfUserDetailRet.success && selfUserDetailRet.data) {
+          yield put({
+            type: 'setSelfUserDetail',
+            payload: {
+              id,
+              data: selfUserDetailRet.data,
+            },
+          });
+          yield put({
+            type: 'clearExpiredSelfUserDetail',
+          });
+        }
         yield put({
           type: 'setSession',
           payload: {
@@ -130,9 +196,52 @@ export default {
       }
       return ret;
     },
+    *getSelfUserDetail({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.competitions.selfUserDetail[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const ret: IApiResponse<ICompetitionUser> = yield call(service.getSelfUserDetail, id);
+      if (ret.success && ret.data) {
+        yield put({
+          type: 'setSelfUserDetail',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+        yield put({
+          type: 'clearExpiredSelfUserDetail',
+        });
+      } else {
+        yield put({
+          type: 'setSelfUserDetail',
+          payload: {
+            id,
+            data: undefined,
+          },
+        });
+      }
+      return ret;
+    },
     *login({ payload: { id, data } }, { call, put }) {
       const ret: IApiResponse<ISession> = yield call(service.login, id, data);
       if (ret.success) {
+        // const selfUserDetailRet: IApiResponse<ICompetitionUser> = yield call(service.getSelfUserDetail, id);
+        // if (selfUserDetailRet.success && selfUserDetailRet.data) {
+        //   yield put({
+        //     type: 'setSelfUserDetail',
+        //     payload: {
+        //       id,
+        //       data: selfUserDetailRet.data,
+        //     },
+        //   });
+        //   yield put({
+        //     type: 'clearExpiredSelfUserDetail',
+        //   });
+        // }
         yield put({
           type: 'setSession',
           payload: {
@@ -151,6 +260,12 @@ export default {
       if (ret.success && clearSession) {
         yield put({
           type: 'clearSession',
+          payload: {
+            id,
+          },
+        });
+        yield put({
+          type: 'clearSelfUserDetail',
           payload: {
             id,
           },
@@ -180,6 +295,81 @@ export default {
       }
       return ret;
     },
+    *getSettings({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.competitions.settings[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const ret: IApiResponse<ICompetitionSettings> = yield call(service.getSettings, id);
+      if (ret.success) {
+        yield put({
+          type: 'clearExpiredSettings',
+        });
+        yield put({
+          type: 'setSettings',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
+    *getProblems({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.competitions.problems[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const ret: IApiResponse<IFullList<IProblem>> = yield call(service.getProblems, id);
+      if (ret.success) {
+        yield put({
+          type: 'setProblems',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+        yield put({
+          type: 'clearExpiredProblems',
+        });
+      }
+      return ret;
+    },
+    *getProblemResultStats({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.competitions.problemResultStats[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const ret: IApiResponse<IContestProblemResultStats> = yield call(
+        service.getProblemResultStats,
+        id,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setProblemResultStats',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+        yield put({
+          type: 'clearExpiredProblemResultStats',
+        });
+      }
+      return ret;
+    },
+    *getProblemConfig({ payload: { id } }, { call }) {
+      return yield call(service.getProblemConfig, id);
+    },
+    *setProblemConfig({ payload: { id, data } }, { call }) {
+      return yield call(service.getProblemConfig, id, data);
+    },
     *getSignedUpCompetitionParticipant({ payload: { id } }, { call }) {
       return yield call(service.getSignedUpCompetitionParticipant, id);
     },
@@ -200,6 +390,16 @@ export default {
           },
         });
       }
+      return ret;
+    },
+    *batchCreateCompetitionUsers({ payload: { id, data } }, { call }) {
+      return yield call(service.batchCreateCompetitionUsers, id, data);
+    },
+    *createCompetitionUser({ payload: { id, userId, data } }, { call }) {
+      return yield call(service.createCompetitionUser, id, userId, data);
+    },
+    *updateCompetitionUser({ payload: { id, userId, data } }, { call }) {
+      return yield call(service.updateCompetitionUser, id, userId, data);
     },
     *getCompetitionUsers({ payload: { id, query } }, { call }) {
       return yield call(service.getCompetitionUsers, id, query);
@@ -212,6 +412,15 @@ export default {
     },
     *auditCompetitionParticipant({ payload: { id, userId, data } }, { call }) {
       return yield call(service.auditCompetitionParticipant, id, userId, data);
+    },
+    *confirmEnter({ payload: { id } }, { call }) {
+      return yield call(service.confirmEnter, id);
+    },
+    *confirmQuit({ payload: { id } }, { call }) {
+      return yield call(service.confirmQuit, id);
+    },
+    *randomAllCompetitionUserPasswords({ payload: { id } }, { call }) {
+      return yield call(service.randomAllCompetitionUserPasswords, id);
     },
   },
   subscriptions: {
@@ -228,6 +437,16 @@ export default {
           requestEffect(dispatch, {
             type: 'getDetail',
             payload: { id: +matchPublicIntro.params['id'] },
+          });
+        }
+        const matchUserManagement = matchPath(pathname, {
+          path: pages.competitions.userManagement,
+          exact: true,
+        });
+        if (matchUserManagement) {
+          requestEffect(dispatch, {
+            type: 'getAllCompetitionUsers',
+            payload: { id: +matchUserManagement.params['id'] },
           });
         }
       });

@@ -22,6 +22,25 @@ import {
   IGetPublicCompetitionParticipantDetailReq,
   IGetPublicCompetitionParticipantDetailResp,
   IAuditCompetitionParticipantReq,
+  IGetCompetitionSettingsReq,
+  IGetCompetitionSettingsResp,
+  IGetCompetitionProblemsReq,
+  IGetCompetitionProblemsResp,
+  IGetCompetitionProblemConfigReq,
+  IGetCompetitionProblemConfigResp,
+  ISetCompetitionProblemConfigReq,
+  IGetCompetitionProblemSolutionStatsReq,
+  IGetCompetitionProblemSolutionStatsResp,
+  IGetCompetitionUserDetailReq,
+  IGetCompetitionUserDetailResp,
+  IGetSelfCompetitionUserDetailReq,
+  IGetSelfCompetitionUserDetailResp,
+  IConfirmEnterCompetitionReq,
+  IConfirmQuitCompetitionReq,
+  IBatchCreateCompetitionUsersReq,
+  ICreateCompetitionUserReq,
+  IUpdateCompetitionUserReq,
+  IRandomAllCompetitionUserPasswordsReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 
@@ -89,6 +108,15 @@ export function getDetail(competitionId) {
   });
 }
 
+export function getSettings(competitionId) {
+  return post<IGetCompetitionSettingsReq, IGetCompetitionSettingsResp>(
+    routesBe.getCompetitionSettings.url,
+    {
+      competitionId,
+    },
+  );
+}
+
 export function getSignedUpCompetitionParticipant(competitionId) {
   return post<IGetSignedUpCompetitionParticipantReq, IGetSignedUpCompetitionParticipantResp>(
     routesBe.getSignedUpCompetitionParticipant.url,
@@ -99,14 +127,14 @@ export function getSignedUpCompetitionParticipant(competitionId) {
 }
 
 export function signUpCompetitionParticipant(competitionId, data) {
-  return post<ISignUpCompetitionParticipantReq, null>(routesBe.signUpCompetitionParticipant.url, {
+  return post<ISignUpCompetitionParticipantReq, void>(routesBe.signUpCompetitionParticipant.url, {
     ...data,
     competitionId,
   });
 }
 
 export function modifySignedUpCompetitionParticipant(competitionId, data) {
-  return post<IModifySignedUpCompetitionParticipantReq, null>(
+  return post<IModifySignedUpCompetitionParticipantReq, void>(
     routesBe.modifySignedUpCompetitionParticipant.url,
     {
       ...data,
@@ -115,11 +143,53 @@ export function modifySignedUpCompetitionParticipant(competitionId, data) {
   );
 }
 
+export function batchCreateCompetitionUsers(competitionId, data) {
+  return post<IBatchCreateCompetitionUsersReq, void>(routesBe.batchCreateCompetitionUsers.url, {
+    ...data,
+    competitionId,
+  });
+}
+
+export function createCompetitionUser(competitionId, userId, data) {
+  return post<ICreateCompetitionUserReq, void>(routesBe.createCompetitionUser.url, {
+    ...data,
+    competitionId,
+    userId,
+  });
+}
+
+export function updateCompetitionUser(competitionId, userId, data) {
+  return post<IUpdateCompetitionUserReq, void>(routesBe.updateCompetitionUser.url, {
+    ...data,
+    competitionId,
+    userId,
+  });
+}
+
 export function getCompetitionUsers(competitionId, query) {
   return post<IGetCompetitionUsersReq, IGetCompetitionUsersResp>(routesBe.getCompetitionUsers.url, {
     ...query,
     competitionId,
   });
+}
+
+export function getUserDetail(competitionId, userId) {
+  return post<IGetCompetitionUserDetailReq, IGetCompetitionUserDetailResp>(
+    routesBe.getCompetitionDetail.url,
+    {
+      competitionId,
+      userId,
+    },
+  );
+}
+
+export function getSelfUserDetail(competitionId) {
+  return post<IGetSelfCompetitionUserDetailReq, IGetSelfCompetitionUserDetailResp>(
+    routesBe.getSelfCompetitionUserDetail.url,
+    {
+      competitionId,
+    },
+  );
 }
 
 export function getPublicCompetitionParticipants(competitionId) {
@@ -142,9 +212,64 @@ export function getPublicCompetitionParticipantDetail(competitionId, userId) {
 }
 
 export function auditCompetitionParticipant(competitionId, userId, data) {
-  return post<IAuditCompetitionParticipantReq, null>(routesBe.auditCompetitionParticipant.url, {
+  return post<IAuditCompetitionParticipantReq, void>(routesBe.auditCompetitionParticipant.url, {
     ...data,
     competitionId,
     userId,
   });
+}
+
+export function getProblems(competitionId) {
+  return post<IGetCompetitionProblemsReq, IGetCompetitionProblemsResp>(
+    routesBe.getCompetitionProblems.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function getProblemResultStats(competitionId) {
+  return post<IGetCompetitionProblemSolutionStatsReq, IGetCompetitionProblemSolutionStatsResp>(
+    routesBe.getCompetitionProblemSolutionStats.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function getProblemConfig(competitionId) {
+  return post<IGetCompetitionProblemConfigReq, IGetCompetitionProblemConfigResp>(
+    routesBe.getCompetitionProblemConfig.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function setProblemConfig(competitionId, data) {
+  return post<ISetCompetitionProblemConfigReq, void>(routesBe.setCompetitionProblemConfig.url, {
+    ...data,
+    competitionId,
+  });
+}
+
+export function confirmEnter(competitionId) {
+  return post<IConfirmEnterCompetitionReq, void>(routesBe.confirmEnterCompetition.url, {
+    competitionId,
+  });
+}
+
+export function confirmQuit(competitionId) {
+  return post<IConfirmQuitCompetitionReq, void>(routesBe.confirmQuitCompetition.url, {
+    competitionId,
+  });
+}
+
+export function randomAllCompetitionUserPasswords(competitionId) {
+  return post<IRandomAllCompetitionUserPasswordsReq, void>(
+    routesBe.randomAllCompetitionUserPasswords.url,
+    {
+      competitionId,
+    },
+  );
 }

@@ -100,3 +100,16 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
       return [];
   }
 }
+
+export function formatCompetitionUserSeatId({
+  fieldShortName,
+  seatNo,
+}: {
+  fieldShortName: string | null;
+  seatNo: number | null;
+}) {
+  if (!fieldShortName || !seatNo) {
+    return '';
+  }
+  return `${fieldShortName}-${seatNo}`;
+}

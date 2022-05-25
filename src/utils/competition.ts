@@ -9,16 +9,16 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
     case ECompetitionUserRole.admin:
       return [
         {
+          title: 'Settings',
+          url: pages.competitions.baseSettings,
+        },
+        {
           title: 'Users',
           url: pages.competitions.userManagement,
         },
         {
           title: 'Problems',
           url: pages.competitions.problemSettings,
-        },
-        {
-          title: 'Fields',
-          url: pages.competitions.fieldSettings,
         },
       ];
     case ECompetitionUserRole.participant:
@@ -39,7 +39,11 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
     case ECompetitionUserRole.principal:
       return [
         {
-          title: 'Prob. Settings',
+          title: 'Settings',
+          url: pages.competitions.baseSettings,
+        },
+        {
+          title: 'Problems',
           url: pages.competitions.problemSettings,
         },
         {

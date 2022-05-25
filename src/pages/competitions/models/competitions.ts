@@ -24,6 +24,7 @@ function genInitialState() {
     settings: {},
     problems: {},
     problemResultStats: {},
+    problemConfig: {},
     session: {},
     selfUserDetail: {},
     users: {},
@@ -114,6 +115,9 @@ export default {
     },
     clearExpiredProblemResultStats(state) {
       state.problemResultStats = clearExpiredStateProperties(state.problemResultStats);
+    },
+    setProblemConfig(state, { payload: { id, data } }) {
+      state.problemConfig[id] = data;
     },
     setUsers(state, { payload: { id, data } }) {
       state.users[id] = {
@@ -295,6 +299,9 @@ export default {
       }
       return ret;
     },
+    *updateCompetitionDetail({ payload: { id, data } }, { call }) {
+      return yield call(service.updateCompetitionDetail, id, data);
+    },
     *getSettings({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
         const savedState = yield select((state) => state.competitions.settings[id]);
@@ -316,6 +323,9 @@ export default {
         });
       }
       return ret;
+    },
+    *updateSettings({ payload: { id, data } }, { call }) {
+      return yield call(service.updateSettings, id, data);
     },
     *getProblems({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
@@ -364,11 +374,21 @@ export default {
       }
       return ret;
     },
-    *getProblemConfig({ payload: { id } }, { call }) {
-      return yield call(service.getProblemConfig, id);
+    *getCompetitionProblemConfig({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<any> = yield call(service.getProblemConfig, id);
+      if (ret.success) {
+        yield put({
+          type: 'setProblemConfig',
+          payload: {
+            id,
+            data: ret.data.rows,
+          },
+        });
+      }
+      return ret;
     },
-    *setProblemConfig({ payload: { id, data } }, { call }) {
-      return yield call(service.getProblemConfig, id, data);
+    *setCompetitionProblemConfig({ payload: { id, data } }, { call }) {
+      return yield call(service.setProblemConfig, id, data);
     },
     *getSignedUpCompetitionParticipant({ payload: { id } }, { call }) {
       return yield call(service.getSignedUpCompetitionParticipant, id);
@@ -447,6 +467,16 @@ export default {
           requestEffect(dispatch, {
             type: 'getAllCompetitionUsers',
             payload: { id: +matchUserManagement.params['id'] },
+          });
+        }
+        const matchProblemSettings = matchPath(pathname, {
+          path: pages.competitions.problemSettings,
+          exact: true,
+        });
+        if (matchProblemSettings) {
+          requestEffect(dispatch, {
+            type: 'getCompetitionProblemConfig',
+            payload: { id: +matchProblemSettings.params['id'] },
           });
         }
       });

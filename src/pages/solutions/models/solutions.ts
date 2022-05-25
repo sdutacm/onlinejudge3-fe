@@ -211,6 +211,9 @@ export default {
       }
       return ret;
     },
+    *rejudgeSolution({ payload: data }, { call }) {
+      return yield call(service.rejudgeSolution, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

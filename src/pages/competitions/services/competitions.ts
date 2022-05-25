@@ -41,8 +41,11 @@ import {
   ICreateCompetitionUserReq,
   IUpdateCompetitionUserReq,
   IRandomAllCompetitionUserPasswordsReq,
+  IUpdateCompetitionDetailReq,
+  IUpdateCompetitionSettingsReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
+import data from '@/pages/admin/problems/$id/data';
 
 function formatCompetition(competition: ICompetition) {
   if (!competition) {
@@ -108,6 +111,13 @@ export function getDetail(competitionId) {
   });
 }
 
+export function updateCompetitionDetail(competitionId, data) {
+  return post<IUpdateCompetitionDetailReq, void>(routesBe.updateCompetitionDetail.url, {
+    ...data,
+    competitionId,
+  });
+}
+
 export function getSettings(competitionId) {
   return post<IGetCompetitionSettingsReq, IGetCompetitionSettingsResp>(
     routesBe.getCompetitionSettings.url,
@@ -115,6 +125,13 @@ export function getSettings(competitionId) {
       competitionId,
     },
   );
+}
+
+export function updateSettings(competitionId, data) {
+  return post<IUpdateCompetitionSettingsReq, void>(routesBe.updateCompetitionSettings.url, {
+    ...data,
+    competitionId,
+  });
 }
 
 export function getSignedUpCompetitionParticipant(competitionId) {

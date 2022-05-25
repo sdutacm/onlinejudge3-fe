@@ -299,7 +299,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
 
     return (
       <PageAnimation>
-        <h3 className="mb-md-lg">User Management</h3>
+        <h3 className="mb-xl">User Management</h3>
         <div>
           <Tabs
             activeKey={`${currentActiveRole}`}

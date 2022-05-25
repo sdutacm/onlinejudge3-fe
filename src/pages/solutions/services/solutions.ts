@@ -11,6 +11,7 @@ import {
   IUpdateSolutionShareReq,
   IBatchGetSolutionDetailReq,
   IBatchGetSolutionDetailResp,
+  IRejudgeSolutionReq,
 } from '@/common/contracts/solution';
 import { IGetLanguageConfigResp } from '@/common/contracts/judger';
 
@@ -62,4 +63,10 @@ export function changeShared(solutionId, shared) {
 
 export function getLanguageConfig() {
   return post<void, IGetLanguageConfigResp>(routesBe.getLanguageConfig.url);
+}
+
+export function rejudgeSolution(data) {
+  return post<IRejudgeSolutionReq, void>(routesBe.rejudgeSolution.url, {
+    ...data,
+  });
 }

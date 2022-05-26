@@ -20,6 +20,7 @@ export interface Props extends ReduxProps {
   changeSharedLoading: boolean;
   session: ISessionStatus;
   contestId?: number;
+  competitionId?: number;
   problemList?: any[];
   theme: ISettingsTheme;
   compilationInfoLoading: boolean;
@@ -228,7 +229,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, dispatch, contestId, problemList, rating } = this.props;
+    const { loading, data, dispatch, contestId, competitionId, problemList, rating } = this.props;
     if (!loading && !data.solutionId) {
       return <NotFound />;
     }
@@ -244,6 +245,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
                 showPagination={false}
                 isDetail
                 contestId={contestId}
+                competitionId={competitionId}
                 problemList={problemList}
                 rating={rating}
               />

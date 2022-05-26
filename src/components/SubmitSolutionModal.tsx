@@ -15,6 +15,7 @@ export interface Props extends ReduxProps, FormProps {
   problemId: number;
   problemIndex?: number;
   contestId?: number;
+  competitionId?: number;
   title: string;
   languageConfig: IJudgerLanguageConfigItem[];
   location?: RouteLocation;
@@ -41,7 +42,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
   }
 
   handleOk = () => {
-    const { dispatch, contestId, location } = this.props;
+    const { dispatch, contestId, competitionId, location } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -51,6 +52,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
             codeFormat: 'base64',
             code: encode(values.code),
             contestId,
+            competitionId,
           },
         }).then((ret) => {
           msg.auto(ret);
@@ -69,6 +71,10 @@ class SubmitSolutionModal extends React.Component<Props, State> {
             const url = contestId
               ? urlf(pages.contests.solutionDetail, {
                   param: { id: contestId, sid: solutionId },
+                })
+              : competitionId
+              ? urlf(pages.competitions.solutionDetail, {
+                  param: { id: competitionId, sid: solutionId },
                 })
               : urlf(pages.solutions.detail, {
                   param: { id: solutionId },

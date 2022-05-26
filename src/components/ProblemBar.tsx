@@ -9,19 +9,22 @@ import { RouteProps } from '@/@types/props';
 export interface Props extends RouteProps {
   problem: IProblem | IProblemLite;
   contestId?: IContest['contestId'];
+  competitionId?: number;
   index?: number;
   display?: 'id' | 'title' | 'id-title';
   disableJump?: boolean;
 }
 
-const ProblemBar: React.FC<Props> = ({ problem, contestId, index, display = 'id', disableJump = false, location }) => {
+const ProblemBar: React.FC<Props> = ({ problem, contestId, competitionId, index, display = 'id', disableJump = false, location }) => {
   if (!problem) {
     return <span>--</span>;
   }
   const problemDetailUrl = contestId
     ? urlf(pages.contests.problemDetail, { param: { id: contestId, index: numberToAlphabet(index) } })
+    : competitionId
+    ? urlf(pages.competitions.problemDetail, { param: { id: competitionId, index: numberToAlphabet(index) } })
     : urlf(pages.problems.detail, { param: { id: problem.problemId }, query: { from: location.query.from } });
-  const id = contestId ? numberToAlphabet(index) : `${problem.problemId}`;
+  const id = contestId || competitionId ? numberToAlphabet(index) : `${problem.problemId}`;
   const title = problem.title;
   let displayText = '';
   switch (display) {

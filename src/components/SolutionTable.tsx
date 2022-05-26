@@ -26,6 +26,7 @@ export interface Props extends ReduxProps, RouteProps {
   showPagination: boolean;
   isDetail: boolean;
   contestId?: number;
+  competitionId?: number;
   problemList?: any[];
   session?: ISessionStatus;
   rating?: boolean;
@@ -244,6 +245,7 @@ class SolutionTable extends React.Component<Props, State> {
       showPagination,
       isDetail,
       contestId,
+      competitionId,
       problemList,
       location,
       rating,
@@ -265,6 +267,13 @@ class SolutionTable extends React.Component<Props, State> {
               ? urlf(pages.contests.solutionDetail, {
                   param: {
                     id: contestId,
+                    sid: record.solutionId,
+                  },
+                })
+              : competitionId
+              ? urlf(pages.competitions.solutionDetail, {
+                  param: {
+                    id: competitionId,
                     sid: record.solutionId,
                   },
                 })
@@ -291,6 +300,8 @@ class SolutionTable extends React.Component<Props, State> {
               <UserBar
                 user={record.user}
                 isContestUser={record.contest && record.contest.type === ContestTypes.Register}
+                showAsText={!!competitionId}
+                hideAvatar={!!competitionId}
                 showRating={rating}
               />
             )}
@@ -300,7 +311,7 @@ class SolutionTable extends React.Component<Props, State> {
             key="Problem"
             render={(text, record: ISolution) => {
               let contestProblem = null;
-              if (contestId && problemList) {
+              if ((contestId || competitionId) && problemList) {
                 for (const problem of problemList) {
                   if (problem.problemId === record.problem.problemId) {
                     contestProblem = problem;
@@ -312,6 +323,7 @@ class SolutionTable extends React.Component<Props, State> {
                 <ProblemBar
                   problem={contestProblem || record.problem}
                   contestId={contestId}
+                  competitionId={competitionId}
                   index={contestProblem ? contestProblem.index : undefined}
                 />
               );
@@ -380,7 +392,11 @@ class SolutionTable extends React.Component<Props, State> {
                   ? urlf(pages.contests.solutionDetail, {
                       param: { id: contestId, sid: record.solutionId },
                     })
-                  : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
+                  : competitionId
+                  ? urlf(pages.competitions.solutionDetail, {
+                      param: { id: competitionId, sid: record.solutionId },
+                    })
+                  :urlf(pages.solutions.detail, { param: { id: record.solutionId } });
                 return (
                   <Link
                     to={solutionDetailUrl}

@@ -479,6 +479,16 @@ export default {
             payload: { id: +matchProblemSettings.params['id'] },
           });
         }
+        const matchProblemDetail = matchPath(pathname, {
+          path: pages.competitions.problemDetail,
+          exact: true,
+        });
+        if (matchProblemDetail) {
+          requestEffect(dispatch, {
+            type: 'getProblems',
+            payload: { id: +matchProblemDetail.params['id'] },
+          });
+        }
       });
     },
   },

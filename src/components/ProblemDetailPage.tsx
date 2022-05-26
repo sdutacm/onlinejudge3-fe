@@ -26,6 +26,7 @@ export interface Props extends RouteProps {
   data: IProblem;
   session: ISessionStatus;
   contestId?: number;
+  competitionId?: number;
   contestTimeStatus?: ContestTimeStatus;
   problemIndex?: number;
   favorites: IFavorite[];
@@ -37,6 +38,7 @@ const ProblemDetailPage: React.FC<Props> = ({
   data,
   session,
   contestId,
+  competitionId,
   problemIndex,
   favorites,
   location,
@@ -51,12 +53,20 @@ const ProblemDetailPage: React.FC<Props> = ({
         param: { id: contestId },
         query: { problemId: data.problemId },
       })
+    : competitionId
+    ? urlf(pages.competitions.solutions, {
+        param: { id: competitionId },
+        query: { problemId: data.problemId },
+      })
     : urlf(pages.solutions.index, {
         query: { problemId: data.problemId, from: location.query.from },
       });
-  const topicsUrl = contestId
-    ? ''
-    : urlf(pages.topics.index, { query: { problemId: data.problemId, from: location.query.from } });
+  const topicsUrl =
+    contestId || competitionId
+      ? ''
+      : urlf(pages.topics.index, {
+          query: { problemId: data.problemId, from: location.query.from },
+        });
   const problemUrl = urlf(pages.problems.detail, { param: { id: data.problemId } });
   const favorite = favorites.find(
     (v) => v.type === 'problem' && v.target && v.target.problemId === data.problemId,
@@ -96,6 +106,7 @@ const ProblemDetailPage: React.FC<Props> = ({
         problemId={data.problemId}
         title={data.title}
         contestId={contestId}
+        competitionId={competitionId}
         problemIndex={problemIndex}
         location={location}
       >
@@ -138,30 +149,32 @@ const ProblemDetailPage: React.FC<Props> = ({
               </Button>
             </Link>
           )}
-          <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
-            {session.loggedIn ? (
-              !favorite ? (
-                <AddFavorite type="problem" id={data.problemId}>
-                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                    <Icon type="star" theme="outlined" />
-                  </Button>
-                </AddFavorite>
+          {!competitionId && (
+            <Button.Group className={styles.buttonMt} style={{ width: '100%' }}>
+              {session.loggedIn ? (
+                !favorite ? (
+                  <AddFavorite type="problem" id={data.problemId}>
+                    <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                      <Icon type="star" theme="outlined" />
+                    </Button>
+                  </AddFavorite>
+                ) : (
+                  <DeleteFavorite favoriteId={favorite.favoriteId}>
+                    <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                      <Icon type="star" theme="filled" />
+                    </Button>
+                  </DeleteFavorite>
+                )
               ) : (
-                <DeleteFavorite favoriteId={favorite.favoriteId}>
-                  <Button className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                    <Icon type="star" theme="filled" />
-                  </Button>
-                </DeleteFavorite>
-              )
-            ) : (
-              <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
-                <Icon type="star" theme="outlined" />
+                <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Star">
+                  <Icon type="star" theme="outlined" />
+                </Button>
+              )}
+              <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
+                <Icon type="share-alt" theme="outlined" />
               </Button>
-            )}
-            <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
-              <Icon type="share-alt" theme="outlined" />
-            </Button>
-          </Button.Group>
+            </Button.Group>
+          )}
         </Card>
         <Card bordered={false} className={styles.infoBoard}>
           <Skeleton active loading={loading} paragraph={{ rows: 3, width: '100%' }}>
@@ -179,7 +192,7 @@ const ProblemDetailPage: React.FC<Props> = ({
                   <tr>
                     <td>Source</td>
                     <td>
-                      {!contestId ? (
+                      {!contestId && !competitionId ? (
                         <Link
                           to={urlf(pages.problems.index, { query: { source: data.source } })}
                           onClick={() => {
@@ -208,7 +221,7 @@ const ProblemDetailPage: React.FC<Props> = ({
             </table>
           </Skeleton>
         </Card>
-        {!loading && data.tags && !!data.tags.length && (
+        {!competitionId && !loading && data.tags && !!data.tags.length && (
           <Card bordered={false}>
             <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
               <Form.Item label="Tags">
@@ -236,13 +249,16 @@ const ProblemDetailPage: React.FC<Props> = ({
             </Form>
           </Card>
         )}
-        {!contestId && !loading && checkPerms(session, EPerm.WriteProblem, EPerm.WriteProblemTag) && (
-          <Card bordered={false}>
-            <EditProblemPropModal data={data}>
-              <Button block>Modify Prop.</Button>
-            </EditProblemPropModal>
-          </Card>
-        )}
+        {!contestId &&
+          !competitionId &&
+          !loading &&
+          checkPerms(session, EPerm.WriteProblem, EPerm.WriteProblemTag) && (
+            <Card bordered={false}>
+              <EditProblemPropModal data={data}>
+                <Button block>Modify Prop.</Button>
+              </EditProblemPropModal>
+            </Card>
+          )}
       </PageAnimation>
     );
   };

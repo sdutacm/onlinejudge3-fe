@@ -91,16 +91,26 @@ class Index extends React.Component<Props, State> {
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div>
                       <i>
-                        <SdutpcLogoSvg className="svg-fill" width={80} height={80} viewBox="0 0 256 256" />
+                        <SdutpcLogoSvg
+                          className="svg-fill"
+                          width={80}
+                          height={80}
+                          viewBox="0 0 256 256"
+                        />
                       </i>
                     </div>
                     <div className="ml-xl">
                       <h3 className="mb-sm">The 14th SDUT Programming Contest is coming!</h3>
-                      <Link
-                        to={urlf(pages.competitions.public.intro, { param: { id: 1 } })}
-                      >
-                        Sign Up Now
-                      </Link>
+                      <div>
+                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 1 } })}>
+                          Sign Up Now
+                        </Link>
+                      </div>
+                      <div>
+                        <Link to={urlf(pages.competitions.home, { param: { id: 2 } })}>
+                          进入模拟赛
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 }

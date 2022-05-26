@@ -126,7 +126,13 @@ export default {
       return yield call(service.forgotPassword, data);
     },
     *getProblemResultStats(
-      { payload: { userId, contestId, force = false } = { userId: null, contestId: undefined } },
+      {
+        payload: { userId, contestId, competitionId, force = false } = {
+          userId: null,
+          contestId: undefined,
+          competitionId: undefined,
+        },
+      },
       { call, put, select },
     ) {
       const globalSess = yield select((state) => state.session);
@@ -148,6 +154,7 @@ export default {
         service.getProblemResultStats,
         userId,
         contestId,
+        competitionId,
       );
       if (ret.success) {
         yield put({
@@ -196,7 +203,10 @@ export default {
           exact: true,
         });
         if (matchDetail) {
-          requestEffect(dispatch, { type: 'getDetail', payload: { id: +matchDetail.params['id'] } });
+          requestEffect(dispatch, {
+            type: 'getDetail',
+            payload: { id: +matchDetail.params['id'] },
+          });
         }
       });
     },

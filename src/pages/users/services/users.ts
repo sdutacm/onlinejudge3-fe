@@ -40,12 +40,13 @@ export function getDetail(userId) {
   });
 }
 
-export function getProblemResultStats(userId, contestId = undefined) {
+export function getProblemResultStats(userId, contestId = undefined, competitionId = undefined) {
   return post<IGetUserProblemResultStatsReq, IGetUserProblemResultStatsResp>(
     routesBe.getUserProblemResultStats.url,
     {
       userId,
       contestId,
+      competitionId,
     },
   );
 }

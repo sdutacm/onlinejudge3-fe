@@ -11,6 +11,7 @@ enum Results {
   SE = 11,
   JG = 12,
   RPD = -1,
+  V_Frozen = -100,
 }
 
 export default Results;

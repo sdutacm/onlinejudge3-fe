@@ -72,6 +72,13 @@ const resultsMap = {
     shortName: 'JG',
     fullName: 'Judging',
   },
+  [Results.V_Frozen]: {
+    shortName: '?',
+    fullName: 'Frozen',
+    normalColor: 'gray',
+    colorfulColor: 'gray',
+    description: 'The result is frozen due to the competition has entered frozen duration',
+  },
 };
 
 export default resultsMap;

@@ -17,6 +17,8 @@ import NoteSvg from '@/assets/svg/note.svg';
 import tracker from '@/utils/tracker';
 import { getPathParamId } from '@/utils/getPathParams';
 import { getCompetitionUserAvailablePages } from '@/utils/competition';
+import { ICompetitionSettings } from '@/common/interfaces/competition';
+import ExtLink from '@/components/ExtLink';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -27,6 +29,7 @@ export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ICompetitionSessionStatus;
   globalSession: ISessionStatus;
+  settings: ICompetitionSettings;
 }
 
 interface State {
@@ -97,6 +100,7 @@ class NavMenuCompetition extends React.Component<Props, State> {
       location,
       globalSession,
       id,
+      settings,
     } = this.props;
     const loading = sessionEffectsLoading || this.state.logoutLoading;
 
@@ -119,6 +123,11 @@ class NavMenuCompetition extends React.Component<Props, State> {
       }
     }
     const availablePages = getCompetitionUserAvailablePages(session.user);
+    const externalRanklist = settings?.externalRanklistUrl;
+    if (externalRanklist) {
+      const ranklistItem = availablePages.find((item) => item.title === 'Ranklist');
+      ranklistItem && (ranklistItem.url = externalRanklist);
+    }
 
     return (
       <Menu
@@ -134,9 +143,13 @@ class NavMenuCompetition extends React.Component<Props, State> {
 
         {availablePages.map(({ title, url }) => (
           <Menu.Item key={url}>
-            <Link to={urlf(url, { param: { id } })} onClick={onLinkClick}>
-              {title}
-            </Link>
+            {url.startsWith('/') ? (
+              <Link to={urlf(url, { param: { id } })} onClick={onLinkClick}>
+                {title}
+              </Link>
+            ) : (
+              <ExtLink href={url}>{title}</ExtLink>
+            )}
           </Menu.Item>
         ))}
 
@@ -236,6 +249,7 @@ function mapStateToProps(state) {
       user: {},
     },
     globalSession: state.session,
+    settings: state.competitions.settings[id] || {},
   };
 }
 

@@ -489,6 +489,36 @@ export default {
             payload: { id: +matchProblemDetail.params['id'] },
           });
         }
+        const matchSolutions = matchPath(pathname, {
+          path: pages.competitions.solutions,
+          exact: true,
+        });
+        if (matchSolutions) {
+          requestEffect(dispatch, {
+            type: 'getProblems',
+            payload: { id: +matchSolutions.params['id'] },
+          });
+        }
+        const matchSolutionDetail = matchPath(pathname, {
+          path: pages.competitions.solutionDetail,
+          exact: true,
+        });
+        if (matchSolutionDetail) {
+          requestEffect(dispatch, {
+            type: 'getProblems',
+            payload: { id: +matchSolutionDetail.params['id'] },
+          });
+        }
+        const matchRanklist = matchPath(pathname, {
+          path: pages.competitions.ranklist,
+          exact: true,
+        });
+        if (matchRanklist) {
+          requestEffect(dispatch, {
+            type: 'getProblems',
+            payload: { id: +matchRanklist.params['id'] },
+          });
+        }
       });
     },
   },

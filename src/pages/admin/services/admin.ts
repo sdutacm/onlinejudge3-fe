@@ -77,6 +77,12 @@ import {
   IUpdateFieldDetailReq,
   IDeleteFieldReq,
 } from '@/common/contracts/field';
+import {
+  IGetCompetitionListReq,
+  IGetCompetitionListResp,
+  ICreateCompetitionReq,
+  ICreateCompetitionResp,
+} from '@/common/contracts/competition';
 
 export function getProblemList(query) {
   return post<IGetProblemListReq, IGetProblemListResp>(routesBe.getProblemList.url, {
@@ -194,6 +200,21 @@ export function setContestProblemConfig(contestId, problems) {
   return post<ISetContestProblemConfigReq, void>(routesBe.setContestProblemConfig.url, {
     contestId,
     problems,
+  });
+}
+
+export function getCompetitionList(query) {
+  return post<IGetCompetitionListReq, IGetCompetitionListResp>(routesBe.getCompetitionList.url, {
+    ...query,
+    page: query.page || 1,
+    limit: query.limit || limits.admin.contestList,
+    _scope: null,
+  });
+}
+
+export function createCompetition(data) {
+  return post<ICreateCompetitionReq, ICreateCompetitionResp>(routesBe.createCompetition.url, {
+    ...data,
   });
 }
 

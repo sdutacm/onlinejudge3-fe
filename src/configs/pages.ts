@@ -79,6 +79,7 @@ export default {
     contestHome: '/admin/contests/:id',
     contestUsers: '/admin/contests/:id/users',
     contestProblems: '/admin/contests/:id/problems',
+    competitions: '/admin/competitions',
     users: '/admin/users',
     userPermissions: '/admin/userPermissions',
     posts: '/admin/posts',

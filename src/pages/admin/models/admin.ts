@@ -23,6 +23,11 @@ const initialState = {
   },
   contestDetail: {},
   contestProblems: {},
+  competitionList: {
+    page: 1,
+    count: 0,
+    rows: [],
+  },
   userList: {
     page: 1,
     count: 0,
@@ -86,6 +91,11 @@ export default {
     },
     setContestProblems(state, { payload: { id, data } }) {
       state.contestProblems[id] = data;
+    },
+    setCompetitionList(state, { payload: { data } }) {
+      state.competitionList = {
+        ...data,
+      };
     },
     setUserList(state, { payload: { data } }) {
       state.userList = {
@@ -277,6 +287,31 @@ export default {
     *setContestProblemConfig({ payload: { id, problems } }, { call }) {
       return yield call(service.setContestProblemConfig, id, problems);
     },
+    *getCompetitionList({ payload: query }, { call, put }) {
+      const formattedQuery = formatListQuery(query);
+      formattedQuery.competitionId &&
+        (formattedQuery.competitionId = +formattedQuery.competitionId);
+      formattedQuery.isTeam && (formattedQuery.isTeam = formattedQuery.isTeam === 'true');
+      formattedQuery.hidden && (formattedQuery.hidden = formattedQuery.hidden === 'true');
+      formattedQuery.order = [['competitionId', 'DESC']];
+      const ret: IApiResponse<IList<IContest>> = yield call(
+        service.getCompetitionList,
+        formattedQuery,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setCompetitionList',
+          payload: {
+            data: ret.data,
+            query: formattedQuery,
+          },
+        });
+      }
+      return ret;
+    },
+    *createCompetition({ payload: { data } }, { call }) {
+      return yield call(service.createCompetition, data);
+    },
     *rejudgeSolution({ payload: data }, { call }) {
       return yield call(service.rejudgeSolution, data);
     },
@@ -463,6 +498,8 @@ export default {
           requestEffect(dispatch, { type: 'getTagList' });
         } else if (pathname === pages.admin.contests) {
           requestEffect(dispatch, { type: 'getContestList', payload: query });
+        }else if (pathname === pages.admin.competitions) {
+          requestEffect(dispatch, { type: 'getCompetitionList', payload: query });
         } else if (pathname === pages.admin.users) {
           requestEffect(dispatch, { type: 'getUserList', payload: query });
         } else if (pathname === pages.admin.userPermissions) {

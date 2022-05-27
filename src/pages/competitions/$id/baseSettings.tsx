@@ -123,6 +123,13 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
         placeholder: 'Seconds to frozen',
         rules: [],
       },
+      {
+        name: 'External Ranklist URL',
+        field: 'externalRanklistUrl',
+        component: 'input',
+        initialValue: settings?.externalRanklistUrl || '',
+        rules: [],
+      },
     ];
     return items;
   }
@@ -142,6 +149,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
   getHandledSettingsDataFromForm(values) {
     return {
       frozenLength: +values.frozenLength || 0,
+      externalRanklistUrl: values.externalRanklistUrl || '',
     };
   }
 

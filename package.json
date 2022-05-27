@@ -7,6 +7,7 @@
     "start": "umi dev",
     "dup-less": "gulp dup-less",
     "build": "umi build",
+    "build:competition-side": "cross-env COMPETITION_SIDE=1 umi build",
     "build:exp": "cross-env OJ3_BUILD4=exp umi build",
     "build:test": "cross-env OJ3_BUILD4=test umi build",
     "build-analyze": "cross-env ANALYZE=1 umi build",

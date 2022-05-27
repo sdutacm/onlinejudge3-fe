@@ -1,6 +1,7 @@
 const buildTarget =
   (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
 console.log('Using build target:', buildTarget);
+console.log('Using COMPETITION_SIDE:', process.env.COMPETITION_SIDE === '1');
 
 const buildConfig = {
   release: {
@@ -23,6 +24,9 @@ const buildConfig = {
 export default {
   ...buildConfig[buildTarget],
   hash: true,
+  define: {
+    'process.env.COMPETITION_SIDE': process.env.COMPETITION_SIDE === '1' ? '1' : '',
+  },
   plugins: [
     [
       'umi-plugin-react',

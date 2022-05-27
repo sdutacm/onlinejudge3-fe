@@ -17,7 +17,7 @@ import classNames from 'classnames';
 import router from 'umi/router';
 import OJBK from '@/utils/OJBK';
 import PageLoading from '@/components/PageLoading';
-import { isStateExpired } from '@/utils/misc';
+import { isStateExpired, isCompetitionSide } from '@/utils/misc';
 import PageTitle from '@/components/PageTitle';
 import 'animate.css';
 // @ts-ignore
@@ -238,6 +238,10 @@ class Index extends React.Component<Props, State> {
     const inAdminPage = matchPath(location.pathname, {
       path: pages.admin.index,
     });
+    const blockedByCompetitionSide =
+      isCompetitionSide() && !location.pathname.startsWith('/competitions');
+    const hideNav =
+      blockedByCompetitionSide || (isCompetitionSide() && location.pathname === '/competitions');
     return (
       <Layout
         className={classNames({
@@ -249,7 +253,10 @@ class Index extends React.Component<Props, State> {
           <Row>
             <Col>
               {!inAdminPage ? (
-                <Link to={pages.index} className={styles.logo}>
+                <Link
+                  to={isCompetitionSide() ? pages.competitions.index : pages.index}
+                  className={styles.logo}
+                >
                   {constants.siteName}
                 </Link>
               ) : (
@@ -258,12 +265,17 @@ class Index extends React.Component<Props, State> {
                 </span>
               )}
             </Col>
-            <Col>{this.state.sessionLoaded && <NavContainer />}</Col>
+            {!hideNav && <Col>{this.state.sessionLoaded && <NavContainer />}</Col>}
           </Row>
         </Header>
         <Content>
           <NoticeModal />
-          {this.state.sessionLoaded || location.pathname === '/OJBK' ? children : <PageLoading />}
+          {blockedByCompetitionSide ? null : this.state.sessionLoaded ||
+            location.pathname === '/OJBK' ? (
+            children
+          ) : (
+            <PageLoading />
+          )}
         </Content>
         <Footer className={styles.footer} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
           <Row gutter={20}>

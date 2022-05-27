@@ -19,6 +19,7 @@ import { getPathParamId } from '@/utils/getPathParams';
 import { getCompetitionUserAvailablePages } from '@/utils/competition';
 import { ICompetitionSettings } from '@/common/interfaces/competition';
 import ExtLink from '@/components/ExtLink';
+import { isCompetitionSide } from '@/utils/misc';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -136,7 +137,10 @@ class NavMenuCompetition extends React.Component<Props, State> {
         className={className}
       >
         <Menu.Item key={pages.index}>
-          <Link to={pages.index} onClick={onLinkClick}>
+          <Link
+            to={isCompetitionSide() ? pages.competitions.index : pages.index}
+            onClick={onLinkClick}
+          >
             <Icon type="left" /> Home
           </Link>
         </Menu.Item>

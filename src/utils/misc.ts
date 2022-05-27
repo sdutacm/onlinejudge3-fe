@@ -200,3 +200,7 @@ export function getCsrfHeader() {
 export function b64toBlob(base64, type = 'application/octet-stream') {
   return fetch(`data:${type};base64,${base64}`).then((res) => res.blob());
 }
+
+export function isCompetitionSide() {
+  return process.env.COMPETITION_SIDE === '1';
+}

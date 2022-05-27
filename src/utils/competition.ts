@@ -20,6 +20,18 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
           title: 'Problems',
           url: pages.competitions.problemSettings,
         },
+        {
+          title: 'Overview',
+          url: pages.competitions.overview,
+        },
+        {
+          title: 'Solutions',
+          url: pages.competitions.solutions,
+        },
+        {
+          title: 'Ranklist',
+          url: pages.competitions.ranklist,
+        },
       ];
     case ECompetitionUserRole.participant:
       return [
@@ -84,7 +96,12 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
     case ECompetitionUserRole.fieldAssistantant:
       return [];
     case ECompetitionUserRole.volunteer:
-      return [];
+      return [
+        {
+          title: 'Balloon',
+          url: pages.competitions.balloon,
+        },
+      ];
     case ECompetitionUserRole.observer:
       return [
         {

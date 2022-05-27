@@ -46,6 +46,11 @@ import {
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import data from '@/pages/admin/problems/$id/data';
+import {
+  IGetCompetitionBalloonsReq,
+  IGetCompetitionBalloonsResp,
+  IUpdateCompetitionBalloonStatusReq,
+} from '@/common/contracts/balloon';
 
 function formatCompetition(competition: ICompetition) {
   if (!competition) {
@@ -286,6 +291,26 @@ export function randomAllCompetitionUserPasswords(competitionId) {
   return post<IRandomAllCompetitionUserPasswordsReq, void>(
     routesBe.randomAllCompetitionUserPasswords.url,
     {
+      competitionId,
+    },
+  );
+}
+
+export function getCompetitionBalloons(competitionId) {
+  return post<IGetCompetitionBalloonsReq, IGetCompetitionBalloonsResp>(
+    routesBe.getCompetitionBalloons.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function updateCompetitionBalloonStatus(competitionId, balloonId, data) {
+  return post<IUpdateCompetitionBalloonStatusReq, void>(
+    routesBe.updateCompetitionBalloonStatus.url,
+    {
+      ...data,
+      balloonId,
       competitionId,
     },
   );

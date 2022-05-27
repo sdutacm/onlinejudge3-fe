@@ -442,6 +442,12 @@ export default {
     *randomAllCompetitionUserPasswords({ payload: { id } }, { call }) {
       return yield call(service.randomAllCompetitionUserPasswords, id);
     },
+    *getCompetitionBalloons({ payload: { id } }, { call }) {
+      return yield call(service.getCompetitionBalloons, id);
+    },
+    *updateCompetitionBalloonStatus({ payload: { id, balloonId, data } }, { call }) {
+      return yield call(service.updateCompetitionBalloonStatus, id, balloonId, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

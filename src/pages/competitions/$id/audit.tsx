@@ -66,7 +66,7 @@ class CompetitionAudit extends React.Component<Props, State> {
   }
 
   componentWillReceiveProps(np: Props) {
-    if (this.props.id !== np.id && np.ip) {
+    if (this.props.id !== np.id && np.id) {
       this.fetch(np);
     }
   }
@@ -114,6 +114,7 @@ class CompetitionAudit extends React.Component<Props, State> {
     const usersGrouped = this.getUsersGroupedByStatus();
     return (
       <PageAnimation>
+        <h3 className="mb-xl">Audit</h3>
         <div>
           <Tabs
             activeKey={`${currentActiveStatus}`}

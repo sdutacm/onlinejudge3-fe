@@ -64,6 +64,7 @@ export default {
     userManagement: '/competitions/:id/userManagement',
     problemSettings: '/competitions/:id/problemSettings',
     fieldSettings: '/competitions/:id/fieldSettings',
+    balloon: '/competitions/:id/balloon',
     public: {
       intro: '/competitions-public/:id/intro',
       participants: '/competitions-public/:id/participants',

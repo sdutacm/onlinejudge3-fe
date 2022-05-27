@@ -248,7 +248,7 @@ class ImportCompetitionUserModal extends React.Component<Props, State> {
                           title="Seat No"
                           key="seatNo"
                           render={(text, record: IImportCompetitionUser) => (
-                            <span>{record.fieldShortName}</span>
+                            <span>{record.seatNo}</span>
                           )}
                         />
                         <Table.Column

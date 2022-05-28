@@ -136,6 +136,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
 
   getHandledDetailDataFromForm(values) {
     return {
+      title: values.title,
       startAt: values.startAt.toISOString(),
       endAt: values.endAt.toISOString(),
       registerStartAt: values.registerStartAt ? values.registerStartAt.toISOString() : null,

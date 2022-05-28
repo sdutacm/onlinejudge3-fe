@@ -280,81 +280,93 @@ class Index extends React.Component<Props, State> {
         <Footer className={styles.footer} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
           <Row gutter={20}>
             <Col xs={24} md={8} className="mb-md-lg">
-              <h3>SDUT OJ v{pkg.version}</h3>
-              <p>
-                <ExtLink
-                  className="normal-text-link"
-                  href="https://github.com/sdutacm/onlinejudge3-issues"
-                >
-                  Feedback
-                </ExtLink>
-              </p>
-              <p>
-                <ExtLink
-                  className="normal-text-link"
-                  href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md"
-                >
-                  Changelog
-                </ExtLink>
-              </p>
-              <p>
-                <ExtLink className="normal-text-link" href="https://github.com/sdutacm">
-                  GitHub
-                </ExtLink>
-              </p>
-              <p>
-                <a className="normal-text-link" href="mailto:sdutacm@163.com">
-                  Contact us
-                </a>
-              </p>
+              <h3>SDUT OJ v{pkg.version}{isCompetitionSide() ? ' Competition Side' : ''}</h3>
+              {!isCompetitionSide() && (
+                <p>
+                  <ExtLink
+                    className="normal-text-link"
+                    href="https://github.com/sdutacm/onlinejudge3-issues"
+                  >
+                    Feedback
+                  </ExtLink>
+                </p>
+              )}
+              {!isCompetitionSide() && (
+                <p>
+                  <ExtLink
+                    className="normal-text-link"
+                    href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md"
+                  >
+                    Changelog
+                  </ExtLink>
+                </p>
+              )}
+              {!isCompetitionSide() && (
+                <p>
+                  <ExtLink className="normal-text-link" href="https://github.com/sdutacm">
+                    GitHub
+                  </ExtLink>
+                </p>
+              )}
+              {!isCompetitionSide() && (
+                <p>
+                  <a className="normal-text-link" href="mailto:sdutacm@163.com">
+                    Contact us
+                  </a>
+                </p>
+              )}
               <p>Current Active Users: {activeUserCount}</p>
             </Col>
 
-            <Col xs={24} md={8} className="mb-md-lg">
-              <h3>Our Apps</h3>
-              <p>
-                <ExtLink className="normal-text-link" href="https://stepbystep.sdutacm.cn/">
-                  StepByStep
-                </ExtLink>
-              </p>
-              <p>
-                <ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/">
-                  ACM Contests Collection
-                </ExtLink>
-              </p>
-              <p>
-                <ExtLink
-                  className="normal-text-link"
-                  href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html"
-                >
-                  Recent Contests
-                </ExtLink>
-              </p>
-              <p>
-                <ExtLink className="normal-text-link" href="http://suyu.red/">
-                  Typing System
-                </ExtLink>
-              </p>
-            </Col>
+            {!isCompetitionSide() && (
+              <Col xs={24} md={8} className="mb-md-lg">
+                <h3>Our Apps</h3>
+                <p>
+                  <ExtLink className="normal-text-link" href="https://stepbystep.sdutacm.cn/">
+                    StepByStep
+                  </ExtLink>
+                </p>
+                <p>
+                  <ExtLink className="normal-text-link" href="https://acm.sdut.edu.cn/acmss/">
+                    ACM Contests Collection
+                  </ExtLink>
+                </p>
+                <p>
+                  <ExtLink
+                    className="normal-text-link"
+                    href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html"
+                  >
+                    Recent Contests
+                  </ExtLink>
+                </p>
+                <p>
+                  <ExtLink className="normal-text-link" href="http://suyu.red/">
+                    Typing System
+                  </ExtLink>
+                </p>
+              </Col>
+            )}
 
-            <Col xs={24} md={8} className="mb-md-lg">
-              <h3>Recommends</h3>
-              <p>
-                <ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">
-                  Algo Bootstrap - The New Coding Experience
-                </ExtLink>
-              </p>
-              <p>
-                <ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">
-                  Contests API
-                </ExtLink>
-              </p>
-              <p>
-                <ShowDiscussionModal className="normal-text-link">
-                  Join Discussion <Icon type="smile" />
-                </ShowDiscussionModal>
-              </p>
-            </Col>
+            {!isCompetitionSide() && (
+              <Col xs={24} md={8} className="mb-md-lg">
+                <h3>Recommends</h3>
+                <p>
+                  <ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">
+                    Algo Bootstrap - The New Coding Experience
+                  </ExtLink>
+                </p>
+                <p>
+                  <ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">
+                    Contests API
+                  </ExtLink>
+                </p>
+                <p>
+                  <ShowDiscussionModal className="normal-text-link">
+                    Join Discussion <Icon type="smile" />
+                  </ShowDiscussionModal>
+                </p>
+              </Col>
+            )}
           </Row>
           <p className="mt-lg" style={{ fontWeight: 600 }}>
             © 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.

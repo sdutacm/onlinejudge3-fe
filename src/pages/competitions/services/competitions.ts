@@ -43,6 +43,10 @@ import {
   IRandomAllCompetitionUserPasswordsReq,
   IUpdateCompetitionDetailReq,
   IUpdateCompetitionSettingsReq,
+  IGetCompetitionNotificationsReq,
+  IGetCompetitionNotificationsResp,
+  ICreateCompetitionNotificationReq,
+  IDeleteCompetitionNotificationReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import data from '@/pages/admin/problems/$id/data';
@@ -314,4 +318,27 @@ export function updateCompetitionBalloonStatus(competitionId, balloonId, data) {
       competitionId,
     },
   );
+}
+
+export function getCompetitionNotifications(competitionId) {
+  return post<IGetCompetitionNotificationsReq, IGetCompetitionNotificationsResp>(
+    routesBe.getCompetitionNotifications.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function createCompetitionNotification(competitionId, data) {
+  return post<ICreateCompetitionNotificationReq, void>(routesBe.createCompetitionNotification.url, {
+    ...data,
+    competitionId,
+  });
+}
+
+export function deleteCompetitionNotification(competitionId, competitionNotificationId) {
+  return post<IDeleteCompetitionNotificationReq, void>(routesBe.deleteCompetitionNotification.url, {
+    competitionId,
+    competitionNotificationId,
+  });
 }

@@ -16,7 +16,11 @@ import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';
 import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
-import { ICompetition, ICompetitionUser } from '@/common/interfaces/competition';
+import {
+  ICompetition,
+  ICompetitionUser,
+  ICompetitionNotification,
+} from '@/common/interfaces/competition';
 import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
@@ -31,6 +35,8 @@ export interface Props extends ReduxProps {
   problems: IFullList<IProblem>;
   userProblemResultStats: IUserProblemResultStats;
   competitionProblemResultStats: IContestProblemResultStats;
+  notifications: ICompetitionNotification[];
+  notificationsLoading: boolean;
   confirmEnterLoading: boolean;
   confirmQuitLoading: boolean;
 }
@@ -77,6 +83,10 @@ class CompetitionOverview extends React.Component<Props, State> {
       });
       dispatch({
         type: 'competitions/getProblemResultStats',
+        payload: { id },
+      });
+      dispatch({
+        type: 'competitions/getNotifications',
         payload: { id },
       });
     }
@@ -130,6 +140,8 @@ class CompetitionOverview extends React.Component<Props, State> {
       problems,
       userProblemResultStats: { acceptedProblemIds, attemptedProblemIds },
       competitionProblemResultStats,
+      notifications,
+      notificationsLoading,
       confirmEnterLoading,
       confirmQuitLoading,
     } = this.props;
@@ -282,6 +294,39 @@ class CompetitionOverview extends React.Component<Props, State> {
                   </Table>
                 </Card>
               )}
+              {timeStatus !== 'Pending' &&
+                selfUserDetail?.role === ECompetitionUserRole.participant && (
+                  <div className="mt-lg">
+                    <Card bordered={false}>
+                      <h3 className="mb-none">Notifications</h3>
+                    </Card>
+                    <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
+                      <Table
+                        dataSource={notifications}
+                        rowKey="competitionNotificationId"
+                        loading={notificationsLoading}
+                        pagination={false}
+                        className="responsive-table"
+                        locale={{ emptyText: 'Important notifications will be displayed here' }}
+                      >
+                        <Table.Column
+                          title="ID"
+                          key="NID"
+                          render={(text, record: ICompetitionNotification) => (
+                            <span>{record.competitionNotificationId}</span>
+                          )}
+                        />
+                        <Table.Column
+                          title="Content"
+                          key="Content"
+                          render={(text, record: ICompetitionNotification) => (
+                            <pre>{record.content}</pre>
+                          )}
+                        />
+                      </Table>
+                    </Card>
+                  </div>
+                )}
             </Col>
           </Row>
         </PageTitle>
@@ -302,6 +347,8 @@ function mapStateToProps(state) {
     problems: state.competitions.problems[id] || {},
     userProblemResultStats: state.users.problemResultStats,
     competitionProblemResultStats: state.competitions.problemResultStats[id] || {},
+    notifications: state.competitions.notifications[id]?.rows || [],
+    notificationsLoading: state.loading.effects['competitions/getNotifications'],
     confirmEnterLoading:
       state.loading.effects['competitions/confirmEnter'] ||
       state.loading.effects['competitions/getSelfUserDetail'],

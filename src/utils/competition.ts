@@ -59,6 +59,14 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
           url: pages.competitions.problemSettings,
         },
         {
+          title: 'QA',
+          url: pages.competitions.qa,
+        },
+        {
+          title: 'Notifications',
+          url: pages.competitions.notificationManagement,
+        },
+        {
           title: 'Overview',
           url: pages.competitions.overview,
         },
@@ -73,6 +81,14 @@ export function getCompetitionUserAvailablePages(obj: { role: ECompetitionUserRo
       ];
     case ECompetitionUserRole.judge:
       return [
+        {
+          title: 'QA',
+          url: pages.competitions.qa,
+        },
+        {
+          title: 'Notifications',
+          url: pages.competitions.notificationManagement,
+        },
         {
           title: 'Overview',
           url: pages.competitions.overview,

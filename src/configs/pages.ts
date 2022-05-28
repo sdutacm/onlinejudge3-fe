@@ -60,6 +60,7 @@ export default {
     users: '/competitions/:id/users',
     audit: '/competitions/:id/audit',
     qa: '/competitions/:id/qa',
+    notificationManagement: '/competitions/:id/notificationManagement',
     baseSettings: '/competitions/:id/baseSettings',
     userManagement: '/competitions/:id/userManagement',
     problemSettings: '/competitions/:id/problemSettings',

@@ -28,6 +28,8 @@ function genInitialState() {
     session: {},
     selfUserDetail: {},
     users: {},
+    notifications: {},
+    questions: {},
   };
 }
 
@@ -123,6 +125,15 @@ export default {
       state.users[id] = {
         ...data,
       };
+    },
+    setNotifications(state, { payload: { id, data } }) {
+      state.notifications[id] = {
+        ...data,
+        ...genTimeFlag(30 * 1000),
+      };
+    },
+    clearExpiredNotifications(state) {
+      state.notifications = clearExpiredStateProperties(state.notifications);
     },
   },
   effects: {
@@ -448,6 +459,38 @@ export default {
     *updateCompetitionBalloonStatus({ payload: { id, balloonId, data } }, { call }) {
       return yield call(service.updateCompetitionBalloonStatus, id, balloonId, data);
     },
+    *getNotifications({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.competitions.notifications[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const ret: IApiResponse = yield call(service.getCompetitionNotifications, id);
+      if (ret.success) {
+        yield put({
+          type: 'setNotifications',
+          payload: {
+            id,
+            data: {
+              // @ts-ignore
+              ...ret.data,
+              rows: ret.data!.rows.reverse(),
+            },
+          },
+        });
+        yield put({
+          type: 'clearExpiredNotifications',
+        });
+      }
+      return ret;
+    },
+    *createCompetitionNotification({ payload: { id, data } }, { call }) {
+      return yield call(service.createCompetitionNotification, id, data);
+    },
+    *deleteCompetitionNotification({ payload: { id, competitionNotificationId } }, { call }) {
+      return yield call(service.deleteCompetitionNotification, id, competitionNotificationId);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -464,6 +507,12 @@ export default {
             type: 'getDetail',
             payload: { id: +matchPublicIntro.params['id'] },
           });
+        }
+        const matchOverview = matchPath(pathname, {
+          path: pages.competitions.overview,
+          exact: true,
+        });
+        if (matchOverview) {
         }
         const matchUserManagement = matchPath(pathname, {
           path: pages.competitions.userManagement,
@@ -523,6 +572,16 @@ export default {
           requestEffect(dispatch, {
             type: 'getProblems',
             payload: { id: +matchRanklist.params['id'] },
+          });
+        }
+        const matchNotificationManagement = matchPath(pathname, {
+          path: pages.competitions.notificationManagement,
+          exact: true,
+        });
+        if (matchNotificationManagement) {
+          requestEffect(dispatch, {
+            type: 'getNotifications',
+            payload: { id: +matchNotificationManagement.params['id'] },
           });
         }
       });

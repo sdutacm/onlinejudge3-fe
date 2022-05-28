@@ -20,10 +20,12 @@ import {
   ICompetition,
   ICompetitionUser,
   ICompetitionNotification,
+  ICompetitionQuestion,
 } from '@/common/interfaces/competition';
 import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
+import GeneralFormModal from '@/components/GeneralFormModal';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -37,6 +39,8 @@ export interface Props extends ReduxProps {
   competitionProblemResultStats: IContestProblemResultStats;
   notifications: ICompetitionNotification[];
   notificationsLoading: boolean;
+  questions: ICompetitionQuestion[];
+  questionsLoading: boolean;
   confirmEnterLoading: boolean;
   confirmQuitLoading: boolean;
 }
@@ -89,6 +93,10 @@ class CompetitionOverview extends React.Component<Props, State> {
         type: 'competitions/getNotifications',
         payload: { id },
       });
+      dispatch({
+        type: 'competitions/getQuestions',
+        payload: { id },
+      });
     }
   };
 
@@ -129,6 +137,17 @@ class CompetitionOverview extends React.Component<Props, State> {
     });
   };
 
+  getCreateQuestionFormItems = () => {
+    return [
+      {
+        name: 'Content',
+        field: 'content',
+        component: 'textarea',
+        initialValue: '',
+      },
+    ];
+  };
+
   render() {
     const {
       id,
@@ -142,6 +161,8 @@ class CompetitionOverview extends React.Component<Props, State> {
       competitionProblemResultStats,
       notifications,
       notificationsLoading,
+      questions,
+      questionsLoading,
       confirmEnterLoading,
       confirmQuitLoading,
     } = this.props;
@@ -296,36 +317,126 @@ class CompetitionOverview extends React.Component<Props, State> {
               )}
               {timeStatus !== 'Pending' &&
                 selfUserDetail?.role === ECompetitionUserRole.participant && (
-                  <div className="mt-lg">
-                    <Card bordered={false}>
-                      <h3 className="mb-none">Notifications</h3>
-                    </Card>
-                    <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
-                      <Table
-                        dataSource={notifications}
-                        rowKey="competitionNotificationId"
-                        loading={notificationsLoading}
-                        pagination={false}
-                        className="responsive-table"
-                        locale={{ emptyText: 'Important notifications will be displayed here' }}
-                      >
-                        <Table.Column
-                          title="ID"
-                          key="NID"
-                          render={(text, record: ICompetitionNotification) => (
-                            <span>{record.competitionNotificationId}</span>
-                          )}
-                        />
-                        <Table.Column
-                          title="Content"
-                          key="Content"
-                          render={(text, record: ICompetitionNotification) => (
-                            <pre>{record.content}</pre>
-                          )}
-                        />
-                      </Table>
-                    </Card>
-                  </div>
+                  <>
+                    <div className="mt-lg">
+                      <Card bordered={false}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <h3 className="mb-none">My Questions</h3>
+                          <GeneralFormModal
+                            loadingEffect="competitions/createCompetitionQuestion"
+                            title="Ask Principal/Judger a Question"
+                            autoMsg
+                            items={this.getCreateQuestionFormItems()}
+                            submit={(dispatch: ReduxProps['dispatch'], values) => {
+                              const data = {
+                                content: values.content,
+                              };
+                              return dispatch({
+                                type: 'competitions/createCompetitionQuestion',
+                                payload: {
+                                  id,
+                                  data,
+                                },
+                              });
+                            }}
+                            onSuccess={(
+                              dispatch: ReduxProps['dispatch'],
+                              ret: IApiResponse<any>,
+                            ) => {
+                              msg.success('Submit successfully');
+                              tracker.event({
+                                category: 'competitions',
+                                action: 'submitQuestion',
+                              });
+                            }}
+                            onSuccessModalClosed={(
+                              dispatch: ReduxProps['dispatch'],
+                              ret: IApiResponse<any>,
+                            ) => {
+                              return dispatch({
+                                type: 'competitions/getQuestions',
+                                payload: {
+                                  id,
+                                  force: true,
+                                },
+                              });
+                            }}
+                          >
+                            <Button size="small">Ask Question</Button>
+                          </GeneralFormModal>
+                        </div>
+                      </Card>
+                      <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
+                        <Table
+                          dataSource={questions}
+                          rowKey="competitionQuestionId"
+                          loading={questionsLoading}
+                          pagination={false}
+                          className="responsive-table"
+                          locale={{
+                            emptyText:
+                              'If you have questions about rules or problems, please submit a question',
+                          }}
+                        >
+                          <Table.Column
+                            title="ID"
+                            key="NID"
+                            render={(text, record: ICompetitionQuestion) => (
+                              <span>{record.competitionQuestionId}</span>
+                            )}
+                          />
+                          <Table.Column
+                            title="Content"
+                            key="Content"
+                            render={(text, record: ICompetitionQuestion) => (
+                              <pre>{record.content}</pre>
+                            )}
+                          />
+                          <Table.Column
+                            title="Reply"
+                            key="Reply"
+                            render={(text, record: ICompetitionQuestion) => {
+                              return record.reply ? (
+                                <pre>{record.reply}</pre>
+                              ) : (
+                                <span className="text-secondary">(No reply yet)</span>
+                              );
+                            }}
+                          />
+                        </Table>
+                      </Card>
+                    </div>
+                    <div className="mt-lg">
+                      <Card bordered={false}>
+                        <h3 className="mb-none">Notifications</h3>
+                      </Card>
+                      <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
+                        <Table
+                          dataSource={notifications}
+                          rowKey="competitionNotificationId"
+                          loading={notificationsLoading}
+                          pagination={false}
+                          className="responsive-table"
+                          locale={{ emptyText: 'Important notifications will be displayed here' }}
+                        >
+                          <Table.Column
+                            title="ID"
+                            key="NID"
+                            render={(text, record: ICompetitionNotification) => (
+                              <span>{record.competitionNotificationId}</span>
+                            )}
+                          />
+                          <Table.Column
+                            title="Content"
+                            key="Content"
+                            render={(text, record: ICompetitionNotification) => (
+                              <pre>{record.content}</pre>
+                            )}
+                          />
+                        </Table>
+                      </Card>
+                    </div>
+                  </>
                 )}
             </Col>
           </Row>
@@ -349,6 +460,8 @@ function mapStateToProps(state) {
     competitionProblemResultStats: state.competitions.problemResultStats[id] || {},
     notifications: state.competitions.notifications[id]?.rows || [],
     notificationsLoading: state.loading.effects['competitions/getNotifications'],
+    questions: state.competitions.questions[id]?.rows || [],
+    questionsLoading: state.loading.effects['competitions/getQuestions'],
     confirmEnterLoading:
       state.loading.effects['competitions/confirmEnter'] ||
       state.loading.effects['competitions/getSelfUserDetail'],

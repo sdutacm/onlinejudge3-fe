@@ -135,6 +135,15 @@ export default {
     clearExpiredNotifications(state) {
       state.notifications = clearExpiredStateProperties(state.notifications);
     },
+    setQuestions(state, { payload: { id, data } }) {
+      state.questions[id] = {
+        ...data,
+        ...genTimeFlag(30 * 1000),
+      };
+    },
+    clearExpiredQuestions(state) {
+      state.questions = clearExpiredStateProperties(state.questions);
+    },
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
@@ -491,6 +500,46 @@ export default {
     *deleteCompetitionNotification({ payload: { id, competitionNotificationId } }, { call }) {
       return yield call(service.deleteCompetitionNotification, id, competitionNotificationId);
     },
+    *getQuestions({ payload: { id, force = false } }, { call, put, select }) {
+      if (!force) {
+        const savedState = yield select((state) => state.competitions.questions[id]);
+        if (!isStateExpired(savedState)) {
+          return;
+        }
+      }
+      const ret: IApiResponse = yield call(service.getSelfCompetitionQuestions, id);
+      if (ret.success) {
+        yield put({
+          type: 'setQuestions',
+          payload: {
+            id,
+            data: {
+              // @ts-ignore
+              ...ret.data,
+              rows: ret.data!.rows.reverse(),
+            },
+          },
+        });
+        yield put({
+          type: 'clearExpiredQuestions',
+        });
+      }
+      return ret;
+    },
+    *getAllQuestions({ payload: { id } }, { call }) {
+      const ret: IApiResponse = yield call(service.getCompetitionQuestions, id);
+      if (ret.success) {
+        // @ts-ignore
+        ret.data.rows.reverse();
+      }
+      return ret;
+    },
+    *createCompetitionQuestion({ payload: { id, data } }, { call }) {
+      return yield call(service.createCompetitionQuestion, id, data);
+    },
+    *replyCompetitionQuestion({ payload: { id, competitionQuestionId, data } }, { call }) {
+      return yield call(service.replyCompetitionQuestion, id, competitionQuestionId, data);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -582,6 +631,16 @@ export default {
           requestEffect(dispatch, {
             type: 'getNotifications',
             payload: { id: +matchNotificationManagement.params['id'] },
+          });
+        }
+        const matchQuestionManagement = matchPath(pathname, {
+          path: pages.competitions.qa,
+          exact: true,
+        });
+        if (matchQuestionManagement) {
+          requestEffect(dispatch, {
+            type: 'getAllQuestions',
+            payload: { id: +matchQuestionManagement.params['id'] },
           });
         }
       });

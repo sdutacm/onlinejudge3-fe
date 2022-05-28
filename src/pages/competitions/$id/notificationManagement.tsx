@@ -93,8 +93,8 @@ class CompetitionNotificationManagement extends React.Component<Props, State> {
                   )}
                 />
                 <Table.Column
-                  title="Content"
-                  key="Content"
+                  title="Question"
+                  key="Question"
                   render={(text, record: ICompetitionNotification) => <pre>{record.content}</pre>}
                 />
                 <Table.Column
@@ -109,41 +109,6 @@ class CompetitionNotificationManagement extends React.Component<Props, State> {
                       >
                         <a>Delete</a>
                       </Popconfirm>
-
-                      {/* <GeneralFormModal
-                      loadingEffect="competitions/auditCompetitionParticipant"
-                      title="Audit Registration"
-                      autoMsg
-                      items={this.auditFormItems}
-                      submit={(dispatch: ReduxProps['dispatch'], values) => {
-                        return dispatch({
-                          type: 'competitions/auditCompetitionParticipant',
-                          payload: {
-                            id,
-                            userId: record.userId,
-                            data: {
-                              status: +values.status,
-                              reason: values.reason,
-                            },
-                          },
-                        });
-                      }}
-                      onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                        msg.success('Audit successfully');
-                        tracker.event({
-                          category: 'competitions',
-                          action: 'auditCompetitionParticipant',
-                        });
-                      }}
-                      onSuccessModalClosed={(
-                        dispatch: ReduxProps['dispatch'],
-                        ret: IApiResponse<any>,
-                      ) => {
-                        this.fetch();
-                      }}
-                    >
-                      <a className="ml-md-lg">Audit</a>
-                    </GeneralFormModal> */}
                     </span>
                   )}
                 />

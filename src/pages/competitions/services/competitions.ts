@@ -47,6 +47,12 @@ import {
   IGetCompetitionNotificationsResp,
   ICreateCompetitionNotificationReq,
   IDeleteCompetitionNotificationReq,
+  IGetCompetitionQuestionsReq,
+  IGetCompetitionQuestionsResp,
+  IGetSelfCompetitionQuestionsReq,
+  IGetSelfCompetitionQuestionsResp,
+  ICreateCompetitionQuestionReq,
+  IReplyCompetitionQuestionReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import data from '@/pages/admin/problems/$id/data';
@@ -340,5 +346,38 @@ export function deleteCompetitionNotification(competitionId, competitionNotifica
   return post<IDeleteCompetitionNotificationReq, void>(routesBe.deleteCompetitionNotification.url, {
     competitionId,
     competitionNotificationId,
+  });
+}
+
+export function getCompetitionQuestions(competitionId) {
+  return post<IGetCompetitionQuestionsReq, IGetCompetitionQuestionsResp>(
+    routesBe.getCompetitionQuestions.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function getSelfCompetitionQuestions(competitionId) {
+  return post<IGetSelfCompetitionQuestionsReq, IGetSelfCompetitionQuestionsResp>(
+    routesBe.getSelfCompetitionQuestions.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function createCompetitionQuestion(competitionId, data) {
+  return post<ICreateCompetitionQuestionReq, void>(routesBe.createCompetitionQuestion.url, {
+    ...data,
+    competitionId,
+  });
+}
+
+export function replyCompetitionQuestion(competitionId, competitionQuestionId, data) {
+  return post<IReplyCompetitionQuestionReq, void>(routesBe.replyCompetitionQuestion.url, {
+    ...data,
+    competitionId,
+    competitionQuestionId,
   });
 }

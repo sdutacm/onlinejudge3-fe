@@ -15,6 +15,7 @@ import TimeStatusBadge from '@/components/TimeStatusBadge';
 import gStyles from '@/general.less';
 import PageTitle from '@/components/PageTitle';
 import SdutpcLogoSvg from '../assets/images/sdutpc_logo.svg';
+import ExtLink from '@/components/ExtLink';
 
 const TOP_NUM = 5;
 let cachedState = {
@@ -100,16 +101,9 @@ class Index extends React.Component<Props, State> {
                       </i>
                     </div>
                     <div className="ml-xl">
-                      <h3 className="mb-sm">The 14th SDUT Programming Contest is coming!</h3>
+                      <h3 className="mb-sm">The 14th SDUT Programming Contest is ended!</h3>
                       <div>
-                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 1 } })}>
-                          Sign Up Now
-                        </Link>
-                      </div>
-                      <div>
-                        <Link to={urlf(pages.competitions.home, { param: { id: 2 } })}>
-                          进入模拟赛
-                        </Link>
+                        <ExtLink href="https://acm.sdut.edu.cn/srk_sdutpc/">View Ranklist</ExtLink>
                       </div>
                     </div>
                   </div>

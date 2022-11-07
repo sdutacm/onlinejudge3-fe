@@ -2,7 +2,6 @@
 .idea
 .vscode
 node_modules
-package-lock.json
 yarn.lock
 /dist
 .umi

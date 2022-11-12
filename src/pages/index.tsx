@@ -85,6 +85,15 @@ class Index extends React.Component<Props, State> {
               </p>
             </Col>
 
+            <Col xs={24} className="mt-lg">
+              <Alert
+                message={null}
+                description={<span>OnlineJudge3 is open source on GitHub! <ExtLink href="https://github.com/sdutacm/onlinejudge3" className="ml-sm-md">👉 Have a look</ExtLink></span>}
+                type="info"
+                showIcon
+              />
+            </Col>
+
             {/* Banner for SDUTPC14 */}
             {/* <Col xs={24} className="mt-lg">
               <Alert

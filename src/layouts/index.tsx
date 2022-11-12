@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Row, Col, Button, notification, Icon } from 'antd';
+import { Layout, Row, Col, Button, notification } from 'antd';
 import { Link } from 'react-router-dom';
 import NavContainer from './components/NavContainer';
 import pages from '../configs/pages';
@@ -25,7 +25,6 @@ import pkg from '../../package.json';
 import tracker from '@/utils/tracker';
 import ExtLink from '@/components/ExtLink';
 import throttle from 'lodash.throttle';
-import ShowDiscussionModal from '@/components/ShowDiscussionModal';
 import NoticeModal from '@/components/NoticeModal';
 import io from 'socket.io-client';
 import socketConfig from '@/configs/socket';
@@ -285,9 +284,9 @@ class Index extends React.Component<Props, State> {
                 <p>
                   <ExtLink
                     className="normal-text-link"
-                    href="https://github.com/sdutacm/onlinejudge3-issues"
+                    href="https://github.com/sdutacm/onlinejudge3"
                   >
-                    Feedback
+                    GitHub
                   </ExtLink>
                 </p>
               )}
@@ -295,16 +294,9 @@ class Index extends React.Component<Props, State> {
                 <p>
                   <ExtLink
                     className="normal-text-link"
-                    href="https://github.com/sdutacm/onlinejudge3-issues/blob/master/CHANGELOG.md"
+                    href="https://github.com/sdutacm/onlinejudge3/blob/master/CHANGELOG.md"
                   >
                     Changelog
-                  </ExtLink>
-                </p>
-              )}
-              {!isCompetitionSide() && (
-                <p>
-                  <ExtLink className="normal-text-link" href="https://github.com/sdutacm">
-                    GitHub
                   </ExtLink>
                 </p>
               )}
@@ -351,6 +343,16 @@ class Index extends React.Component<Props, State> {
               <Col xs={24} md={8} className="mb-md-lg">
                 <h3>Recommends</h3>
                 <p>
+                  <ExtLink className="normal-text-link" href="https://rl.algoux.org?from=sdutoj">
+                    RankLand - The Great Ranklist Collection
+                  </ExtLink>
+                </p>
+                <p>
+                  <ExtLink className="normal-text-link" href="https://github.com/algoux/standard-ranklist">
+                    srk - The General Ranklist Data Format
+                  </ExtLink>
+                </p>
+                <p>
                   <ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">
                     Algo Bootstrap - The New Coding Experience
                   </ExtLink>
@@ -359,11 +361,6 @@ class Index extends React.Component<Props, State> {
                   <ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">
                     Contests API
                   </ExtLink>
-                </p>
-                <p>
-                  <ShowDiscussionModal className="normal-text-link">
-                    Join Discussion <Icon type="smile" />
-                  </ShowDiscussionModal>
                 </p>
               </Col>
             )}

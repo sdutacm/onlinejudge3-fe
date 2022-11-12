@@ -1,5 +1,6 @@
 import ReactGA from 'react-ga';
 
+// 填入你的 Google Analytics ID
 ReactGA.initialize('UA-91335628-7', {
   titleCase: false,
 });

@@ -1799,3 +1799,25 @@ a {
     }
   }
 }
+
+.rl-promotion {
+  @keyframes rl-text-blink {
+    0% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.6;
+      transform: scale3d(1.01, 1.1, 1);
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  display: inline-block;
+  font-weight: 500;
+  color: #ffa40a !important;
+  animation: rl-text-blink 1.7s ease-in-out infinite;
+}

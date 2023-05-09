@@ -197,8 +197,9 @@ class CompetitionIntro extends React.Component<Props, State> {
         })),
       },
       {
-        name: 'Slogan',
+        name: 'Slogan (optional)',
         field: 'slogan',
+        placeholder: '起个响亮的参赛宣言',
         component: 'input',
         initialValue: data?.info?.slogan || '',
       },
@@ -410,7 +411,7 @@ class CompetitionIntro extends React.Component<Props, State> {
               {this.renderSignUpArea(data)}
               <div className="text-center mt-md-lg">
                 <Link to={urlf(pages.competitions.public.participants, { param: { id } })}>
-                  <Button>View Accepted Participants</Button>
+                  <Button>👉 View Participants</Button>
                 </Link>
               </div>
             </div>

@@ -85,26 +85,8 @@ class Index extends React.Component<Props, State> {
               </p>
             </Col>
 
+            {/* Banner for SDUTPC */}
             <Col xs={24} className="mt-lg">
-              <Alert
-                message="限时推广"
-                description={<span>全新的<ExtLink href="https://rl.algoux.org/collection/official?from=sdutoj" className="ml-sm-md">历届赛事榜单合集</ExtLink> 现已推出（亦提供<ExtLink href="https://xn--4kr68kc5p295b.xn--jhqu4ar82bu5jq8jjvjft8c.xn--fiqs8s/?from=sdutoj" className="ml-sm-md">中国大陆加速站点</ExtLink>），欢迎收藏和分享！</span>}
-                type="info"
-                showIcon
-              />
-            </Col>
-
-            <Col xs={24} className="mt-lg">
-              <Alert
-                message={null}
-                description={<span>OnlineJudge3 is open source on GitHub! <ExtLink href="https://github.com/sdutacm/onlinejudge3" className="ml-sm-md">👉 Have a look</ExtLink></span>}
-                type="info"
-                showIcon
-              />
-            </Col>
-
-            {/* Banner for SDUTPC14 */}
-            {/* <Col xs={24} className="mt-lg">
               <Alert
                 message={
                   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -119,15 +101,46 @@ class Index extends React.Component<Props, State> {
                       </i>
                     </div>
                     <div className="ml-xl">
-                      <h3 className="mb-sm">The 14th SDUT Programming Contest is ended!</h3>
+                      {/* Pending */}
+                      <h3 className="mb-sm">The 15th SDUT Programming Contest is coming!</h3>
+                      <div>
+                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 8 } })}>
+                          Sign Up Now
+                        </Link>
+                      </div>
+                      {/* <div>
+                        <Link to={urlf(pages.competitions.home, { param: { id: 2 } })}>
+                          进入模拟赛
+                        </Link>
+                      </div> */}
+                      {/* Ended */}
+                      {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
                       <div>
                         <ExtLink href="https://acm.sdut.edu.cn/srk_sdutpc/">View Ranklist</ExtLink>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 }
                 type="info"
                 showIcon={false}
+              />
+            </Col>
+
+            <Col xs={24} className="mt-lg">
+              <Alert
+                message="限时推广"
+                description={<span>全新的<ExtLink href="https://rl.algoux.org/collection/official?from=sdutoj" className="ml-sm-md">历届赛事榜单合集</ExtLink> 现已推出（亦提供<ExtLink href="https://xn--4kr68kc5p295b.xn--jhqu4ar82bu5jq8jjvjft8c.xn--fiqs8s/?from=sdutoj" className="ml-sm-md">中国大陆加速站点</ExtLink>），欢迎收藏和分享！</span>}
+                type="info"
+                showIcon
+              />
+            </Col>
+
+            {/* <Col xs={24} className="mt-lg">
+              <Alert
+                message={null}
+                description={<span>OnlineJudge3 is open source on GitHub! <ExtLink href="https://github.com/sdutacm/onlinejudge3" className="ml-sm-md">👉 Have a look</ExtLink></span>}
+                type="info"
+                showIcon
               />
             </Col> */}
 

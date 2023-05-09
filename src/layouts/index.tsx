@@ -343,7 +343,7 @@ class Index extends React.Component<Props, State> {
               <Col xs={24} md={8} className="mb-md-lg">
                 <h3>Recommends</h3>
                 <p>
-                  <ExtLink className="normal-text-link rl-promotion" href="https://rl.algoux.org?from=sdutoj">
+                  <ExtLink className="normal-text-link" href="https://rl.algoux.org?from=sdutoj">
                     RankLand - The Great Ranklist Collection
                   </ExtLink>
                 </p>

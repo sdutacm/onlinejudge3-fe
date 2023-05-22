@@ -187,11 +187,11 @@ class NavMenu extends React.Component<Props, State> {
           </Link>
         </Menu.Item>
 
-        <Menu.Item key={pages.topics.index}>
+        {/* <Menu.Item key={pages.topics.index}>
           <Link to={pages.topics.index} onClick={onLinkClick}>
             Topics
           </Link>
-        </Menu.Item>
+        </Menu.Item> */}
 
         <Menu.Item key={pages.posts.index}>
           <Link to={pages.posts.index} onClick={onLinkClick}>

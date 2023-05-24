@@ -43,6 +43,9 @@ const ProblemBar: React.FC<Props> = ({ problem, contestId, competitionId, index,
     <Link to={problemDetailUrl} onClick={e => e.stopPropagation()} className="no-wrap">
       {displayText}
     </Link>;
+  if (!problem.title) {
+    return inner;
+  }
   if (display === 'id') {
     return <Popover content={problem.title}>
       {inner}

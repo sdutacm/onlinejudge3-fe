@@ -85,15 +85,6 @@ class Index extends React.Component<Props, State> {
               </p>
             </Col>
 
-            <Col xs={24} className="mt-lg">
-              <Alert
-                message="维护通知"
-                description={<span>OJ 将进入停服维护，预计恢复时间 2023-05-25 10:00（无原石补偿）</span>}
-                showIcon
-                type="warning"
-              />
-            </Col>
-
             {/* Banner for SDUTPC */}
             <Col xs={24} className="mt-lg">
               <Alert

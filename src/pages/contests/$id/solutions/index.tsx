@@ -118,7 +118,6 @@ class ContestSolutions extends React.Component<Props, State> {
     const problemList = (problemRows || []).map((problem, index) => ({
       problemId: problem.problemId,
       title: problem.title,
-      timeLimit: problem.timeLimit,
       index,
     }));
     return (

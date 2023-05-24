@@ -341,7 +341,6 @@ class SolutionTable extends React.Component<Props, State> {
                   percent={total ? (current / total) * 100 : 0}
                   current={current}
                   total={total}
-                  timeLimit={record.problem.timeLimit}
                   result={record.result}
                   judgeInfo={record.judgeInfo}
                 />

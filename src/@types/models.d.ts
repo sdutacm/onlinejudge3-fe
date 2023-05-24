@@ -143,8 +143,7 @@ interface ISolution {
   user: IUserLite;
   problem: {
     problemId: number;
-    title: string;
-    timeLimit: number;
+    title?: string;
   };
   contest?: {
     contestId: number;

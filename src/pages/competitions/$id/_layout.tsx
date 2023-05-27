@@ -15,6 +15,7 @@ import tracker from '@/utils/tracker';
 import ContestTimeStatusWatcher from '@/components/ContestTimeStatusWatcher';
 import { ICompetition } from '@/common/interfaces/competition';
 import NotFound from '@/pages/404';
+import { ECompetitionUserRole } from '@/common/enums';
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -30,6 +31,7 @@ interface State {
 class CompetitionLayout extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
   setStatePromise = setStatePromise.bind(this);
+  pollParticipantDataTimer = 0;
 
   constructor(props) {
     super(props);
@@ -70,6 +72,33 @@ class CompetitionLayout extends React.Component<Props, State> {
           force: true,
         },
       });
+    }
+  };
+
+  pollParticipantDataInBackground = (props?: Props) => {
+    const p = props || this.props;
+    const { id, session, detail, dispatch } = p;
+    console.log('[pollParticipantData] check whether to polling participant data');
+    if (session?.user?.role !== ECompetitionUserRole.participant) {
+      console.log('[pollParticipantData] wrong role, skipped');
+      return;
+    }
+    const { currentTime } = this.state;
+    const startTime = toLongTs(detail.startAt);
+    const endTime = toLongTs(detail.endAt);
+    const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
+    if (timeStatus === 'Running' || (timeStatus === 'Ended' && currentTime - endTime < 1000)) {
+      console.log('[pollParticipantData] polling participant data');
+      dispatch({
+        type: 'competitions/getNotifications',
+        payload: { id, auto: true },
+      });
+      dispatch({
+        type: 'competitions/getQuestions',
+        payload: { id, auto: true },
+      });
+    } else {
+      console.log('[pollParticipantData] not in running time, skipped');
     }
   };
 
@@ -126,6 +155,14 @@ class CompetitionLayout extends React.Component<Props, State> {
       nextProps.session &&
       nextProps.session.loggedIn
     ) {
+      console.log('session', nextProps.session);
+      if (nextProps.session.user?.role === ECompetitionUserRole.participant) {
+        this.pollParticipantDataInBackground(nextProps);
+        this.pollParticipantDataTimer = window.setInterval(
+          () => this.pollParticipantDataInBackground(),
+          30 * 1000,
+        );
+      }
       // const availablePages = getCompetitionUserAvailablePages(nextProps.session.user);
       // const canEnter = availablePages.find(
       //   ({ url }) => !!matchPath(nextProps.location.pathname, { path: url }),
@@ -158,12 +195,14 @@ class CompetitionLayout extends React.Component<Props, State> {
         type: 'competitions/getSession',
         payload: { id },
       });
+      clearInterval(this.pollParticipantDataTimer);
       router.replace(urlf(pages.competitions.home, { param: { id } }));
     }
   }
 
   componentWillUnmount() {
     clearInterval(this.state.progressTimer);
+    clearInterval(this.pollParticipantDataTimer);
   }
 
   render() {

@@ -468,9 +468,9 @@ export default {
     *updateCompetitionBalloonStatus({ payload: { id, balloonId, data } }, { call }) {
       return yield call(service.updateCompetitionBalloonStatus, id, balloonId, data);
     },
-    *getNotifications({ payload: { id, force = false } }, { call, put, select }) {
-      if (!force) {
-        const savedState = yield select((state) => state.competitions.notifications[id]);
+    *getNotifications({ payload: { id, force = false, auto = false } }, { call, put, select }) {
+      const savedState = yield select((state) => state.competitions.notifications[id]);
+      if (!force && !auto) {
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -491,6 +491,12 @@ export default {
         yield put({
           type: 'clearExpiredNotifications',
         });
+        const prevCount = savedState?.rows?.length || 0;
+        if (auto && savedState && ret.data!.rows.length > prevCount) {
+          alert(
+            `Received new notifications from judges!\nPlease go to "Overview" page to check them.`,
+          );
+        }
       }
       return ret;
     },
@@ -500,9 +506,9 @@ export default {
     *deleteCompetitionNotification({ payload: { id, competitionNotificationId } }, { call }) {
       return yield call(service.deleteCompetitionNotification, id, competitionNotificationId);
     },
-    *getQuestions({ payload: { id, force = false } }, { call, put, select }) {
-      if (!force) {
-        const savedState = yield select((state) => state.competitions.questions[id]);
+    *getQuestions({ payload: { id, force = false, auto = false } }, { call, put, select }) {
+      const savedState = yield select((state) => state.competitions.questions[id]);
+      if (!force && !auto) {
         if (!isStateExpired(savedState)) {
           return;
         }
@@ -523,6 +529,15 @@ export default {
         yield put({
           type: 'clearExpiredQuestions',
         });
+        if (auto && savedState) {
+          const prevCount = (savedState?.rows || []).filter((r) => !!r.reply).length;
+          const nextCount = (ret.data!.rows || []).filter((r) => !!r.reply).length;
+          if (nextCount > prevCount) {
+            alert(
+              `Received new question reples from judges!\nPlease go to "Overview" page to check them.`,
+            );
+          }
+        }
       }
       return ret;
     },

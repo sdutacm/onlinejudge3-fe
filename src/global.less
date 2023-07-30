@@ -821,6 +821,33 @@ ul {
   }
 }
 
+.problem-sample-block {
+  &:not(:first-of-type) {
+    margin-top: 8px;
+  }
+
+  pre {
+    border: none;
+    border-radius: initial;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .problem-sample-block-title {
+    margin-bottom: 0;
+  }
+
+  .problem-sample-block-grid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+
+    .problem-sample-block-grid-item {
+      border: @border-width-base @border-style-base @input-border-color;
+      padding: 8px;
+    }
+  }
+}
+
 // user page
 
 @import './Josefin_Sans';

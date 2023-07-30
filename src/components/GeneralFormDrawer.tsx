@@ -25,10 +25,10 @@ export interface IGeneralFormDrawerProps extends ReduxProps, FormProps {
   width?: number;
   disabled?: boolean;
   maskClosable?: boolean;
-  submit(dispatch: ReduxProps['dispatch'], values): Promise<IApiResponse<any>>;
-  onSuccess?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
-  onSuccessAndClosed?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
-  onFail?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
+  submit: (dispatch: ReduxProps['dispatch'], values) => Promise<IApiResponse<any>>;
+  onSuccess?: (dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => void;
+  onSuccessAndClosed?: (dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => void;
+  onFail?: (dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => void;
 }
 
 interface State {
@@ -53,9 +53,15 @@ class GeneralFormDrawer extends React.Component<IGeneralFormDrawerProps, State> 
       onSuccessAndClosed,
       onFail,
       autoMsg,
+      items,
     } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
+        for (const item of items) {
+          if (item.transformBeforeSubmit) {
+            values[item.field] = item.transformBeforeSubmit(values[item.field]);
+          }
+        }
         // console.log('form ok', values);
         submit(dispatch, { ...values, ...hiddenValues })?.then((ret) => {
           autoMsg && msg.auto(ret);

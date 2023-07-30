@@ -211,6 +211,32 @@ const ProblemDetailPage: React.FC<Props> = ({
                     </td>
                   </tr>
                 )}
+                {data.authors?.length > 0 && (
+                  <tr>
+                    <td>{data.authors.length === 1 ? 'Author' : 'Authors'}</td>
+                    <td>
+                      {data.authors.map((author, index) => {
+                        return (
+                          <span key={author}>
+                            <Link
+                              to={urlf(pages.problems.index, { query: { author: author } })}
+                              onClick={() => {
+                                tracker.event({
+                                  category: 'problems',
+                                  action: 'viewListByAuthor',
+                                  label: author,
+                                });
+                              }}
+                            >
+                              {author}
+                            </Link>
+                            {index < data.authors.length - 1 && <span className="mr-sm">,</span>}
+                          </span>
+                        );
+                      })}
+                    </td>
+                  </tr>
+                )}
                 {!!data.spj && (
                   <tr>
                     <td>SPJ</td>
@@ -272,7 +298,7 @@ const ProblemDetailPage: React.FC<Props> = ({
       }
       loading={loading}
     >
-      <Row gutter={16} className="content-view list-view">
+      <Row gutter={16} className="content-view-lg list-view">
         <Col xs={24} md={18} xxl={18}>
           <PageAnimation>
             <Card bordered={false}>

@@ -8,7 +8,14 @@ import RtEditor from './RtEditor';
 export interface IGeneralFormItem {
   name: string;
   field: string;
-  component: 'input' | 'textarea' | 'select' | 'checkbox' | 'datetime' | 'richtext';
+  component:
+    | 'input'
+    | 'textarea'
+    | 'select'
+    | 'checkbox'
+    | 'datetime'
+    | 'richtext'
+    | React.ReactNode;
   rules: object[];
   placeholder?: string;
   initialValue?: any;
@@ -27,6 +34,7 @@ export interface IGeneralFormItem {
     value: string | number | boolean;
     name: string;
   }[];
+  transformBeforeSubmit?: (value) => any;
 }
 
 export interface IGeneralFormProps extends ReduxProps, FormProps {
@@ -56,6 +64,33 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
     return (
       <Form layout="vertical" hideRequiredMark={true}>
         {items.map((item) => {
+          if (typeof item.component === 'function') {
+            const rules = [...(item.rules || [])];
+            // @ts-ignore
+            let requiredRuleIndex = rules.findIndex((r) => r.required === true);
+            if (requiredRuleIndex > -1) {
+              const rule = rules[requiredRuleIndex] as any;
+              rules[requiredRuleIndex] = {
+                ...rule,
+                validator: (_, value, callback) => {
+                  if (value.isEmpty()) {
+                    callback(rule.message);
+                  } else {
+                    callback();
+                  }
+                },
+              };
+            }
+            return (
+              <Form.Item key={item.field} label={item.name}>
+                {getFieldDecorator(item.field, {
+                  validateTrigger: 'onBlur',
+                  rules,
+                  initialValue: initialValues[item.field] || item.initialValue,
+                })(<item.component form={form} disabled={item.disabled} />)}
+              </Form.Item>
+            );
+          }
           switch (item.component) {
             case 'input':
               return (
@@ -96,7 +131,7 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   })(
                     <Select placeholder={item.placeholder} disabled={item.disabled}>
                       {item.options.map((opt) => (
-                        <Select.Option key={opt.value}>{opt.name}</Select.Option>
+                        <Select.Option key={`${opt.value}`}>{opt.name}</Select.Option>
                       ))}
                     </Select>,
                   )}

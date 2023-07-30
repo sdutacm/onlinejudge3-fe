@@ -259,6 +259,7 @@ class ProblemList extends React.Component<Props, State> {
                 fields={[
                   { displayName: 'Title', fieldName: 'title' },
                   { displayName: 'Source', fieldName: 'source' },
+                  { displayName: 'Author', fieldName: 'author' },
                 ]}
               />
             </Card>

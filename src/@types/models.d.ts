@@ -96,11 +96,13 @@ interface IProblem {
   description?: string;
   input?: string;
   output?: string;
-  sampleInput?: string;
-  sampleOutput?: string;
+  samples: {
+    in: string;
+    out: string;
+  }[];
   hint?: string;
   source: string;
-  author: string;
+  authors: string[];
   tags?: ITag[];
   timeLimit?: number;
   memoryLimit?: number;

@@ -66,6 +66,7 @@ export default {
       formattedQuery.userId && (formattedQuery.userId = +formattedQuery.userId);
       formattedQuery.problemId && (formattedQuery.problemId = +formattedQuery.problemId);
       formattedQuery.result && (formattedQuery.result = +formattedQuery.result);
+      delete formattedQuery.from;
       const savedState = yield select((state) => state.solutions.list);
       if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
         return;

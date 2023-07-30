@@ -112,7 +112,7 @@ class ProblemContent extends React.Component<Props> {
                   </div>
                   <div className="problem-sample-block-grid-item">
                     <h5 className="problem-sample-block-title">
-                      Output <CopyToClipboardButton text={sample.in} addNewLine />
+                      Output <CopyToClipboardButton text={sample.out} addNewLine />
                     </h5>
                   </div>
                   <div className="problem-sample-block-grid-item">

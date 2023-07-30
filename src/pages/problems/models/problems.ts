@@ -47,7 +47,12 @@ export default {
     },
   },
   effects: {
-    *getList({ payload: query }, { call, put, select }) {
+    *getList({ payload: q }, { call, put, select }) {
+      const query = { ...q };
+      if (query.author) {
+        query.authors = [query.author];
+        delete query.author;
+      }
       if (query.tagIds && typeof query.tagIds === 'string') {
         query.tagIds = [query.tagIds];
       }

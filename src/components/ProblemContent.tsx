@@ -1,6 +1,5 @@
 import React from 'react';
-import { Skeleton } from 'antd';
-import { filterXSS as xss } from 'xss';
+import { Skeleton, Table } from 'antd';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
 import { numberToAlphabet } from '@/utils/format';
 import classNames from 'classnames';
@@ -54,6 +53,11 @@ class ProblemContent extends React.Component<Props> {
         </div>
       );
     }
+
+    const description = (data.description || '').replace(/^&nbsp;/, '');
+    const input = (data.input || '').replace(/^&nbsp;/, '');
+    const output = (data.output || '').replace(/^&nbsp;/, '');
+    const hint = (data.hint || '').replace(/^&nbsp;/, '');
     return (
       <div
         className={classNames(
@@ -73,33 +77,62 @@ class ProblemContent extends React.Component<Props> {
             : data.title}
         </h2>
 
-        {data.description && <h3>Description</h3>}
-        <AutoLaTeX>{data.description}</AutoLaTeX>
-
-        {data.input && <h3>Input</h3>}
-        <AutoLaTeX>{data.input}</AutoLaTeX>
-
-        {data.output && <h3>Output</h3>}
-        <AutoLaTeX>{data.output}</AutoLaTeX>
-
-        {(data.sampleInput || data.sampleOutput) && <h3>Sample</h3>}
-        {data.sampleInput && (
-          <h4 className="problem-content-sub-section-header">
-            Input&nbsp;
-            <CopyToClipboardButton text={data.sampleInput} addNewLine />
-          </h4>
+        {description && (
+          <>
+            <h3>Description</h3>
+            <AutoLaTeX>{data.description}</AutoLaTeX>
+          </>
         )}
-        {data.sampleInput && <pre>{data.sampleInput}</pre>}
-        {data.sampleOutput && (
-          <h4 className="problem-content-sub-section-header">
-            Output&nbsp;
-            <CopyToClipboardButton text={data.sampleOutput} addNewLine />
-          </h4>
-        )}
-        {data.sampleOutput && <pre>{data.sampleOutput}</pre>}
 
-        {data.hint && <h3>Hint</h3>}
-        <AutoLaTeX>{data.hint}</AutoLaTeX>
+        {input && (
+          <>
+            <h3>Input</h3>
+            <AutoLaTeX>{input}</AutoLaTeX>
+          </>
+        )}
+
+        {output && (
+          <>
+            <h3>Output</h3>
+            <AutoLaTeX>{output}</AutoLaTeX>
+          </>
+        )}
+
+        {data.samples && (
+          <>
+            <h3>Samples</h3>
+            {data.samples.map((sample, index) => (
+              <div key={`sample-${index}`} className="problem-sample-block">
+                <h4 className="problem-content-sub-section-header">Sample #{index + 1}</h4>
+                <div className="problem-sample-block-grid">
+                  <div className="problem-sample-block-grid-item">
+                    <h5 className="problem-sample-block-title">
+                      Input <CopyToClipboardButton text={sample.in} addNewLine />
+                    </h5>
+                  </div>
+                  <div className="problem-sample-block-grid-item">
+                    <h5 className="problem-sample-block-title">
+                      Output <CopyToClipboardButton text={sample.in} addNewLine />
+                    </h5>
+                  </div>
+                  <div className="problem-sample-block-grid-item">
+                    <pre>{sample.in}</pre>
+                  </div>
+                  <div className="problem-sample-block-grid-item">
+                    <pre>{sample.out}</pre>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {hint && (
+          <>
+            <h3>Hint</h3>
+            <AutoLaTeX>{hint}</AutoLaTeX>
+          </>
+        )}
       </div>
     );
   }

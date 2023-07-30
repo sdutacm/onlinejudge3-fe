@@ -20,6 +20,7 @@ import { urlf } from '@/utils/format';
 import pages from '@/configs/pages';
 import TimeBar from '@/components/TimeBar';
 import { IGeneralFormItem } from '@/components/GeneralForm';
+import MultiSamplesTextarea from '@/components/MultiSamplesTextarea';
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -105,6 +106,18 @@ class AdminProblemList extends React.Component<Props, State> {
         rules: [],
       },
       {
+        name: 'Authors (comma separated, e.g. "root,bLue")',
+        field: 'authors',
+        component: 'input',
+        initialValue: detail?.authors?.join(',') || '',
+        rules: [],
+        transformBeforeSubmit: (value: string) =>
+          value
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean),
+      },
+      {
         name: 'Description',
         field: 'description',
         component: 'richtext',
@@ -144,20 +157,11 @@ class AdminProblemList extends React.Component<Props, State> {
         },
       },
       {
-        name: 'Sample Input',
-        field: 'sampleInput',
-        component: 'textarea',
-        initialValue: detail?.sampleInput || '',
+        name: 'Samples',
+        field: 'samples',
+        component: MultiSamplesTextarea,
+        initialValue: detail?.samples || [],
         rules: [],
-        rows: 5,
-      },
-      {
-        name: 'Sample Output',
-        field: 'sampleOutput',
-        component: 'textarea',
-        initialValue: detail?.sampleOutput || '',
-        rules: [],
-        rows: 5,
       },
       {
         name: 'Hint',
@@ -294,7 +298,7 @@ class AdminProblemList extends React.Component<Props, State> {
                         title={`Edit Problem #${record.problemId}`}
                         autoMsg
                         cancelText="Cancel (discard changes)"
-                        width={600}
+                        width={800}
                         maskClosable={false}
                         items={this.getProblemDetailFormItems(record.problemId)}
                         submit={(dispatch: ReduxProps['dispatch'], values) => {

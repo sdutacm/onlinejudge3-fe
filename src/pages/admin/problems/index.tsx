@@ -193,6 +193,23 @@ class AdminProblemList extends React.Component<Props, State> {
         ],
         rules: [{ required: true }],
       },
+      {
+        name: 'Special Judge',
+        field: 'spj',
+        component: 'select',
+        initialValue: `${!!(detail?.spj ?? false)}`,
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
+      },
     ];
     return items;
   }
@@ -207,6 +224,7 @@ class AdminProblemList extends React.Component<Props, State> {
       output: values.output.toHTML(),
       hint: values.hint.toHTML(),
       display: values.display === 'true',
+      spj: values.spj === 'true',
     };
   }
 

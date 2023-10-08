@@ -102,10 +102,11 @@ class SettingsModal extends React.Component<Props, State> {
 
   render() {
     const { children, settings, location } = this.props;
-    const matchForceDarkPage = matchPath(location.pathname, {
-      path: pages.competitions.public.intro,
-      // exact: true,
-    });
+    // const matchForceDarkPage = matchPath(location.pathname, {
+    //   path: pages.competitions.public.intro,
+    //   // exact: true,
+    // });
+    const matchForceDarkPage = false;
 
     return (
       <>

@@ -22,6 +22,7 @@ import GeneralFormModal from '@/components/GeneralFormModal';
 import tracker from '@/utils/tracker';
 import Link from 'umi/link';
 import { urlf } from '@/utils/format';
+import classNames from 'classnames';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -53,10 +54,11 @@ class CompetitionIntro extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.props.dispatch({
-      type: 'settings/setTheme',
-      payload: { theme: 'dark' },
-    });
+    // TODO force dark for some themes
+    // this.props.dispatch({
+    //   type: 'settings/setTheme',
+    //   payload: { theme: 'dark' },
+    // });
     if (this.props.session.loggedIn) {
       this.fetch(this.props.id, this.props.dispatch);
     }
@@ -73,10 +75,10 @@ class CompetitionIntro extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.props.dispatch({
-      type: 'settings/setTheme',
-      payload: { theme: this._preTheme },
-    });
+    // this.props.dispatch({
+    //   type: 'settings/setTheme',
+    //   payload: { theme: this._preTheme },
+    // });
   }
 
   async fetch(competitionId: number, dispatch) {
@@ -395,10 +397,10 @@ class CompetitionIntro extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <PageTitle title={data.title} loading={loading}>
-          <div className="competition-intro competition-theme-sdutpc">
-            <div className="competition-logo">
+          <div className={classNames('competition-intro', { 'competition-theme-sdutpc': false })}>
+            {/* <div className="competition-logo">
               <img src={SdutpcLogo} alt="SDUTPC" />
-            </div>
+            </div> */}
             <div className="competition-intro-content content-view">
               <h2 className="competition-intro-header">{data.title}</h2>
               <div

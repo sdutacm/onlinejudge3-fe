@@ -163,7 +163,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               label: values.language,
             });
             const solutionId = ret.data.solutionId;
-            if (problemDetail?.spConfig.genshinStart) {
+            if (problemDetail?.spConfig?.genshinStart) {
               this.setState({
                 secondaryLoading: true,
               });

@@ -251,10 +251,10 @@ class SubmitSolutionModal extends React.Component<Props, State> {
         >
           {this.state.showSpConfirm ? (
             <div style={{ textAlign: 'center' }}>
-              Congratulations, your solution has been judged!
+              Your solution has been judged!
               <div className="mt-md">
                 <Button onClick={this.spCallback} type="primary">
-                  View Result
+                  Confirm
                 </Button>
               </div>
             </div>

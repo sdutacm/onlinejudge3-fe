@@ -104,6 +104,7 @@ const ProblemDetailPage: React.FC<Props> = ({
     return (
       <SubmissionModal
         problemId={data.problemId}
+        problemDetail={data}
         title={data.title}
         contestId={contestId}
         competitionId={competitionId}

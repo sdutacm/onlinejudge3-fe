@@ -1790,6 +1790,77 @@ a {
   }
 }
 
+// sp
+.sp-genshin-start-container {
+  background: #ffffff;
+  width: 100%;
+  height: 100%;
+  animation: genshinFadeIn 0.5s 0s, genshinFadeOut 0.5s 13s;
+  animation-fill-mode: forwards;
+
+  &>div {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    opacity: 0;
+  }
+
+  .sp-genshin-start-s1 {
+    background-image: url('./assets/images/sp-genshin-start/genshin_start_s1_1080p.png');
+    animation: genshinFadeIn 1s 3s, genshinFadeOut 0.5s 7s;
+
+    @media only screen and (min-width: 2560px) {
+      background-image: url('./assets/images/sp-genshin-start/genshin_start_s1_2160p.png');
+    }
+  }
+
+  .sp-genshin-start-s2 {
+    background-image: url('./assets/images/sp-genshin-start/genshin_start_s2_1080p.png');
+    animation: genshinFadeIn 1s 3.5s, genshinFadeOut 0.5s 7s;
+
+    @media only screen and (min-width: 2560px) {
+      background-image: url('./assets/images/sp-genshin-start/genshin_start_s2_2160p.png');
+    }
+  }
+
+  .sp-genshin-start-s3 {
+    background-image: url('./assets/images/sp-genshin-start/genshin_start_s3_1080p.png');
+    animation: genshinFadeIn 1s 7.5s, genshinFadeOut 0.5s 12s;
+
+    @media only screen and (min-width: 2560px) {
+      background-image: url('./assets/images/sp-genshin-start/genshin_start_s3_2160p.png');
+    }
+  }
+
+  .sp-genshin-start-s1,
+  .sp-genshin-start-s2,
+  .sp-genshin-start-s3 {
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes genshinFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes genshinFadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+}
+
 // mobile
 
 @media only screen and (max-width: 767px) {

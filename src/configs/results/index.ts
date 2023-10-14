@@ -14,4 +14,19 @@ for (const id in resMap) {
   });
 }
 
+export function isDeterminedResult(result: number) {
+  return [
+    Results.AC,
+    Results.TLE,
+    Results.MLE,
+    Results.WA,
+    Results.RTE,
+    Results.OLE,
+    Results.CE,
+    Results.PE,
+    Results.SE,
+    Results.V_Frozen,
+  ].includes(result);
+}
+
 export default results;

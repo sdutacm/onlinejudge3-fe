@@ -65,7 +65,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
           // this.redirectToSolutionDetail(this.state.solutionId);
         };
         const exitFullScreen = () => {
-          document.getElementById('full-screen-standalone').style.display = 'none';
+          // document.getElementById('full-screen-standalone').style.display = 'none';
           // @ts-ignore
           if (document.exitFullScreen) {
             // @ts-ignore
@@ -115,6 +115,9 @@ class SubmitSolutionModal extends React.Component<Props, State> {
     this.handleHideModel();
     await this.spGenshinStart();
     this.redirectToSolutionDetail(this.state.solutionId);
+    setTimeout(() => {
+      document.getElementById('full-screen-standalone').style.display = 'none';
+    }, 1000);
   };
 
   redirectToSolutionDetail = (solutionId: number) => {
@@ -244,10 +247,11 @@ class SubmitSolutionModal extends React.Component<Props, State> {
           okText="Submit"
           footer={this.state.showSpConfirm ? null : undefined}
           maskClosable={false}
-          closable={!this.state.showSpConfirm}
+          closable={!this.state.showSpConfirm && !this.state.secondaryLoading}
           confirmLoading={loading || this.state.secondaryLoading}
           onOk={this.handleOk}
           onCancel={this.handleHideModel}
+          cancelButtonProps={{ disabled: this.state.secondaryLoading }}
         >
           {this.state.showSpConfirm ? (
             <div style={{ textAlign: 'center' }}>

@@ -33,7 +33,7 @@ export default class GenshinStartScreen extends React.Component<GenshinStartScre
   };
 
   handleFinished = (e) => {
-    if (e.target === this.containerRef && e.animationName === 'genshinFadeOut') {
+    if (e.target === this.containerRef && e.animationName === 'genshinKeepUntilEnd') {
       this.props.onFinished?.();
     }
   };

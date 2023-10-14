@@ -1795,7 +1795,7 @@ a {
   background: #ffffff;
   width: 100%;
   height: 100%;
-  animation: genshinFadeIn 0.5s 0s, genshinFadeOut 0.5s 13s;
+  animation: genshinFadeIn 0.5s 0s, genshinKeepUntilEnd 0.5s 13s;
   animation-fill-mode: forwards;
 
   &>div {
@@ -1859,6 +1859,14 @@ a {
     }
   }
 
+  @keyframes genshinKeepUntilEnd {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 // mobile

@@ -13,6 +13,7 @@ import { encode } from 'js-base64';
 import { isDeterminedResult } from '@/configs/results';
 import { sleep } from '@/utils/misc';
 import GenshinStartScreen from './GenshinStartScreen';
+import Results from '@/configs/results/resultsEnum';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -187,11 +188,21 @@ class SubmitSolutionModal extends React.Component<Props, State> {
                 }
               }
               console.log('polling done!');
-              this.setState({
-                secondaryLoading: false,
-                showSpConfirm: true,
-                solutionId,
-              });
+              if (result === Results.AC) {
+                this.setState({
+                  secondaryLoading: false,
+                  showSpConfirm: true,
+                  solutionId,
+                });
+              } else {
+                this.setState({
+                  secondaryLoading: false,
+                  showSpConfirm: false,
+                  solutionId,
+                });
+                this.handleHideModel();
+                this.redirectToSolutionDetail(solutionId);
+              }
             } else {
               this.handleHideModel();
               // @ts-ignore

@@ -29,6 +29,7 @@ import NoticeModal from '@/components/NoticeModal';
 import io from 'socket.io-client';
 import socketConfig from '@/configs/socket';
 import { decodeJudgeStatusBuffer } from '@/utils/judger';
+import FullScreenContent from './components/FullScreenContent';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -279,7 +280,10 @@ class Index extends React.Component<Props, State> {
         <Footer className={styles.footer} style={{ paddingTop: '30px', paddingBottom: '30px' }}>
           <Row gutter={20}>
             <Col xs={24} md={8} className="mb-md-lg">
-              <h3>SDUT OJ v{pkg.version}{isCompetitionSide() ? ' Competition Side' : ''}</h3>
+              <h3>
+                SDUT OJ v{pkg.version}
+                {isCompetitionSide() ? ' Competition Side' : ''}
+              </h3>
               {!isCompetitionSide() && (
                 <p>
                   <ExtLink
@@ -348,7 +352,10 @@ class Index extends React.Component<Props, State> {
                   </ExtLink>
                 </p>
                 <p>
-                  <ExtLink className="normal-text-link" href="https://github.com/algoux/standard-ranklist">
+                  <ExtLink
+                    className="normal-text-link"
+                    href="https://github.com/algoux/standard-ranklist"
+                  >
                     srk - The General Ranklist Data Format
                   </ExtLink>
                 </p>
@@ -376,6 +383,7 @@ class Index extends React.Component<Props, State> {
           {/* <a>About Us</a> */}
           {/* </div> */}
         </Footer>
+        <FullScreenContent />
       </Layout>
     );
   }

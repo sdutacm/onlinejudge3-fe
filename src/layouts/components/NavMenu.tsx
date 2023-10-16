@@ -167,7 +167,7 @@ class NavMenu extends React.Component<Props, State> {
         </Menu.Item>
 
         <Menu.Item key={pages.competitions.index}>
-          <Link to={urlf(pages.competitions.index, { query: { category: 0 } })} onClick={onLinkClick}>
+          <Link to={urlf(pages.competitions.index)} onClick={onLinkClick}>
             Competitions
           </Link>
         </Menu.Item>

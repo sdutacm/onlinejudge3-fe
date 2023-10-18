@@ -217,117 +217,127 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
 
     return (
       <PageAnimation>
-        <h3 className="mb-xl">Problem Settings</h3>
-        <Row gutter={16} className="list-view">
-          <Col xs={24} md={18} xxl={20}>
-            <Card bordered={false} className="list-card">
-              <Table
-                dataSource={data}
-                rowKey="problemId"
-                loading={loading}
-                pagination={false}
-                className="responsive-table"
-              >
-                <Table.Column
-                  title=""
-                  key="Alias"
-                  render={(text, record: IProblemConfig, index) => (
-                    <span>{numberToAlphabet(index)}</span>
-                  )}
+        <div className="full-width-inner-content">
+          <h3 className="mb-xl">Problem Settings</h3>
+          <Row gutter={16} className="list-view">
+            <Col xs={24} md={18} xxl={20}>
+              <Card bordered={false} className="list-card">
+                <Table
+                  dataSource={data}
+                  rowKey="problemId"
+                  loading={loading}
+                  pagination={false}
+                  className="responsive-table"
+                >
+                  <Table.Column
+                    title=""
+                    key="Alias"
+                    render={(text, record: IProblemConfig, index) => (
+                      <span>{numberToAlphabet(index)}</span>
+                    )}
+                  />
+                  <Table.Column
+                    title="ID"
+                    key="ID"
+                    render={(text, record: IProblemConfig) => <span>{record.problemId}</span>}
+                  />
+                  <Table.Column
+                    title="Title"
+                    key="Title"
+                    render={(text, record: IProblemConfig, index) => <span>{record.title}</span>}
+                  />
+                  <Table.Column
+                    title="Balloon Alias"
+                    key="BalloonAlias"
+                    render={(text, record: IProblemConfig, index) => (
+                      <div>
+                        <Input
+                          value={record.balloonAlias}
+                          onChange={(e) => this.handleBalloonAliasChange(e.target.value, index)}
+                          placeholder="e.g., 蓝"
+                        />
+                      </div>
+                    )}
+                  />
+                  <Table.Column
+                    title="Balloon Color"
+                    key="BalloonColor"
+                    render={(text, record: IProblemConfig, index) => (
+                      <div>
+                        <Input
+                          value={record.balloonColor}
+                          onChange={(e) => this.handleBalloonColorChange(e.target.value, index)}
+                          placeholder="e.g., #0099FF"
+                        />
+                      </div>
+                    )}
+                  />
+                  <Table.Column
+                    title="Actions"
+                    key="Actions"
+                    render={(text, record: IProblemConfig, index) => (
+                      <div className="nowrap">
+                        <a
+                          className={classNames({ 'text-disabled': index === 0 })}
+                          onClick={index === 0 ? noop : () => this.handleMove(index, index - 1)}
+                        >
+                          <Icon type="up" />
+                        </a>
+                        <a
+                          className={classNames(
+                            { 'text-disabled': index === data.length - 1 },
+                            'ml-md-lg',
+                          )}
+                          onClick={
+                            index === data.length - 1
+                              ? noop
+                              : () => this.handleMove(index, index + 1)
+                          }
+                        >
+                          <Icon type="down" />
+                        </a>
+                        <a
+                          className="ml-md-lg"
+                          onClick={() => this.handleRejudge(record.problemId)}
+                        >
+                          Rejudge
+                        </a>
+                        <a
+                          className="ml-md-lg text-danger"
+                          onClick={() => this.handleDelete(index)}
+                        >
+                          Delete
+                        </a>
+                      </div>
+                    )}
+                  />
+                </Table>
+              </Card>
+            </Col>
+            <Col xs={24} md={6} xxl={4}>
+              <Card bordered={false}>
+                <Button block type="primary" onClick={this.handleSave}>
+                  Save
+                </Button>
+              </Card>
+              <Card bordered={false}>
+                <AddItemByIdCard
+                  label="Add Problem"
+                  placeholder="Problem ID"
+                  onAdd={this.handleAdd}
                 />
-                <Table.Column
-                  title="ID"
-                  key="ID"
-                  render={(text, record: IProblemConfig) => <span>{record.problemId}</span>}
+              </Card>
+              <Card bordered={false}>
+                <AddItemByIdCard
+                  label="Clone Problems"
+                  placeholder="Competition ID"
+                  buttonText="Clone"
+                  onAdd={this.cloneCompetitionProblems}
                 />
-                <Table.Column
-                  title="Title"
-                  key="Title"
-                  render={(text, record: IProblemConfig, index) => <span>{record.title}</span>}
-                />
-                <Table.Column
-                  title="Balloon Alias"
-                  key="BalloonAlias"
-                  render={(text, record: IProblemConfig, index) => (
-                    <div>
-                      <Input
-                        value={record.balloonAlias}
-                        onChange={(e) => this.handleBalloonAliasChange(e.target.value, index)}
-                        placeholder="e.g., 蓝"
-                      />
-                    </div>
-                  )}
-                />
-                <Table.Column
-                  title="Balloon Color"
-                  key="BalloonColor"
-                  render={(text, record: IProblemConfig, index) => (
-                    <div>
-                      <Input
-                        value={record.balloonColor}
-                        onChange={(e) => this.handleBalloonColorChange(e.target.value, index)}
-                        placeholder="e.g., #0099FF"
-                      />
-                    </div>
-                  )}
-                />
-                <Table.Column
-                  title="Actions"
-                  key="Actions"
-                  render={(text, record: IProblemConfig, index) => (
-                    <div className="nowrap">
-                      <a
-                        className={classNames({ 'text-disabled': index === 0 })}
-                        onClick={index === 0 ? noop : () => this.handleMove(index, index - 1)}
-                      >
-                        <Icon type="up" />
-                      </a>
-                      <a
-                        className={classNames(
-                          { 'text-disabled': index === data.length - 1 },
-                          'ml-md-lg',
-                        )}
-                        onClick={
-                          index === data.length - 1 ? noop : () => this.handleMove(index, index + 1)
-                        }
-                      >
-                        <Icon type="down" />
-                      </a>
-                      <a className="ml-md-lg" onClick={() => this.handleRejudge(record.problemId)}>
-                        Rejudge
-                      </a>
-                      <a className="ml-md-lg text-danger" onClick={() => this.handleDelete(index)}>
-                        Delete
-                      </a>
-                    </div>
-                  )}
-                />
-              </Table>
-            </Card>
-          </Col>
-          <Col xs={24} md={6} xxl={4}>
-            <Card bordered={false}>
-              <Button block type="primary" onClick={this.handleSave}>
-                Save
-              </Button>
-            </Card>
-            <Card bordered={false}>
-              <AddItemByIdCard
-                label="Add Problem"
-                placeholder="Problem ID"
-                onAdd={this.handleAdd}
-              />
-            </Card>
-            <Card bordered={false}>
-              <AddItemByIdCard
-                label="Clone Problems"
-                placeholder="Competition ID"
-                buttonText="Clone"
-                onAdd={this.cloneCompetitionProblems}
-              />
-            </Card>
-          </Col>
-        </Row>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       </PageAnimation>
     );
   }

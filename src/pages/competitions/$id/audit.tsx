@@ -114,136 +114,138 @@ class CompetitionAudit extends React.Component<Props, State> {
     const usersGrouped = this.getUsersGroupedByStatus();
     return (
       <PageAnimation>
-        <h3 className="mb-xl">Audit</h3>
-        <div>
-          <Tabs
-            activeKey={`${currentActiveStatus}`}
-            onChange={(key) => this.switchTab(+key)}
-            tabBarExtraContent={
-              <Button
-                size="small"
-                shape="circle"
-                icon="reload"
-                onClick={() => this.fetch()}
-              ></Button>
-            }
-          >
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Under Auditing
-                  <Tag className="ml-md">
-                    {usersGrouped[ECompetitionUserStatus.auditing].length}
-                  </Tag>
-                </span>
+        <div className="full-width-inner-content">
+          <h3 className="mb-xl">Audit</h3>
+          <div>
+            <Tabs
+              activeKey={`${currentActiveStatus}`}
+              onChange={(key) => this.switchTab(+key)}
+              tabBarExtraContent={
+                <Button
+                  size="small"
+                  shape="circle"
+                  icon="reload"
+                  onClick={() => this.fetch()}
+                ></Button>
               }
-              key={`${ECompetitionUserStatus.auditing}`}
-            />
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Modification Required
-                  <Tag className="ml-md">
-                    {usersGrouped[ECompetitionUserStatus.modificationRequired].length}
-                  </Tag>
-                </span>
-              }
-              key={`${ECompetitionUserStatus.modificationRequired}`}
-            />
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Rejected
-                  <Tag className="ml-md">
-                    {usersGrouped[ECompetitionUserStatus.rejected].length}
-                  </Tag>
-                </span>
-              }
-              key={`${ECompetitionUserStatus.rejected}`}
-            />
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Accepted
-                  <Tag className="ml-md">
-                    {usersGrouped[ECompetitionUserStatus.available].length}
-                  </Tag>
-                </span>
-              }
-              key={`${ECompetitionUserStatus.available}`}
-            />
-          </Tabs>
-        </div>
-        <div>
-          <Card bordered={false} className="list-card">
-            <Table
-              dataSource={usersGrouped[currentActiveStatus]}
-              rowKey="userId"
-              loading={loading}
-              pagination={false}
-              className="responsive-table listlike-table"
             >
-              <Table.Column
-                title="UID"
-                key="UID"
-                render={(text, record: ICompetitionUser) => (
-                  <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
-                    {record.userId}
-                  </Link>
-                )}
-              />
-              <Table.Column
-                title="Info"
-                key="Info"
-                render={(text, record: ICompetitionUser) => {
-                  const infoStr = JSON.stringify(record.info || {}, null, 2);
-                  return <pre>{infoStr}</pre>;
-                }}
-              />
-              <Table.Column
-                title="Action"
-                key="Action"
-                render={(text, record: ICompetitionUser) => (
+              <Tabs.TabPane
+                tab={
                   <span>
-                    <GeneralFormModal
-                      loadingEffect="competitions/auditCompetitionParticipant"
-                      title="Audit Registration"
-                      autoMsg
-                      items={this.auditFormItems}
-                      submit={(dispatch: ReduxProps['dispatch'], values) => {
-                        return dispatch({
-                          type: 'competitions/auditCompetitionParticipant',
-                          payload: {
-                            id,
-                            userId: record.userId,
-                            data: {
-                              status: +values.status,
-                              reason: values.reason,
-                            },
-                          },
-                        });
-                      }}
-                      onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                        msg.success('Audit successfully');
-                        tracker.event({
-                          category: 'competitions',
-                          action: 'auditCompetitionParticipant',
-                        });
-                      }}
-                      onSuccessModalClosed={(
-                        dispatch: ReduxProps['dispatch'],
-                        ret: IApiResponse<any>,
-                      ) => {
-                        this.fetch();
-                      }}
-                    >
-                      <a className="ml-md-lg">Audit</a>
-                    </GeneralFormModal>
+                    Under Auditing
+                    <Tag className="ml-md">
+                      {usersGrouped[ECompetitionUserStatus.auditing].length}
+                    </Tag>
                   </span>
-                )}
+                }
+                key={`${ECompetitionUserStatus.auditing}`}
               />
-            </Table>
-          </Card>
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    Modification Required
+                    <Tag className="ml-md">
+                      {usersGrouped[ECompetitionUserStatus.modificationRequired].length}
+                    </Tag>
+                  </span>
+                }
+                key={`${ECompetitionUserStatus.modificationRequired}`}
+              />
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    Rejected
+                    <Tag className="ml-md">
+                      {usersGrouped[ECompetitionUserStatus.rejected].length}
+                    </Tag>
+                  </span>
+                }
+                key={`${ECompetitionUserStatus.rejected}`}
+              />
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    Accepted
+                    <Tag className="ml-md">
+                      {usersGrouped[ECompetitionUserStatus.available].length}
+                    </Tag>
+                  </span>
+                }
+                key={`${ECompetitionUserStatus.available}`}
+              />
+            </Tabs>
+          </div>
+          <div>
+            <Card bordered={false} className="list-card">
+              <Table
+                dataSource={usersGrouped[currentActiveStatus]}
+                rowKey="userId"
+                loading={loading}
+                pagination={false}
+                className="responsive-table listlike-table"
+              >
+                <Table.Column
+                  title="UID"
+                  key="UID"
+                  render={(text, record: ICompetitionUser) => (
+                    <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
+                      {record.userId}
+                    </Link>
+                  )}
+                />
+                <Table.Column
+                  title="Info"
+                  key="Info"
+                  render={(text, record: ICompetitionUser) => {
+                    const infoStr = JSON.stringify(record.info || {}, null, 2);
+                    return <pre>{infoStr}</pre>;
+                  }}
+                />
+                <Table.Column
+                  title="Action"
+                  key="Action"
+                  render={(text, record: ICompetitionUser) => (
+                    <span>
+                      <GeneralFormModal
+                        loadingEffect="competitions/auditCompetitionParticipant"
+                        title="Audit Registration"
+                        autoMsg
+                        items={this.auditFormItems}
+                        submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          return dispatch({
+                            type: 'competitions/auditCompetitionParticipant',
+                            payload: {
+                              id,
+                              userId: record.userId,
+                              data: {
+                                status: +values.status,
+                                reason: values.reason,
+                              },
+                            },
+                          });
+                        }}
+                        onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                          msg.success('Audit successfully');
+                          tracker.event({
+                            category: 'competitions',
+                            action: 'auditCompetitionParticipant',
+                          });
+                        }}
+                        onSuccessModalClosed={(
+                          dispatch: ReduxProps['dispatch'],
+                          ret: IApiResponse<any>,
+                        ) => {
+                          this.fetch();
+                        }}
+                      >
+                        <a className="ml-md-lg">Audit</a>
+                      </GeneralFormModal>
+                    </span>
+                  )}
+                />
+              </Table>
+            </Card>
+          </div>
         </div>
       </PageAnimation>
     );

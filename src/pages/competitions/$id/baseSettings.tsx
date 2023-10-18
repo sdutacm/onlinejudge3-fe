@@ -212,11 +212,13 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
 
     return (
       <PageAnimation>
-        <h3 className="mb-xl">Base Settings</h3>
-        <GeneralForm form={form} items={this.getContestDetailFormItems()} />
-        <Button type="primary" loading={submitLoading} onClick={this.handleSubmit}>
-          Save
-        </Button>
+        <div className="full-width-inner-content">
+          <h3 className="mb-xl">Base Settings</h3>
+          <GeneralForm form={form} items={this.getContestDetailFormItems()} />
+          <Button type="primary" loading={submitLoading} onClick={this.handleSubmit}>
+            Save
+          </Button>
+        </div>
       </PageAnimation>
     );
   }

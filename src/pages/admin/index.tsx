@@ -24,7 +24,7 @@ class AdminIndex extends React.Component<Props, State> {
   render() {
     return (
       <PageAnimation>
-        <div>
+        <div className="full-width-inner-content">
           <h1>Admin Area</h1>
           <p>Select function from navigator bar.</p>
         </div>

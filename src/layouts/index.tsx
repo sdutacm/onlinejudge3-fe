@@ -250,7 +250,7 @@ class Index extends React.Component<Props, State> {
         })}
       >
         <Header>
-          <Row>
+          <Row style={{ display: 'flex' }}>
             <Col>
               {!inAdminPage ? (
                 <Link
@@ -265,7 +265,7 @@ class Index extends React.Component<Props, State> {
                 </span>
               )}
             </Col>
-            {!hideNav && <Col>{this.state.sessionLoaded && <NavContainer />}</Col>}
+            {!hideNav && <Col style={{ flex: 1 }}>{this.state.sessionLoaded && <NavContainer />}</Col>}
           </Row>
         </Header>
         <Content>

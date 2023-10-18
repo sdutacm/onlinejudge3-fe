@@ -109,148 +109,157 @@ class CompetitionBalloon extends React.Component<Props, State> {
     const listGrouped = this.getListGroupedByStatus();
     return (
       <PageAnimation>
-        <h3 className="mb-xl">Balloon Dashboard</h3>
-        <div>
-          <Tabs
-            activeKey={`${currentActiveStatus}`}
-            onChange={(key) => this.switchTab(+key)}
-            tabBarExtraContent={
-              <Button
-                size="small"
-                shape="circle"
-                icon="reload"
-                onClick={() => this.fetch()}
-              ></Button>
-            }
-          >
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Pending <Tag className="ml-md">{listGrouped[EBalloonStatus.pending].length}</Tag>
-                </span>
+        <div className="full-width-inner-content">
+          <h3 className="mb-xl">Balloon Dashboard</h3>
+          <div>
+            <Tabs
+              activeKey={`${currentActiveStatus}`}
+              onChange={(key) => this.switchTab(+key)}
+              tabBarExtraContent={
+                <Button
+                  size="small"
+                  shape="circle"
+                  icon="reload"
+                  onClick={() => this.fetch()}
+                ></Button>
               }
-              key={`${EBalloonStatus.pending}`}
-            />
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Doing <Tag className="ml-md">{listGrouped[EBalloonStatus.doing].length}</Tag>
-                </span>
-              }
-              key={`${EBalloonStatus.doing}`}
-            />
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Completed{' '}
-                  <Tag className="ml-md">{listGrouped[EBalloonStatus.completed].length}</Tag>
-                </span>
-              }
-              key={`${EBalloonStatus.completed}`}
-            />
-            <Tabs.TabPane
-              tab={
-                <span>
-                  Cancelled{' '}
-                  <Tag className="ml-md">{listGrouped[EBalloonStatus.cancelled].length}</Tag>
-                </span>
-              }
-              key={`${EBalloonStatus.cancelled}`}
-            />
-          </Tabs>
-        </div>
-        <div>
-          <Card bordered={false} className="list-card">
-            <Table
-              dataSource={listGrouped[currentActiveStatus]}
-              rowKey="balloonId"
-              loading={loading}
-              pagination={false}
-              className="responsive-table listlike-table"
             >
-              <Table.Column
-                title="Balloon ID"
-                key="Balloon ID"
-                render={(text, record: IBalloon) => <span>{record.balloonId}</span>}
-              />
-              <Table.Column
-                title="Type"
-                key="Type"
-                render={(text, record: IBalloon) =>
-                  record.type === EBalloonType.recall ? (
-                    <span className="text-danger">Recall</span>
-                  ) : (
-                    <span>Delivery</span>
-                  )
-                }
-              />
-              <Table.Column
-                title="Problem"
-                key="Problem"
-                render={(text, record: IBalloon) => (
-                  <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-                    <span className="text-bold">{numberToAlphabet(record.problemIndex)}</span>
-                    {!!record.balloonColor && (
-                      <span
-                        className="ml-lg"
-                        style={{
-                          display: 'inline-block',
-                          borderRadius: '100%',
-                          width: '20px',
-                          height: '20px',
-                          background: record.balloonColor,
-                        }}
-                      ></span>
-                    )}
-                    {!!record.balloonAlias && <span className="ml-sm">{record.balloonAlias}</span>}
-                    {record.isFb && <span className="ml-sm text-success">(FB)</span>}
-                  </div>
-                )}
-              />
-              <Table.Column
-                title="Seat ID"
-                key="SeatID"
-                render={(text, record: IBalloon) => (
-                  <span>{formatCompetitionUserSeatId(record)}</span>
-                )}
-              />
-              <Table.Column
-                title="Participant"
-                key="Participant"
-                render={(text, record: IBalloon) => (
-                  <span>{record.subname || record.nickname}</span>
-                )}
-              />
-              <Table.Column
-                title="Action"
-                key="Action"
-                render={(text, record: IBalloon) => (
+              <Tabs.TabPane
+                tab={
                   <span>
-                    {record.status === EBalloonStatus.pending && (
-                      <ReceiveBalloonModal data={record} onReceive={this.fetch}>
-                        <span>Receive</span>
-                      </ReceiveBalloonModal>
-                    )}
-                    {record.status === EBalloonStatus.doing && (
-                      <span>
-                        <a
-                          onClick={() => this.handleChangeStatus(record, EBalloonStatus.completed)}
-                        >
-                          Complete
-                        </a>
-                        <a
-                          className="ml-md-lg"
-                          onClick={() => this.handleChangeStatus(record, EBalloonStatus.cancelled)}
-                        >
-                          Cancel
-                        </a>
-                      </span>
-                    )}
+                    Pending{' '}
+                    <Tag className="ml-md">{listGrouped[EBalloonStatus.pending].length}</Tag>
                   </span>
-                )}
+                }
+                key={`${EBalloonStatus.pending}`}
               />
-            </Table>
-          </Card>
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    Doing <Tag className="ml-md">{listGrouped[EBalloonStatus.doing].length}</Tag>
+                  </span>
+                }
+                key={`${EBalloonStatus.doing}`}
+              />
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    Completed{' '}
+                    <Tag className="ml-md">{listGrouped[EBalloonStatus.completed].length}</Tag>
+                  </span>
+                }
+                key={`${EBalloonStatus.completed}`}
+              />
+              <Tabs.TabPane
+                tab={
+                  <span>
+                    Cancelled{' '}
+                    <Tag className="ml-md">{listGrouped[EBalloonStatus.cancelled].length}</Tag>
+                  </span>
+                }
+                key={`${EBalloonStatus.cancelled}`}
+              />
+            </Tabs>
+          </div>
+          <div>
+            <Card bordered={false} className="list-card">
+              <Table
+                dataSource={listGrouped[currentActiveStatus]}
+                rowKey="balloonId"
+                loading={loading}
+                pagination={false}
+                className="responsive-table listlike-table"
+              >
+                <Table.Column
+                  title="Balloon ID"
+                  key="Balloon ID"
+                  render={(text, record: IBalloon) => <span>{record.balloonId}</span>}
+                />
+                <Table.Column
+                  title="Type"
+                  key="Type"
+                  render={(text, record: IBalloon) =>
+                    record.type === EBalloonType.recall ? (
+                      <span className="text-danger">Recall</span>
+                    ) : (
+                      <span>Delivery</span>
+                    )
+                  }
+                />
+                <Table.Column
+                  title="Problem"
+                  key="Problem"
+                  render={(text, record: IBalloon) => (
+                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                      <span className="text-bold">{numberToAlphabet(record.problemIndex)}</span>
+                      {!!record.balloonColor && (
+                        <span
+                          className="ml-lg"
+                          style={{
+                            display: 'inline-block',
+                            borderRadius: '100%',
+                            width: '20px',
+                            height: '20px',
+                            background: record.balloonColor,
+                          }}
+                        ></span>
+                      )}
+                      {!!record.balloonAlias && (
+                        <span className="ml-sm">{record.balloonAlias}</span>
+                      )}
+                      {record.isFb && <span className="ml-sm text-success">(FB)</span>}
+                    </div>
+                  )}
+                />
+                <Table.Column
+                  title="Seat ID"
+                  key="SeatID"
+                  render={(text, record: IBalloon) => (
+                    <span>{formatCompetitionUserSeatId(record)}</span>
+                  )}
+                />
+                <Table.Column
+                  title="Participant"
+                  key="Participant"
+                  render={(text, record: IBalloon) => (
+                    <span>{record.subname || record.nickname}</span>
+                  )}
+                />
+                <Table.Column
+                  title="Action"
+                  key="Action"
+                  render={(text, record: IBalloon) => (
+                    <span>
+                      {record.status === EBalloonStatus.pending && (
+                        <ReceiveBalloonModal data={record} onReceive={this.fetch}>
+                          <span>Receive</span>
+                        </ReceiveBalloonModal>
+                      )}
+                      {record.status === EBalloonStatus.doing && (
+                        <span>
+                          <a
+                            onClick={() =>
+                              this.handleChangeStatus(record, EBalloonStatus.completed)
+                            }
+                          >
+                            Complete
+                          </a>
+                          <a
+                            className="ml-md-lg"
+                            onClick={() =>
+                              this.handleChangeStatus(record, EBalloonStatus.cancelled)
+                            }
+                          >
+                            Cancel
+                          </a>
+                        </span>
+                      )}
+                    </span>
+                  )}
+                />
+              </Table>
+            </Card>
+          </div>
         </div>
       </PageAnimation>
     );

@@ -299,249 +299,254 @@ class CompetitionUserManagement extends React.Component<Props, State> {
 
     return (
       <PageAnimation>
-        <h3 className="mb-xl">User Management</h3>
-        <div>
-          <Tabs
-            activeKey={`${currentActiveRole}`}
-            onChange={(key) => this.switchTab(+key)}
-            tabBarExtraContent={
-              <Button
-                size="small"
-                shape="circle"
-                icon="reload"
-                onClick={() => this.fetchAllUsers()}
-              ></Button>
-            }
-          >
-            {contestUserRoleOptions.map(({ name, value }) => (
-              <Tabs.TabPane
-                key={`${value}`}
-                tab={
-                  <span>
-                    {name}
-                    <Tag className="ml-md">{usersGrouped[value].length}</Tag>
-                  </span>
-                }
-              />
-            ))}
-          </Tabs>
-        </div>
-        <Row gutter={16}>
-          <Col xs={24} md={18} xxl={20}>
-            <Card bordered={false} className="list-card">
-              <Table
-                dataSource={usersGrouped[currentActiveRole]}
-                rowKey="userId"
-                loading={loading}
-                pagination={false}
-                className="responsive-table"
-              >
-                <Table.Column
-                  title=""
-                  key="unofficial"
-                  render={(text, user: ICompetitionUser) => {
-                    if (user.unofficialParticipation) {
-                      return '*';
-                    } else {
-                      return '';
-                    }
-                  }}
+        <div className="full-width-inner-content">
+          <h3 className="mb-xl">User Management</h3>
+          <div>
+            <Tabs
+              activeKey={`${currentActiveRole}`}
+              onChange={(key) => this.switchTab(+key)}
+              tabBarExtraContent={
+                <Button
+                  size="small"
+                  shape="circle"
+                  icon="reload"
+                  onClick={() => this.fetchAllUsers()}
+                ></Button>
+              }
+            >
+              {contestUserRoleOptions.map(({ name, value }) => (
+                <Tabs.TabPane
+                  key={`${value}`}
+                  tab={
+                    <span>
+                      {name}
+                      <Tag className="ml-md">{usersGrouped[value].length}</Tag>
+                    </span>
+                  }
                 />
-                <Table.Column
-                  title="UID"
-                  key="UID"
-                  render={(text, record: ICompetitionUser) => (
-                    <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
-                      {record.userId}
-                    </Link>
-                  )}
-                />
-                <Table.Column
-                  title="Info"
-                  key="Info"
-                  render={(text, record: ICompetitionUser) => {
-                    const infoStr = JSON.stringify(record.info || {}, null, 2);
-                    return <pre>{infoStr}</pre>;
-                  }}
-                />
-                <Table.Column
-                  title="Seat ID"
-                  key="Seat ID"
-                  render={(text, record: ICompetitionUser) => (
-                    <span>{formatCompetitionUserSeatId(record)}</span>
-                  )}
-                />
-                <Table.Column
-                  title="Status"
-                  key="status"
-                  className="nowrap"
-                  render={(text, user: ICompetitionUser) => {
-                    let statusStr = '';
-                    switch (user.status) {
-                      case ECompetitionUserStatus.auditing:
-                        statusStr = 'Under Auditing';
-                        break;
-                      case ECompetitionUserStatus.available:
-                        statusStr = 'Available';
-                        break;
-                      case ECompetitionUserStatus.modificationRequired:
-                        statusStr = 'Modification Required';
-                        break;
-                      case ECompetitionUserStatus.rejected:
-                        statusStr = 'Rejected';
-                        break;
-                      case ECompetitionUserStatus.entered:
-                        statusStr = 'Entered';
-                        break;
-                      case ECompetitionUserStatus.quitted:
-                        statusStr = 'Quitted';
-                        break;
-                    }
-                    return (
-                      <span>
-                        {statusStr}
-                        {user.banned ? (
-                          <span className="text-danger">
-                            <br />
-                            Banned
-                          </span>
-                        ) : null}
-                      </span>
-                    );
-                  }}
-                />
-                <Table.Column
-                  title=""
-                  key="actions"
-                  className="nowrap"
-                  render={(text, user: ICompetitionUser) => {
-                    return (
-                      <span key="edit" className="nowrap">
-                        <GeneralFormModal
-                          loadingEffect="competitions/updateCompetitionUser"
-                          title="Edit User"
-                          autoMsg
-                          items={this.getUserFormItems(user)}
-                          submit={(dispatch: ReduxProps['dispatch'], values) => {
-                            const data = {
-                              role: Number(values.role),
-                              status: Number(values.status) || ECompetitionUserStatus.available,
-                              unofficialParticipation: values.unofficialParticipation === 'true',
-                              banned: values.banned === 'true',
-                              password: values.password || null,
-                              fieldShortName: values.fieldShortName || null,
-                              seatNo: values.seatNo ? Number(values.seatNo) : null,
-                            };
-                            return dispatch({
-                              type: 'competitions/updateCompetitionUser',
-                              payload: {
-                                id,
-                                userId: user.userId,
-                                data,
-                              },
-                            });
-                          }}
-                          onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                            msg.success('Update user successfully');
-                            tracker.event({
-                              category: 'competitions',
-                              action: 'updateUser',
-                            });
-                          }}
-                          onSuccessModalClosed={(
-                            dispatch: ReduxProps['dispatch'],
-                            ret: IApiResponse<any>,
-                          ) => {
-                            dispatch({
-                              type: 'competitions/getAllCompetitionUsers',
-                              payload: {
-                                id,
-                              },
-                            });
-                          }}
-                        >
-                          <a>
-                            <Icon type="edit" />
-                          </a>
-                        </GeneralFormModal>
-                      </span>
-                    );
-                  }}
-                />
-              </Table>
-            </Card>
-          </Col>
+              ))}
+            </Tabs>
+          </div>
+          <Row gutter={16}>
+            <Col xs={24} md={18} xxl={20}>
+              <Card bordered={false} className="list-card">
+                <Table
+                  dataSource={usersGrouped[currentActiveRole]}
+                  rowKey="userId"
+                  loading={loading}
+                  pagination={false}
+                  className="responsive-table"
+                >
+                  <Table.Column
+                    title=""
+                    key="unofficial"
+                    render={(text, user: ICompetitionUser) => {
+                      if (user.unofficialParticipation) {
+                        return '*';
+                      } else {
+                        return '';
+                      }
+                    }}
+                  />
+                  <Table.Column
+                    title="UID"
+                    key="UID"
+                    render={(text, record: ICompetitionUser) => (
+                      <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
+                        {record.userId}
+                      </Link>
+                    )}
+                  />
+                  <Table.Column
+                    title="Info"
+                    key="Info"
+                    render={(text, record: ICompetitionUser) => {
+                      const infoStr = JSON.stringify(record.info || {}, null, 2);
+                      return <pre>{infoStr}</pre>;
+                    }}
+                  />
+                  <Table.Column
+                    title="Seat ID"
+                    key="Seat ID"
+                    render={(text, record: ICompetitionUser) => (
+                      <span>{formatCompetitionUserSeatId(record)}</span>
+                    )}
+                  />
+                  <Table.Column
+                    title="Status"
+                    key="status"
+                    className="nowrap"
+                    render={(text, user: ICompetitionUser) => {
+                      let statusStr = '';
+                      switch (user.status) {
+                        case ECompetitionUserStatus.auditing:
+                          statusStr = 'Under Auditing';
+                          break;
+                        case ECompetitionUserStatus.available:
+                          statusStr = 'Available';
+                          break;
+                        case ECompetitionUserStatus.modificationRequired:
+                          statusStr = 'Modification Required';
+                          break;
+                        case ECompetitionUserStatus.rejected:
+                          statusStr = 'Rejected';
+                          break;
+                        case ECompetitionUserStatus.entered:
+                          statusStr = 'Entered';
+                          break;
+                        case ECompetitionUserStatus.quitted:
+                          statusStr = 'Quitted';
+                          break;
+                      }
+                      return (
+                        <span>
+                          {statusStr}
+                          {user.banned ? (
+                            <span className="text-danger">
+                              <br />
+                              Banned
+                            </span>
+                          ) : null}
+                        </span>
+                      );
+                    }}
+                  />
+                  <Table.Column
+                    title=""
+                    key="actions"
+                    className="nowrap"
+                    render={(text, user: ICompetitionUser) => {
+                      return (
+                        <span key="edit" className="nowrap">
+                          <GeneralFormModal
+                            loadingEffect="competitions/updateCompetitionUser"
+                            title="Edit User"
+                            autoMsg
+                            items={this.getUserFormItems(user)}
+                            submit={(dispatch: ReduxProps['dispatch'], values) => {
+                              const data = {
+                                role: Number(values.role),
+                                status: Number(values.status) || ECompetitionUserStatus.available,
+                                unofficialParticipation: values.unofficialParticipation === 'true',
+                                banned: values.banned === 'true',
+                                password: values.password || null,
+                                fieldShortName: values.fieldShortName || null,
+                                seatNo: values.seatNo ? Number(values.seatNo) : null,
+                              };
+                              return dispatch({
+                                type: 'competitions/updateCompetitionUser',
+                                payload: {
+                                  id,
+                                  userId: user.userId,
+                                  data,
+                                },
+                              });
+                            }}
+                            onSuccess={(
+                              dispatch: ReduxProps['dispatch'],
+                              ret: IApiResponse<any>,
+                            ) => {
+                              msg.success('Update user successfully');
+                              tracker.event({
+                                category: 'competitions',
+                                action: 'updateUser',
+                              });
+                            }}
+                            onSuccessModalClosed={(
+                              dispatch: ReduxProps['dispatch'],
+                              ret: IApiResponse<any>,
+                            ) => {
+                              dispatch({
+                                type: 'competitions/getAllCompetitionUsers',
+                                payload: {
+                                  id,
+                                },
+                              });
+                            }}
+                          >
+                            <a>
+                              <Icon type="edit" />
+                            </a>
+                          </GeneralFormModal>
+                        </span>
+                      );
+                    }}
+                  />
+                </Table>
+              </Card>
+            </Col>
 
-          <Col xs={24} md={6} xxl={4}>
-            <Card bordered={false}>
-              <GeneralFormModal
-                loadingEffect="competitions/createCompetitionUser"
-                title="Add User"
-                autoMsg
-                items={this.getUserFormItems()}
-                submit={(dispatch: ReduxProps['dispatch'], values) => {
-                  const data = {
-                    role: Number(values.role),
-                    status: Number(values.status) || ECompetitionUserStatus.available,
-                    unofficialParticipation: values.unofficialParticipation === 'true',
-                    banned: values.banned === 'true',
-                    password: values.password || null,
-                    fieldShortName: values.fieldShortName || null,
-                    seatNo: values.seatNo ? Number(values.seatNo) : null,
-                    info: {
-                      nickname: values.nickname,
-                    },
-                  };
-                  return dispatch({
-                    type: 'competitions/createCompetitionUser',
-                    payload: {
-                      id,
-                      userId: Number(values.userId),
-                      data,
-                    },
-                  });
-                }}
-                onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
-                  msg.success('Add user successfully');
-                  tracker.event({
-                    category: 'competitions',
-                    action: 'addUser',
-                  });
-                }}
-                onSuccessModalClosed={(
-                  dispatch: ReduxProps['dispatch'],
-                  ret: IApiResponse<any>,
-                ) => {
-                  dispatch({
-                    type: 'competitions/getAllCompetitionUsers',
-                    payload: {
-                      id,
-                    },
-                  });
-                }}
-              >
-                <Button block>Add User</Button>
-              </GeneralFormModal>
-              <ImportCompetitionUserModal competitionId={id}>
-                <Button block className="mt-md">
-                  Import Users
+            <Col xs={24} md={6} xxl={4}>
+              <Card bordered={false}>
+                <GeneralFormModal
+                  loadingEffect="competitions/createCompetitionUser"
+                  title="Add User"
+                  autoMsg
+                  items={this.getUserFormItems()}
+                  submit={(dispatch: ReduxProps['dispatch'], values) => {
+                    const data = {
+                      role: Number(values.role),
+                      status: Number(values.status) || ECompetitionUserStatus.available,
+                      unofficialParticipation: values.unofficialParticipation === 'true',
+                      banned: values.banned === 'true',
+                      password: values.password || null,
+                      fieldShortName: values.fieldShortName || null,
+                      seatNo: values.seatNo ? Number(values.seatNo) : null,
+                      info: {
+                        nickname: values.nickname,
+                      },
+                    };
+                    return dispatch({
+                      type: 'competitions/createCompetitionUser',
+                      payload: {
+                        id,
+                        userId: Number(values.userId),
+                        data,
+                      },
+                    });
+                  }}
+                  onSuccess={(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>) => {
+                    msg.success('Add user successfully');
+                    tracker.event({
+                      category: 'competitions',
+                      action: 'addUser',
+                    });
+                  }}
+                  onSuccessModalClosed={(
+                    dispatch: ReduxProps['dispatch'],
+                    ret: IApiResponse<any>,
+                  ) => {
+                    dispatch({
+                      type: 'competitions/getAllCompetitionUsers',
+                      payload: {
+                        id,
+                      },
+                    });
+                  }}
+                >
+                  <Button block>Add User</Button>
+                </GeneralFormModal>
+                <ImportCompetitionUserModal competitionId={id}>
+                  <Button block className="mt-md">
+                    Import Users
+                  </Button>
+                </ImportCompetitionUserModal>
+                <Button block className="mt-md" onClick={this.handleExport}>
+                  Export Users
                 </Button>
-              </ImportCompetitionUserModal>
-              <Button block className="mt-md" onClick={this.handleExport}>
-                Export Users
-              </Button>
-              <Popconfirm
-                title="The action will assign random password to all no-password users"
-                placement="left"
-                onConfirm={this.handleRandomAllUserPasswords}
-              >
-                <Button block className="mt-md">
-                  Random Password
-                </Button>
-              </Popconfirm>
-            </Card>
-          </Col>
-        </Row>
+                <Popconfirm
+                  title="The action will assign random password to all no-password users"
+                  placement="left"
+                  onConfirm={this.handleRandomAllUserPasswords}
+                >
+                  <Button block className="mt-md">
+                    Random Password
+                  </Button>
+                </Popconfirm>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       </PageAnimation>
     );
   }

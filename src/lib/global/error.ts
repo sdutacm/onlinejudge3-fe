@@ -21,6 +21,8 @@ export class RequestError extends Error {
     this.apiName = originalUrl.replace(api.base, '').substr(1);
     this.status = response?.status;
     this.data = response?.data;
-    Error.captureStackTrace(this, Error); // no stack to prevent React dev panel catch it
+    if ('captureStackTrace' in Error) {
+      Error.captureStackTrace(this, Error); // no stack to prevent React dev panel catch it
+    }
   }
 }

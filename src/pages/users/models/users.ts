@@ -48,7 +48,7 @@ export default {
       state.problemResultStats = {
         ...data,
         _query: query,
-        ...genTimeFlag(10 * 1000),
+        ...genTimeFlag(5 * 1000),
       };
     },
     clearProblemResultStats(state) {

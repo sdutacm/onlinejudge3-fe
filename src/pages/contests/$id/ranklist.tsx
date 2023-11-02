@@ -20,9 +20,11 @@ import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import { ContestRatingStatus, contestRatingStatusMap } from '@/configs/contestRatingStatus';
 import { EPerm } from '@/common/configs/perm.config';
+import router from 'umi/router';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
+  globalSession: ISessionStatus;
   session: ISessionStatus;
   detailLoading: boolean;
   detail: IContest;
@@ -30,7 +32,6 @@ export interface Props extends ReduxProps, RouteProps {
   problems: IFullList<IProblem>;
   ranklistLoading: boolean;
   ranklist: IFullList<IRanklistRow>;
-  endContestLoading: boolean;
   ratingStatus: IContestRatingStatus;
 }
 
@@ -54,7 +55,8 @@ class ContestRanklist extends React.Component<Props, State> {
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     dispatch({
       type: 'contests/getRanklist',
-      payload: { id },
+      payload: { id, god: ['true', '1'].includes(this.props.location.query.god) },
+      force: true,
     });
   };
 
@@ -78,35 +80,15 @@ class ContestRanklist extends React.Component<Props, State> {
     }
   }
 
-  refreshRanklist = () => {
+  refreshRanklist = (god?: boolean) => {
     // console.log('refreshRank');
     this.props.dispatch({
       type: 'contests/getRanklist',
-      payload: { id: this.props.id },
-    });
-  };
-
-  endContest = () => {
-    const { id, dispatch } = this.props;
-    dispatch({
-      type: 'contests/endContest',
-      payload: { id },
-    }).then((ret) => {
-      msg.auto(ret);
-      if (ret.success) {
-        msg.success('Ended');
-        tracker.event({
-          category: 'contests',
-          action: 'end',
-        });
-        dispatch({
-          type: 'contests/getDetail',
-          payload: {
-            id,
-            force: true,
-          },
-        });
-      }
+      payload: {
+        id: this.props.id,
+        god: typeof god === 'boolean' ? god : ['true', '1'].includes(this.props.location.query.god),
+        force: true,
+      },
     });
   };
 
@@ -123,7 +105,11 @@ class ContestRanklist extends React.Component<Props, State> {
             if (!isFirstRequest) {
               dispatch({
                 type: 'contests/getRanklist',
-                payload: { id, force: true },
+                payload: {
+                  id,
+                  god: ['true', '1'].includes(this.props.location.query.god),
+                  force: true,
+                },
               });
             }
           }
@@ -182,16 +168,31 @@ class ContestRanklist extends React.Component<Props, State> {
     // return null;
   };
 
+  handleGodViewChange = (god: boolean) => {
+    tracker.event({
+      category: 'contests',
+      action: 'switchGodView',
+    });
+    setTimeout(() => {
+      router.replace({
+        pathname: this.props.location.pathname,
+        query: { ...this.props.location.query, god: god || undefined },
+      });
+      this.refreshRanklist(god);
+    }, constants.switchAnimationDuration);
+  };
+
   render() {
     const {
       id,
+      globalSession,
       session,
       detailLoading,
       detail,
       problems,
       ranklistLoading,
       ranklist: { rows },
-      endContestLoading,
+      location: { query },
     } = this.props;
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
@@ -202,8 +203,7 @@ class ContestRanklist extends React.Component<Props, State> {
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     const ranklist = rows || ([] as IRanklist);
     const isRating = detail.mode === ContestModes.Rating;
-    const canEndContest =
-      isRating && timeStatus === 'Ended' && !detail['ended'] && checkPerms(session, EPerm.EndContest);
+    const canViewGodRanklist = checkPerms(globalSession, EPerm.ContestAccess);
 
     return (
       <PageAnimation>
@@ -218,17 +218,6 @@ class ContestRanklist extends React.Component<Props, State> {
                     {moment(endTime).format('YYYY-MM-DD HH:mm')}
                   </span>
                 </p>
-                {canEndContest && (
-                  <p className="text-center">
-                    <Button
-                      type="danger"
-                      loading={detailLoading || endContestLoading}
-                      onClick={this.endContest}
-                    >
-                      End Contest
-                    </Button>
-                  </p>
-                )}
                 {detail.ended && isRating && this.renderRatingProgress()}
               </Card>
               <Card bordered={false} className="list-card">
@@ -246,11 +235,14 @@ class ContestRanklist extends React.Component<Props, State> {
                       showRating={isRating}
                     />
                   )}
-                  needAutoUpdate={timeStatus === 'Running' && detail.category !== 1}
+                  needAutoUpdate={true}
                   handleUpdate={this.refreshRanklist}
                   updateInterval={constants.ranklistUpdateInterval}
                   existedHeaderClassName="ranklist-header"
                   rating={isRating}
+                  allowGodView={canViewGodRanklist}
+                  godView={!!query.god}
+                  handleGodViewChange={this.handleGodViewChange}
                 />
               </Card>
             </Col>
@@ -265,6 +257,7 @@ function mapStateToProps(state) {
   const id = getPathParamId(state.routing.location.pathname, pages.contests.home);
   return {
     id,
+    globalSession: state.session,
     session: state.contests.session[id],
     detailLoading: !!state.loading.effects['contests/getDetail'],
     detail: state.contests.detail[id],
@@ -272,7 +265,6 @@ function mapStateToProps(state) {
     problems: state.contests.problems[id] || {},
     ranklistLoading: !!state.loading.effects['contests/getRanklist'],
     ranklist: state.contests.ranklist[id] || {},
-    endContestLoading: !!state.loading.effects['contests/endContest'],
     ratingStatus: state.contests.ratingStatus[id],
   };
 }

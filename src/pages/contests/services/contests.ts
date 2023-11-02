@@ -104,9 +104,10 @@ export function modifyUser(contestId, contestUserId, data) {
   });
 }
 
-export function getRanklist(contestId) {
+export function getRanklist(contestId, god = false) {
   return post<IGetContestRanklistReq, IGetContestRanklistResp>(routesBe.getContestRanklist.url, {
     contestId,
+    god,
   });
 }
 

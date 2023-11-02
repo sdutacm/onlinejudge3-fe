@@ -32,6 +32,9 @@ export interface Props extends RouteProps {
   updateInterval?: number;
   existedHeaderClassName?: string;
   rating?: boolean;
+  allowGodView?: boolean;
+  godView?: boolean;
+  handleGodViewChange?: (god: boolean) => any;
 }
 
 interface State {
@@ -178,6 +181,7 @@ class Ranklist extends React.Component<Props, State> {
       session,
       location: { query },
       rating,
+      allowGodView,
     } = this.props;
     const { contentWidth, showAll } = this.state;
     // const contentWidth = 0;
@@ -404,6 +408,27 @@ class Ranklist extends React.Component<Props, State> {
             >
               Export Ranklist
             </a>
+            {allowGodView && (
+              <span
+                style={{
+                  position: 'absolute',
+                  bottom: '16px',
+                  left: '240px',
+                  lineHeight: '32px',
+                  marginLeft: '36px',
+                }}
+              >
+                <Popover content="Switch God View">God View</Popover>
+                <Switch
+                  size="small"
+                  className="ml-md"
+                  defaultChecked={!!this.props.godView}
+                  onChange={(checked) => {
+                    this.props.handleGodViewChange?.(checked);
+                  }}
+                />
+              </span>
+            )}
           </span>
         )}
       </div>

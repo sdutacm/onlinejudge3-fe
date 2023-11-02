@@ -18,9 +18,14 @@ import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
 import contestRP from '@/configs/contestRP';
 import RedPacketModal from '@/components/RedPacketModal';
+import { checkPerms } from '@/utils/permission';
+import { EPerm } from '@/common/configs/perm.config';
+import msg from '@/utils/msg';
+import tracker from '@/utils/tracker';
 
 export interface Props extends ReduxProps {
   id: number;
+  globalSession: ISessionStatus;
   session: ISessionStatus;
   detailLoading: boolean;
   detail: IContest;
@@ -28,6 +33,7 @@ export interface Props extends ReduxProps {
   problems: IFullList<IProblem>;
   userProblemResultStats: IUserProblemResultStats;
   contestProblemResultStats: IContestProblemResultStats;
+  endContestLoading: boolean;
 }
 
 interface State {}
@@ -81,9 +87,34 @@ class ContestOverview extends React.Component<Props, State> {
     }
   }
 
+  endContest = () => {
+    const { id, dispatch } = this.props;
+    dispatch({
+      type: 'contests/endContest',
+      payload: { id },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Ended');
+        tracker.event({
+          category: 'contests',
+          action: 'end',
+        });
+        dispatch({
+          type: 'contests/getDetail',
+          payload: {
+            id,
+            force: true,
+          },
+        });
+      }
+    });
+  };
+
   render() {
     const {
       id,
+      globalSession,
       session,
       detailLoading,
       detail,
@@ -91,6 +122,7 @@ class ContestOverview extends React.Component<Props, State> {
       problems,
       userProblemResultStats: { acceptedProblemIds, attemptedProblemIds },
       contestProblemResultStats,
+      endContestLoading,
     } = this.props;
     // console.log(detailLoading, detail);
     // console.log(contestProblemResultStats);
@@ -103,6 +135,7 @@ class ContestOverview extends React.Component<Props, State> {
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     const isContestRP = !!contestRP[id];
+    const canEndContest = timeStatus === 'Ended' && !detail.ended && checkPerms(globalSession, EPerm.EndContest);
 
     return (
       <PageAnimation>
@@ -120,6 +153,20 @@ class ContestOverview extends React.Component<Props, State> {
                 <p className="text-center">
                   <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
                 </p>
+                {canEndContest && (
+                  <p className="text-center">
+                    <Button
+                      type="danger"
+                      loading={detailLoading || endContestLoading}
+                      onClick={this.endContest}
+                    >
+                      Confirm Result & End Contest
+                    </Button>
+                    <p className="text-center text-secondary mt-sm">
+                      <small>Once confirmed, it will release all frozen solutions, and will also trigger a settlement if it's Rating Mode.</small>
+                    </p>
+                  </p>
+                )}
                 {timeStatus === 'Pending' ? (
                   <Countdown
                     secs={Math.floor((startTime - currentTime) / 1000)}
@@ -235,6 +282,7 @@ function mapStateToProps(state) {
   const id = getPathParamId(state.routing.location.pathname, pages.contests.home);
   return {
     id,
+    globalSession: state.session,
     session: state.contests.session[id],
     detailLoading: state.loading.effects['contests/getDetail'],
     detail: state.contests.detail[id],
@@ -242,6 +290,7 @@ function mapStateToProps(state) {
     problems: state.contests.problems[id] || {},
     userProblemResultStats: state.users.problemResultStats,
     contestProblemResultStats: state.contests.problemResultStats[id] || {},
+    endContestLoading: !!state.loading.effects['contests/endContest'],
   };
 }
 

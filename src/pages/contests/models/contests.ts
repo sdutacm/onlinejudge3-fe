@@ -288,14 +288,14 @@ export default {
       }
       return ret;
     },
-    *getRanklist({ payload: { id, force = false } }, { call, put, select }) {
-      if (!force) {
-        const savedState = yield select((state) => state.contests.ranklist[id]);
-        if (!isStateExpired(savedState)) {
-          return;
-        }
-      }
-      const ret: IApiResponse<IFullList<IRanklistRow>> = yield call(service.getRanklist, id);
+    *getRanklist({ payload: { id, god, force = false } }, { call, put, select }) {
+      // if (!force) {
+      //   const savedState = yield select((state) => state.contests.ranklist[id]);
+      //   if (!isStateExpired(savedState)) {
+      //     return;
+      //   }
+      // }
+      const ret: IApiResponse<IFullList<IRanklistRow>> = yield call(service.getRanklist, id, god);
       if (ret.success) {
         // 应先 clear，防止 set 时间过长导致又被 clear 掉
         yield put({

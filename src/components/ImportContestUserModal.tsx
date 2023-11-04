@@ -21,6 +21,7 @@ interface IImportContestUser {
   subname?: IContestUser['subname'];
   sitNo?: IContestUser['sitNo'];
   unofficial: IContestUser['unofficial'];
+  password: IContestUser['password'];
   members: {
     schoolNo: string;
     name: string;
@@ -59,9 +60,10 @@ class ImportContestUserModal extends React.Component<Props, State> {
           subname: `${row[2] || ''}`,
           sitNo: `${row[3] || ''}`,
           unofficial: row[4] === 'Y',
+          password: `${row[5] || ''}`,
           members: [],
         };
-        const memberBeginIndex = 5;
+        const memberBeginIndex = 6;
         const memberFieldNum = 9;
         for (let i = 0; i < MAX_MEMBER_NUM; ++i) {
           const member = {
@@ -226,12 +228,19 @@ class ImportContestUserModal extends React.Component<Props, State> {
                           )}
                         />
                         <Table.Column
+                          title="Password"
+                          key="password"
+                          render={(text, record: IImportContestUser) => (
+                            <span>{record.password}</span>
+                          )}
+                        />
+                        <Table.Column
                           title="Sit No."
                           key="sitNo"
                           render={(text, record: IImportContestUser) => <span>{record.sitNo}</span>}
                         />
                         <Table.Column
-                          title="School No."
+                          title="Student No."
                           key="schoolNo"
                           render={(text, record: IImportContestUser) => (
                             <div>

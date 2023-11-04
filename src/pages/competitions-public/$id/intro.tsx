@@ -140,12 +140,12 @@ class CompetitionIntro extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input real name' }],
       },
       {
-        name: 'Student No.',
+        name: 'Student Number',
         field: 'studentNo',
         placeholder: 'e.g., 21110501000',
         component: 'input',
         initialValue: data?.info?.studentNo || '',
-        rules: [{ required: true, message: 'Please input Student No.' }],
+        rules: [{ required: true, message: 'Please input Student Number' }],
       },
       {
         name: 'School',

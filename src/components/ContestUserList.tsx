@@ -218,7 +218,7 @@ class ContestUserList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }],
       },
       {
-        name: 'School No.',
+        name: 'Student Number',
         field: 'schoolNo1',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[0].schoolNo', ''),
@@ -335,7 +335,7 @@ class ContestUserList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }],
       },
       {
-        name: 'School No. of Member 1',
+        name: 'Student No. of Member 1',
         field: 'schoolNo1',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[0].schoolNo', ''),
@@ -397,7 +397,7 @@ class ContestUserList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }],
       },
       {
-        name: 'School No. of Member 2',
+        name: 'Student No. of Member 2',
         field: 'schoolNo2',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[1].schoolNo', ''),
@@ -458,7 +458,7 @@ class ContestUserList extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input name' }],
       },
       {
-        name: 'School No. of Member 3',
+        name: 'Student No. of Member 3',
         field: 'schoolNo3',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[2].schoolNo', ''),

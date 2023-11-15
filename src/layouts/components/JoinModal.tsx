@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Input, Button, Alert, Badge } from 'antd';
 import classNames from 'classnames';
 import setStatePromise from '@/utils/setStatePromise';
 import msg from '@/utils/msg';
@@ -11,6 +11,7 @@ import gStyles from '../../general.less';
 import 'csshake';
 import { Codes } from '@/common/codes';
 import tracker from '@/utils/tracker';
+import WeakPasswordChecker from '@/common/utils/weakpwd-check';
 
 class JoinModal extends React.Component<any, any> {
   private setStatePromise = setStatePromise.bind(this);
@@ -238,6 +239,137 @@ class JoinModal extends React.Component<any, any> {
         );
       },
     },
+    resetPasswordAndEmail: {
+      title: 'Need Reset Password',
+      body: () => {
+        const loading = this.props.loading;
+        const { getFieldDecorator } = this.props.form;
+        const verificationCodeRetry = this.state.verificationCodeRetry;
+        const passwordStatus = this.state.passwordStatus;
+        return (
+          <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
+            <Form.Item>
+              <Alert
+                message="Your password strength is too low. You need to bind your email and change it to a strong password to log in"
+                type="warning"
+                showIcon
+              />
+            </Form.Item>
+
+            <Form.Item label="Username">
+              {getFieldDecorator('username', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input username',
+                  },
+                ],
+              })(<Input />)}
+            </Form.Item>
+
+            <Form.Item label="Old Password">
+              {getFieldDecorator('oldPassword', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input old password',
+                  },
+                ],
+              })(<Input type="password" />)}
+            </Form.Item>
+
+            <Form.Item label="Email">
+              {getFieldDecorator('email', {
+                rules: [
+                  {
+                    type: 'email',
+                    message: 'Please input a valid email',
+                  },
+                  {
+                    required: true,
+                    message: 'Please input email',
+                  },
+                ],
+              })(<Input />)}
+            </Form.Item>
+
+            <Form.Item label="Verification Code">
+              {getFieldDecorator('code', {
+                rules: [{ required: true, message: 'Please input verification code' }],
+              })(
+                <Input.Search
+                  enterButton={
+                    verificationCodeRetry ? `Resend code (${verificationCodeRetry}s)` : 'Send code'
+                  }
+                  className={
+                    verificationCodeRetry || loading.verificationCode
+                      ? 'input-button-disabled'
+                      : 'input-button'
+                  }
+                  onSearch={() =>
+                    !(verificationCodeRetry || loading.verificationCode) &&
+                    this.getVerificationCode()
+                  }
+                />,
+              )}
+            </Form.Item>
+
+            <Form.Item label="New Password">
+              {getFieldDecorator('password', {
+                rules: [
+                  // {
+                  //   required: true,
+                  //   message: 'Please input password',
+                  // },
+                  {
+                    validator: this.validateToNextPassword,
+                  },
+                  {
+                    validator: this.validatePassword,
+                  },
+                ],
+              })(<Input type="password" />)}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Badge
+                  status={passwordStatus.verifyLength}
+                  text="at least 6 characters"
+                />
+                <Badge
+                  status={passwordStatus.verifyNumberAndLetter}
+                  text="contains both letters and numbers"
+                />
+                <Badge
+                  status={passwordStatus.verifyCommonPassword}
+                  text="no common weak password"
+                />
+              </div>
+            </Form.Item>
+
+            <Form.Item label="Confirm Password">
+              {getFieldDecorator('confirm', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please confirm password',
+                  },
+                  {
+                    validator: this.compareToFirstPassword,
+                  },
+                ],
+              })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
+            </Form.Item>
+
+            <Form.Item>
+              Back to <a onClick={(e) => this.switchTab(e, 'login')}>Login</a>
+            </Form.Item>
+
+            <Form.Item className="display-none">
+              <Button htmlType="submit" />
+            </Form.Item>
+          </Form>
+        );
+      },
+    },
   };
 
   constructor(props) {
@@ -252,6 +384,11 @@ class JoinModal extends React.Component<any, any> {
       confirmDirty: false,
       verificationCodeRetry: null,
       verificationCodeRetryTimer: null,
+      passwordStatus: {
+        verifyLength: 'default',
+        verifyNumberAndLetter: 'default',
+        verifyCommonPassword: 'default',
+      },
     };
   }
 
@@ -322,6 +459,23 @@ class JoinModal extends React.Component<any, any> {
     const form = this.props.form;
     if (value && this.state.confirmDirty) {
       form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  };
+
+  validatePassword = (rule, value, callback) => {
+    if(!value || value.length === 0) {
+      callback('Please input password');
+    }
+    // 更新密码强度
+    const passwordStatus = {
+      verifyLength: WeakPasswordChecker.checkLength(value) ? 'success' : 'error',
+      verifyNumberAndLetter: WeakPasswordChecker.checkCharGroup(value) ? 'success' : 'error',
+      verifyCommonPassword: WeakPasswordChecker.checkCommonPassword(value) ? 'success' : 'error',
+    };
+    this.setState({ passwordStatus });
+    if(WeakPasswordChecker.isWeak(value)) {
+      callback('Your password is too weak');
     }
     callback();
   };
@@ -413,6 +567,8 @@ class JoinModal extends React.Component<any, any> {
           category: 'component.JoinModal',
           action: 'login',
         });
+      } else if (ret.code === 110) {
+        this.switchTab(null, 'resetPasswordAndEmail');
       } else {
         if (this.state.shakeTimer) {
           clearTimeout(this.state.shakeTimer);
@@ -449,6 +605,46 @@ class JoinModal extends React.Component<any, any> {
     });
   };
 
+  resetPasswordAndEmail = (data) => {
+    const { dispatch } = this.props;
+    data.code = +data.code;
+    dispatch({
+      type: 'users/resetPasswordAndEmail',
+      payload: data,
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success(
+          `Welcome back, ${ret.data.nickname}\nYour password and email has been reset successfully`,
+        );
+        this.handleHideModel();
+        setTimeout(
+          () =>
+            dispatch({
+              type: 'session/setSession',
+              payload: { user: ret.data },
+            }),
+          constants.modalAnimationDurationFade,
+        );
+        tracker.event({
+          category: 'component.JoinModal',
+          action: 'resetPasswordAndEmail',
+        });
+      } else {
+        if (this.state.shakeTimer) {
+          clearTimeout(this.state.shakeTimer);
+        }
+        this.setState({ shake: true });
+        this.setState({
+          shakeTimer: setTimeout(
+            () => this.setState({ shake: false }),
+            constants.modalAnimationDurationShake,
+          ),
+        });
+      }
+    });
+  };
+
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -467,6 +663,12 @@ class JoinModal extends React.Component<any, any> {
             const data = { ...values };
             delete data.confirm;
             this.forgotPassword(data);
+            break;
+          }
+          case 'resetPasswordAndEmail': {
+            const data = { ...values };
+            delete data.confirm;
+            this.resetPasswordAndEmail(data);
             break;
           }
           default:
@@ -517,6 +719,7 @@ class JoinModal extends React.Component<any, any> {
           onOk={this.handleOk}
           onCancel={this.handleHideModel}
           className={classes}
+          maskClosable={false}
         >
           {this.tabs[this.state.tab].body()}
         </Modal>

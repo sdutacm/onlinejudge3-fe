@@ -107,7 +107,6 @@ fastListFolder(localFolder, function(err, list) {
       FilePath: file.path,
     };
   });
-  console.log('files:', files);
   cos.uploadFiles(
     {
       files: files,

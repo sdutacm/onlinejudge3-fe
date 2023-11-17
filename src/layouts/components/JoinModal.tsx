@@ -614,18 +614,8 @@ class JoinModal extends React.Component<any, any> {
     }).then((ret) => {
       msg.auto(ret);
       if (ret.success) {
-        msg.success(
-          `Welcome back, ${ret.data.nickname}\nYour password and email has been reset successfully`,
-        );
-        this.handleHideModel();
-        setTimeout(
-          () =>
-            dispatch({
-              type: 'session/setSession',
-              payload: { user: ret.data },
-            }),
-          constants.modalAnimationDurationFade,
-        );
+        msg.success('Your password and email has been reset successfully');
+        this.switchTab(null, 'login');
         tracker.event({
           category: 'component.JoinModal',
           action: 'resetPasswordAndEmail',

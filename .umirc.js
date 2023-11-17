@@ -2,7 +2,8 @@ const buildTarget =
   (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
 console.log('Using build target:', buildTarget);
 console.log('Using COMPETITION_SIDE:', process.env.COMPETITION_SIDE === '1');
-process.env.CDN_URL && console.log('Using CDN:', process.env.CDN_URL);
+process.env.CDN_URL && console.log('Using CDN_URL:', process.env.CDN_URL);
+process.env.MEDIA_URL && console.log('Using MEDIA_URL:', process.env.MEDIA_URL);
 
 const publicPathPrefix = process.env.CDN_URL || '';
 
@@ -12,16 +13,16 @@ const buildConfig = {
     publicPath: `${publicPathPrefix}/onlinejudge3/`,
     outputPath: './onlinejudge3',
   },
-  exp: {
-    base: '/onlinejudge3_exp/',
-    publicPath: `${publicPathPrefix}/onlinejudge3_exp/`,
-    outputPath: './onlinejudge3_exp',
-  },
-  test: {
-    base: '/onlinejudge3_test/',
-    publicPath: `${publicPathPrefix}/onlinejudge3_test/`,
-    outputPath: './onlinejudge3_test',
-  },
+  // exp: {
+  //   base: '/onlinejudge3_exp/',
+  //   publicPath: `${publicPathPrefix}/onlinejudge3_exp/`,
+  //   outputPath: './onlinejudge3_exp',
+  // },
+  // test: {
+  //   base: '/onlinejudge3_test/',
+  //   publicPath: `${publicPathPrefix}/onlinejudge3_test/`,
+  //   outputPath: './onlinejudge3_test',
+  // },
 };
 
 export default {
@@ -29,6 +30,8 @@ export default {
   hash: true,
   define: {
     'process.env.COMPETITION_SIDE': process.env.COMPETITION_SIDE === '1' ? '1' : '',
+    'process.env.CDN_URL': process.env.CDN_URL || '',
+    'process.env.MEDIA_URL': process.env.MEDIA_URL || '',
   },
   plugins: [
     [

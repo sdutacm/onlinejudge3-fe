@@ -12,6 +12,7 @@ jobs:
       COS_REGION: ${{ secrets.COS_REGION }}
       COS_TARGET_BASE: ${{ secrets.COS_TARGET_BASE }}
       CDN_URL: ${{ secrets.CDN_URL }}
+      MEDIA_URL: ${{ secrets.MEDIA_URL }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

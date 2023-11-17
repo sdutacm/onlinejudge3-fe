@@ -57,6 +57,7 @@ class JoinModal extends React.Component<any, any> {
         const loading = this.props.loading;
         const { getFieldDecorator } = this.props.form;
         const verificationCodeRetry = this.state.verificationCodeRetry;
+        const passwordStatus = this.state.passwordStatus;
         return (
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
             <Form.Item label="Email">
@@ -99,14 +100,27 @@ class JoinModal extends React.Component<any, any> {
               {getFieldDecorator('password', {
                 rules: [
                   {
-                    required: true,
-                    message: 'Please input password',
+                    validator: this.validateToNextPassword,
                   },
                   {
-                    validator: this.validateToNextPassword,
+                    validator: this.validatePassword,
                   },
                 ],
               })(<Input type="password" />)}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Badge
+                  status={passwordStatus.verifyLength}
+                  text="at least 6 characters"
+                />
+                <Badge
+                  status={passwordStatus.verifyNumberAndLetter}
+                  text="contains both letters and numbers"
+                />
+                <Badge
+                  status={passwordStatus.verifyCommonPassword}
+                  text="no common weak password"
+                />
+              </div>
             </Form.Item>
 
             <Form.Item label="Confirm Password">
@@ -162,6 +176,7 @@ class JoinModal extends React.Component<any, any> {
         const loading = this.props.loading;
         const { getFieldDecorator } = this.props.form;
         const verificationCodeRetry = this.state.verificationCodeRetry;
+        const passwordStatus = this.state.passwordStatus;
         return (
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
             <Form.Item label="Email">
@@ -204,14 +219,28 @@ class JoinModal extends React.Component<any, any> {
               {getFieldDecorator('password', {
                 rules: [
                   {
-                    required: true,
-                    message: 'Please input password',
-                  },
-                  {
                     validator: this.validateToNextPassword,
                   },
+                  {
+                    validator: this.validatePassword,
+                  }
                 ],
               })(<Input type="password" />)}
+
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Badge
+                  status={passwordStatus.verifyLength}
+                  text="at least 6 characters"
+                />
+                <Badge
+                  status={passwordStatus.verifyNumberAndLetter}
+                  text="contains both letters and numbers"
+                />
+                <Badge
+                  status={passwordStatus.verifyCommonPassword}
+                  text="no common weak password"
+                />
+              </div>
             </Form.Item>
 
             <Form.Item label="Confirm Password">
@@ -317,10 +346,6 @@ class JoinModal extends React.Component<any, any> {
             <Form.Item label="New Password">
               {getFieldDecorator('password', {
                 rules: [
-                  // {
-                  //   required: true,
-                  //   message: 'Please input password',
-                  // },
                   {
                     validator: this.validateToNextPassword,
                   },

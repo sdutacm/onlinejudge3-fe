@@ -14,8 +14,9 @@ const cos = new COS({
 const Bucket = process.env.COS_BUCKET;
 const Region = process.env.COS_REGION;
 
+const cosTargetBase = process.env.COS_TARGET_BASE || ''; // should end with /
 const localFolder = './onlinejudge3/';
-const remotePrefix = 'oj/dist/onlinejudge3/';
+const remotePrefix = `${cosTargetBase}onlinejudge3/`;
 
 const fastListFolder = function(options, callback) {
   const pathJoin = function(dir, name, isDir) {

@@ -592,7 +592,7 @@ class JoinModal extends React.Component<any, any> {
           category: 'component.JoinModal',
           action: 'login',
         });
-      } else if (ret.code === 110) {
+      } else if (ret.code === Codes.USER_PASSWORD_STRENGTH_TOO_WEAK) {
         this.switchTab(null, 'resetPasswordAndEmail');
       } else {
         if (this.state.shakeTimer) {

@@ -125,6 +125,9 @@ export default {
     *forgotPassword({ payload: data }, { call, put }) {
       return yield call(service.forgotPassword, data);
     },
+    *resetPasswordAndEmail({ payload: data }, { call, put }) {
+      return yield call(service.resetPasswordAndEmail, data);
+    },
     *getProblemResultStats(
       {
         payload: { userId, contestId, competitionId, force = false } = {

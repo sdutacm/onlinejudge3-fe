@@ -16,6 +16,7 @@ import {
   IUpdateUserPasswordReq,
   IUpdateUserDetailReq,
   IUpdateUserEmailReq,
+  IResetUserPasswordAndEmailReq,
 } from '@/common/contracts/user';
 
 export function register(data) {
@@ -24,6 +25,10 @@ export function register(data) {
 
 export function forgotPassword(data) {
   return post<IResetUserPasswordReq, void>(routesBe.resetUserPassword.url, data);
+}
+
+export function resetPasswordAndEmail(data) {
+  return post<IResetUserPasswordAndEmailReq, void>(routesBe.resetUserPasswordAndEmail.url, data);
 }
 
 export function getList(query) {

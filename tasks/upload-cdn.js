@@ -1,3 +1,5 @@
+/* eslint-disable func-name-matching */
+/* eslint-disable @typescript-eslint/no-require-imports */
 // 上传产物到腾讯云 COS
 
 const fs = require('fs');

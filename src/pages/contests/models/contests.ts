@@ -312,9 +312,9 @@ export default {
       return ret;
     },
     *getUserList({ payload: prams }, { call, put, select }) {
-      const formattedQuery = {
+      const formattedQuery: any = {
         ...formatListQuery(prams.query),
-        // order: [['contestUserId', 'DESC']],
+        order: [['contestUserId', 'DESC']],
       };
       formattedQuery.contestUserId &&
         (formattedQuery.contestUserId = +formattedQuery.contestUserId);

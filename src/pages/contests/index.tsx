@@ -175,12 +175,12 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class',
         field: 'class1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel',
         field: 'tel1',
         component: 'input',
+        rules: [{ required: true, message: 'Please input phone number' }],
       },
       {
         name: 'Email',
@@ -253,12 +253,12 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class of Member 1',
         field: 'class1',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 1',
         field: 'tel1',
         component: 'input',
+        rules: [{ required: true, message: 'Please input phone number' }],
       },
       {
         name: 'Email of Member 1',
@@ -306,7 +306,6 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class of Member 2',
         field: 'class2',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 2',
@@ -358,7 +357,6 @@ class ContestList extends React.Component<Props, State> {
         name: 'Class of Member 3',
         field: 'class3',
         component: 'input',
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 3',
@@ -477,6 +475,7 @@ class ContestList extends React.Component<Props, State> {
                             <GeneralFormModal
                               loadingEffect="contests/addContestUser"
                               title="Register Contest"
+                              maskClosable={false}
                               autoMsg
                               items={record.team ? addTeamUserFormItems : addUserFormItems}
                               submit={(dispatch: ReduxProps['dispatch'], values) => {
@@ -519,6 +518,10 @@ class ContestList extends React.Component<Props, State> {
                                   category: 'contests',
                                   action: 'registerContest',
                                 });
+                                setTimeout(
+                                  () => router.push(urlf(pages.contests.users, { param: { id: record.contestId } })),
+                                  constants.modalAnimationDurationFade,
+                                );
                               }}
                             >
                               <a title="Register Contest">

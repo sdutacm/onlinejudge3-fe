@@ -247,13 +247,13 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class1',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[0].class', ''),
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel',
         field: 'tel1',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[0].tel', ''),
+        rules: [{ required: true, message: 'Please input phone number' }],
       },
       {
         name: 'Email',
@@ -293,7 +293,7 @@ class ContestUserList extends React.Component<Props, State> {
           value: item.id,
         })),
         initialValue: `${contestUser[uid]?.status ?? ContestUserStatus.accepted}`,
-        rules: [{ required: true, message: 'Please ' }],
+        rules: [{ required: true, message: 'Please select status' }],
       });
     }
     return items;
@@ -364,13 +364,13 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class1',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[0].class', ''),
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 1',
         field: 'tel1',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[0].tel', ''),
+        rules: [{ required: true, message: 'Please input phone number' }],
       },
       {
         name: 'Email of Member 1',
@@ -426,7 +426,6 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class2',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[1].class', ''),
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 2',
@@ -487,7 +486,6 @@ class ContestUserList extends React.Component<Props, State> {
         field: 'class3',
         component: 'input',
         initialValue: safeGet(contestUser[uid], 'members[2].class', ''),
-        rules: [{ required: true, message: 'Please input class' }],
       },
       {
         name: 'Tel of Member 3',
@@ -705,6 +703,7 @@ class ContestUserList extends React.Component<Props, State> {
                         <GeneralFormModal
                           loadingEffect="contests/updateContestUser"
                           title="Edit Register Info"
+                          maskClosable={false}
                           autoMsg
                           items={
                             contestUser[text.contestUserId]
@@ -777,6 +776,7 @@ class ContestUserList extends React.Component<Props, State> {
                         <GeneralFormModal
                           loadingEffect="admin/auditContestUser"
                           title="Audit Registration"
+                          maskClosable={false}
                           autoMsg
                           items={this.auditFormItems}
                           submit={(dispatch: ReduxProps['dispatch'], values) => {
@@ -839,6 +839,7 @@ class ContestUserList extends React.Component<Props, State> {
               <GeneralFormModal
                 loadingEffect="contests/addContestUser"
                 title="Add Contest User"
+                maskClosable={false}
                 autoMsg
                 items={contestDetail?.team ? this.addTeamUserFormItems() : this.addUserFormItems()}
                 submit={(dispatch: ReduxProps['dispatch'], values) => {

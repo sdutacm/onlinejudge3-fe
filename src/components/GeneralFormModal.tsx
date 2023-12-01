@@ -20,6 +20,7 @@ export interface IGeneralFormModalProps extends ReduxProps, FormProps {
   autoMsg?: boolean;
   className?: string;
   disabled?: boolean;
+  maskClosable?: boolean;
   submit(dispatch: ReduxProps['dispatch'], values): Promise<IApiResponse<any>>;
   onSuccess?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
   onSuccessModalClosed?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
@@ -94,6 +95,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
       okText,
       cancelText,
       className,
+      maskClosable,
     } = this.props;
 
     return (
@@ -109,6 +111,7 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
           confirmLoading={loadings[loadingEffect] || false}
           onOk={this.handleOk}
           onCancel={this.handleHideModel}
+          maskClosable={maskClosable}
         >
           <GeneralForm form={form} items={items} initialValues={initialValues} />
         </Modal>

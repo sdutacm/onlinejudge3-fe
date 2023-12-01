@@ -35,6 +35,9 @@ class ContestUserListPage extends React.Component<Props, State> {
     } = this.props;
     return (
       <PageAnimation>
+        <h4 className="mb-md-lg">
+          Participants of {id} - {contestDetail?.title || '-'}
+        </h4>
         <ContestUserList
           id={id}
           data={data}

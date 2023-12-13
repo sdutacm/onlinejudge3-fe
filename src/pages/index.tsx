@@ -15,6 +15,7 @@ import TimeStatusBadge from '@/components/TimeStatusBadge';
 import gStyles from '@/general.less';
 import PageTitle from '@/components/PageTitle';
 import SdutpcLogoSvg from '../assets/images/sdutpc_logo.svg';
+import AzurSeriesLogoSvg from '../assets/images/azur-series-logo-full.svg';
 import ExtLink from '@/components/ExtLink';
 
 const TOP_NUM = 5;
@@ -118,6 +119,47 @@ class Index extends React.Component<Props, State> {
                       <div>
                         <ExtLink href="https://rl.algoux.org/ranklist/sdutpc15">View Ranklist</ExtLink>
                       </div>
+                    </div>
+                  </div>
+                }
+                type="info"
+                showIcon={false}
+              />
+            </Col>}
+
+            {/* Banner for Azur Series */}
+            {<Col xs={24} className="mt-lg">
+              <Alert
+                message={
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div>
+                      <i>
+                        <AzurSeriesLogoSvg
+                          className="svg-fill mt-md"
+                          width={220}
+                          height={70}
+                          viewBox="0 0 1320 420"
+                        />
+                      </i>
+                    </div>
+                    <div className="ml-xl">
+                      {/* Pending */}
+                      <h3 className="mb-sm">蔚蓝系列赛 Azur Series - Sponsored by bLue 现已启动！</h3>
+                      <div>
+                        <ExtLink href="https://as.shaly.best">
+                          立即报名
+                        </ExtLink>
+                      </div>
+                      {/* <div>
+                        <Link to={urlf(pages.competitions.home, { param: { id: tbd } })}>
+                          进入比赛
+                        </Link>
+                      </div> */}
+                      {/* Ended */}
+                      {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
+                      <div>
+                        <ExtLink href="https://rl.algoux.cn/ranklist/tbd?">View Ranklist</ExtLink>
+                      </div> */}
                     </div>
                   </div>
                 }

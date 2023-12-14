@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "gulp dev",
-    "start": "umi dev",
+    "start": "cross-env BROWSER=none umi dev",
     "dup-less": "gulp dup-less",
     "build": "umi build",
     "build:cdn": "umi build && node tasks/upload-cdn.js",

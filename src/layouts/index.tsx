@@ -360,11 +360,6 @@ class Index extends React.Component<Props, State> {
                   </ExtLink>
                 </p>
                 <p>
-                  <ExtLink className="normal-text-link" href="https://ab.algoux.org?from=sdutoj">
-                    Algo Bootstrap - The New Coding Experience
-                  </ExtLink>
-                </p>
-                <p>
                   <ExtLink className="normal-text-link" href="https://contests.sdutacm.cn/">
                     Contests API
                   </ExtLink>

@@ -82,7 +82,7 @@ export default {
     setRanklist(state, { payload: { id, data } }) {
       state.ranklist[id] = {
         ...data,
-        ...genTimeFlag(25 * 1000),
+        ...genTimeFlag(15 * 1000),
       };
     },
     clearExpiredRanklist(state) {

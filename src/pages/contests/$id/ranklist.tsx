@@ -176,7 +176,7 @@ class ContestRanklist extends React.Component<Props, State> {
     setTimeout(() => {
       router.replace({
         pathname: this.props.location.pathname,
-        query: { ...this.props.location.query, god: god || undefined },
+        query: { ...this.props.location.query, god: god ? 'true' : undefined },
       });
       this.refreshRanklist(god);
     }, constants.switchAnimationDuration);

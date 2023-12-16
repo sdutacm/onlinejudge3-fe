@@ -79,7 +79,6 @@ class CompetitionRanklist extends React.Component<Props, State> {
   }
 
   refreshRanklist = (god?: boolean) => {
-    // console.log('refreshRank');
     this.props.dispatch({
       type: 'competitions/getRanklist',
       payload: {
@@ -174,7 +173,7 @@ class CompetitionRanklist extends React.Component<Props, State> {
     setTimeout(() => {
       router.replace({
         pathname: this.props.location.pathname,
-        query: { ...this.props.location.query, god: god || undefined },
+        query: { ...this.props.location.query, god: god ? 'true' : undefined },
       });
       this.refreshRanklist(god);
     }, constants.switchAnimationDuration);
@@ -224,7 +223,7 @@ class CompetitionRanklist extends React.Component<Props, State> {
                 <Ranklist
                   id={id}
                   data={ranklist}
-                  contest={detail}
+                  competition={detail}
                   loading={ranklistLoading}
                   problemNum={problems.count || 0}
                   session={session}

@@ -14,6 +14,7 @@ import { getRatingLevel } from '@/utils/rating';
 import tracker from '@/utils/tracker';
 import moment from 'moment';
 import { aoa2Excel } from '@/utils/misc';
+import { ICompetition } from '@/common/interfaces/competition';
 
 const cached = {
   showAll: false,
@@ -22,7 +23,8 @@ const cached = {
 export interface Props extends RouteProps {
   id: number;
   data: IRanklist;
-  contest: IContest;
+  contest?: IContest;
+  competition?: ICompetition;
   loading: boolean;
   problemNum: number;
   userCellRender: (user: IUser) => React.ReactNode;
@@ -112,12 +114,13 @@ class Ranklist extends React.Component<Props, State> {
   };
 
   handleExport = async () => {
-    const { id, data, contest, problemNum } = this.props;
-    if (!data || !contest || this.exportLoading) {
+    const { id, data, contest, competition, problemNum } = this.props;
+    const c = competition || contest;
+    if (!data || !c || this.exportLoading) {
       return;
     }
     tracker.event({
-      category: 'contests',
+      category: competition ? 'competitions' : 'contests',
       action: 'exportRanklist',
     });
     this.exportLoading = true;
@@ -127,8 +130,8 @@ class Ranklist extends React.Component<Props, State> {
         .map((value, index) => index);
       const aoa: any[][] = [
         [
-          `${contest.title} (${moment(contest.startAt).format('YYYY-MM-DD HH:mm:ss')} ~ ${moment(
-            contest.endAt,
+          `${c.title} (${moment(c.startAt).format('YYYY-MM-DD HH:mm:ss')} ~ ${moment(
+            c.endAt,
           ).format('YYYY-MM-DD HH:mm:ss')})`,
         ],
         [
@@ -165,7 +168,7 @@ class Ranklist extends React.Component<Props, State> {
         aoa.push(row);
       });
       console.log(aoa);
-      aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} contest_ranklist_${id}.xlsx`);
+      aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} ${competition ? 'competition' : 'contest'}_ranklist_${id}.xlsx`);
     } finally {
       this.exportLoading = false;
     }
@@ -316,7 +319,7 @@ class Ranklist extends React.Component<Props, State> {
             render={(text, record: IRanklistRow) => (
               <div>
                 <Link
-                  to={urlf(pages.contests.solutions, {
+                  to={urlf(this.props.competition ? pages.competitions.solutions : pages.contests.solutions, {
                     param: { id },
                     query: { userId: record.user && record.user.userId },
                   })}
@@ -356,6 +359,9 @@ class Ranklist extends React.Component<Props, State> {
                   extraText = statText;
                   statText = `${stat.score}`;
                 }
+                if (useScore) {
+                  classList.push('stat-type-score');
+                }
                 switch (stat.result) {
                   case 'AC':
                     classList.push('accepted');
@@ -373,7 +379,7 @@ class Ranklist extends React.Component<Props, State> {
                 return (
                   <div className={classNames('stat-inner', classList)}>
                     <div>
-                      <p>{statText}</p>
+                      <p className="stat-inner-text">{statText}</p>
                       {!!extraText && <p className="stat-inner-extra">{extraText}</p>}
                     </div>
                   </div>

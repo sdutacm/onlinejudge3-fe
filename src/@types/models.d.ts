@@ -231,9 +231,10 @@ interface IContestUser {
 }
 
 interface IRanklistProblemResultStat {
-  result: 'FB' | 'AC' | 'X' | '-' | '?';
-  attempted: number;
+  result: 'FB' | 'AC' | 'RJ' | '?' | null;
+  tries: number;
   time: number;
+  score?: number;
 }
 
 interface IRanklistRow {
@@ -243,7 +244,7 @@ interface IRanklistRow {
     oldRating?: number;
     newRating?: number;
   };
-  solved: number;
+  score: number;
   time: number;
   stats: IRanklistProblemResultStat[];
   _self?: boolean;

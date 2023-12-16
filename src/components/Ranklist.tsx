@@ -34,6 +34,7 @@ export interface Props extends RouteProps {
   rating?: boolean;
   allowGodView?: boolean;
   godView?: boolean;
+  useScore?: boolean;
   handleGodViewChange?: (god: boolean) => any;
 }
 
@@ -134,7 +135,7 @@ class Ranklist extends React.Component<Props, State> {
           'Rank',
           'Username',
           'Nickname',
-          'Solved',
+          'Score',
           'Time',
           ...problemIndex.map((pIndex) => numberToAlphabet(pIndex)),
         ],
@@ -144,14 +145,14 @@ class Ranklist extends React.Component<Props, State> {
           d.rank,
           d.user?.username || '',
           d.user?.nickname || '',
-          d.solved,
+          d.score,
           Math.floor(d.time / 60),
         ];
         problemIndex.map((pIndex) => {
           const stat = d.stats[pIndex];
           let statText = '';
-          if (stat.attempted) {
-            statText = `${stat.attempted}`;
+          if (stat.tries) {
+            statText = `${stat.tries}`;
           }
           if (stat.result === 'AC' || stat.result === 'FB') {
             statText += `/${Math.floor(stat.time / 60)}`;
@@ -182,6 +183,7 @@ class Ranklist extends React.Component<Props, State> {
       location: { query },
       rating,
       allowGodView,
+      useScore,
     } = this.props;
     const { contentWidth, showAll } = this.state;
     // const contentWidth = 0;
@@ -306,8 +308,8 @@ class Ranklist extends React.Component<Props, State> {
           )}
 
           <Table.Column
-            title="Slv."
-            key="Solved"
+            title="Score"
+            key="Score"
             align="right"
             width={width.solved}
             fixed={canFixLeft}
@@ -319,7 +321,7 @@ class Ranklist extends React.Component<Props, State> {
                     query: { userId: record.user && record.user.userId },
                   })}
                 >
-                  {record.solved}
+                  {record.score}
                 </Link>
               </div>
             )}
@@ -342,12 +344,17 @@ class Ranklist extends React.Component<Props, State> {
               render={(text, record: IRanklistRow) => {
                 const stat = record.stats[index];
                 let statText = '';
+                let extraText = '';
                 const classList: string[] = [];
-                if (stat.attempted) {
-                  statText = `${stat.attempted}`;
+                if (stat.tries) {
+                  statText = `${stat.tries}`;
                 }
                 if (stat.result === 'AC' || stat.result === 'FB') {
                   statText += `/${Math.floor(stat.time / 60)}`;
+                }
+                if (useScore && typeof stat.score === 'number') {
+                  extraText = statText;
+                  statText = `${stat.score}`;
                 }
                 switch (stat.result) {
                   case 'AC':
@@ -356,7 +363,7 @@ class Ranklist extends React.Component<Props, State> {
                   case 'FB':
                     classList.push('fb');
                     break;
-                  case 'X':
+                  case 'RJ':
                     classList.push('failed');
                     break;
                   case '?':
@@ -365,7 +372,10 @@ class Ranklist extends React.Component<Props, State> {
                 }
                 return (
                   <div className={classNames('stat-inner', classList)}>
-                    <span>{statText}</span>
+                    <div>
+                      <p>{statText}</p>
+                      {!!extraText && <p className="stat-inner-extra">{extraText}</p>}
+                    </div>
                   </div>
                 );
               }}

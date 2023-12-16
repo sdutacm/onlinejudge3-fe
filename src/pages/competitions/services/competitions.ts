@@ -53,9 +53,10 @@ import {
   IGetSelfCompetitionQuestionsResp,
   ICreateCompetitionQuestionReq,
   IReplyCompetitionQuestionReq,
+  IGetCompetitionRanklistReq,
+  IGetCompetitionRanklistResp,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
-import data from '@/pages/admin/problems/$id/data';
 import {
   IGetCompetitionBalloonsReq,
   IGetCompetitionBalloonsResp,
@@ -379,5 +380,12 @@ export function replyCompetitionQuestion(competitionId, competitionQuestionId, d
     ...data,
     competitionId,
     competitionQuestionId,
+  });
+}
+
+export function getCompetitionRanklist(competitionId, god = false) {
+  return post<IGetCompetitionRanklistReq, IGetCompetitionRanklistResp>(routesBe.getCompetitionRanklist.url, {
+    competitionId,
+    god,
   });
 }

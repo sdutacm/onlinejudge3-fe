@@ -10,7 +10,6 @@ import {
   ICompetitionSettings,
   ICompetitionUser,
 } from '@/common/interfaces/competition';
-import { ECompetitionUserRole } from '@/common/enums';
 
 function genInitialState() {
   return {
@@ -30,6 +29,8 @@ function genInitialState() {
     users: {},
     notifications: {},
     questions: {},
+    ranklist: {},
+    ratingStatus: {},
   };
 }
 
@@ -143,6 +144,15 @@ export default {
     },
     clearExpiredQuestions(state) {
       state.questions = clearExpiredStateProperties(state.questions);
+    },
+    setRanklist(state, { payload: { id, data } }) {
+      state.ranklist[id] = {
+        ...data,
+        ...genTimeFlag(25 * 1000),
+      };
+    },
+    clearExpiredRanklist(state) {
+      state.ranklist = clearExpiredStateProperties(state.ranklist);
     },
   },
   effects: {
@@ -554,6 +564,29 @@ export default {
     },
     *replyCompetitionQuestion({ payload: { id, competitionQuestionId, data } }, { call }) {
       return yield call(service.replyCompetitionQuestion, id, competitionQuestionId, data);
+    },
+    *getRanklist({ payload: { id, god, force = false } }, { call, put, select }) {
+      // if (!force) {
+      //   const savedState = yield select((state) => state.contests.ranklist[id]);
+      //   if (!isStateExpired(savedState)) {
+      //     return;
+      //   }
+      // }
+      const ret: IApiResponse<IFullList<IRanklistRow>> = yield call(service.getCompetitionRanklist, id, god);
+      if (ret.success) {
+        // 应先 clear，防止 set 时间过长导致又被 clear 掉
+        yield put({
+          type: 'clearExpiredRanklist',
+        });
+        yield put({
+          type: 'setRanklist',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
     },
   },
   subscriptions: {

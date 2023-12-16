@@ -158,3 +158,14 @@ export function formatCompetitionUserSeatId({
   }
   return `${fieldShortName}-${seatNo}`;
 }
+
+export function getReadableVarScoreExpression(exp: string): string {
+  return exp
+    .replace(/Math\./g, '')
+    .replace(/\$score/g, '{Base Score}')
+    .replace(/\$problemIndex/g, '{Problem Index}')
+    .replace(/\$elapsedTime\.h/g, '{Elapsed Hours}')
+    .replace(/\$elapsedTime\.min/g, '{Elapsed Minutes}')
+    .replace(/\$elapsedTime\.s/g, '{Elapsed Seconds}')
+    .replace(/\$tries/g, '{Tries}');
+}

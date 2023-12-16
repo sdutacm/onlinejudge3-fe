@@ -121,6 +121,13 @@ interface IProblem {
   updatedAt: ITimestamp;
 }
 
+interface ICompetitionProblem extends IProblem {
+  ballonAlias: string;
+  ballonColor: string;
+  score: number | null;
+  varScoreExpression: string;
+}
+
 interface IProblemLite {
   problemId: number;
   title: string;

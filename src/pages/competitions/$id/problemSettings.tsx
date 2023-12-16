@@ -8,19 +8,23 @@ import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import { getPathParamId } from '@/utils/getPathParams';
-import { Button, Form, Row, Col, Card, Table, Input, Icon } from 'antd';
+import { Button, Form, Row, Col, Card, Table, Input, Icon, Tag } from 'antd';
 import msg from '@/utils/msg';
 import PageLoading from '@/components/PageLoading';
 import { isEqual, noop } from 'lodash';
 import { numberToAlphabet } from '@/utils/format';
 import AddItemByIdCard from '@/components/AddItemByIdCard';
 import classNames from 'classnames';
+import Explanation from '@/components/Explanation';
+import CopyToClipboardWrapper from '@/components/CopyToClipboardWrapper';
 
 interface IProblemConfig {
   problemId: number;
   balloonAlias: string;
   balloonColor: string;
   title: string;
+  score: string;
+  varScoreExpression: string;
 }
 
 export interface Props extends ReduxProps, RouteProps {
@@ -72,6 +76,28 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
     });
   };
 
+  handleScoreChange = (value, index) => {
+    const newData = [...this.state.data];
+    newData.splice(index, 1, {
+      ...this.state.data[index],
+      score: value,
+    });
+    this.setState({
+      data: newData,
+    });
+  };
+
+  handlevarScoreExpressionChange = (value, index) => {
+    const newData = [...this.state.data];
+    newData.splice(index, 1, {
+      ...this.state.data[index],
+      varScoreExpression: value,
+    });
+    this.setState({
+      data: newData,
+    });
+  };
+
   handleMove = (fromIndex, toIndex) => {
     if (fromIndex > toIndex) {
       [toIndex, fromIndex] = [fromIndex, toIndex];
@@ -112,6 +138,8 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
               title: ret.data?.title || '',
               balloonAlias: '',
               balloonColor: '',
+              score: '',
+              varScoreExpression: '',
             },
           ],
         });
@@ -136,8 +164,10 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
         data: {
           problems: this.state.data.map((item) => ({
             problemId: item.problemId,
-            balloonAlias: item.balloonAlias,
-            balloonColor: item.balloonColor,
+            balloonAlias: item.balloonAlias || '',
+            balloonColor: item.balloonColor || '',
+            score: item.score === '' ? null : +item.score || 0,
+            varScoreExpression: item.varScoreExpression || '',
           })),
         },
       },
@@ -249,6 +279,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                   <Table.Column
                     title="Balloon Alias"
                     key="BalloonAlias"
+                    width={140}
                     render={(text, record: IProblemConfig, index) => (
                       <div>
                         <Input
@@ -262,6 +293,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                   <Table.Column
                     title="Balloon Color"
                     key="BalloonColor"
+                    width={140}
                     render={(text, record: IProblemConfig, index) => (
                       <div>
                         <Input
@@ -269,6 +301,80 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                           onChange={(e) => this.handleBalloonColorChange(e.target.value, index)}
                           placeholder="e.g., #0099FF"
                         />
+                      </div>
+                    )}
+                  />
+                  <Table.Column
+                    title={
+                      <span>
+                        Score (for specific rules which contain score support)
+                        <Explanation className="ml-sm-md">
+                          You can configure score to customize problem-level score.
+                          <br />
+                          If you need a dynamic score algorithm, set "Variable Score Expression",
+                          which is a JavaScript expression.
+                          <br />
+                          The following variable placeholders are available:
+                          <ul>
+                            <li>
+                              <CopyToClipboardWrapper text="$score">
+                                <Tag>$score</Tag>
+                              </CopyToClipboardWrapper>
+                              : The configured score of current problem
+                            </li>
+                            <li>
+                              <CopyToClipboardWrapper text="$problemIndex">
+                                <Tag>$problemIndex</Tag>
+                              </CopyToClipboardWrapper>
+                              : The index of current problem
+                            </li>
+                            <li>
+                              <CopyToClipboardWrapper text="$elapsedTime.h">
+                                <Tag>$elapsedTime.h</Tag>
+                              </CopyToClipboardWrapper>
+                              : The elapsed time (converted to hour unit, rounded down)
+                            </li>
+                            <li>
+                              <CopyToClipboardWrapper text="$elapsedTime.min">
+                                <Tag>$elapsedTime.min</Tag>
+                              </CopyToClipboardWrapper>
+                              : The elapsed time (converted to minute unit, rounded down)
+                            </li>
+                            <li>
+                              <CopyToClipboardWrapper text="$elapsedTime.s">
+                                <Tag>$elapsedTime.s</Tag>
+                              </CopyToClipboardWrapper>
+                              : The elapsed time (converted to second unit, rounded down)
+                            </li>
+                            <li>
+                              <CopyToClipboardWrapper text="$tries">
+                                <Tag>$tries</Tag>
+                              </CopyToClipboardWrapper>
+                              : The number of tries before the user first AC
+                            </li>
+                          </ul>
+                        </Explanation>
+                      </span>
+                    }
+                    key="Score"
+                    render={(text, record: IProblemConfig, index) => (
+                      <div>
+                        <div>
+                          <Input
+                            value={record.score}
+                            onChange={(e) => this.handleScoreChange(e.target.value, index)}
+                            placeholder="Score"
+                          />
+                        </div>
+                        <div className="mt-sm">
+                          <Input.TextArea
+                            value={record.varScoreExpression}
+                            onChange={(e) =>
+                              this.handlevarScoreExpressionChange(e.target.value, index)
+                            }
+                            placeholder="Variable Score Expression"
+                          />
+                        </div>
                       </div>
                     )}
                   />
@@ -306,7 +412,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                           className="ml-md-lg text-danger"
                           onClick={() => this.handleDelete(index)}
                         >
-                          Delete
+                          Del
                         </a>
                       </div>
                     )}

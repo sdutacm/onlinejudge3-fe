@@ -34,6 +34,7 @@ export interface IGeneralFormItem {
     value: string | number | boolean;
     name: string;
   }[];
+  multiple?: boolean; // for select
   transformBeforeSubmit?: (value) => any;
 }
 
@@ -129,7 +130,7 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                     rules: item.rules,
                     initialValue: initialValues[item.field] || item.initialValue,
                   })(
-                    <Select placeholder={item.placeholder} disabled={item.disabled}>
+                    <Select placeholder={item.placeholder} disabled={item.disabled} mode={item.multiple ? 'multiple' : undefined}>
                       {item.options.map((opt) => (
                         <Select.Option key={`${opt.value}`}>{opt.name}</Select.Option>
                       ))}

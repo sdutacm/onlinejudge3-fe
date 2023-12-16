@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Row, Col, Card, Icon } from 'antd';
+import { Table, Pagination, Row, Col, Card, Icon, Tag } from 'antd';
 import router from 'umi/router';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
@@ -89,6 +89,9 @@ class CompetitionList extends React.Component<Props, State> {
                         >
                           {proMode ? `${record.competitionId} - ` : ''}
                           {record.title}
+                          {record.rule === 'ICPC' && <Tag color="blue" className="cursor-default ml-md mr-none">ICPC</Tag>}
+                          {record.rule === 'ICPCWithScore' && <Tag color="blue" className="cursor-default ml-md mr-none">ICPC + Score</Tag>}
+                          {record.isRating && <Tag color="purple" className="cursor-default ml-md mr-none">Rating</Tag>}
                         </Link>
                       </div>
                       <div className="listlike-table-info-secondary">

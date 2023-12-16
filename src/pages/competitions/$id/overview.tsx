@@ -26,6 +26,8 @@ import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import GeneralFormModal from '@/components/GeneralFormModal';
+import Explanation from '@/components/Explanation';
+import { getReadableVarScoreExpression } from '@/utils/competition';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -34,7 +36,7 @@ export interface Props extends ReduxProps {
   detailLoading: boolean;
   detail: ICompetition;
   problemsLoading: boolean;
-  problems: IFullList<IProblem>;
+  problems: IFullList<ICompetitionProblem>;
   userProblemResultStats: IUserProblemResultStats;
   competitionProblemResultStats: IContestProblemResultStats;
   notifications: ICompetitionNotification[];
@@ -201,6 +203,7 @@ class CompetitionOverview extends React.Component<Props, State> {
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
+    const useScore = ['ICPCWithScore'].includes(detail.rule);
 
     return (
       <PageAnimation>
@@ -262,7 +265,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                     loading={problemsLoading}
                     pagination={false}
                     className="responsive-table"
-                    rowClassName={(record: IProblem) =>
+                    rowClassName={(record: ICompetitionProblem) =>
                       classNames(
                         'problem-result-mark-row',
                         { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
@@ -273,14 +276,14 @@ class CompetitionOverview extends React.Component<Props, State> {
                     <Table.Column
                       title=""
                       key="Index"
-                      render={(text, record: IProblem, index) => (
+                      render={(text, record: ICompetitionProblem, index) => (
                         <div>{numberToAlphabet(index)}</div>
                       )}
                     />
                     <Table.Column
                       title="Title"
                       key="Title"
-                      render={(text, record: IProblem, index) => (
+                      render={(text, record: ICompetitionProblem, index) => (
                         <div>
                           <Link
                             to={urlf(pages.competitions.problemDetail, {
@@ -292,11 +295,28 @@ class CompetitionOverview extends React.Component<Props, State> {
                         </div>
                       )}
                     />
+                    {useScore && (
+                      <Table.Column
+                        title="Score"
+                        key="Score"
+                        render={(text, record: ICompetitionProblem, index) => (
+                          <div>
+                            {record.score ?? '-'}
+                            {typeof record.score === 'number' && (
+                              <Explanation className="ml-sm-md">
+                                <p className="mb-sm">Base Score: {record.score}</p>
+                                {!!record.varScoreExpression && <p>Score Rule: {getReadableVarScoreExpression(record.varScoreExpression)}</p>}
+                              </Explanation>
+                            )}
+                          </div>
+                        )}
+                      />
+                    )}
                     <Table.Column
                       title="Stats"
                       key="Statistics"
                       className="no-wrap"
-                      render={(text, record: IProblem) => {
+                      render={(text, record: ICompetitionProblem) => {
                         if (!competitionProblemResultStats[record.problemId]) {
                           return null;
                         }

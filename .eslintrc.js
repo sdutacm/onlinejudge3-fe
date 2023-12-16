@@ -56,6 +56,7 @@ module.exports = {
     'max-depth': 'off',
     'max-params': 'off',
     'no-return-assign': 'off',
+    'no-empty': 'off',
 
     // TypeScript
     // '@typescript-eslint/indent': [

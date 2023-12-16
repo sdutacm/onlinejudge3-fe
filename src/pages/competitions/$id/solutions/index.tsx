@@ -134,8 +134,7 @@ class CompetitionSolutions extends React.Component<Props, State> {
                   competitionId={id}
                   problemList={problemList}
                   session={session}
-                  // rating={detail.mode === ContestModes.Rating}
-                  rating={false}
+                  rating={detail.isRating}
                   showId={proMode}
                 />
               </Card>

@@ -300,8 +300,8 @@ class SolutionTable extends React.Component<Props, State> {
               <UserBar
                 user={record.user}
                 isContestUser={record.contest && record.contest.type === ContestTypes.Register}
-                showAsText={!!competitionId}
-                hideAvatar={!!competitionId}
+                // showAsText={!!competitionId}
+                // hideAvatar={!!competitionId}
                 showRating={rating}
               />
             )}

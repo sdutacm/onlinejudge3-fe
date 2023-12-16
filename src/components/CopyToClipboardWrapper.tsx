@@ -1,11 +1,11 @@
 import React from 'react';
-import { Tooltip, Icon } from 'antd';
+import { Tooltip } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import tracker from '@/utils/tracker';
 
 export interface Props {
   text: string; // text to copy
   addNewLine: boolean; // whether auto-add '\n' at the end of the text
+  children?: React.ReactNode;
 }
 
 interface State {
@@ -13,7 +13,7 @@ interface State {
   copied: boolean;
 }
 
-export default class CopyToClipboardButton extends React.Component<Props, State> {
+export default class CopyToClipboardWrapper extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
     text: '',
     addNewLine: false,
@@ -41,13 +41,9 @@ export default class CopyToClipboardButton extends React.Component<Props, State>
           onCopy={(text: string, result: boolean) => {
             if (result) {
               this.setState({ copied: true });
-              tracker.event({
-                category: 'component.CopyToClipboardButton',
-                action: 'copy',
-              });
             }
           }}>
-          <Icon type="copy" theme="outlined" className="pointer" />
+          {this.props.children}
         </CopyToClipboard>
       </Tooltip>
     );

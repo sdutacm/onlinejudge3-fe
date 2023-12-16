@@ -1,4 +1,4 @@
-interface IApiResponse<T = undefined> {
+interface IApiResponse<T = any> {
   success: boolean;
   code?: number;
   msg?: string;

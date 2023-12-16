@@ -84,6 +84,40 @@ class AdminCompetitionList extends React.Component<Props, State> {
         rules: [],
       },
       {
+        name: 'Rule',
+        field: 'rule',
+        component: 'select',
+        initialValue: detail?.rule ?? 'ICPC',
+        options: [
+          {
+            value: 'ICPC',
+            name: 'ICPC',
+          },
+          {
+            value: 'ICPCWithScore',
+            name: 'ICPC + Score',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'Rating Mode',
+        field: 'isRating',
+        component: 'select',
+        initialValue: `${!!(detail?.isRating ?? false)}`,
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
         name: 'Team Competition',
         field: 'isTeam',
         component: 'select',
@@ -149,7 +183,9 @@ class AdminCompetitionList extends React.Component<Props, State> {
       endAt: values.endAt.toISOString(),
       registerStartAt: values.registerStartAt ? values.registerStartAt.toISOString() : null,
       registerEndAt: values.registerEndAt ? values.registerEndAt.toISOString() : null,
+      rule: values.rule,
       isTeam: values.isTeam === 'true',
+      isRating: values.isRating === 'true',
       introduction: values.introduction.toHTML(),
       // frozenLength: +values.frozenLength || 0,
       hidden: values.hidden === 'true',
@@ -275,7 +311,7 @@ class AdminCompetitionList extends React.Component<Props, State> {
                   dispatch: ReduxProps['dispatch'],
                   ret: IApiResponse<{ competitionId: number }>,
                 ) => {
-                  msg.success(`Create competition #${ret.data.competitionId} successfully`);
+                  msg.success(`Created, please manage to confirm settings`);
                 }}
                 onSuccessAndClosed={(dispatch: ReduxProps['dispatch'], ret: IApiResponse) => {
                   dispatch({

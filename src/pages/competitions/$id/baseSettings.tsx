@@ -55,18 +55,52 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
         rules: [{ required: true }],
       },
       {
-        name: 'Register Start at',
+        name: 'Register Start at (only for Register)',
         field: 'registerStartAt',
         component: 'datetime',
         initialValue: detail?.registerStartAt || undefined,
         rules: [],
       },
       {
-        name: 'Register End at',
+        name: 'Register End at (only for Register)',
         field: 'registerEndAt',
         component: 'datetime',
         initialValue: detail?.registerEndAt || undefined,
         rules: [],
+      },
+      {
+        name: 'Rule',
+        field: 'rule',
+        component: 'select',
+        initialValue: detail?.rule ?? 'ICPC',
+        options: [
+          {
+            value: 'ICPC',
+            name: 'ICPC',
+          },
+          {
+            value: 'ICPCWithScore',
+            name: 'ICPC + Score',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'Rating Mode',
+        field: 'isRating',
+        component: 'select',
+        initialValue: `${!!(detail?.isRating ?? false)}`,
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
       },
       {
         name: 'Team Competition',
@@ -86,7 +120,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
         rules: [{ required: true }],
       },
       {
-        name: 'Introduction',
+        name: 'Introduction (visible to all, for promotion)',
         field: 'introduction',
         component: 'richtext',
         initialValue: detail?.introduction || '',
@@ -124,7 +158,97 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
         rules: [],
       },
       {
-        name: 'External Ranklist URL',
+        name: 'Allowed Join Methods (for participants)',
+        field: 'allowedJoinMethods',
+        component: 'select',
+        multiple: true,
+        initialValue: settings?.allowedJoinMethods || [],
+        options: [
+          {
+            value: 'register',
+            name: 'Register',
+          },
+          {
+            value: 'public',
+            name: 'Public',
+          },
+          {
+            value: 'password',
+            name: 'Password',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'Allowed Auth Methods (for participants)',
+        field: 'allowedAuthMethods',
+        component: 'select',
+        multiple: true,
+        initialValue: settings?.allowedAuthMethods || [],
+        options: [
+          {
+            value: 'session',
+            name: 'Session',
+          },
+          {
+            value: 'password',
+            name: 'Password',
+          },
+          {
+            value: 'ip',
+            name: 'Bound IP',
+          },
+          {
+            value: 'assistant',
+            name: 'Field Assistantant',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'Join Password',
+        field: 'joinPassword',
+        component: 'input',
+        initialValue: settings?.joinPassword || '',
+        placeholder: 'Required when allowed join methods contain `password`',
+        rules: [],
+      },
+      {
+        name: 'Allow Any Observation',
+        field: 'allowAnyObservation',
+        component: 'select',
+        initialValue: `${!!(settings?.allowAnyObservation ?? false)}`,
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'Use One-time Participant Password',
+        field: 'useOnetimePassword',
+        component: 'select',
+        initialValue: `${!!(settings?.useOnetimePassword ?? false)}`,
+        options: [
+          {
+            value: true,
+            name: 'Yes',
+          },
+          {
+            value: false,
+            name: 'No',
+          },
+        ],
+        rules: [{ required: true }],
+      },
+      {
+        name: 'External Ranklist URL (optional)',
         field: 'externalRanklistUrl',
         component: 'input',
         initialValue: settings?.externalRanklistUrl || '',
@@ -141,7 +265,9 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
       endAt: values.endAt.toISOString(),
       registerStartAt: values.registerStartAt ? values.registerStartAt.toISOString() : null,
       registerEndAt: values.registerEndAt ? values.registerEndAt.toISOString() : null,
+      rule: values.rule,
       isTeam: values.isTeam === 'true',
+      isRating: values.isRating === 'true',
       introduction: values.introduction.toHTML(),
       hidden: values.hidden === 'true',
     };
@@ -150,6 +276,11 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
   getHandledSettingsDataFromForm(values) {
     return {
       frozenLength: +values.frozenLength || 0,
+      allowedJoinMethods: values.allowedJoinMethods || [],
+      allowedAuthMethods: values.allowedAuthMethods || [],
+      allowAnyObservation: values.allowAnyObservation === 'true',
+      useOnetimePassword:  values.useOnetimePassword === 'true',
+      joinPassword: values.joinPassword || '',
       externalRanklistUrl: values.externalRanklistUrl || '',
     };
   }
@@ -164,6 +295,8 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
       if (!err) {
         const detailData = this.getHandledDetailDataFromForm(values);
         const settingsData = this.getHandledSettingsDataFromForm(values);
+        console.log('to update detail:', detailData);
+        console.log('to update settings:', settingsData);
         return Promise.all([
           this.props.dispatch({
             type: 'competitions/updateCompetitionDetail',

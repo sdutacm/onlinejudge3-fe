@@ -87,8 +87,7 @@ class CompetitionSolutionDetail extends React.Component<Props, State> {
       dispatch={dispatch}
       competitionId={id}
       problemList={problemList}
-      // rating={detail.mode === ContestModes.Rating}
-      rating={false}
+      rating={detail.isRating}
     />;
   }
 }

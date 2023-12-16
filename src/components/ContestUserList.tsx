@@ -111,6 +111,7 @@ class ContestUserList extends React.Component<Props, State> {
       console.log('users', users);
       const aoa: any[][] = [
         [
+          'UserID',
           '用户名',
           '昵称',
           '二级昵称',
@@ -148,6 +149,7 @@ class ContestUserList extends React.Component<Props, State> {
       ];
       users.forEach((user) => {
         const row = [
+          user.globalUserId,
           user.username,
           user.nickname,
           user.subname || '',

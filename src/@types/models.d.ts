@@ -675,3 +675,13 @@ interface ICompetitionSessionStatus {
     role: number;
   };
 }
+
+interface ICompetitionProblemResultStats {
+  [key: number]: {
+    accepted: number;
+    submitted: number;
+    selfTries: number;
+    selfAccepted: boolean;
+    selfAcceptedTime: Date | null;
+  };
+}

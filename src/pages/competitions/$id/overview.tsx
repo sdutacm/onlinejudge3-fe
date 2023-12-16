@@ -28,6 +28,7 @@ import tracker from '@/utils/tracker';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import Explanation from '@/components/Explanation';
 import { getReadableVarScoreExpression } from '@/utils/competition';
+import { compileVarScoreExpression } from '@/common/utils/competition';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -38,7 +39,7 @@ export interface Props extends ReduxProps {
   problemsLoading: boolean;
   problems: IFullList<ICompetitionProblem>;
   userProblemResultStats: IUserProblemResultStats;
-  competitionProblemResultStats: IContestProblemResultStats;
+  competitionProblemResultStats: ICompetitionProblemResultStats;
   notifications: ICompetitionNotification[];
   notificationsLoading: boolean;
   questions: ICompetitionQuestion[];
@@ -148,6 +149,48 @@ class CompetitionOverview extends React.Component<Props, State> {
         initialValue: '',
       },
     ];
+  };
+
+  evalVarScoreExpression = (
+    score: number | null,
+    varScoreExpression: string,
+    detail: ICompetition,
+    problemIndex: number,
+    tries = 0,
+    acceptedTime?: Date | string,
+  ): number | null => {
+    if (typeof score !== 'number') {
+      return null;
+    }
+    if (!varScoreExpression) {
+      return score;
+    }
+
+    try {
+      const currentTime = Date.now() - ((window as any)._t_diff || 0);
+      const startTime = toLongTs(detail.startAt);
+      const elapsedMs = (acceptedTime ? toLongTs(acceptedTime) : currentTime) - startTime;
+      const expression = compileVarScoreExpression(varScoreExpression, {
+        score,
+        problemIndex,
+        elapsedTime: {
+          h: Math.floor(elapsedMs / 1000 / 60 / 60),
+          min: Math.floor(elapsedMs / 1000 / 60),
+          s: Math.floor(elapsedMs / 1000),
+        },
+        tries,
+      });
+      try {
+        // eslint-disable-next-line no-eval
+        return eval(expression);
+      } catch (e) {
+        console.error('failed to eval var score expression', varScoreExpression, expression, e);
+        return null;
+      }
+    } catch (e) {
+      console.error('unknown error while evaling var score expression', e);
+      return null;
+    }
   };
 
   render() {
@@ -301,11 +344,31 @@ class CompetitionOverview extends React.Component<Props, State> {
                         key="Score"
                         render={(text, record: ICompetitionProblem, index) => (
                           <div>
-                            {record.score ?? '-'}
+                            <span
+                              className={
+                                competitionProblemResultStats[record.problemId]?.selfAccepted
+                                  ? 'text-success'
+                                  : ''
+                              }
+                            >
+                              {this.evalVarScoreExpression(
+                                record.score,
+                                record.varScoreExpression,
+                                detail,
+                                index,
+                                competitionProblemResultStats[record.problemId]?.selfTries,
+                                competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
+                              ) ?? '-'}
+                            </span>
                             {typeof record.score === 'number' && (
                               <Explanation className="ml-sm-md">
                                 <p className="mb-sm">Base Score: {record.score}</p>
-                                {!!record.varScoreExpression && <p>Score Rule: {getReadableVarScoreExpression(record.varScoreExpression)}</p>}
+                                {!!record.varScoreExpression && (
+                                  <p>
+                                    Score Rule:{' '}
+                                    {getReadableVarScoreExpression(record.varScoreExpression)}
+                                  </p>
+                                )}
                               </Explanation>
                             )}
                           </div>

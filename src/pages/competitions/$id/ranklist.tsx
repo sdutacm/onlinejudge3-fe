@@ -202,7 +202,11 @@ class CompetitionRanklist extends React.Component<Props, State> {
     const ranklist = rows || ([] as IRanklist);
     const isRating = detail.isRating;
     const useScore = ['ICPCWithScore'].includes(detail.rule);
-    const canViewGodRanklist = [ECompetitionUserRole.admin, ECompetitionUserRole.principal, ECompetitionUserRole.judge].includes(selfUserDetail?.role);
+    const canViewGodRanklist = [
+      ECompetitionUserRole.admin,
+      ECompetitionUserRole.principal,
+      ECompetitionUserRole.judge,
+    ].includes(selfUserDetail?.role);
 
     return (
       <PageAnimation>
@@ -217,6 +221,9 @@ class CompetitionRanklist extends React.Component<Props, State> {
                     {moment(endTime).format('YYYY-MM-DD HH:mm')}
                   </span>
                 </p>
+                {!detail.ended && timeStatus === 'Ended' && isRating && (
+                  <h4 className="text-center mt-lg">Waiting for managers to confirm results and trigger settlements</h4>
+                )}
                 {detail.ended && isRating && this.renderRatingProgress()}
               </Card>
               <Card bordered={false} className="list-card">
@@ -227,12 +234,7 @@ class CompetitionRanklist extends React.Component<Props, State> {
                   loading={ranklistLoading}
                   problemNum={problems.count || 0}
                   session={session}
-                  userCellRender={(user) => (
-                    <UserBar
-                      user={user}
-                      showRating={isRating}
-                    />
-                  )}
+                  userCellRender={(user) => <UserBar user={user} showRating={isRating} />}
                   needAutoUpdate={true}
                   handleUpdate={this.refreshRanklist}
                   updateInterval={constants.ranklistUpdateInterval}

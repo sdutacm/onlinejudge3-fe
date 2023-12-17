@@ -177,6 +177,14 @@ export default {
       }
       return ret;
     },
+    *getListData({ payload: query }, { call }) {
+      const formattedQuery: IListQuery = {
+        order: [['competitionId', 'DESC']],
+        ...formatListQuery(query),
+      };
+      const ret: IApiResponse<IList<ICompetition>> = yield call(service.getList, formattedQuery);
+      return ret;
+    },
     *getSession({ payload: { id, force = false } }, { call, put, select }) {
       if (!force) {
         const savedState = yield select((state) => state.competitions.session[id]);

@@ -78,8 +78,12 @@ interface IDateCount {
 type ISolutionCalendar = IDateCount[];
 
 interface IRatingHistoryItem {
-  contest: {
+  contest?: {
     contestId: number;
+    title: string;
+  };
+  competition?: {
+    competitionId: number;
     title: string;
   };
   rank: number;
@@ -684,4 +688,11 @@ interface ICompetitionProblemResultStats {
     selfAccepted: boolean;
     selfAcceptedTime: Date | null;
   };
+}
+
+interface ICompetitionRatingStatus {
+  status: 0 | 1 | 2 | 3;
+  progress: number;
+  used: number;
+  totalUsed: number;
 }

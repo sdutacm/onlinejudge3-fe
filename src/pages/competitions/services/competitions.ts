@@ -55,6 +55,9 @@ import {
   IReplyCompetitionQuestionReq,
   IGetCompetitionRanklistReq,
   IGetCompetitionRanklistResp,
+  IGetCompetitionRatingStatusReq,
+  IGetCompetitionRatingStatusResp,
+  IEndCompetitionReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import {
@@ -387,5 +390,20 @@ export function getCompetitionRanklist(competitionId, god = false) {
   return post<IGetCompetitionRanklistReq, IGetCompetitionRanklistResp>(routesBe.getCompetitionRanklist.url, {
     competitionId,
     god,
+  });
+}
+
+export function getRatingStatus(competitionId) {
+  return post<IGetCompetitionRatingStatusReq, IGetCompetitionRatingStatusResp>(
+    routesBe.getCompetitionRatingStatus.url,
+    {
+      competitionId,
+    },
+  );
+}
+
+export function endCompetition(competitionId) {
+  return post<IEndCompetitionReq, void>(routesBe.endCompetition.url, {
+    competitionId,
   });
 }

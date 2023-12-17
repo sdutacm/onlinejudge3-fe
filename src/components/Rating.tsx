@@ -126,6 +126,7 @@ class Rating extends React.Component<Props, State> {
     else {
       minRating = levels[levels.length - 1].to;
       maxRating = levels[0].from;
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
       for (let i = 0; i < ratingHistory.length; ++i) {
         minRating = Math.min(minRating, ratingHistory[i]['rating']);
         maxRating = Math.max(maxRating, ratingHistory[i]['rating']);
@@ -152,6 +153,7 @@ class Rating extends React.Component<Props, State> {
     }
     this.selectedLevels = levels.slice(minLevel, maxLevel + 1);
     this.positions = [];
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < this.selectedLevels.length; ++i) {
       this.positions.push(this.selectedLevels[i].from);
     }
@@ -225,7 +227,7 @@ class Rating extends React.Component<Props, State> {
         },
         xDateFormat: '%Y-%m-%d',
         pointFormatter: function() {
-          return `${ratingHistory[this.index].contest.title}<br />
+          return `${ratingHistory[this.index].competition?.title ?? ratingHistory[this.index].contest?.title ?? '-'}<br />
             Rank: <b>${ratingHistory[this.index].rank}</b><br />
             ${this.series.name}: <b>${this.y}</b> (${ratingHistory[this.index].ratingChange >= 0 ? '+' : ''}${ratingHistory[this.index].ratingChange})`;
         },

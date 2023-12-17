@@ -154,6 +154,11 @@ export default {
     clearExpiredRanklist(state) {
       state.ranklist = clearExpiredStateProperties(state.ranklist);
     },
+    setRatingStatus(state, { payload: { id, data } }) {
+      state.ratingStatus[id] = {
+        ...data,
+      };
+    },
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
@@ -594,6 +599,23 @@ export default {
           },
         });
       }
+      return ret;
+    },
+    *getRatingStatus({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<ICompetitionRatingStatus> = yield call(service.getRatingStatus, id);
+      if (ret.success) {
+        yield put({
+          type: 'setRatingStatus',
+          payload: {
+            id,
+            data: ret.data,
+          },
+        });
+      }
+      return ret;
+    },
+    *endCompetition({ payload: { id } }, { call, put }) {
+      const ret = yield call(service.endCompetition, id);
       return ret;
     },
   },

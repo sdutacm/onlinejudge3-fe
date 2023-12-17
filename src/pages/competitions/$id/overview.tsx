@@ -46,6 +46,7 @@ export interface Props extends ReduxProps {
   questionsLoading: boolean;
   confirmEnterLoading: boolean;
   confirmQuitLoading: boolean;
+  endCompetitionLoading: boolean;
 }
 
 interface State {}
@@ -193,6 +194,30 @@ class CompetitionOverview extends React.Component<Props, State> {
     }
   };
 
+  endCompetition = () => {
+    const { id, dispatch } = this.props;
+    dispatch({
+      type: 'competitions/endCompetition',
+      payload: { id },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Ended');
+        tracker.event({
+          category: 'competitions',
+          action: 'end',
+        });
+        dispatch({
+          type: 'competitions/getDetail',
+          payload: {
+            id,
+            force: true,
+          },
+        });
+      }
+    });
+  };
+
   render() {
     const {
       id,
@@ -210,6 +235,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       questionsLoading,
       confirmEnterLoading,
       confirmQuitLoading,
+      endCompetitionLoading,
     } = this.props;
     // console.log(detailLoading, detail);
     // console.log(competitionProblemResultStats);
@@ -247,6 +273,10 @@ class CompetitionOverview extends React.Component<Props, State> {
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     const useScore = ['ICPCWithScore'].includes(detail.rule);
+    const canEndCompetition =
+      timeStatus === 'Ended' &&
+      !detail.ended &&
+      [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
 
     return (
       <PageAnimation>
@@ -284,6 +314,23 @@ class CompetitionOverview extends React.Component<Props, State> {
                 <p className="text-center">
                   <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
                 </p>
+                {canEndCompetition && (
+                  <p className="text-center">
+                    <Button
+                      type="danger"
+                      loading={detailLoading || endCompetitionLoading}
+                      onClick={this.endCompetition}
+                    >
+                      Confirm Result & End Competition
+                    </Button>
+                    <p className="text-center text-secondary mt-sm">
+                      <small>
+                        Once confirmed, it will release all frozen solutions, and will also trigger
+                        a settlement if it's Rating Mode.
+                      </small>
+                    </p>
+                  </p>
+                )}
                 {timeStatus === 'Pending' ? (
                   <Countdown
                     secs={Math.floor((startTime - currentTime) / 1000)}
@@ -560,6 +607,7 @@ function mapStateToProps(state) {
     confirmQuitLoading:
       state.loading.effects['competitions/confirmQuit'] ||
       state.loading.effects['competitions/getSelfUserDetail'],
+    endCompetitionLoading: !!state.loading.effects['competitions/endCompetition'],
   };
 }
 

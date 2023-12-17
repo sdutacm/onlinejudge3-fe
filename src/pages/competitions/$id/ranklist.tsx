@@ -134,7 +134,7 @@ class CompetitionRanklist extends React.Component<Props, State> {
         />
         <p className="contest-rating-status text-center">{text}</p>
         {status === ContestRatingStatus.DONE && used ? (
-          <p className="text-center text-secondary">cost {used} ms by Node.js</p>
+          <p className="text-center text-secondary">cost {used}ms by Node.js</p>
         ) : null}
       </div>
     );

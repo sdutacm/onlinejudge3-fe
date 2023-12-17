@@ -94,8 +94,8 @@ class CompetitionNotificationManagement extends React.Component<Props, State> {
                     )}
                   />
                   <Table.Column
-                    title="Question"
-                    key="Question"
+                    title="Content"
+                    key="Content"
                     render={(text, record: ICompetitionNotification) => <pre>{record.content}</pre>}
                   />
                   <Table.Column

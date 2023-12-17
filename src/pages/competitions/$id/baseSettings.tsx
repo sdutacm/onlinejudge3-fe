@@ -133,6 +133,19 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
         },
       },
       {
+        name: 'Announcement (visible to participants, only in competition)',
+        field: 'announcement',
+        component: 'richtext',
+        initialValue: detail?.announcement || '',
+        rules: [],
+        contentStyle: { height: '250px' },
+        uploadTarget: 'asset',
+        uploadOption: {
+          prefix: 'competition',
+          maxSize: 32,
+        },
+      },
+      {
         name: 'Hidden',
         field: 'hidden',
         component: 'select',
@@ -269,6 +282,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
       isTeam: values.isTeam === 'true',
       isRating: values.isRating === 'true',
       introduction: values.introduction.toHTML(),
+      announcement: values.announcement.toHTML(),
       hidden: values.hidden === 'true',
     };
   }

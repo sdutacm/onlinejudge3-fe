@@ -298,7 +298,13 @@ class CompetitionOverview extends React.Component<Props, State> {
                     }}
                     timeSyncInterval={30000}
                   />
-                ) : null}
+                ) : (
+                  <div
+                    dangerouslySetInnerHTML={{ __html: xss(detail.announcement) }}
+                    className="content-area"
+                    style={{ marginTop: '15px' }}
+                  />
+                )}
               </Card>
               {timeStatus !== 'Pending' && (
                 <Card bordered={false} className="list-card">

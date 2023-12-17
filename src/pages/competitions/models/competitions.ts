@@ -604,6 +604,10 @@ export default {
             type: 'getDetail',
             payload: { id: +matchPublicIntro.params['id'] },
           });
+          requestEffect(dispatch, {
+            type: 'getSettings',
+            payload: { id: +matchPublicIntro.params['id'] },
+          });
         }
         const matchOverview = matchPath(pathname, {
           path: pages.competitions.overview,

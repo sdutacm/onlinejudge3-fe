@@ -83,7 +83,7 @@ class CompetitionList extends React.Component<Props, State> {
                       <div className="listlike-table-info-primary">
                         <Link
                           className="listlike-table-info-title"
-                          to={urlf(pages.competitions.home, {
+                          to={urlf(pages.competitions.public.intro, {
                             param: { id: record.competitionId },
                           })}
                         >

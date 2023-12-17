@@ -1,6 +1,7 @@
 import React from 'react';
-import { Divider, Button } from 'antd';
+import { Divider, Button, Row, Col, Card } from 'antd';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { filterXSS as xss } from 'xss';
 import PageAnimation from '@/components/PageAnimation';
@@ -10,6 +11,7 @@ import {
   ICompetition,
   ICompetitionSelfParticipant,
   ICompetitionSelfParticipantForm,
+  ICompetitionSettings,
 } from '@/common/interfaces/competition';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
@@ -17,12 +19,15 @@ import msg from '@/utils/msg';
 import moment from 'moment';
 import { ECompetitionUserStatus } from '@/common/enums';
 import { Codes } from '@/common/codes';
-import SdutpcLogo from '../../../assets/images/sdutpc_logo_shadow.png';
+// import SdutpcLogo from '../../../assets/images/sdutpc_logo_shadow.png';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import tracker from '@/utils/tracker';
 import Link from 'umi/link';
-import { urlf } from '@/utils/format';
+import { urlf, toLongTs } from '@/utils/format';
 import classNames from 'classnames';
+import getSetTimeStatus from '@/utils/getSetTimeStatus';
+import TimeStatusBadge from '@/components/TimeStatusBadge';
+import PageLoading from '@/components/PageLoading';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -36,7 +41,8 @@ function getInitialState() {
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
-  data: ICompetition;
+  detail: ICompetition;
+  settings: ICompetitionSettings;
 }
 
 interface State {
@@ -88,7 +94,6 @@ class CompetitionIntro extends React.Component<Props, State> {
         id: competitionId,
       },
     });
-    msg.auto(ret);
     if (ret.success) {
       this.setState({
         selfParticipant: ret.data,
@@ -209,10 +214,16 @@ class CompetitionIntro extends React.Component<Props, State> {
   };
 
   inSignUpRange = () => {
-    const registerStartAt = new Date(this.props.data.registerStartAt);
-    const registerEndAt = new Date(this.props.data.registerEndAt);
+    const registerStartAt = new Date(this.props.detail.registerStartAt);
+    const registerEndAt = new Date(this.props.detail.registerEndAt);
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return registerStartAt.getTime() <= serverTime && serverTime < registerEndAt.getTime();
+  };
+
+  isSignUpEnded = () => {
+    const registerEndAt = new Date(this.props.detail.registerEndAt);
+    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    return serverTime >= registerEndAt.getTime();
   };
 
   getSignUpStatus = () => {
@@ -249,6 +260,10 @@ class CompetitionIntro extends React.Component<Props, State> {
     };
   };
 
+  enterCompetition = () => {
+    router.push(urlf(pages.competitions.home, { param: { id: this.props.id } }));
+  };
+
   renderSignUpStatus = () => {
     const { text, level } = this.getSignUpStatus();
     const words = text.split(' ');
@@ -272,6 +287,9 @@ class CompetitionIntro extends React.Component<Props, State> {
   renderSignUpAction = () => {
     const { id, session } = this.props;
     const { selfParticipant, cannotSignUpTips } = this.state;
+    if (this.isSignUpEnded()) {
+      return <Button disabled>Signing Up: Ended</Button>;
+    }
     if (!this.inSignUpRange()) {
       return <Button disabled>Not in Progress</Button>;
     }
@@ -361,7 +379,7 @@ class CompetitionIntro extends React.Component<Props, State> {
     }
   };
 
-  renderSignUpArea = (data: ICompetition) => {
+  renderSignUpArea = (detail: ICompetition) => {
     const { selfParticipant } = this.state;
     return (
       <div className="competition-sign-up text-center">
@@ -369,9 +387,9 @@ class CompetitionIntro extends React.Component<Props, State> {
         <div>
           Time range to sign up:{' '}
           <span className="nowrap">
-            {data.registerStartAt && data.registerEndAt
-              ? `${moment(data.registerStartAt).format('YYYY-MM-DD HH:mm:ss')} ~ ${moment(
-                  data.registerEndAt,
+            {detail.registerStartAt && detail.registerEndAt
+              ? `${moment(detail.registerStartAt).format('YYYY-MM-DD HH:mm:ss')} ~ ${moment(
+                  detail.registerEndAt,
                 ).format('YYYY-MM-DD HH:mm:ss')}`
               : 'Not Set'}
           </span>
@@ -389,28 +407,71 @@ class CompetitionIntro extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, id } = this.props;
-    if (!loading && !data.competitionId) {
+    const { loading, detail, settings, id, session } = this.props;
+    if (loading) {
+      return <PageLoading />;
+    }
+    if (!detail?.competitionId || !settings) {
       return <NotFound />;
     }
 
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const startTime = toLongTs(detail.startAt);
+    const endTime = toLongTs(detail.endAt);
+    const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
+    const allowSessionLoginOnly =
+      settings.allowedAuthMethods.includes('session') && settings.allowedAuthMethods.length === 1;
+    // near start time 2h
+    const nearStartTime = startTime - currentTime < 2 * 60 * 60 * 1000;
+
     return (
       <PageAnimation>
-        <PageTitle title={data.title} loading={loading}>
+        <PageTitle title={detail.title} loading={loading}>
           <div className={classNames('competition-intro', { 'competition-theme-sdutpc': false })}>
             {/* <div className="competition-logo">
               <img src={SdutpcLogo} alt="SDUTPC" />
             </div> */}
+
+            <Row gutter={16} className="content-view">
+              <Col xs={24}>
+                <Card bordered={false} style={{ paddingBottom: '16px' }}>
+                  <h2 className="text-center">{detail.title}</h2>
+                  <p className="text-center" style={{ marginBottom: '5px' }}>
+                    <span>
+                      {moment(startTime).format('YYYY-MM-DD HH:mm')} ~{' '}
+                      {moment(endTime).format('YYYY-MM-DD HH:mm')}
+                    </span>
+                  </p>
+                  <p className="text-center">
+                    <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
+                  </p>
+                  {nearStartTime && (
+                    <p className="text-center mt-lg">
+                      {!session.loggedIn && allowSessionLoginOnly ? (
+                        <Button type="primary" disabled>
+                          Login OJ first to Enter Competition
+                        </Button>
+                      ) : (
+                        <Button type="primary" onClick={this.enterCompetition}>
+                          Enter Competition
+                        </Button>
+                      )}
+                    </p>
+                  )}
+                </Card>
+              </Col>
+            </Row>
+
             <div className="competition-intro-content content-view">
-              <h2 className="competition-intro-header">{data.title}</h2>
+              {/* <h2 className="competition-intro-header">{detail.title}</h2> */}
               <div
-                dangerouslySetInnerHTML={{ __html: xss(data.introduction) }}
+                dangerouslySetInnerHTML={{ __html: xss(detail.introduction) }}
                 className="content-area"
                 style={{ marginTop: '48px' }}
               />
               <Divider style={{ margin: '16px 0' }} />
               {/* sign up area */}
-              {this.renderSignUpArea(data)}
+              {settings.allowedJoinMethods.includes('register') && this.renderSignUpArea(detail)}
               <div className="text-center mt-md-lg">
                 <Link to={urlf(pages.competitions.public.participants, { param: { id } })}>
                   <Button>👉 View Participants</Button>
@@ -426,13 +487,17 @@ class CompetitionIntro extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   const id = getPathParamId(state.routing.location.pathname, pages.competitions.public.intro);
-  const data = state.competitions.detail[id] || ({} as ICompetition);
+  const detail = state.competitions.detail[id] || ({} as ICompetition);
+  const settings = state.competitions.settings[id] || ({} as ICompetitionSettings);
   const theme = state.settings.theme;
   return {
     id,
     session: state.session,
-    loading: !!state.loading.effects['competitions/getDetail'],
-    data,
+    loading:
+      !!state.loading.effects['competitions/getDetail'] ||
+      !!state.loading.effects['competitions/getSettings'],
+    detail,
+    settings,
     theme,
   };
 }

@@ -362,7 +362,10 @@ class CompetitionOverview extends React.Component<Props, State> {
                                 record.varScoreExpression,
                                 detail,
                                 index,
-                                competitionProblemResultStats[record.problemId]?.selfTries,
+                                (competitionProblemResultStats[record.problemId]?.selfTries || 0) -
+                                  (competitionProblemResultStats[record.problemId]?.selfAccepted
+                                    ? 1
+                                    : 0),
                                 competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
                               ) ?? '-'}
                             </span>

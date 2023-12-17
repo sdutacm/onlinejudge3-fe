@@ -146,9 +146,17 @@ class Index extends React.Component<Props, State> {
                       {/* Pending */}
                       <h3 className="mb-sm">蔚蓝系列赛 Azur Series - Sponsored by bLue 现已启动！</h3>
                       <div>
-                        <ExtLink href="https://as.shaly.best">
+                        {/* <ExtLink href="https://as.shaly.best">
                           立即报名
-                        </ExtLink>
+                        </ExtLink> */}
+                        <span>【Round 1】登入比赛 → </span>
+                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 18 } })}>
+                          Div.1
+                        </Link>
+                        <span> / </span>
+                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 19 } })}>
+                          Div.2
+                        </Link>
                       </div>
                       {/* <div>
                         <Link to={urlf(pages.competitions.home, { param: { id: tbd } })}>

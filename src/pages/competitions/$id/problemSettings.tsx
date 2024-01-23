@@ -20,6 +20,7 @@ import CopyToClipboardWrapper from '@/components/CopyToClipboardWrapper';
 
 interface IProblemConfig {
   problemId: number;
+  alias: string;
   balloonAlias: string;
   balloonColor: string;
   title: string;
@@ -53,6 +54,17 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
       });
     }
   }
+
+  handleAliasChange = (value, index) => {
+    const newData = [...this.state.data];
+    newData.splice(index, 1, {
+      ...this.state.data[index],
+      alias: value,
+    });
+    this.setState({
+      data: newData,
+    });
+  };
 
   handleBalloonAliasChange = (value, index) => {
     const newData = [...this.state.data];
@@ -136,6 +148,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
             {
               problemId,
               title: ret.data?.title || '',
+              alias: '',
               balloonAlias: '',
               balloonColor: '',
               score: '',
@@ -164,6 +177,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
         data: {
           problems: this.state.data.map((item) => ({
             problemId: item.problemId,
+            alias: item.alias || '',
             balloonAlias: item.balloonAlias || '',
             balloonColor: item.balloonColor || '',
             score: item.score === '' ? null : +item.score || 0,
@@ -229,6 +243,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
               .map((p) => ({
                 problemId: p.problemId,
                 title: p.title,
+                alias: '',
                 balloonAlias: '',
                 balloonColor: '',
               })),
@@ -275,6 +290,19 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                     title="Title"
                     key="Title"
                     render={(text, record: IProblemConfig, index) => <span>{record.title}</span>}
+                  />
+                  <Table.Column
+                    title="Alias"
+                    key="Alias"
+                    width={75}
+                    render={(text, record: IProblemConfig, index) => (
+                      <div>
+                        <Input
+                          value={record.alias}
+                          onChange={(e) => this.handleAliasChange(e.target.value, index)}
+                        />
+                      </div>
+                    )}
                   />
                   <Table.Column
                     title="Balloon Alias"

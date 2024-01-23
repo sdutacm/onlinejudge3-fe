@@ -97,6 +97,7 @@ type IRatingHistory = IRatingHistoryItem[];
 interface IProblemSpConfig {
   forceTheme?: 'light' | 'dark';
   genshinStart?: boolean;
+  postOpenUrl?: string;
 }
 
 interface IProblem {

@@ -25,13 +25,17 @@ const buildConfig = {
   // },
 };
 
+const usingBuildConfig = buildConfig[buildTarget];
+const usingPublicPath = usingBuildConfig.publicPath;
+
 export default {
-  ...buildConfig[buildTarget],
+  ...usingBuildConfig,
   hash: true,
   define: {
     'process.env.COMPETITION_SIDE': process.env.COMPETITION_SIDE === '1' ? '1' : '',
     'process.env.CDN_URL': process.env.CDN_URL || '',
     'process.env.MEDIA_URL': process.env.MEDIA_URL || '',
+    'process.env.PUBLIC_PATH': process.env.NODE_ENV === 'production' ? usingPublicPath : '/',
   },
   plugins: [
     [

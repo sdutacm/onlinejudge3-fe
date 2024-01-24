@@ -94,12 +94,6 @@ interface IRatingHistoryItem {
 
 type IRatingHistory = IRatingHistoryItem[];
 
-interface IProblemSpConfig {
-  forceTheme?: 'light' | 'dark';
-  genshinStart?: boolean;
-  postOpenUrl?: string;
-}
-
 interface IProblem {
   problemId: number;
   title: string;
@@ -121,7 +115,7 @@ interface IProblem {
   submitted?: number;
   display: boolean;
   spj: boolean;
-  spConfig: IProblemSpConfig;
+  spConfig: any;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }

@@ -14,6 +14,7 @@ import { isDeterminedResult } from '@/configs/results';
 import { sleep } from '@/utils/misc';
 import GenshinStartScreen from './GenshinStartScreen';
 import Results from '@/configs/results/resultsEnum';
+import { IProblemSpConfig } from '@/common/interfaces/problem';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -166,7 +167,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               label: values.language,
             });
             const solutionId = ret.data.solutionId;
-            if (problemDetail?.spConfig?.genshinStart) {
+            if ((problemDetail?.spConfig as IProblemSpConfig)?.genshinStart) {
               this.setState({
                 secondaryLoading: true,
               });

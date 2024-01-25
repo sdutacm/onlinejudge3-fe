@@ -22,5 +22,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm ci
+      - name: Install Dependencies
+        run: npm ci --registry=https://registry.npmjs.org
       - run: npm run build:cdn

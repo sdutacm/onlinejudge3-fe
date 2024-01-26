@@ -313,14 +313,22 @@ class CompetitionOverview extends React.Component<Props, State> {
                 <div className="genshin-sections">
                   {detail.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((item, index) => {
                     return (
-                      <div className="genshin-section">
-                        <div className={classNames(
-                            "genshin-section-header",
-                            `genshin-section-${item.id}`
-                            )}>
+                      <div className={classNames(
+                        "genshin-section",
+                        `genshin-section-${item.id}`
+                      )}>
+                        {/* 标题区 */}
+                        <div className="genshin-section-header">
                           <span className="genshin-section-header-title">{item.title}</span>
                           <span className="genshin-section-header-icon"></span>
                         </div>
+                        {/* 解锁遮罩 */}
+                        <div className="genshin-section-curtain" style={{ height: item.problemIndexes.length * 48 }}>
+                          <div className="genshin-section-curtain-bg"></div>
+                          <div className="genshin-section-curtain-icon"></div>
+                          <div className="genshin-section-curtain-text">消耗 🔑{item?.unlockKeyCost}1 以解锁</div>
+                        </div>
+                        {/* 表格部分 */}
                         <Table
                           dataSource={item.problemIndexes.map(id => problems?.rows?.[id]).filter(Boolean)}
                           rowKey="problemId"
@@ -339,18 +347,26 @@ class CompetitionOverview extends React.Component<Props, State> {
                             width={120}
                             className="genshin-section-table-alias"
                             render={(text, record: ICompetitionProblem, index) => {
-                              return <div>{record.alias}</div>
+                              return <div>
+                                <Link
+                                  to={urlf(pages.competitions.problemDetail, {
+                                    param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
+                                  })}
+                                >
+                                  {record.alias}
+                                </Link>
+                              </div>
                             }}
                           />
                           <Table.Column
                             title="Title"
                             key="Title"
-                            className="genshin-section-table-topic"
+                            className="genshin-section-table-title"
                             render={(text, record: ICompetitionProblem, index) => {
                               return <div>
                                 <Link
                                   to={urlf(pages.competitions.problemDetail, {
-                                    param: { id, index: numberToAlphabet(index) },
+                                    param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
                                   })}
                                 >
                                   {record.title}

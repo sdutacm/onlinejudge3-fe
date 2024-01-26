@@ -585,7 +585,11 @@ export default {
       //     return;
       //   }
       // }
-      const ret: IApiResponse<IFullList<IRanklistRow>> = yield call(service.getCompetitionRanklist, id, god);
+      const ret: IApiResponse<IFullList<IRanklistRow>> = yield call(
+        service.getCompetitionRanklist,
+        id,
+        god,
+      );
       if (ret.success) {
         // 应先 clear，防止 set 时间过长导致又被 clear 掉
         yield put({
@@ -625,6 +629,7 @@ export default {
         if (pathname === pages.competitions.index) {
           requestEffect(dispatch, { type: 'getList', payload: query });
         }
+
         const matchPublicIntro = matchPath(pathname, {
           path: pages.competitions.public.intro,
           exact: true,
@@ -639,12 +644,25 @@ export default {
             payload: { id: +matchPublicIntro.params['id'] },
           });
         }
+
+        const matchPublicParticipants = matchPath(pathname, {
+          path: pages.competitions.public.participants,
+          exact: true,
+        });
+        if (matchPublicParticipants) {
+          requestEffect(dispatch, {
+            type: 'getDetail',
+            payload: { id: +matchPublicParticipants.params['id'] },
+          });
+        }
+
         const matchOverview = matchPath(pathname, {
           path: pages.competitions.overview,
           exact: true,
         });
         if (matchOverview) {
         }
+
         const matchUserManagement = matchPath(pathname, {
           path: pages.competitions.userManagement,
           exact: true,
@@ -655,6 +673,7 @@ export default {
             payload: { id: +matchUserManagement.params['id'] },
           });
         }
+
         const matchProblemSettings = matchPath(pathname, {
           path: pages.competitions.problemSettings,
           exact: true,
@@ -665,6 +684,7 @@ export default {
             payload: { id: +matchProblemSettings.params['id'] },
           });
         }
+
         const matchProblemDetail = matchPath(pathname, {
           path: pages.competitions.problemDetail,
           exact: true,
@@ -675,6 +695,7 @@ export default {
             payload: { id: +matchProblemDetail.params['id'] },
           });
         }
+
         const matchSolutions = matchPath(pathname, {
           path: pages.competitions.solutions,
           exact: true,
@@ -685,6 +706,7 @@ export default {
             payload: { id: +matchSolutions.params['id'] },
           });
         }
+
         const matchSolutionDetail = matchPath(pathname, {
           path: pages.competitions.solutionDetail,
           exact: true,
@@ -695,6 +717,7 @@ export default {
             payload: { id: +matchSolutionDetail.params['id'] },
           });
         }
+
         const matchRanklist = matchPath(pathname, {
           path: pages.competitions.ranklist,
           exact: true,
@@ -705,6 +728,7 @@ export default {
             payload: { id: +matchRanklist.params['id'] },
           });
         }
+
         const matchNotificationManagement = matchPath(pathname, {
           path: pages.competitions.notificationManagement,
           exact: true,
@@ -715,6 +739,7 @@ export default {
             payload: { id: +matchNotificationManagement.params['id'] },
           });
         }
+
         const matchQuestionManagement = matchPath(pathname, {
           path: pages.competitions.qa,
           exact: true,

@@ -276,7 +276,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                 >
                   <Table.Column
                     title=""
-                    key="Alias"
+                    key="Index"
                     render={(text, record: IProblemConfig, index) => (
                       <span>{numberToAlphabet(index)}</span>
                     )}

@@ -33,6 +33,7 @@ export interface IGeneralFormItem {
     // for select
     value: string | number | boolean;
     name: string;
+    icon?: React.ReactNode;
   }[];
   multiple?: boolean; // for select
   transformBeforeSubmit?: (value) => any;
@@ -124,16 +125,26 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                 </Form.Item>
               );
             case 'select':
+              const useCustomMode = item.options.some((i) => !!i.icon);
               return (
                 <Form.Item key={item.field} label={item.name}>
                   {getFieldDecorator(item.field, {
                     rules: item.rules,
                     initialValue: initialValues[item.field] || item.initialValue,
                   })(
-                    <Select placeholder={item.placeholder} disabled={item.disabled} mode={item.multiple ? 'multiple' : undefined}>
-                      {item.options.map((opt) => (
-                        <Select.Option key={`${opt.value}`}>{opt.name}</Select.Option>
-                      ))}
+                    <Select
+                      placeholder={item.placeholder}
+                      disabled={item.disabled}
+                      mode={item.multiple ? 'multiple' : undefined}
+                      optionLabelProp={useCustomMode ? 'label' : undefined}
+                    >
+                      {item.options.map((opt) =>
+                        useCustomMode ? (
+                          <Select.Option key={`${opt.value}`} value={`${opt.value}`} label={`${opt.name}`}>{opt.icon}{opt.name}</Select.Option>
+                        ) : (
+                          <Select.Option key={`${opt.value}`}>{opt.name}</Select.Option>
+                        ),
+                      )}
                     </Select>,
                   )}
                 </Form.Item>

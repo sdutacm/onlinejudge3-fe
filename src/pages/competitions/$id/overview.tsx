@@ -466,6 +466,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                             title="Ask Principal/Judger a Question"
                             autoMsg
                             items={this.getCreateQuestionFormItems()}
+                            maskClosable={false}
                             submit={(dispatch: ReduxProps['dispatch'], values) => {
                               const data = {
                                 content: values.content,

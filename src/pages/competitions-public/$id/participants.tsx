@@ -4,17 +4,19 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Card, Table } from 'antd';
+import { Card, Table, Tooltip } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import { ICompetitionUser } from '@/common/interfaces/competition';
+import { ICompetitionUser, ICompetition } from '@/common/interfaces/competition';
 import PageAnimation from '@/components/PageAnimation';
-import { urlf } from '@/utils/format';
-import Link from 'umi/link';
+import PageLoading from '@/components/PageLoading';
+import NotFound from '@/pages/404';
+import { genshinCharacters } from '@/configs/genshin';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
+  detail: ICompetition;
 }
 
 interface State {
@@ -41,6 +43,10 @@ class CompetitionParticipants extends React.Component<Props, State> {
     }
   }
 
+  get isGenshin() {
+    return this.props?.detail?.spConfig?.preset === 'genshin';
+  }
+
   fetch = async (props?: Props) => {
     const { id, dispatch } = props || this.props;
     const res = await dispatch({
@@ -56,9 +62,93 @@ class CompetitionParticipants extends React.Component<Props, State> {
     }
   };
 
+  renderParticipant = (record: ICompetitionUser) => {
+    return (
+      <div>
+        <p className="competition-participant-name">
+          {record.info.nickname}
+          <span className="competition-participant-name-secondary text-secondary">
+            ({record.info.class} {record.info.realName})
+          </span>
+        </p>
+        {!!record.info.slogan && (
+          <p
+            className="competition-participant-slogan font-family-amaz-chinese"
+            style={{ marginTop: '12px' }}
+          >
+            {record.info.slogan}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  renderGenshinParticipant = (record: ICompetitionUser) => {
+    return (
+      <div>
+        <p
+          className="competition-participant-name"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          <span>
+            {record.info.nickname}
+            <span className="competition-participant-name-secondary text-secondary">
+              ({record.info.school})
+            </span>
+          </span>
+
+          <span>{this.renderGenshinInfo(record.info as any)}</span>
+        </p>
+        {!!record.info.slogan && (
+          <p className="competition-participant-slogan font-family-amaz-chinese">
+            {record.info.slogan || ''}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  renderGenshinInfo = (info: { genshinXpCharacter: string; genshinUid: string }) => {
+    const characterConfig = genshinCharacters.find((c) => c.id === info.genshinXpCharacter);
+    if (!characterConfig) {
+      return null;
+    }
+    return (
+      <Tooltip
+        title={
+          <span>
+            XP: {characterConfig.nameZh}
+            {!!info.genshinUid && (
+              <>
+                <span className="ml-md">/</span>
+                <span className="ml-md">
+                  UID: <span>{info.genshinUid}</span>{' '}
+                </span>
+              </>
+            )}
+          </span>
+        }
+      >
+        <img
+          src={characterConfig.avatarIconSideUrl}
+          alt={characterConfig.nameZh}
+          style={{ height: '30px' }}
+        />
+      </Tooltip>
+    );
+  };
+
   render() {
-    const { id, loading } = this.props;
+    const { id, loading, detail } = this.props;
     const { participants } = this.state;
+
+    if (loading) {
+      return <PageLoading />;
+    }
+    if (!detail?.competitionId) {
+      return <NotFound />;
+    }
+
     return (
       <PageAnimation>
         <div className="content-view">
@@ -74,21 +164,11 @@ class CompetitionParticipants extends React.Component<Props, State> {
                 title="Info"
                 key="Info"
                 className="competition-participant-item"
-                render={(text, record: ICompetitionUser) => (
-                  <div>
-                    <p className="competition-participant-name">
-                      {record.info.nickname}
-                      <span className="competition-participant-name-secondary text-secondary">
-                        ({record.info.class} {record.info.realName})
-                      </span>
-                    </p>
-                    {!!record.info.slogan && (
-                      <p className="competition-participant-slogan font-family-amaz-chinese">
-                        {record.info.slogan}
-                      </p>
-                    )}
-                  </div>
-                )}
+                render={(text, record: ICompetitionUser) =>
+                  this.isGenshin
+                    ? this.renderGenshinParticipant(record)
+                    : this.renderParticipant(record)
+                }
               />
             </Table>
           </Card>
@@ -103,9 +183,13 @@ function mapStateToProps(state) {
     state.routing.location.pathname,
     pages.competitions.public.participants,
   );
+  const detail = state.competitions.detail[id] || ({} as ICompetition);
   return {
     id,
-    loading: !!state.loading.effects['competitions/getPublicCompetitionParticipants'],
+    detail,
+    loading:
+      !!state.loading.effects['competitions/getDetail'] ||
+      !!state.loading.effects['competitions/getPublicCompetitionParticipants'],
   };
 }
 

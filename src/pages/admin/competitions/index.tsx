@@ -189,6 +189,7 @@ class AdminCompetitionList extends React.Component<Props, State> {
       introduction: values.introduction.toHTML(),
       // frozenLength: +values.frozenLength || 0,
       hidden: values.hidden === 'true',
+      spConfig: {},
     };
   }
 

@@ -125,6 +125,7 @@ interface ICompetitionProblem extends IProblem {
   ballonColor: string;
   score: number | null;
   varScoreExpression: string;
+  alias: string;
 }
 
 interface IProblemLite {

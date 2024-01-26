@@ -230,11 +230,20 @@ class Index extends React.Component<Props, State> {
       matchPath(location.pathname, {
         path: pages.competitions.public.intro,
         exact: true,
+      }) ||
+      matchPath(location.pathname, {
+        path: pages.competitions.overview,
+        exact: true,
       });
-    const inFullHeightPage = matchPath(location.pathname, {
-      path: pages.competitions.public.intro,
-      exact: true,
-    });
+    const inFullHeightPage = 
+      matchPath(location.pathname, {
+        path: pages.competitions.public.intro,
+        exact: true,
+      }) || 
+      matchPath(location.pathname, {
+        path: pages.competitions.overview,
+        exact: true,
+      });
     const inAdminPage = matchPath(location.pathname, {
       path: pages.admin.index,
     });

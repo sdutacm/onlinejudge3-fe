@@ -1938,3 +1938,270 @@ a {
   color: #ffa40a !important;
   animation: rl-text-blink 1.7s ease-in-out infinite;
 }
+
+@import url(./genshin_font.less);
+.genshin-theme {
+  * {
+    font-family: "Genshin Impact Unpacked" !important;
+  }
+
+  .genshin-theme-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 100px;
+    background-color: #ECE6DE;
+    
+    .genshin-banner {
+      width: 100%;
+      max-width: 2560px;
+      height: calc(340px + 8vw);
+      max-height: 600px;
+      background: 
+        linear-gradient(to bottom, transparent 90%, #ECE6DEff),
+        url(./assets/images/sp-genshin-theme/oj-genshin-banner-demo.png) no-repeat center / cover;
+      margin-bottom: 30px;
+    }
+
+    .genshin-content {
+      width: 50vw;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+
+      @media only screen and (max-width: 1000px) {
+        width: 90vw;
+      }
+      
+      .genshin-notice {
+        width: 100%;
+        padding: 10px 8px;
+        background-color: #F3EFEA;
+        border: #DCD4CA solid 2px;
+    
+      }
+  
+      .genshin-divider {
+        width: 100%;
+        height: 2px;
+        background-color: #999999;
+      }
+
+      .genshin-state {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 20px;
+
+        .btn() {
+          height: 24px;
+          text-align: center;
+          padding: 0 12px 0 10px;
+          border-radius: 12px;
+          box-sizing: border-box;
+          border: #9DA5AE solid 2px;
+          color: #EAE4D9;
+          background-color: #63686e;
+        }
+
+        &-score {
+          .btn();
+        }
+
+        &-keys {
+          .btn();
+        }
+
+        &-qa {
+          width: 24px;
+          height: 24px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          border: #363E49 solid 2px;
+        }
+      }
+
+      .genshin-sections {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        
+        .genshin-section {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          &-header {
+            position: relative;
+            height: 50px;
+            width: 100%;
+            background-color: #485361;
+            border: #363E49 solid 2px;
+            box-sizing: border-box;
+            z-index: 10;
+            
+            // 搭配前面的背景色和边框色共同实现边框不靠边
+            &::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: calc(100% - 4px);
+              height: calc(100% - 4px);
+              transform: translate(2px, 2px);
+              background-color: #363E49;
+              z-index: -1;
+            }
+
+            &-title {
+              position: absolute;
+              top: 50%;
+              left: 30px;
+              transform: translateY(-50%);
+              font-size: 20px;
+              color: #EAE4D9;
+            }
+
+            &-icon {
+              position: absolute;
+              top: 50%;
+              right: 30px;
+              transform: translateY(-50%);
+              width: 36px;
+              height: 36px;
+              background-size: contain;
+              background-position: center;
+              background-repeat: no-repeat;
+            }
+          }
+
+          // 1蒙德部分
+          &-mondstadt {
+            background-color: #2e9c9e;
+            border: #2b8184 solid 2px;
+
+            &::before {
+              background-color: #2b8184;
+            }
+
+            .genshin-section-header-icon {
+              background-image: url(./assets/images/sp-genshin-theme/icon-mondstadt.png);
+            }
+          }
+
+          // 2璃月部分
+          &-liyue {
+            background-color: #c7a652;
+            border: #aa8727 solid 2px;
+
+            &::before {
+              background-color: #aa8727;
+            }
+
+            .genshin-section-header-icon {
+              background-image: url(./assets/images/sp-genshin-theme/icon-liyue.png);
+            }
+          }
+
+          // 3稻妻部分
+          &-inazuma {
+            background-color: #8051a9;
+            border: #6b3e96 solid 2px;
+
+            &::before {
+              background-color: #6b3e96;
+            }
+
+            .genshin-section-header-icon {
+              background-image: url(./assets/images/sp-genshin-theme/icon-inazuma.png);
+            }
+          }
+
+          // 4须弥部分
+          &-sumeru {
+            background-color: #559c00;
+            border: #487e00 solid 2px;
+
+            &::before {
+              background-color: #487e00;
+            }
+
+            .genshin-section-header-icon {
+              background-image: url(./assets/images/sp-genshin-theme/icon-sumeru.png);
+            }
+          }
+
+          // 5枫丹部分
+          &-fontaine {
+            background-color: #009fd2;
+            border: #008ab9 solid 2px;
+
+            &::before {
+              background-color: #008ab9;
+            }
+
+            .genshin-section-header-icon {
+              background-image: url(./assets/images/sp-genshin-theme/icon-fontaine.png);
+            }
+          }
+
+          &-table {
+            width: calc(100% - 8px);
+            
+            &-row {
+              background-color: #F3EEE9;
+              // border: #DBD1C6 solid 2px;
+              transform-origin: center center;
+              position: relative;
+
+              &:hover {
+                transform: scale(1.04);
+
+                td {
+                  background-color: #eee4d9;
+                }
+              }
+
+              &:active {
+                transform: scale(0.99);
+
+                td {
+                  background-color: #ffffff;
+                }
+              }
+            }
+
+              &-alias {
+                font-size: 20px;
+              }
+  
+              &-title {
+                font-size: 20px;
+              }
+  
+              &-score {
+                font-size: 16px;
+              }
+  
+              &-state {
+                font-size: 16px;
+              }
+          }
+        }
+      }
+    }
+  }
+}
+

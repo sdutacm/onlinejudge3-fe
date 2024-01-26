@@ -104,7 +104,7 @@ const genshinCharactersRaw = [
   {
     id: 'Freminet',
     nameZh: '菲米尼',
-    element: '雷',
+    element: '冰',
     star: 4,
   },
   {

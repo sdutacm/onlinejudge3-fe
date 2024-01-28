@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM, { unmountComponentAtNode } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { connect } from 'dva';
 import { Form, Input, Select, Modal, Button } from 'antd';
 import { FormProps, ReduxProps, RouteLocation } from '@/@types/props';
@@ -119,6 +119,10 @@ class SubmitSolutionModal extends React.Component<Props, State> {
     setTimeout(() => {
       document.getElementById('full-screen-standalone').style.display = 'none';
     }, 1000);
+    // it will fail if popup is not allowed in most of modern browsers
+    if ((this.props.problemDetail?.spConfig as IProblemSpConfig)?.genshinStartPostOpenUrl) {
+      window.open((this.props.problemDetail.spConfig as IProblemSpConfig).genshinStartPostOpenUrl, '_blank');
+    }
   };
 
   redirectToSolutionDetail = (solutionId: number) => {

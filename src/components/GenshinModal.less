@@ -1,0 +1,150 @@
+// 角标耦合样式
+.genshin-corner() {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: no-repeat center / contain url(../assets/images/sp-genshin-theme/modal-corner.png);
+}
+
+.genshinModalContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.genshinModal {
+  color: #565656;
+
+  :global(.ant-modal-header) {
+    background-color: #e5e2dc;
+    border-bottom: none;
+    padding-bottom: 7px;
+    position: relative;
+
+    &::before {
+      .genshin-corner();
+      top: 0;
+      left: 0;
+      transform: translate(-12px, -12px);
+    }
+
+    &::after {
+      .genshin-corner();
+      top: 0;
+      right: 0;
+      transform: translate(12px, -12px) rotate(90deg);
+    }
+
+    :global(.ant-modal-title) {
+      font-size: 20px;
+      text-align: center;
+    }
+  }
+
+  // 内容区域
+  :global(.ant-modal-body) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    text-align: center;
+    background: no-repeat center / 110px 120px url(../assets/images/sp-genshin-theme/modal-bg.png);
+    background-color: #e5e2dc;
+    position: relative;
+
+    // header<->body的分割线
+    &::before {
+      content: "";
+      width: 90%;
+      height: 17px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+      background: no-repeat center / contain url(../assets/images/sp-genshin-theme/divider.png);
+    }
+
+    // body<->footer的分割线
+    &::after {
+      content: "";
+      width: 90%;
+      height: 17px;
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+      background: no-repeat center / contain url(../assets/images/sp-genshin-theme/divider.png);
+    }
+  }
+
+  :global(.ant-modal-footer) {
+    background-color: #e5e2dc;
+    border-top: none;
+    position: relative;
+
+    >div {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 10px;
+
+      // &::before {
+      //   content: "";
+      //   position: absolute;
+      //   top: 50%;
+      //   left: 24px;
+      //   transform: translateY(-50%);
+      //   width: 20px;
+      //   height: 20px;
+      //   background-color: #fff;
+      //   background: no-repeat center / contain url(../assets/images/sp-genshin-theme/icon-cancel.png)
+      // }
+    }
+
+    :global(.ant-btn) {
+      color: #EAE4D9;
+      background-color: #4b5366;
+      width: 40%;
+      border-width: 2px;
+      border-color: #e5e2dc;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #feebc8;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      &:hover {
+        border-color: #e9cf8c;
+      }
+
+      &:active {
+        &::after {
+          transition: opacity 0.3s;
+          opacity: 0.3;
+        }
+      }
+    }
+
+    &::before {
+      .genshin-corner();
+      bottom: 0;
+      left: 0;
+      transform: translate(-12px, 12px) rotate(270deg);
+    }
+
+    &::after {
+      .genshin-corner();
+      bottom: 0;
+      right: 0;
+      transform: translate(12px, 12px) rotate(180deg);
+    }
+  }
+}

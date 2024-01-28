@@ -29,6 +29,8 @@ import GeneralFormModal from '@/components/GeneralFormModal';
 import Explanation from '@/components/Explanation';
 import { getReadableVarScoreExpression } from '@/utils/competition';
 import { compileVarScoreExpression } from '@/common/utils/competition';
+import GenshinModal from '@/components/GenshinModal';
+import GenshinDivider from '@/components/GenshinDivider';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -49,14 +51,22 @@ export interface Props extends ReduxProps {
   endCompetitionLoading: boolean;
 }
 
-interface State { }
+interface State {
+  genshinModalVisible: boolean
+}
 
 class CompetitionOverview extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      genshinModalVisible: false
+    };
+  }
+
+  get isGenshin() {
+    return this.props?.detail?.spConfig?.preset === 'genshin';
   }
 
   checkDetail = (detail: ICompetition) => {
@@ -231,6 +241,503 @@ class CompetitionOverview extends React.Component<Props, State> {
     });
   };
 
+  // 解锁区域
+  handleUnlockSection = () => {
+    this.setState({ genshinModalVisible: true })
+  }
+
+  renderNormalBody() {
+    const {
+      id,
+      session,
+      selfUserDetail,
+      detailLoading,
+      detail,
+      problemsLoading,
+      problems,
+      userProblemResultStats: { acceptedProblemIds, attemptedProblemIds },
+      competitionProblemResultStats,
+      notifications,
+      notificationsLoading,
+      questions,
+      questionsLoading,
+      confirmEnterLoading,
+      confirmQuitLoading,
+      endCompetitionLoading,
+    } = this.props;
+
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const startTime = toLongTs(detail.startAt);
+    const endTime = toLongTs(detail.endAt);
+    const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
+    const useScore = ['ICPCWithScore'].includes(detail.rule);
+    const canEndCompetition =
+      timeStatus === 'Ended' &&
+      !detail.ended &&
+      [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
+
+    return (
+      <>
+        <Row gutter={16} className="content-view">
+          {selfUserDetail.banned && (
+            <Col xs={24} className="mb-lg">
+              <Alert
+                message="Banned"
+                description="You have been banned for violating the competition rules."
+                type="error"
+                showIcon
+              />
+            </Col>
+          )}
+          {selfUserDetail.status === ECompetitionUserStatus.quitted && (
+            <Col xs={24} className="mb-lg">
+              <Alert
+                message="Quitted"
+                description="You have confirmed to quit. The competition is readonly now and you cannot submit solution."
+                type="warning"
+                showIcon
+              />
+            </Col>
+          )}
+
+          <Col xs={24}>
+            <Card bordered={false}>
+              <h2 className="text-center">{detail.title}</h2>
+              <p className="text-center" style={{ marginBottom: '5px' }}>
+                <span>
+                  {moment(startTime).format('YYYY-MM-DD HH:mm')} ~{' '}
+                  {moment(endTime).format('YYYY-MM-DD HH:mm')}
+                </span>
+              </p>
+              <p className="text-center">
+                <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
+              </p>
+              {canEndCompetition && (
+                <p className="text-center">
+                  <Button
+                    type="danger"
+                    loading={detailLoading || endCompetitionLoading}
+                    onClick={this.endCompetition}
+                  >
+                    Confirm Result & End Competition
+                  </Button>
+                  <p className="text-center text-secondary mt-sm">
+                    <small>
+                      Once confirmed, it will release all frozen solutions, and will also trigger
+                      a settlement if it's Rating Mode.
+                    </small>
+                  </p>
+                </p>
+              )}
+              {timeStatus === 'Pending' ? (
+                <Countdown
+                  secs={Math.floor((startTime - currentTime) / 1000)}
+                  renderTime={(secs: number) => (
+                    <h1 className="text-center" style={{ margin: '30px 0' }}>
+                      {secToTimeStr(secs, true)}
+                    </h1>
+                  )}
+                  handleRequestTimeSync={() => {
+                    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+                    return Math.floor((startTime - currentTime) / 1000);
+                  }}
+                  timeSyncInterval={30000}
+                />
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{ __html: xss(detail.announcement) }}
+                  className="content-area"
+                  style={{ marginTop: '15px' }}
+                />
+              )}
+            </Card>
+            {timeStatus !== 'Pending' && (
+              <Card bordered={false} className="list-card">
+                <Table
+                  dataSource={problems.rows}
+                  rowKey="problemId"
+                  loading={problemsLoading}
+                  pagination={false}
+                  className="responsive-table"
+                  rowClassName={(record: ICompetitionProblem) =>
+                    classNames(
+                      'problem-result-mark-row',
+                      { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
+                      { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
+                    )
+                  }
+                >
+                  <Table.Column
+                    title=""
+                    key="Index"
+                    render={(text, record: ICompetitionProblem, index) => (
+                      <div>{numberToAlphabet(index)}</div>
+                    )}
+                  />
+                  <Table.Column
+                    title="Title"
+                    key="Title"
+                    render={(text, record: ICompetitionProblem, index) => (
+                      <div>
+                        <Link
+                          to={urlf(pages.competitions.problemDetail, {
+                            param: { id, index: numberToAlphabet(index) },
+                          })}
+                        >
+                          {record.title}
+                        </Link>
+                      </div>
+                    )}
+                  />
+                  {useScore && (
+                    <Table.Column
+                      title="Score"
+                      key="Score"
+                      render={(text, record: ICompetitionProblem, index) => (
+                        <div>
+                          <span
+                            className={
+                              competitionProblemResultStats[record.problemId]?.selfAccepted
+                                ? 'text-success'
+                                : ''
+                            }
+                          >
+                            {this.evalVarScoreExpression(
+                              record.score,
+                              record.varScoreExpression,
+                              detail,
+                              index,
+                              (competitionProblemResultStats[record.problemId]?.selfTries || 0) -
+                              (competitionProblemResultStats[record.problemId]?.selfAccepted
+                                ? 1
+                                : 0),
+                              competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
+                            ) ?? '-'}
+                          </span>
+                          {typeof record.score === 'number' && (
+                            <Explanation className="ml-sm-md">
+                              <p className="mb-sm">Base Score: {record.score}</p>
+                              {!!record.varScoreExpression && (
+                                <p>
+                                  Score Rule:{' '}
+                                  {getReadableVarScoreExpression(record.varScoreExpression)}
+                                </p>
+                              )}
+                            </Explanation>
+                          )}
+                        </div>
+                      )}
+                    />
+                  )}
+                  <Table.Column
+                    title="Stats"
+                    key="Statistics"
+                    className="no-wrap"
+                    render={(text, record: ICompetitionProblem) => {
+                      if (!competitionProblemResultStats[record.problemId]) {
+                        return null;
+                      }
+                      return (
+                        <SolutionResultStats
+                          accepted={competitionProblemResultStats[record.problemId].accepted}
+                          submitted={competitionProblemResultStats[record.problemId].submitted}
+                          toSolutionsLink={urlf(pages.competitions.solutions, {
+                            param: { id },
+                            query: { problemId: record.problemId },
+                          })}
+                        />
+                      );
+                    }}
+                  />
+                </Table>
+              </Card>
+            )}
+            {timeStatus !== 'Pending' &&
+              selfUserDetail?.role === ECompetitionUserRole.participant && (
+                <>
+                  <div className="mt-lg">
+                    <Card bordered={false}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <h3 className="mb-none">My Questions</h3>
+                        <GeneralFormModal
+                          loadingEffect="competitions/createCompetitionQuestion"
+                          title="Ask Principal/Judger a Question"
+                          autoMsg
+                          items={this.getCreateQuestionFormItems()}
+                          submit={(dispatch: ReduxProps['dispatch'], values) => {
+                            const data = {
+                              content: values.content,
+                            };
+                            return dispatch({
+                              type: 'competitions/createCompetitionQuestion',
+                              payload: {
+                                id,
+                                data,
+                              },
+                            });
+                          }}
+                          onSuccess={(
+                            dispatch: ReduxProps['dispatch'],
+                            ret: IApiResponse<any>,
+                          ) => {
+                            msg.success('Submit successfully');
+                            tracker.event({
+                              category: 'competitions',
+                              action: 'submitQuestion',
+                            });
+                          }}
+                          onSuccessModalClosed={(
+                            dispatch: ReduxProps['dispatch'],
+                            ret: IApiResponse<any>,
+                          ) => {
+                            return dispatch({
+                              type: 'competitions/getQuestions',
+                              payload: {
+                                id,
+                                force: true,
+                              },
+                            });
+                          }}
+                        >
+                          <Button size="small">Ask Question</Button>
+                        </GeneralFormModal>
+                      </div>
+                    </Card>
+                    <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
+                      <Table
+                        dataSource={questions}
+                        rowKey="competitionQuestionId"
+                        loading={questionsLoading}
+                        pagination={false}
+                        className="responsive-table"
+                        locale={{
+                          emptyText:
+                            'If you have questions about rules or problems, please submit a question',
+                        }}
+                      >
+                        <Table.Column
+                          title="ID"
+                          key="NID"
+                          render={(text, record: ICompetitionQuestion) => (
+                            <span>{record.competitionQuestionId}</span>
+                          )}
+                        />
+                        <Table.Column
+                          title="Content"
+                          key="Content"
+                          render={(text, record: ICompetitionQuestion) => (
+                            <pre>{record.content}</pre>
+                          )}
+                        />
+                        <Table.Column
+                          title="Reply"
+                          key="Reply"
+                          render={(text, record: ICompetitionQuestion) => {
+                            return record.reply ? (
+                              <pre>{record.reply}</pre>
+                            ) : (
+                              <span className="text-secondary">(No reply yet)</span>
+                            );
+                          }}
+                        />
+                      </Table>
+                    </Card>
+                  </div>
+                  <div className="mt-lg">
+                    <Card bordered={false}>
+                      <h3 className="mb-none">Notifications</h3>
+                    </Card>
+                    <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
+                      <Table
+                        dataSource={notifications}
+                        rowKey="competitionNotificationId"
+                        loading={notificationsLoading}
+                        pagination={false}
+                        className="responsive-table"
+                        locale={{ emptyText: 'Important notifications will be displayed here' }}
+                      >
+                        <Table.Column
+                          title="ID"
+                          key="NID"
+                          render={(text, record: ICompetitionNotification) => (
+                            <span>{record.competitionNotificationId}</span>
+                          )}
+                        />
+                        <Table.Column
+                          title="Content"
+                          key="Content"
+                          render={(text, record: ICompetitionNotification) => (
+                            <pre>{record.content}</pre>
+                          )}
+                        />
+                      </Table>
+                    </Card>
+                  </div>
+                </>
+              )}
+          </Col>
+        </Row>
+      </>
+    )
+  }
+
+  renderGenshinBody = () => {
+    const {
+      id,
+      session,
+      selfUserDetail,
+      detailLoading,
+      detail,
+      problemsLoading,
+      problems,
+      userProblemResultStats: { acceptedProblemIds, attemptedProblemIds },
+      competitionProblemResultStats,
+      notifications,
+      notificationsLoading,
+      questions,
+      questionsLoading,
+      confirmEnterLoading,
+      confirmQuitLoading,
+      endCompetitionLoading,
+    } = this.props;
+    return (
+      <>
+        <div className="genshin-theme-page">
+          <div className="genshin-banner"></div>
+          <div className="genshin-content">
+            {selfUserDetail.banned && (
+              <Alert
+                style={{ width: "100%" }}
+                message="Banned"
+                description="You have been banned for violating the competition rules."
+                type="error"
+                showIcon
+              />
+            )}
+            {selfUserDetail.status === ECompetitionUserStatus.quitted && (
+              <Alert
+                style={{ width: "100%" }}
+                message="Quitted"
+                description="You have confirmed to quit. The competition is readonly now and you cannot submit solution."
+                type="warning"
+                showIcon
+              />
+            )}
+            <div className="genshin-notice">
+              <p>公告部分，一些比赛属性和公告</p>
+              <p>公告部分，一些比赛属性和公告</p>
+              <p>公告部分，一些比赛属性和公告</p>
+              <p>公告部分，一些比赛属性和公告</p>
+            </div>
+            <GenshinDivider />
+            <div className="genshin-state">
+              <div className="genshin-state-score">💠 11451</div>
+              <div className="genshin-state-keys">🔑 4</div>
+              <div className="genshin-state-qa">?</div>
+            </div>
+            <div className="genshin-sections">
+              {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((item, index) => {
+                return (
+                  <div className={classNames(
+                    "genshin-section",
+                    `genshin-section-${item.id}`
+                  )}>
+                    {/* 标题区 */}
+                    <div className="genshin-section-header">
+                      <span className="genshin-section-header-title">{item.title}</span>
+                      <span className="genshin-section-header-icon"></span>
+                    </div>
+                    {/* 解锁遮罩 */}
+                    <div className="genshin-section-curtain" style={{ height: item.problemIndexes.length * 48 }} onClick={() => this.handleUnlockSection()}>
+                      <div className="genshin-section-curtain-bg"></div>
+                      <div className="genshin-section-curtain-icon"></div>
+                      <div className="genshin-section-curtain-text">消耗 🔑{item?.unlockKeyCost}1 以解锁</div>
+                    </div>
+                    {/* 表格部分 */}
+                    <Table
+                      dataSource={item.problemIndexes.map(id => problems?.rows?.[id]).filter(Boolean)}
+                      rowKey="problemId"
+                      loading={problemsLoading}
+                      pagination={false}
+                      showHeader={false}
+                      className="genshin-section-table"
+                      rowClassName={(record: ICompetitionProblem) =>
+                        classNames("genshin-section-table-row")
+                      }
+                    >
+                      <Table.Column
+                        title="Alias"
+                        key="Alias"
+                        align="center"
+                        width={120}
+                        className="genshin-section-table-alias"
+                        render={(text, record: ICompetitionProblem, index) => {
+                          return <div>
+                            <Link
+                              to={urlf(pages.competitions.problemDetail, {
+                                param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
+                              })}
+                            >
+                              {record.alias}
+                            </Link>
+                          </div>
+                        }}
+                      />
+                      <Table.Column
+                        title="Title"
+                        key="Title"
+                        className="genshin-section-table-title"
+                        render={(text, record: ICompetitionProblem, index) => {
+                          return <div>
+                            <Link
+                              to={urlf(pages.competitions.problemDetail, {
+                                param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
+                              })}
+                            >
+                              {record.title}
+                            </Link>
+                          </div>
+                        }}
+                      />
+                      <Table.Column
+                        title="Score"
+                        key="Score"
+                        width={120}
+                        className="genshin-section-table-score"
+                        render={(text, record: ICompetitionProblem, index) => {
+                          return <div>💠 {record.score}</div>
+                        }}
+                      />
+                      <Table.Column
+                        title="State"
+                        key="State"
+                        width={120}
+                        className="genshin-section-table-state"
+                        render={(text, record: ICompetitionProblem, index) => {
+                          return <div>29 / 55</div>
+                        }}
+                      />
+                    </Table>
+                  </div>
+                )
+              })
+              }
+            </div>
+          </div>
+          <GenshinModal
+            title="解锁区域"
+            visible={this.state.genshinModalVisible}
+            onHide={() => {
+              this.setState({ genshinModalVisible: false })
+            }}
+          >
+            您确定花费xxx解锁当前区域吗？
+          </GenshinModal>
+        </div>
+      </>
+    )
+  }
+
   render() {
     const {
       id,
@@ -250,8 +757,6 @@ class CompetitionOverview extends React.Component<Props, State> {
       confirmQuitLoading,
       endCompetitionLoading,
     } = this.props;
-    // console.log(detailLoading, detail);
-    // console.log(competitionProblemResultStats);
 
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
@@ -281,424 +786,11 @@ class CompetitionOverview extends React.Component<Props, State> {
         </PageTitle>
       );
     }
-    const currentTime = Date.now() - ((window as any)._t_diff || 0);
-    const startTime = toLongTs(detail.startAt);
-    const endTime = toLongTs(detail.endAt);
-    const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
-    const useScore = ['ICPCWithScore'].includes(detail.rule);
-    const canEndCompetition =
-      timeStatus === 'Ended' &&
-      !detail.ended &&
-      [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
 
     return (
       <PageAnimation>
         <PageTitle title="Overview">
-          {detail?.spConfig?.preset === 'genshin' ?
-            <div className="genshin-theme-page">
-              <div className="genshin-banner"></div>
-              <div className="genshin-content">
-                <div className="genshin-notice">
-                  <p>公告部分，一些比赛属性和公告</p>
-                  <p>公告部分，一些比赛属性和公告</p>
-                  <p>公告部分，一些比赛属性和公告</p>
-                  <p>公告部分，一些比赛属性和公告</p>
-                </div>
-                <div className="genshin-divider"></div>
-                <div className="genshin-state">
-                  <div className="genshin-state-score">💠 11451</div>
-                  <div className="genshin-state-keys">🔑 4</div>
-                  <div className="genshin-state-qa">?</div>
-                </div>
-                <div className="genshin-sections">
-                  {detail.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((item, index) => {
-                    return (
-                      <div className={classNames(
-                        "genshin-section",
-                        `genshin-section-${item.id}`
-                      )}>
-                        {/* 标题区 */}
-                        <div className="genshin-section-header">
-                          <span className="genshin-section-header-title">{item.title}</span>
-                          <span className="genshin-section-header-icon"></span>
-                        </div>
-                        {/* 解锁遮罩 */}
-                        <div className="genshin-section-curtain" style={{ height: item.problemIndexes.length * 48 }}>
-                          <div className="genshin-section-curtain-bg"></div>
-                          <div className="genshin-section-curtain-icon"></div>
-                          <div className="genshin-section-curtain-text">消耗 🔑{item?.unlockKeyCost}1 以解锁</div>
-                        </div>
-                        {/* 表格部分 */}
-                        <Table
-                          dataSource={item.problemIndexes.map(id => problems?.rows?.[id]).filter(Boolean)}
-                          rowKey="problemId"
-                          loading={problemsLoading}
-                          pagination={false}
-                          showHeader={false}
-                          className="genshin-section-table"
-                          rowClassName={(record: ICompetitionProblem) =>
-                            classNames("genshin-section-table-row")
-                          }
-                        >
-                          <Table.Column
-                            title="Alias"
-                            key="Alias"
-                            align="center"
-                            width={120}
-                            className="genshin-section-table-alias"
-                            render={(text, record: ICompetitionProblem, index) => {
-                              return <div>
-                                <Link
-                                  to={urlf(pages.competitions.problemDetail, {
-                                    param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
-                                  })}
-                                >
-                                  {record.alias}
-                                </Link>
-                              </div>
-                            }}
-                          />
-                          <Table.Column
-                            title="Title"
-                            key="Title"
-                            className="genshin-section-table-title"
-                            render={(text, record: ICompetitionProblem, index) => {
-                              return <div>
-                                <Link
-                                  to={urlf(pages.competitions.problemDetail, {
-                                    param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
-                                  })}
-                                >
-                                  {record.title}
-                                </Link>
-                              </div>
-                            }}
-                          />
-                          <Table.Column
-                            title="Score"
-                            key="Score"
-                            width={120}
-                            className="genshin-section-table-score"
-                            render={(text, record: ICompetitionProblem, index) => {
-                              return <div>💠 {record.score}</div>
-                            }}
-                          />
-                          <Table.Column
-                            title="State"
-                            key="State"
-                            width={120}
-                            className="genshin-section-table-state"
-                            render={(text, record: ICompetitionProblem, index) => {
-                              return <div>29 / 55</div>
-                            }}
-                          />
-                        </Table>
-                      </div>
-                    )
-                  })
-                  }
-                </div>
-              </div>
-            </div> :
-            <Row gutter={16} className="content-view">
-              {selfUserDetail.banned && (
-                <Col xs={24} className="mb-lg">
-                  <Alert
-                    message="Banned"
-                    description="You have been banned for violating the competition rules."
-                    type="error"
-                    showIcon
-                  />
-                </Col>
-              )}
-              {selfUserDetail.status === ECompetitionUserStatus.quitted && (
-                <Col xs={24} className="mb-lg">
-                  <Alert
-                    message="Quitted"
-                    description="You have confirmed to quit. The competition is readonly now and you cannot submit solution."
-                    type="warning"
-                    showIcon
-                  />
-                </Col>
-              )}
-              <Col xs={24}>
-                <Card bordered={false}>
-                  <h2 className="text-center">{detail.title}</h2>
-                  <p className="text-center" style={{ marginBottom: '5px' }}>
-                    <span>
-                      {moment(startTime).format('YYYY-MM-DD HH:mm')} ~{' '}
-                      {moment(endTime).format('YYYY-MM-DD HH:mm')}
-                    </span>
-                  </p>
-                  <p className="text-center">
-                    <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
-                  </p>
-                  {canEndCompetition && (
-                    <p className="text-center">
-                      <Button
-                        type="danger"
-                        loading={detailLoading || endCompetitionLoading}
-                        onClick={this.endCompetition}
-                      >
-                        Confirm Result & End Competition
-                      </Button>
-                      <p className="text-center text-secondary mt-sm">
-                        <small>
-                          Once confirmed, it will release all frozen solutions, and will also trigger
-                          a settlement if it's Rating Mode.
-                        </small>
-                      </p>
-                    </p>
-                  )}
-                  {timeStatus === 'Pending' ? (
-                    <Countdown
-                      secs={Math.floor((startTime - currentTime) / 1000)}
-                      renderTime={(secs: number) => (
-                        <h1 className="text-center" style={{ margin: '30px 0' }}>
-                          {secToTimeStr(secs, true)}
-                        </h1>
-                      )}
-                      handleRequestTimeSync={() => {
-                        const currentTime = Date.now() - ((window as any)._t_diff || 0);
-                        return Math.floor((startTime - currentTime) / 1000);
-                      }}
-                      timeSyncInterval={30000}
-                    />
-                  ) : (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: xss(detail.announcement) }}
-                      className="content-area"
-                      style={{ marginTop: '15px' }}
-                    />
-                  )}
-                </Card>
-                {timeStatus !== 'Pending' && (
-                  <Card bordered={false} className="list-card">
-                    <Table
-                      dataSource={problems.rows}
-                      rowKey="problemId"
-                      loading={problemsLoading}
-                      pagination={false}
-                      className="responsive-table"
-                      rowClassName={(record: ICompetitionProblem) =>
-                        classNames(
-                          'problem-result-mark-row',
-                          { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
-                          { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
-                        )
-                      }
-                    >
-                      <Table.Column
-                        title=""
-                        key="Index"
-                        render={(text, record: ICompetitionProblem, index) => (
-                          <div>{numberToAlphabet(index)}</div>
-                        )}
-                      />
-                      <Table.Column
-                        title="Title"
-                        key="Title"
-                        render={(text, record: ICompetitionProblem, index) => (
-                          <div>
-                            <Link
-                              to={urlf(pages.competitions.problemDetail, {
-                                param: { id, index: numberToAlphabet(index) },
-                              })}
-                            >
-                              {record.title}
-                            </Link>
-                          </div>
-                        )}
-                      />
-                      {useScore && (
-                        <Table.Column
-                          title="Score"
-                          key="Score"
-                          render={(text, record: ICompetitionProblem, index) => (
-                            <div>
-                              <span
-                                className={
-                                  competitionProblemResultStats[record.problemId]?.selfAccepted
-                                    ? 'text-success'
-                                    : ''
-                                }
-                              >
-                                {this.evalVarScoreExpression(
-                                  record.score,
-                                  record.varScoreExpression,
-                                  detail,
-                                  index,
-                                  (competitionProblemResultStats[record.problemId]?.selfTries || 0) -
-                                  (competitionProblemResultStats[record.problemId]?.selfAccepted
-                                    ? 1
-                                    : 0),
-                                  competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
-                                ) ?? '-'}
-                              </span>
-                              {typeof record.score === 'number' && (
-                                <Explanation className="ml-sm-md">
-                                  <p className="mb-sm">Base Score: {record.score}</p>
-                                  {!!record.varScoreExpression && (
-                                    <p>
-                                      Score Rule:{' '}
-                                      {getReadableVarScoreExpression(record.varScoreExpression)}
-                                    </p>
-                                  )}
-                                </Explanation>
-                              )}
-                            </div>
-                          )}
-                        />
-                      )}
-                      <Table.Column
-                        title="Stats"
-                        key="Statistics"
-                        className="no-wrap"
-                        render={(text, record: ICompetitionProblem) => {
-                          if (!competitionProblemResultStats[record.problemId]) {
-                            return null;
-                          }
-                          return (
-                            <SolutionResultStats
-                              accepted={competitionProblemResultStats[record.problemId].accepted}
-                              submitted={competitionProblemResultStats[record.problemId].submitted}
-                              toSolutionsLink={urlf(pages.competitions.solutions, {
-                                param: { id },
-                                query: { problemId: record.problemId },
-                              })}
-                            />
-                          );
-                        }}
-                      />
-                    </Table>
-                  </Card>
-                )}
-                {timeStatus !== 'Pending' &&
-                  selfUserDetail?.role === ECompetitionUserRole.participant && (
-                    <>
-                      <div className="mt-lg">
-                        <Card bordered={false}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <h3 className="mb-none">My Questions</h3>
-                            <GeneralFormModal
-                              loadingEffect="competitions/createCompetitionQuestion"
-                              title="Ask Principal/Judger a Question"
-                              autoMsg
-                              items={this.getCreateQuestionFormItems()}
-                              submit={(dispatch: ReduxProps['dispatch'], values) => {
-                                const data = {
-                                  content: values.content,
-                                };
-                                return dispatch({
-                                  type: 'competitions/createCompetitionQuestion',
-                                  payload: {
-                                    id,
-                                    data,
-                                  },
-                                });
-                              }}
-                              onSuccess={(
-                                dispatch: ReduxProps['dispatch'],
-                                ret: IApiResponse<any>,
-                              ) => {
-                                msg.success('Submit successfully');
-                                tracker.event({
-                                  category: 'competitions',
-                                  action: 'submitQuestion',
-                                });
-                              }}
-                              onSuccessModalClosed={(
-                                dispatch: ReduxProps['dispatch'],
-                                ret: IApiResponse<any>,
-                              ) => {
-                                return dispatch({
-                                  type: 'competitions/getQuestions',
-                                  payload: {
-                                    id,
-                                    force: true,
-                                  },
-                                });
-                              }}
-                            >
-                              <Button size="small">Ask Question</Button>
-                            </GeneralFormModal>
-                          </div>
-                        </Card>
-                        <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
-                          <Table
-                            dataSource={questions}
-                            rowKey="competitionQuestionId"
-                            loading={questionsLoading}
-                            pagination={false}
-                            className="responsive-table"
-                            locale={{
-                              emptyText:
-                                'If you have questions about rules or problems, please submit a question',
-                            }}
-                          >
-                            <Table.Column
-                              title="ID"
-                              key="NID"
-                              render={(text, record: ICompetitionQuestion) => (
-                                <span>{record.competitionQuestionId}</span>
-                              )}
-                            />
-                            <Table.Column
-                              title="Content"
-                              key="Content"
-                              render={(text, record: ICompetitionQuestion) => (
-                                <pre>{record.content}</pre>
-                              )}
-                            />
-                            <Table.Column
-                              title="Reply"
-                              key="Reply"
-                              render={(text, record: ICompetitionQuestion) => {
-                                return record.reply ? (
-                                  <pre>{record.reply}</pre>
-                                ) : (
-                                  <span className="text-secondary">(No reply yet)</span>
-                                );
-                              }}
-                            />
-                          </Table>
-                        </Card>
-                      </div>
-                      <div className="mt-lg">
-                        <Card bordered={false}>
-                          <h3 className="mb-none">Notifications</h3>
-                        </Card>
-                        <Card bordered={false} className="list-card" style={{ marginTop: '0' }}>
-                          <Table
-                            dataSource={notifications}
-                            rowKey="competitionNotificationId"
-                            loading={notificationsLoading}
-                            pagination={false}
-                            className="responsive-table"
-                            locale={{ emptyText: 'Important notifications will be displayed here' }}
-                          >
-                            <Table.Column
-                              title="ID"
-                              key="NID"
-                              render={(text, record: ICompetitionNotification) => (
-                                <span>{record.competitionNotificationId}</span>
-                              )}
-                            />
-                            <Table.Column
-                              title="Content"
-                              key="Content"
-                              render={(text, record: ICompetitionNotification) => (
-                                <pre>{record.content}</pre>
-                              )}
-                            />
-                          </Table>
-                        </Card>
-                      </div>
-                    </>
-                  )}
-              </Col>
-            </Row>
-          }
+          {this.isGenshin ? this.renderGenshinBody() : this.renderNormalBody()}
         </PageTitle>
       </PageAnimation>
     );

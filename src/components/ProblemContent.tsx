@@ -211,6 +211,7 @@ class ProblemContent extends React.Component<Props, State> {
             playing={this.state.audioPlaying}
             onReady={this.handleAudioReady}
             onError={console.error}
+            style={{ display: 'none' }}
           />
         )}
       </div>

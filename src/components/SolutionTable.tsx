@@ -325,6 +325,7 @@ class SolutionTable extends React.Component<Props, State> {
                   contestId={contestId}
                   competitionId={competitionId}
                   index={contestProblem ? contestProblem.index : undefined}
+                  alias={contestProblem ? contestProblem.alias : undefined}
                 />
               );
             }}

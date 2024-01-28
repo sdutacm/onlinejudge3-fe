@@ -76,6 +76,7 @@ class ContestSolutionDetail extends React.Component<Props, State> {
       problemId: problem.problemId,
       title: problem.title,
       index,
+      spConfig: problem.spConfig,
     }));
     const sid = ~~match.params.sid;
     const data = allData[sid] || {} as ISolution;

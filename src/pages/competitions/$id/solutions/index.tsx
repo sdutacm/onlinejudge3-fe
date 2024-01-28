@@ -19,6 +19,7 @@ import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import RefreshCard from '@/components/RefreshCard';
 import { ICompetition } from '@/common/interfaces/competition';
+import ProblemTitle from '@/components/ProblemTitle';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -119,6 +120,8 @@ class CompetitionSolutions extends React.Component<Props, State> {
       problemId: problem.problemId,
       title: problem.title,
       index,
+      alias: problem.alias,
+      spConfig: problem.spConfig,
     }));
     return (
       <PageAnimation>
@@ -159,7 +162,7 @@ class CompetitionSolutions extends React.Component<Props, State> {
                       options: problemList.map((problem) => {
                         return {
                           fieldName: problem.problemId,
-                          displayName: `${numberToAlphabet(problem.index)} - ${problem.title}`,
+                          displayNode: <span>{problem.alias || numberToAlphabet(problem.index)} - <ProblemTitle problem={problem} /></span>,
                         };
                       }),
                     },

@@ -6,24 +6,39 @@ import classNames from 'classnames';
 import 'katex/dist/katex.min.css';
 import AutoLaTeX from 'react-autolatex';
 import ProblemDifficulty from './ProblemDifficulty';
+import { IProblemSpConfig } from '@/common/interfaces/problem';
+import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
 
 export interface Props {
   loading: boolean;
   data: IProblem;
   problemIndex?: number;
+  problemAlias?: string;
 }
 
 class ProblemContent extends React.Component<Props> {
   componentDidMount() {
     this.execScript(this.props.data);
+    this.handleFont(this.props.data);
   }
 
   componentWillReceiveProps(np: Props) {
     const p = this.props;
     if (np.data !== p.data) {
       this.execScript(np.data);
+      this.handleFont(np.data);
     }
   }
+
+  handleFont = (detail: IProblem) => {
+    const spConfig = detail?.spConfig || ({} as IProblemSpConfig);
+    loadCustomFont(spConfig.customFontFamily);
+  };
+
+  getFontStyle = () => {
+    const spConfig = this.props.data?.spConfig || ({} as IProblemSpConfig);
+    return getCustomFontStyleForReact(spConfig.customFontFamily);
+  };
 
   execScript = (data) => {
     try {
@@ -36,8 +51,16 @@ class ProblemContent extends React.Component<Props> {
     } catch (e) {}
   };
 
+  renderContent = (html: string) => {
+    return (
+      <div style={this.getFontStyle()}>
+        <AutoLaTeX>{html}</AutoLaTeX>
+      </div>
+    );
+  };
+
   render() {
-    const { loading, data, problemIndex } = this.props;
+    const { loading, data, problemIndex, problemAlias } = this.props;
     if (loading) {
       return (
         <div>
@@ -58,6 +81,12 @@ class ProblemContent extends React.Component<Props> {
     const input = (data.input || '').replace(/^&nbsp;/, '');
     const output = (data.output || '').replace(/^&nbsp;/, '');
     const hint = (data.hint || '').replace(/^&nbsp;/, '');
+    const titlePrefix =
+      typeof problemAlias === 'string'
+        ? `${problemAlias} - `
+        : problemIndex && Number.isInteger(problemIndex)
+        ? `${numberToAlphabet(problemIndex)} - `
+        : null;
     return (
       <div
         className={classNames(
@@ -72,29 +101,27 @@ class ProblemContent extends React.Component<Props> {
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
           <ProblemDifficulty difficulty={data.difficulty} className="mr-md-lg" />
-          {Number.isInteger(problemIndex)
-            ? `${numberToAlphabet(problemIndex)} - ${data.title}`
-            : data.title}
+          <span>{titlePrefix}<span style={this.getFontStyle()}>{data.title}</span></span>
         </h2>
 
         {description && (
           <>
             <h3>Description</h3>
-            <AutoLaTeX>{data.description}</AutoLaTeX>
+            {this.renderContent(data.description)}
           </>
         )}
 
         {input && (
           <>
             <h3>Input</h3>
-            <AutoLaTeX>{input}</AutoLaTeX>
+            {this.renderContent(input)}
           </>
         )}
 
         {output && (
           <>
             <h3>Output</h3>
-            <AutoLaTeX>{output}</AutoLaTeX>
+            {this.renderContent(output)}
           </>
         )}
 
@@ -130,7 +157,7 @@ class ProblemContent extends React.Component<Props> {
         {hint && (
           <>
             <h3>Hint</h3>
-            <AutoLaTeX>{hint}</AutoLaTeX>
+            {this.renderContent(hint)}
           </>
         )}
       </div>

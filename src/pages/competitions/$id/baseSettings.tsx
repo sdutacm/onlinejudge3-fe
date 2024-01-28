@@ -320,11 +320,11 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
           try {
             JSON.parse(values.spConfig);
           } catch (e) {
-            msg.error('Invalid SP config object');
+            msg.error('Invalid SP Config object');
             return;
           }
         } else {
-          msg.error('Invalid SP config object');
+          msg.error('Invalid SP Config object');
           return;
         }
         const detailData = this.getHandledDetailDataFromForm(values);

@@ -3,6 +3,7 @@ import { Modal } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import { connect } from 'dva';
 import style from './GenshinModal.less'
+import GenshinButton from './GenshinButton';
 
 export interface IGenshinModalProps extends ReduxProps {
   loadings: {
@@ -64,6 +65,12 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
           closable={false}
           centered
           okType="default"
+          footer={(
+            <div className={style.genshinModalFooter}>
+              <GenshinButton text="取消" iconType="cancel" />
+              <GenshinButton text="解锁" />
+            </div>
+          )}
         >
           <div className={style.genshinModalContent}>
             {children}

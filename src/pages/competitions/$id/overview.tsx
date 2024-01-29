@@ -31,6 +31,7 @@ import { getReadableVarScoreExpression } from '@/utils/competition';
 import { compileVarScoreExpression } from '@/common/utils/competition';
 import GenshinModal from '@/components/GenshinModal';
 import GenshinDivider from '@/components/GenshinDivider';
+import GenshinButton from '@/components/GenshinButton';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -639,7 +640,8 @@ class CompetitionOverview extends React.Component<Props, State> {
                 <div className="genshin-state-key-icon"></div>
                 <div className="genshin-state-key-text">4</div>
               </div>
-              <div className="genshin-state-qa"></div>
+              {/* <div className="genshin-state-qa"></div> */}
+              <GenshinButton buttonType="icon" iconType="help" />
             </div>
             <div className="genshin-sections">
               {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((item, index) => {

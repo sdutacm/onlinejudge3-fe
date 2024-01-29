@@ -67,8 +67,8 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
           okType="default"
           footer={(
             <div className={style.genshinModalFooter}>
-              <GenshinButton text="取消" iconType="cancel" />
-              <GenshinButton text="解锁" />
+              <GenshinButton text="取消" buttonType="default" iconType="cancel" />
+              <GenshinButton text="解锁" buttonType="default" />
             </div>
           )}
         >

@@ -1,8 +1,6 @@
 .genshinButton {
-  height: 36px;
-  width: 220px;
   background-color: #4a5367;
-  border-radius: 18px;
+  border-radius: 999px;
   position: relative;
   user-select: none;
   border: transparent 2px solid;
@@ -39,13 +37,14 @@
     &::after {
       opacity: 0.4;
     }
+
+    :global(.genshin-btn-help) {
+      background-image: url(../assets/images/sp-genshin-theme/TouchIcon/help-colorful.png);
+    }
   }
 
   .icon {
     position: absolute;
-    top: 50%;
-    left: 2px;
-    transform: translateY(-50%);
     width: 26px;
     height: 26px;
     border-radius: 50%;
@@ -74,5 +73,9 @@
 
   :global(.genshin-btn-complete) {
     background-image: url(../assets/images/sp-genshin-theme/TouchIcon/complete.png);
+  }
+
+  :global(.genshin-btn-help) {
+    background-image: url(../assets/images/sp-genshin-theme/TouchIcon/help.png);
   }
 }

@@ -1994,33 +1994,58 @@ a {
         user-select: none;
 
         .btn() {
-          height: 24px;
+          height: 30px;
           text-align: center;
-          padding: 0 8px 0 2px;
-          border-radius: 12px;
+          padding-left: 2px;
+          padding-right: 8px;
+          border-radius: 15px;
           box-sizing: border-box;
           border: #9DA5AE solid 2px;
           color: #EAE4D9;
           background-color: #63686e;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px;
         }
 
         &-score {
           .btn();
+
+          &-icon {
+            width: 20px;
+            height: 20px;
+            background: no-repeat center / contain url(./assets/images/sp-genshin-theme/score.png);
+          }
+
+          &-text {
+            text-align: center;
+          }
         }
 
-        &-keys {
+        &-key {
           .btn();
+
+          &-icon {
+            width: 20px;
+            height: 20px;
+            background: no-repeat center / contain url(./assets/images/sp-genshin-theme/key.png);
+          }
+
+          &-text {
+            text-align: center;
+          }
         }
 
         &-qa {
-          font-size: 18px;
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
           display: flex;
           justify-content: center;
           align-items: center;
           border-radius: 50%;
           border: #363E49 solid 2px;
+          background: no-repeat center / contain url(./assets/images/sp-genshin-theme/qa.png);
         }
       }
 

@@ -631,9 +631,15 @@ class CompetitionOverview extends React.Component<Props, State> {
             </div>
             <GenshinDivider />
             <div className="genshin-state">
-              <div className="genshin-state-score">💠 11451</div>
-              <div className="genshin-state-keys">🔑 4</div>
-              <div className="genshin-state-qa">?</div>
+              <div className="genshin-state-score">
+                <div className="genshin-state-score-icon"></div>
+                <div className="genshin-state-score-text">11451</div>
+              </div>
+              <div className="genshin-state-key">
+                <div className="genshin-state-key-icon"></div>
+                <div className="genshin-state-key-text">4</div>
+              </div>
+              <div className="genshin-state-qa"></div>
             </div>
             <div className="genshin-sections">
               {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((item, index) => {

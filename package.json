@@ -43,7 +43,7 @@
     "katex": "^0.16.9",
     "lodash": "^4.17.11",
     "lodash.throttle": "^4.1.1",
-    "markdown-it": "^14.0.0",
+    "markdown-it": "^13.0.2",
     "math-precision": "^1.0.5",
     "md5": "^2.2.1",
     "memoize-one": "^5.1.1",

@@ -15,7 +15,7 @@ import NotFound from '@/pages/404';
 import { genshinCharacters } from '@/configs/genshin';
 import markdownit from 'markdown-it';
 
-const md = markdownit();
+const md = markdownit().disable('image');
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;

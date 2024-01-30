@@ -13,6 +13,9 @@ import PageAnimation from '@/components/PageAnimation';
 import PageLoading from '@/components/PageLoading';
 import NotFound from '@/pages/404';
 import { genshinCharacters } from '@/configs/genshin';
+import markdownit from 'markdown-it';
+
+const md = markdownit();
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -71,14 +74,7 @@ class CompetitionParticipants extends React.Component<Props, State> {
             ({record.info.class} {record.info.realName})
           </span>
         </p>
-        {!!record.info.slogan && (
-          <p
-            className="competition-participant-slogan font-family-amaz-chinese"
-            style={{ marginTop: '12px' }}
-          >
-            {record.info.slogan}
-          </p>
-        )}
+        {!!record.info.slogan && this.renderSlogan(record.info.slogan)}
       </div>
     );
   };
@@ -99,11 +95,7 @@ class CompetitionParticipants extends React.Component<Props, State> {
 
           <span>{this.renderGenshinInfo(record.info as any)}</span>
         </p>
-        {!!record.info.slogan && (
-          <p className="competition-participant-slogan font-family-amaz-chinese">
-            {record.info.slogan || ''}
-          </p>
-        )}
+        {!!record.info.slogan && this.renderSlogan(record.info.slogan)}
       </div>
     );
   };
@@ -135,6 +127,16 @@ class CompetitionParticipants extends React.Component<Props, State> {
           style={{ height: '30px' }}
         />
       </Tooltip>
+    );
+  };
+
+  renderSlogan = (slogan: string) => {
+    const result = md.renderInline(slogan);
+    return (
+      <p
+        className="competition-participant-slogan font-family-amaz-chinese"
+        dangerouslySetInnerHTML={{ __html: result }}
+      ></p>
     );
   };
 

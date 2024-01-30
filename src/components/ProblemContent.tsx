@@ -10,6 +10,7 @@ import { IProblemSpConfig } from '@/common/interfaces/problem';
 import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
 import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
+import { randomlyPickOne } from '@/utils/misc';
 
 export interface Props {
   loading: boolean;
@@ -128,6 +129,11 @@ class ProblemContent extends React.Component<Props, State> {
         : problemIndex && Number.isInteger(problemIndex)
         ? `${numberToAlphabet(problemIndex)} - `
         : null;
+
+    const audioConf = spConfig.onEnteredAudio;
+    const urls = audioConf?.urls || [];
+    const toUseOnEnteredAudioUrl = audioConf?.playMode === 'random' ? randomlyPickOne(urls) : urls[0];
+
     return (
       <div
         className={classNames(
@@ -205,9 +211,9 @@ class ProblemContent extends React.Component<Props, State> {
           </>
         )}
 
-        {spConfig.onEnteredAudio && (
+        {!!toUseOnEnteredAudioUrl && (
           <ReactPlayer
-            url={spConfig.onEnteredAudio.url}
+            url={toUseOnEnteredAudioUrl}
             playing={this.state.audioPlaying}
             onReady={this.handleAudioReady}
             onError={console.error}

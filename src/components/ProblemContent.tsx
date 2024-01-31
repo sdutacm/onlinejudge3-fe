@@ -142,6 +142,7 @@ class ProblemContent extends React.Component<Props, State> {
     const urls = audioConf?.urls || [];
     const toUseOnEnteredAudioUrl =
       audioConf?.playMode === 'random' ? randomlyPickOne(urls) : urls[0];
+    toUseOnEnteredAudioUrl && console.log('[onEnteredAudio] use:', toUseOnEnteredAudioUrl);
 
     return (
       <div

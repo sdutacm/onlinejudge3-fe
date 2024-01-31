@@ -58,6 +58,9 @@ import {
   IGetCompetitionRatingStatusReq,
   IGetCompetitionRatingStatusResp,
   IEndCompetitionReq,
+  IGetCompetitionSpGenshinExplorationUnlockRecordsReq,
+  IGetCompetitionSpGenshinExplorationUnlockRecordsResp,
+  IDoCompetitionSpGenshinExplorationUnlockReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import {
@@ -387,10 +390,13 @@ export function replyCompetitionQuestion(competitionId, competitionQuestionId, d
 }
 
 export function getCompetitionRanklist(competitionId, god = false) {
-  return post<IGetCompetitionRanklistReq, IGetCompetitionRanklistResp>(routesBe.getCompetitionRanklist.url, {
-    competitionId,
-    god,
-  });
+  return post<IGetCompetitionRanklistReq, IGetCompetitionRanklistResp>(
+    routesBe.getCompetitionRanklist.url,
+    {
+      competitionId,
+      god,
+    },
+  );
 }
 
 export function getRatingStatus(competitionId) {
@@ -406,4 +412,23 @@ export function endCompetition(competitionId) {
   return post<IEndCompetitionReq, void>(routesBe.endCompetition.url, {
     competitionId,
   });
+}
+
+export function getSpGenshinExplorationUnlockRecords(competitionId) {
+  return post<
+    IGetCompetitionSpGenshinExplorationUnlockRecordsReq,
+    IGetCompetitionSpGenshinExplorationUnlockRecordsResp
+  >(routesBe.getCompetitionSpGenshinExplorationUnlockRecords.url, {
+    competitionId,
+  });
+}
+
+export function doCompetitionSpGenshinExplorationUnlock(competitionId, sectionId) {
+  return post<IDoCompetitionSpGenshinExplorationUnlockReq, void>(
+    routesBe.doCompetitionSpGenshinExplorationUnlock.url,
+    {
+      competitionId,
+      sectionId,
+    },
+  );
 }

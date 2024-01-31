@@ -10,6 +10,7 @@ import {
   ICompetitionSettings,
   ICompetitionUser,
 } from '@/common/interfaces/competition';
+import { IGetCompetitionSpGenshinExplorationUnlockRecordsResp } from '@/common/contracts/competition';
 
 function genInitialState() {
   return {
@@ -31,6 +32,7 @@ function genInitialState() {
     questions: {},
     ranklist: {},
     ratingStatus: {},
+    spGenshinUnlockedSectionIds: {},
   };
 }
 
@@ -158,6 +160,9 @@ export default {
       state.ratingStatus[id] = {
         ...data,
       };
+    },
+    setSpGenshinUnlockedSectionIds(state, { payload: { id, data } }) {
+      state.spGenshinUnlockedSectionIds[id] = [...data];
     },
   },
   effects: {
@@ -620,6 +625,26 @@ export default {
     },
     *endCompetition({ payload: { id } }, { call, put }) {
       const ret = yield call(service.endCompetition, id);
+      return ret;
+    },
+    *getSpGenshinUnlockedSectionIds({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<IGetCompetitionSpGenshinExplorationUnlockRecordsResp> = yield call(
+        service.getSpGenshinExplorationUnlockRecords,
+        id,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setSpGenshinUnlockedSectionIds',
+          payload: {
+            id,
+            data: (ret.data.records || []).map((r) => r.sectionId),
+          },
+        });
+      }
+      return ret;
+    },
+    *doCompetitionSpGenshinExplorationUnlock({ payload: { id, sectionId } }, { call, put }) {
+      const ret = yield call(service.doCompetitionSpGenshinExplorationUnlock, id, sectionId);
       return ret;
     },
   },

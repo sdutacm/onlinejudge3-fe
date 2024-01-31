@@ -2,19 +2,20 @@ import React from 'react';
 import { Modal } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import { connect } from 'dva';
-import style from './GenshinModal.less'
+import style from './GenshinModal.less';
 import GenshinButton from './GenshinButton';
 
 export interface IGenshinModalProps extends ReduxProps {
   loadings: {
     [x: string]: boolean;
-  }
+  };
   visible: boolean;
   cancelButton: boolean; // 是否展示取消按钮
   confirmButton: boolean; // 是否展示确认按钮
   onHide(): void;
   onOk(): void;
   loadingEffect?: string;
+  confirmLoading?: boolean;
   title: string;
   disabled?: boolean;
   okText?: string;
@@ -26,7 +27,7 @@ export interface IGenshinModalProps extends ReduxProps {
   onFail?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
 }
 
-interface State { }
+interface State {}
 
 class GenshinModal extends React.Component<IGenshinModalProps, State> {
   constructor(props: IGenshinModalProps) {
@@ -40,7 +41,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
 
   handleHideModel = () => {
     this.props.onHide();
-  }
+  };
 
   render() {
     const {
@@ -48,6 +49,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
       children,
       loadings,
       loadingEffect,
+      confirmLoading,
       title,
       okText,
       cancelText,
@@ -57,29 +59,39 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
     } = this.props;
 
     return (
-      <>
-        <Modal
-          title={title}
-          visible={visible}
-          confirmLoading={loadings[loadingEffect] || false}
-          maskClosable={maskClosable}
-          className={style.genshinModal}
-          closable={false}
-          centered
-          okType="default"
-          footer={(
-            <div className={style.genshinModalFooter}>
-              {this.props.cancelButton && <GenshinButton text={cancelText || '取消'}buttonType="default" iconType="cancel" onClick={() => onHide()} />}
-              {this.props.confirmButton && <GenshinButton text={okText || '确认'} buttonType="default" onClick={() => onOk()} />}
-            </div>
-          )}
-        >
-          <div className={style.genshinModalContent}>
-            {children}
+      <Modal
+        title={title}
+        visible={visible}
+        confirmLoading={confirmLoading ?? (loadings[loadingEffect] || false)}
+        maskClosable={maskClosable}
+        className={style.genshinModal}
+        closable={false}
+        centered
+        okType="default"
+        footer={
+          <div className={style.genshinModalFooter}>
+            {this.props.cancelButton && (
+              <GenshinButton
+                text={cancelText || '取消'}
+                buttonType="default"
+                iconType="cancel"
+                onClick={() => onHide()}
+              />
+            )}
+            {this.props.confirmButton && (
+              <GenshinButton
+                text={okText || '确认'}
+                buttonType="default"
+                onClick={() => onOk()}
+                loading={confirmLoading ?? (loadings[loadingEffect] || false)}
+              />
+            )}
           </div>
-        </Modal>
-      </>
-    )
+        }
+      >
+        <div className={style.genshinModalContent}>{children}</div>
+      </Modal>
+    );
   }
 }
 

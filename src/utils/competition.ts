@@ -169,3 +169,14 @@ export function getReadableVarScoreExpression(exp: string): string {
     .replace(/\$elapsedTime\.s/g, '{Elapsed Seconds}')
     .replace(/\$tries/g, '{Tries}');
 }
+
+export function getReadableVarScoreExpressionZh(exp: string): string {
+  return exp
+    .replace(/Math\./g, '')
+    .replace(/\$score/g, '{基础分数}')
+    .replace(/\$problemIndex/g, '{题目编号}')
+    .replace(/\$elapsedTime\.h/g, '{耗时（小时）}')
+    .replace(/\$elapsedTime\.min/g, '{耗时（分钟）}')
+    .replace(/\$elapsedTime\.s/g, '{耗时（秒）}')
+    .replace(/\$tries/g, '{尝试次数}');
+}

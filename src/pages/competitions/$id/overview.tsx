@@ -32,6 +32,7 @@ import { compileVarScoreExpression } from '@/common/utils/competition';
 import GenshinModal from '@/components/GenshinModal';
 import GenshinDivider from '@/components/GenshinDivider';
 import GenshinButton from '@/components/GenshinButton';
+import { getSpGenshinExplorationKeyInfo } from '@/common/utils/competition-genshin';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -69,6 +70,32 @@ class CompetitionOverview extends React.Component<Props, State> {
   get isGenshin() {
     return this.props?.detail?.spConfig?.preset === 'genshin';
   }
+
+  get keyInfo() {
+    const {
+      detail
+    } = this.props;
+
+    const competition = {
+      spConfig: detail?.spConfig || {}
+    }
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const startTime = toLongTs(detail.startAt);
+    const elapsedTimeSecond = currentTime - startTime;
+    const acceptedProblemIndexes = [0, 1, 3]
+    const unlockedSectionIds = []
+
+    return getSpGenshinExplorationKeyInfo(
+      competition,
+      elapsedTimeSecond,
+      acceptedProblemIndexes,
+      unlockedSectionIds
+    )
+  };
+
+  get currentKeyNum() {
+    return this.keyInfo.current;
+  };
 
   checkDetail = (detail: ICompetition) => {
     const { id, session, dispatch } = this.props;
@@ -624,7 +651,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                 showIcon
               />
             )}
-            <div className="genshin-notice">
+            <div className="genshin-notice" >
               <p>公告部分，一些比赛属性和公告</p>
               <p>公告部分，一些比赛属性和公告</p>
               <p>公告部分，一些比赛属性和公告</p>
@@ -638,7 +665,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               </div>
               <div className="genshin-state-key">
                 <div className="genshin-state-key-icon"></div>
-                <div className="genshin-state-key-text">4</div>
+                <div className="genshin-state-key-text">{this.currentKeyNum}</div>
               </div>
               {/* <div className="genshin-state-qa"></div> */}
               <GenshinButton buttonType="icon" iconType="help" />
@@ -659,7 +686,6 @@ class CompetitionOverview extends React.Component<Props, State> {
                     <div className="genshin-section-curtain" style={{ height: item.problemIndexes.length * 48 }} onClick={() => this.handleUnlockSection()}>
                       <div className="genshin-section-curtain-bg"></div>
                       <div className="genshin-section-curtain-icon"></div>
-                      <div className="genshin-section-curtain-text">消耗 🔑{item?.unlockKeyCost}1 以解锁</div>
                     </div>
                     {/* 表格部分 */}
                     <Table
@@ -678,7 +704,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                         key="Alias"
                         align="center"
                         width={120}
-                        className="genshin-section-table-alias"
+                        className="genshin-section-table-alias genshin-problem-complete"
                         render={(text, record: ICompetitionProblem, index) => {
                           return <div>
                             <Link
@@ -701,6 +727,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                               to={urlf(pages.competitions.problemDetail, {
                                 param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
                               })}
+                              className="genshin-problem-hasEgg"
                             >
                               {record.title}
                             </Link>
@@ -713,7 +740,10 @@ class CompetitionOverview extends React.Component<Props, State> {
                         width={120}
                         className="genshin-section-table-score"
                         render={(text, record: ICompetitionProblem, index) => {
-                          return <div>💠 {record.score}</div>
+                          return <>
+                            <div className="genshin-section-table-score-icon"></div>
+                            <span>{record.score}</span>
+                          </>
                         }}
                       />
                       <Table.Column

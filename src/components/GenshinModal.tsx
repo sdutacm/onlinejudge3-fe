@@ -32,7 +32,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
   }
 
   handleOk = () => {
-
+    console.log("okokok")
   }
 
   handleHideModel = () => {
@@ -41,6 +41,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
 
   render() {
     const {
+      visible,
       children,
       loadings,
       loadingEffect,
@@ -48,13 +49,14 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
       okText,
       cancelText,
       maskClosable,
+      onHide,
     } = this.props;
 
     return (
       <>
         <Modal
           title={title}
-          visible={this.props.visible}
+          visible={visible}
           okText={okText || '确认'}
           cancelText={cancelText || '取消'}
           confirmLoading={loadings[loadingEffect] || false}
@@ -67,8 +69,8 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
           okType="default"
           footer={(
             <div className={style.genshinModalFooter}>
-              <GenshinButton text="取消" buttonType="default" iconType="cancel" />
-              <GenshinButton text="解锁" buttonType="default" />
+              <GenshinButton text="取消" buttonType="default" iconType="cancel" onClick={() => onHide()}/>
+              <GenshinButton text="解锁" buttonType="default" onClick={() => this.handleOk()} />
             </div>
           )}
         >

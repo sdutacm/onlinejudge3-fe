@@ -92,6 +92,14 @@ class ProblemContent extends React.Component<Props, State> {
     });
   };
 
+  simpleFilterHTML = (html: string) => {
+    let res = (html || '').replace(/^&nbsp;/, '').trim();
+    if (res === '<p></p>') {
+      res = '';
+    }
+    return res;
+  };
+
   renderContent = (html: string) => {
     return (
       <div style={this.getFontStyle()}>
@@ -119,10 +127,10 @@ class ProblemContent extends React.Component<Props, State> {
     }
 
     const spConfig = (data.spConfig || {}) as IProblemSpConfig;
-    const description = (data.description || '').replace(/^&nbsp;/, '');
-    const input = (data.input || '').replace(/^&nbsp;/, '');
-    const output = (data.output || '').replace(/^&nbsp;/, '');
-    const hint = (data.hint || '').replace(/^&nbsp;/, '');
+    const description = this.simpleFilterHTML(data.description);
+    const input = this.simpleFilterHTML(data.input || '');
+    const output = this.simpleFilterHTML(data.output || '');
+    const hint = this.simpleFilterHTML(data.hint || '');
     const titlePrefix =
       typeof problemAlias === 'string'
         ? `${problemAlias} - `
@@ -132,7 +140,8 @@ class ProblemContent extends React.Component<Props, State> {
 
     const audioConf = spConfig.onEnteredAudio;
     const urls = audioConf?.urls || [];
-    const toUseOnEnteredAudioUrl = audioConf?.playMode === 'random' ? randomlyPickOne(urls) : urls[0];
+    const toUseOnEnteredAudioUrl =
+      audioConf?.playMode === 'random' ? randomlyPickOne(urls) : urls[0];
 
     return (
       <div
@@ -175,7 +184,7 @@ class ProblemContent extends React.Component<Props, State> {
           </>
         )}
 
-        {data.samples && (
+        {data.samples?.length > 0 && (
           <>
             <h3>Samples</h3>
             {data.samples.map((sample, index) => (

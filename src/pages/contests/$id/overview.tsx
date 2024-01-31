@@ -22,6 +22,7 @@ import { checkPerms } from '@/utils/permission';
 import { EPerm } from '@/common/configs/perm.config';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
+import ProblemTitle from '@/components/ProblemTitle';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -135,7 +136,8 @@ class ContestOverview extends React.Component<Props, State> {
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     const isContestRP = !!contestRP[id];
-    const canEndContest = timeStatus === 'Ended' && !detail.ended && checkPerms(globalSession, EPerm.EndContest);
+    const canEndContest =
+      timeStatus === 'Ended' && !detail.ended && checkPerms(globalSession, EPerm.EndContest);
 
     return (
       <PageAnimation>
@@ -163,7 +165,10 @@ class ContestOverview extends React.Component<Props, State> {
                       Confirm Result & End Contest
                     </Button>
                     <p className="text-center text-secondary mt-sm">
-                      <small>Once confirmed, it will release all frozen solutions, and will also trigger a settlement if it's Rating Mode.</small>
+                      <small>
+                        Once confirmed, it will release all frozen solutions, and will also trigger
+                        a settlement if it's Rating Mode.
+                      </small>
                     </p>
                   </p>
                 )}
@@ -242,7 +247,7 @@ class ContestOverview extends React.Component<Props, State> {
                               param: { id, index: numberToAlphabet(index) },
                             })}
                           >
-                            {record.title}
+                            <ProblemTitle problem={record} fallback="--" />
                           </Link>
                         </div>
                       )}

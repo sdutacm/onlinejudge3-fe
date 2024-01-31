@@ -30,6 +30,7 @@ import io from 'socket.io-client';
 import socketConfig from '@/configs/socket';
 import { decodeJudgeStatusBuffer } from '@/utils/judger';
 import FullScreenContent from './components/FullScreenContent';
+import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -164,12 +165,18 @@ class Index extends React.Component<Props, State> {
     window._eventSource = {
       judger: document.getElementById('event-source-judger'),
     };
+    window.addEventListener('click', this.checkUserActive);
+    window.addEventListener('scroll', this.checkUserActive);
+    window.addEventListener('keydown', this.checkUserActive);
   }
 
   componentWillUnmount() {
     clearInterval(this.state.bgCheckSessionTimer);
     clearInterval(this.state.bgGetUnreadMessagesTimer);
     window.removeEventListener('resize', this.saveViewportDimensions);
+    window.removeEventListener('click', this.checkUserActive);
+    window.removeEventListener('scroll', this.checkUserActive);
+    window.removeEventListener('keydown', this.checkUserActive);
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
@@ -182,6 +189,15 @@ class Index extends React.Component<Props, State> {
       fatal: true,
     });
   }
+
+  checkUserActive = () => {
+    // @ts-ignore
+    window._userHasBeenActive = true;
+    userActiveEmitter.emit(UserActiveEvents.UserHasBeenActive);
+    window.removeEventListener('click', this.checkUserActive);
+    window.removeEventListener('scroll', this.checkUserActive);
+    window.removeEventListener('keydown', this.checkUserActive);
+  };
 
   render() {
     const { children, location, session, activeUserCount } = this.props;
@@ -274,7 +290,9 @@ class Index extends React.Component<Props, State> {
                 </span>
               )}
             </Col>
-            {!hideNav && <Col style={{ flex: 1 }}>{this.state.sessionLoaded && <NavContainer />}</Col>}
+            {!hideNav && (
+              <Col style={{ flex: 1 }}>{this.state.sessionLoaded && <NavContainer />}</Col>
+            )}
           </Row>
         </Header>
         <Content>

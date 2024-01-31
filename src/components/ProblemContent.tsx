@@ -6,24 +6,60 @@ import classNames from 'classnames';
 import 'katex/dist/katex.min.css';
 import AutoLaTeX from 'react-autolatex';
 import ProblemDifficulty from './ProblemDifficulty';
+import { IProblemSpConfig } from '@/common/interfaces/problem';
+import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
+import ReactPlayer from 'react-player/file';
+import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
+import { randomlyPickOne } from '@/utils/misc';
 
 export interface Props {
   loading: boolean;
   data: IProblem;
   problemIndex?: number;
+  problemAlias?: string;
 }
 
-class ProblemContent extends React.Component<Props> {
+export interface State {
+  audioPlaying: boolean;
+}
+
+class ProblemContent extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      audioPlaying: false,
+    };
+  }
+
   componentDidMount() {
-    this.execScript(this.props.data);
+    this.handleProblem(this.props.data);
   }
 
   componentWillReceiveProps(np: Props) {
     const p = this.props;
     if (np.data !== p.data) {
-      this.execScript(np.data);
+      this.handleProblem(np.data);
     }
   }
+
+  componentWillUnmount() {
+    userActiveEmitter.off(UserActiveEvents.UserHasBeenActive, this.playAudio);
+  }
+
+  handleProblem(data: IProblem) {
+    this.execScript(data);
+    this.handleFont(data);
+  }
+
+  handleFont = (detail: IProblem) => {
+    const spConfig = detail?.spConfig || ({} as IProblemSpConfig);
+    loadCustomFont(spConfig.customFontFamily);
+  };
+
+  getFontStyle = () => {
+    const spConfig = this.props.data?.spConfig || ({} as IProblemSpConfig);
+    return getCustomFontStyleForReact(spConfig.customFontFamily);
+  };
 
   execScript = (data) => {
     try {
@@ -36,8 +72,44 @@ class ProblemContent extends React.Component<Props> {
     } catch (e) {}
   };
 
+  handleAudioReady = () => {
+    if (
+      // @ts-ignore
+      ('userActivation' in navigator && navigator.userActivation.hasBeenActive) ||
+      // @ts-ignore
+      window._userHasBeenActive
+    ) {
+      this.playAudio();
+    } else {
+      userActiveEmitter.on(UserActiveEvents.UserHasBeenActive, this.playAudio);
+    }
+  };
+
+  playAudio = () => {
+    console.log('Play on entered audio');
+    this.setState({
+      audioPlaying: true,
+    });
+  };
+
+  simpleFilterHTML = (html: string) => {
+    let res = (html || '').replace(/^&nbsp;/, '').trim();
+    if (res === '<p></p>') {
+      res = '';
+    }
+    return res;
+  };
+
+  renderContent = (html: string) => {
+    return (
+      <div style={this.getFontStyle()}>
+        <AutoLaTeX>{html}</AutoLaTeX>
+      </div>
+    );
+  };
+
   render() {
-    const { loading, data, problemIndex } = this.props;
+    const { loading, data, problemIndex, problemAlias } = this.props;
     if (loading) {
       return (
         <div>
@@ -54,10 +126,23 @@ class ProblemContent extends React.Component<Props> {
       );
     }
 
-    const description = (data.description || '').replace(/^&nbsp;/, '');
-    const input = (data.input || '').replace(/^&nbsp;/, '');
-    const output = (data.output || '').replace(/^&nbsp;/, '');
-    const hint = (data.hint || '').replace(/^&nbsp;/, '');
+    const spConfig = (data.spConfig || {}) as IProblemSpConfig;
+    const description = this.simpleFilterHTML(data.description);
+    const input = this.simpleFilterHTML(data.input || '');
+    const output = this.simpleFilterHTML(data.output || '');
+    const hint = this.simpleFilterHTML(data.hint || '');
+    const titlePrefix =
+      typeof problemAlias === 'string'
+        ? `${problemAlias} - `
+        : problemIndex && Number.isInteger(problemIndex)
+        ? `${numberToAlphabet(problemIndex)} - `
+        : null;
+
+    const audioConf = spConfig.onEnteredAudio;
+    const urls = audioConf?.urls || [];
+    const toUseOnEnteredAudioUrl =
+      audioConf?.playMode === 'random' ? randomlyPickOne(urls) : urls[0];
+
     return (
       <div
         className={classNames(
@@ -72,33 +157,34 @@ class ProblemContent extends React.Component<Props> {
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
           <ProblemDifficulty difficulty={data.difficulty} className="mr-md-lg" />
-          {Number.isInteger(problemIndex)
-            ? `${numberToAlphabet(problemIndex)} - ${data.title}`
-            : data.title}
+          <span>
+            {titlePrefix}
+            <span style={this.getFontStyle()}>{data.title}</span>
+          </span>
         </h2>
 
         {description && (
           <>
             <h3>Description</h3>
-            <AutoLaTeX>{data.description}</AutoLaTeX>
+            {this.renderContent(data.description)}
           </>
         )}
 
         {input && (
           <>
             <h3>Input</h3>
-            <AutoLaTeX>{input}</AutoLaTeX>
+            {this.renderContent(input)}
           </>
         )}
 
         {output && (
           <>
             <h3>Output</h3>
-            <AutoLaTeX>{output}</AutoLaTeX>
+            {this.renderContent(output)}
           </>
         )}
 
-        {data.samples && (
+        {data.samples?.length > 0 && (
           <>
             <h3>Samples</h3>
             {data.samples.map((sample, index) => (
@@ -130,8 +216,18 @@ class ProblemContent extends React.Component<Props> {
         {hint && (
           <>
             <h3>Hint</h3>
-            <AutoLaTeX>{hint}</AutoLaTeX>
+            {this.renderContent(hint)}
           </>
+        )}
+
+        {!!toUseOnEnteredAudioUrl && (
+          <ReactPlayer
+            url={toUseOnEnteredAudioUrl}
+            playing={this.state.audioPlaying}
+            onReady={this.handleAudioReady}
+            onError={console.error}
+            style={{ display: 'none' }}
+          />
         )}
       </div>
     );

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "Teyvat Black ASEncrypted";
+    src: url("./Teyvat_Black_ASEncrypted.eot"); /* IE9 */
+    src: url("./Teyvat_Black_ASEncrypted.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("./Teyvat_Black_ASEncrypted.woff2") format("woff2"), /* chrome、firefox、opera、Safari, Android, iOS */
+    url("./Teyvat_Black_ASEncrypted.woff") format("woff"), /* chrome、firefox */
+    url("./Teyvat_Black_ASEncrypted.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+ */
+    url("./Teyvat_Black_ASEncrypted.svg#uxfonteditor") format("svg"); /* iOS 4.1- */
+}

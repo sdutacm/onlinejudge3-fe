@@ -210,6 +210,14 @@ class AdminProblemList extends React.Component<Props, State> {
         ],
         rules: [{ required: true }],
       },
+      {
+        name: 'SP Config (optional)',
+        field: 'spConfig',
+        component: 'textarea',
+        rows: 10,
+        initialValue: JSON.stringify(detail?.spConfig, null, 2) || '{}',
+        rules: [],
+      },
     ];
     return items;
   }
@@ -225,6 +233,7 @@ class AdminProblemList extends React.Component<Props, State> {
       hint: values.hint.toHTML(),
       display: values.display === 'true',
       spj: values.spj === 'true',
+      spConfig: JSON.parse(values.spConfig) || {},
     };
   }
 
@@ -320,6 +329,17 @@ class AdminProblemList extends React.Component<Props, State> {
                         maskClosable={false}
                         items={this.getProblemDetailFormItems(record.problemId)}
                         submit={(dispatch: ReduxProps['dispatch'], values) => {
+                          if (values.spConfig.trim().startsWith('{')) {
+                            try {
+                              JSON.parse(values.spConfig);
+                            } catch (e) {
+                              msg.error('Invalid SP Config object');
+                              return;
+                            }
+                          } else {
+                            msg.error('Invalid SP Config object');
+                            return;
+                          }
                           tracker.event({
                             category: 'admin',
                             action: 'updateProblem',

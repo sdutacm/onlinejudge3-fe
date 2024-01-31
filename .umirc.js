@@ -205,5 +205,68 @@ export default {
         // },
       },
     });
+
+    config.plugin('error-handling-plugin').use(class ErrorHandlingPlugin {
+      apply(compiler) {
+        // 编译失败时的错误
+        compiler.hooks.failed.tap('ErrorHandlingPlugin', (error) => {
+          console.error('Compiler failed:', error);
+        });
+
+        // 编译阶段的错误
+        compiler.hooks.compilation.tap('ErrorHandlingPlugin', (compilation) => {
+          // 模块构建失败的错误
+          compilation.hooks.buildModule.tap('ErrorHandlingPlugin', (module) => {
+            // 可以在这里处理模块构建阶段的错误
+          });
+
+          // 优化阶段的错误
+          compilation.hooks.optimize.tap('ErrorHandlingPlugin', () => {
+            // 可以在这里处理优化阶段的错误
+          });
+
+          // 处理资源生成阶段的错误
+          compilation.hooks.afterSeal.tap('ErrorHandlingPlugin', () => {
+            // 可以在这里处理资源生成阶段的错误
+          });
+
+          // 处理编译过程中的错误
+          compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
+            // 可以在这里处理优化资源后的错误
+          });
+
+          // 处理编译过程中的警告
+          compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
+            compilation.warnings.forEach((warning) => {
+              // console.warn('Compilation warning:', warning);
+            });
+          });
+
+          // 处理编译过程中的错误
+          compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
+            compilation.errors.forEach((error) => {
+              console.error('Compilation error:', error);
+            });
+          });
+        });
+
+        // 编译完成时的错误
+        compiler.hooks.done.tap('ErrorHandlingPlugin', (stats) => {
+          if (stats.hasErrors()) {
+            console.error('Compilation completed with errors:');
+            stats.toJson().errors.forEach((err) => {
+              console.error(err);
+            });
+          }
+          if (stats.hasWarnings()) {
+            // console.warn('Compilation completed with warnings:');
+            // stats.toJson().warnings.forEach((warning) => {
+            //   console.warn(warning);
+            // });
+          }
+        });
+      }
+    });
+
   },
 };

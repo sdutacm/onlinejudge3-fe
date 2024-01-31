@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM, { unmountComponentAtNode } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { connect } from 'dva';
 import { Form, Input, Select, Modal, Button } from 'antd';
 import { FormProps, ReduxProps, RouteLocation } from '@/@types/props';
@@ -15,6 +15,7 @@ import { sleep } from '@/utils/misc';
 import GenshinStartScreen from './GenshinStartScreen';
 import Results from '@/configs/results/resultsEnum';
 import { IProblemSpConfig } from '@/common/interfaces/problem';
+import AutoVideoScreen from '@/components/AutoVideoScreen';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -53,6 +54,11 @@ class SubmitSolutionModal extends React.Component<Props, State> {
       type: 'solutions/getLanguageConfig',
       payload: {},
     });
+  }
+
+  get useSpSecondaryConfirm(): boolean {
+    const spConfig = (this.props.problemDetail?.spConfig || {}) as IProblemSpConfig;
+    return spConfig.genshinStart || !!spConfig.postACVideo;
   }
 
   spGenshinStart = async () => {
@@ -112,13 +118,100 @@ class SubmitSolutionModal extends React.Component<Props, State> {
     await genshinStartPromise;
   };
 
+  postACVideo = async () => {
+    const spConfig = (this.props.problemDetail.spConfig || {}) as IProblemSpConfig;
+    if (!spConfig.postACVideo) {
+      return Promise.resolve();
+    }
+    const postACVideoConfig = spConfig.postACVideo;
+    const { url, allowSkip } = postACVideoConfig;
+    console.log('Play Post-AC Video:', url);
+    const promise = new Promise((resolve) => {
+      setTimeout(() => {
+        document.getElementById('full-screen-standalone').style.display = 'block';
+        const fss = document.getElementById('full-screen-standalone');
+        const exitFullScreen = () => {
+          // document.getElementById('full-screen-standalone').style.display = 'none';
+          // @ts-ignore
+          if (document.exitFullScreen) {
+            // @ts-ignore
+            document.exitFullScreen();
+            // @ts-ignore
+          } else if (document.mozCancelFullScreen) {
+            // @ts-ignore
+            document.mozCancelFullScreen();
+            // @ts-ignore
+          } else if (document.webkitExitFullscreen) {
+            // @ts-ignore
+            document.webkitExitFullscreen();
+            // @ts-ignore
+          } else if (document.body.msExitFullscreen) {
+            // @ts-ignore
+            document.body.msExitFullscreen();
+          }
+          resolve();
+        };
+        const onError = (...args) => {
+          msg.error('Failed to play video');
+          console.error('Failed to play video', ...args);
+          exitFullScreen();
+        }
+        ReactDOM.render(
+          <AutoVideoScreen
+            url={url}
+            allowSkip={allowSkip}
+            background="#000"
+            onFinished={exitFullScreen}
+            onError={onError}
+          />,
+          fss,
+          () => {
+            if (document.body.requestFullscreen) {
+              document.body.requestFullscreen();
+              // @ts-ignore
+            } else if (document.body.mozRequestFullScreen) {
+              // @ts-ignore
+              document.body.mozRequestFullScreen();
+              // @ts-ignore
+            } else if (document.body.webkitRequestFullscreen) {
+              // @ts-ignore
+              document.body.webkitRequestFullscreen();
+              // @ts-ignore
+            } else if (document.body.msRequestFullscreen) {
+              // @ts-ignore
+              document.body.msRequestFullscreen();
+            }
+          },
+        );
+      }, 500);
+    });
+    await promise;
+  };
+
   spCallback = async () => {
+    const spConfig = (this.props.problemDetail?.spConfig || {}) as IProblemSpConfig;
+
     this.handleHideModel();
-    await this.spGenshinStart();
+
+    if (spConfig.genshinStart) {
+      await this.spGenshinStart();
+    } else if (spConfig.postACVideo) {
+      await this.postACVideo();
+    }
+
     this.redirectToSolutionDetail(this.state.solutionId);
     setTimeout(() => {
       document.getElementById('full-screen-standalone').style.display = 'none';
+      ReactDOM.unmountComponentAtNode(document.getElementById('full-screen-standalone'));
     }, 1000);
+
+    if (spConfig.genshinStartPostOpenUrl) {
+      // it will fail if popup is not allowed in most of modern browsers
+      window.open(
+        (this.props.problemDetail.spConfig as IProblemSpConfig).genshinStartPostOpenUrl,
+        '_blank',
+      );
+    }
   };
 
   redirectToSolutionDetail = (solutionId: number) => {
@@ -167,7 +260,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               label: values.language,
             });
             const solutionId = ret.data.solutionId;
-            if ((problemDetail?.spConfig as IProblemSpConfig)?.genshinStart) {
+            if (this.useSpSecondaryConfirm) {
               this.setState({
                 secondaryLoading: true,
               });

@@ -204,3 +204,7 @@ export function b64toBlob(base64, type = 'application/octet-stream') {
 export function isCompetitionSide() {
   return process.env.COMPETITION_SIDE === '1';
 }
+
+export function randomlyPickOne<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}

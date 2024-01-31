@@ -267,6 +267,14 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
         initialValue: settings?.externalRanklistUrl || '',
         rules: [],
       },
+      {
+        name: 'SP Config (optional)',
+        field: 'spConfig',
+        component: 'textarea',
+        rows: 10,
+        initialValue: JSON.stringify(detail?.spConfig, null, 2) || '{}',
+        rules: [],
+      },
     ];
     return items;
   }
@@ -284,6 +292,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
       introduction: values.introduction.toHTML(),
       announcement: values.announcement.toHTML(),
       hidden: values.hidden === 'true',
+      spConfig: JSON.parse(values.spConfig) || {},
     };
   }
 
@@ -293,7 +302,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
       allowedJoinMethods: values.allowedJoinMethods || [],
       allowedAuthMethods: values.allowedAuthMethods || [],
       allowAnyObservation: values.allowAnyObservation === 'true',
-      useOnetimePassword:  values.useOnetimePassword === 'true',
+      useOnetimePassword: values.useOnetimePassword === 'true',
       joinPassword: values.joinPassword || '',
       externalRanklistUrl: values.externalRanklistUrl || '',
     };
@@ -307,6 +316,17 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
     });
     form.validateFields((err, values) => {
       if (!err) {
+        if (values.spConfig.trim().startsWith('{')) {
+          try {
+            JSON.parse(values.spConfig);
+          } catch (e) {
+            msg.error('Invalid SP Config object');
+            return;
+          }
+        } else {
+          msg.error('Invalid SP Config object');
+          return;
+        }
         const detailData = this.getHandledDetailDataFromForm(values);
         const settingsData = this.getHandledSettingsDataFromForm(values);
         console.log('to update detail:', detailData);
@@ -354,7 +374,7 @@ class CompetitionBaseSettings extends React.Component<Props, State> {
   render() {
     const { loading, submitLoading, form } = this.props;
     if (loading) {
-      return <PageLoading />
+      return <PageLoading />;
     }
 
     return (

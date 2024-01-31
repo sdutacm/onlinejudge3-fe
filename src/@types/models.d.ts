@@ -116,6 +116,7 @@ interface IProblem {
   display: boolean;
   spj: boolean;
   spConfig: any;
+  alias?: string; /** only in competition */
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }

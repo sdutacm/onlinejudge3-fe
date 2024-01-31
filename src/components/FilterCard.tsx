@@ -7,7 +7,8 @@ import gStyles from '@/general.less';
 import tracker from '@/utils/tracker';
 
 export interface FilterCardFieldSelectOptionItem {
-  displayName: string;
+  displayName?: string;
+  displayNode?: React.ReactNode;
   fieldName: string | number | boolean;
 }
 
@@ -85,7 +86,7 @@ class FilterCard extends React.Component<Props, any> {
               field.options ? (
                 <Select>
                   {field.options.map((f) => (
-                    <Select.Option key={f.fieldName.toString()}>{f.displayName}</Select.Option>
+                    <Select.Option key={f.fieldName.toString()}>{f.displayNode || f.displayName}</Select.Option>
                   ))}
                 </Select>
               ) : (

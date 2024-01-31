@@ -28,6 +28,7 @@ import classNames from 'classnames';
 import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import TimeStatusBadge from '@/components/TimeStatusBadge';
 import PageLoading from '@/components/PageLoading';
+import { genshinCharacters } from '@/configs/genshin';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -85,6 +86,10 @@ class CompetitionIntro extends React.Component<Props, State> {
     //   type: 'settings/setTheme',
     //   payload: { theme: this._preTheme },
     // });
+  }
+
+  get isGenshin() {
+    return this.props?.detail?.spConfig?.preset === 'genshin';
   }
 
   async fetch(competitionId: number, dispatch) {
@@ -213,6 +218,30 @@ class CompetitionIntro extends React.Component<Props, State> {
     ];
   };
 
+  initForm = (configurableFormItems, data?: ICompetitionSelfParticipantForm) => {
+    const formItems = configurableFormItems.map((item) => {
+      const { field, initialValue } = item;
+      const newItem = { ...item };
+      newItem.initialValue = data?.info?.[field] ?? initialValue;
+      if (item.component === 'select' && item.xOptionsAppend === 'genshin-characters') {
+        newItem.options = [
+          ...item.options,
+          ...genshinCharacters.map((c) => ({
+            name: `${c.nameZh}(${c.element})`,
+            value: c.id,
+            icon: (
+              <span style={{ display: 'inline-block', width: '32px' }}>
+                <img src={c.avatarIconSideUrl} className="mr-sm" style={{ height: '22px' }} />
+              </span>
+            ),
+          })),
+        ];
+      }
+      return newItem;
+    });
+    return formItems;
+  };
+
   inSignUpRange = () => {
     const registerStartAt = new Date(this.props.detail.registerStartAt);
     const registerEndAt = new Date(this.props.detail.registerEndAt);
@@ -285,7 +314,7 @@ class CompetitionIntro extends React.Component<Props, State> {
   };
 
   renderSignUpAction = () => {
-    const { id, session } = this.props;
+    const { id, session, detail } = this.props;
     const { selfParticipant, cannotSignUpTips } = this.state;
     if (this.isSignUpEnded()) {
       return <Button disabled>Signing Up: Ended</Button>;
@@ -296,6 +325,10 @@ class CompetitionIntro extends React.Component<Props, State> {
     if (!session.loggedIn) {
       return <Button disabled>Login to Sign Up</Button>;
     }
+    const formItems =
+      this.isGenshin && detail.spConfig.memberInfoFields
+        ? this.initForm(detail.spConfig.memberInfoFields, selfParticipant)
+        : this.getSelfParticipantFormItems();
     if (!selfParticipant) {
       if (cannotSignUpTips) {
         return <p className="text-secondary">{cannotSignUpTips}</p>;
@@ -305,13 +338,15 @@ class CompetitionIntro extends React.Component<Props, State> {
           loadingEffect="competitions/signUpCompetitionParticipant"
           title="Sign Up"
           autoMsg
-          items={this.getSelfParticipantFormItems()}
+          maskClosable={false}
+          items={formItems}
           submit={(dispatch: ReduxProps['dispatch'], values) => {
             const data = {
               competitionId: id,
               unofficialParticipation: false,
               info: { ...values },
             };
+            console.log('data', data);
             return dispatch({
               type: 'competitions/signUpCompetitionParticipant',
               payload: {
@@ -347,13 +382,15 @@ class CompetitionIntro extends React.Component<Props, State> {
             loadingEffect="competitions/modifySignedUpCompetitionParticipant"
             title="View/Edit Info"
             autoMsg
-            items={this.getSelfParticipantFormItems(selfParticipant)}
+            maskClosable={false}
+            items={formItems}
             submit={(dispatch: ReduxProps['dispatch'], values) => {
               const data = {
                 competitionId: id,
                 unofficialParticipation: false,
                 info: { ...values },
               };
+              console.log('data', data);
               return dispatch({
                 type: 'competitions/modifySignedUpCompetitionParticipant',
                 payload: {

@@ -10,17 +10,17 @@ import pages from '@/configs/pages';
 import moment from 'moment';
 import { urlf } from '@/utils/format';
 import classNames from 'classnames';
-import { ContestTypes } from '@/configs/contestTypes';
 import TimeStatusBadge from '@/components/TimeStatusBadge';
 import gStyles from '@/general.less';
 import PageTitle from '@/components/PageTitle';
 import SdutpcLogoSvg from '../assets/images/sdutpc_logo.svg';
 import AzurSeriesLogoSvg from '../assets/images/azur-series-logo-full.svg';
 import ExtLink from '@/components/ExtLink';
+import { ICompetition } from '@/common/interfaces/competition';
 
 const TOP_NUM = 5;
 let cachedState = {
-  recentContests: {
+  recentCompetitions: {
     page: 1,
     count: 0,
     limit: 0,
@@ -35,11 +35,11 @@ interface Props extends ReduxProps, RouteProps {
     month: IStatsUserACRank;
   };
   userACRankloading: boolean;
-  recentContestsLoading: boolean;
+  recentCompetitionsLoading: boolean;
 }
 
 interface State {
-  recentContests: IList<IContest>;
+  recentCompetitions: IList<ICompetition>;
 }
 
 class Index extends React.Component<Props, State> {
@@ -52,15 +52,14 @@ class Index extends React.Component<Props, State> {
 
   async componentDidMount() {
     const ret = await this.props.dispatch({
-      type: 'contests/getListData',
+      type: 'competitions/getListData',
       payload: {
         limit: 3,
-        category: '0',
       },
     });
     if (ret.success) {
       this.setState({
-        recentContests: ret.data,
+        recentCompetitions: ret.data,
       });
     }
   }
@@ -72,8 +71,8 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { userACRank, userACRankloading, recentContestsLoading } = this.props;
-    const { recentContests } = this.state;
+    const { userACRank, userACRankloading, recentCompetitionsLoading } = this.props;
+    const { recentCompetitions } = this.state;
     const serverTime = Date.now() - ((window as any)._t_diff || 0);
     return (
       <PageAnimation>
@@ -149,13 +148,8 @@ class Index extends React.Component<Props, State> {
                         {/* <ExtLink href="https://as.shaly.best">
                           立即报名
                         </ExtLink> */}
-                        <span>【Round 1】登入比赛 → </span>
-                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 18 } })}>
-                          Div.1
-                        </Link>
-                        <span> / </span>
-                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 19 } })}>
-                          Div.2
+                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 22 } })}>
+                        【Round 2】报名原神主题赛
                         </Link>
                       </div>
                       {/* <div>
@@ -195,31 +189,31 @@ class Index extends React.Component<Props, State> {
             </Col> */}
 
             <Col xs={24} className="mt-xl">
-              <h3 className="full-width-inner-content">Recent Contests</h3>
+              <h3 className="full-width-inner-content">Recent Competitions</h3>
               <Card bordered={false} className="list-card">
                 <Table
-                  dataSource={recentContests.rows}
-                  rowKey={(record: IContest) => `${record.contestId}`}
-                  loading={recentContestsLoading}
+                  dataSource={recentCompetitions.rows}
+                  rowKey={(record: ICompetition) => `${record.competitionId}`}
+                  loading={recentCompetitionsLoading}
                   pagination={false}
                   className="responsive-table"
                 >
-                  <Table.Column
+                  {/* <Table.Column
                     title=""
                     key="Type"
                     className="text-right td-icon"
-                    render={(text, record: IContest) => (
+                    render={(text, record: ICompetition) => (
                       <span>
                         {record.type === ContestTypes.Private && <Icon type="lock" />}
                         {record.type === ContestTypes.Register && <Icon type="team" />}
                       </span>
                     )}
-                  />
+                  /> */}
                   <Table.Column
                     title="Title"
                     key="Title"
-                    render={(text, record: IContest) => (
-                      <Link to={urlf(pages.contests.home, { param: { id: record.contestId } })}>
+                    render={(text, record: ICompetition) => (
+                      <Link to={urlf(pages.competitions.public.intro, { param: { id: record.competitionId } })}>
                         {record.title}
                       </Link>
                     )}
@@ -346,7 +340,7 @@ function mapStateToProps(state) {
   return {
     userACRank: state.stats.userACRank,
     userACRankloading: !!state.loading.effects['stats/getAllUserACRank'],
-    recentContestsLoading: !!state.loading.effects['contests/getListData'],
+    recentCompetitionsLoading: !!state.loading.effects['competitions/getListData'],
   };
 }
 

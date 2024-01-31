@@ -29,7 +29,11 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
 
     return (
       <>
-        <div className={style.genshinButton} style={{ width, height }} onClick={(e) => this.props.onClick(e)}>
+        <div className={style.genshinButton} style={{ width, height }} onClick={(e) => {
+          if (this.props.onClick) {
+            this.props.onClick(e)
+          }
+        }}>
           {buttonType !== "text" && <div
             className={classNames(
               style.icon,

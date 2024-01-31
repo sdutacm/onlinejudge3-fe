@@ -32,7 +32,7 @@ import { compileVarScoreExpression } from '@/common/utils/competition';
 import GenshinModal from '@/components/GenshinModal';
 import GenshinDivider from '@/components/GenshinDivider';
 import GenshinButton from '@/components/GenshinButton';
-import { getSpGenshinExplorationKeyInfo } from '@/common/utils/competition-genshin';
+import { getSpGenshinExplorationKeyInfo, checkSpGenshinUnlockSection } from '@/common/utils/competition-genshin';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -55,6 +55,12 @@ export interface Props extends ReduxProps {
 
 interface State {
   genshinModalVisible: boolean
+  acceptedProblemIndexes: number[]
+  unlockedSectionIds: string[]
+  genshinModalInfo: {
+    canUnlock: boolean,
+    keyCost?: number
+  }
 }
 
 class CompetitionOverview extends React.Component<Props, State> {
@@ -63,7 +69,13 @@ class CompetitionOverview extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      genshinModalVisible: false
+      genshinModalVisible: false,
+      acceptedProblemIndexes: [0, 1, 2, 7],
+      unlockedSectionIds: ["mondstadt", "inazuma"],
+      genshinModalInfo: {
+        canUnlock: false,
+        keyCost: 999
+      }
     };
   }
 
@@ -82,8 +94,8 @@ class CompetitionOverview extends React.Component<Props, State> {
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     const startTime = toLongTs(detail.startAt);
     const elapsedTimeSecond = currentTime - startTime;
-    const acceptedProblemIndexes = [0, 1, 3]
-    const unlockedSectionIds = []
+    const acceptedProblemIndexes = this.state.acceptedProblemIndexes
+    const unlockedSectionIds = this.state.unlockedSectionIds
 
     return getSpGenshinExplorationKeyInfo(
       competition,
@@ -92,6 +104,30 @@ class CompetitionOverview extends React.Component<Props, State> {
       unlockedSectionIds
     )
   };
+
+  // todo 用不到
+  getSectionInfo(sectionId: string) {
+    const {
+      detail
+    } = this.props;
+
+    const competition = {
+      spConfig: detail?.spConfig || {}
+    }
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const startTime = toLongTs(detail.startAt);
+    const elapsedTimeSecond = currentTime - startTime;
+    const acceptedProblemIndexes = this.state.acceptedProblemIndexes
+    const unlockedSectionIds = this.state.unlockedSectionIds
+
+    return checkSpGenshinUnlockSection(
+      competition,
+      elapsedTimeSecond,
+      acceptedProblemIndexes,
+      unlockedSectionIds,
+      sectionId,
+    )
+  }
 
   get currentKeyNum() {
     return this.keyInfo.current;
@@ -269,8 +305,33 @@ class CompetitionOverview extends React.Component<Props, State> {
     });
   };
 
+  handleModalButtonOk = () => {
+    if (this.state.genshinModalInfo.canUnlock) {
+      console.log("handleModalButtonOk")
+    } else {
+      this.setState({ genshinModalVisible: false })
+    }
+  }
+
   // 解锁区域
-  handleUnlockSection = () => {
+  handleUnlockSection = (section) => {
+    // const canUnlock = this.currentKeyNum >= (section.unlockKeyCost || 1)
+    const canUnlock = false; // ? mock 
+
+    if (canUnlock) {
+      this.setState({
+        genshinModalInfo: {
+          canUnlock: true,
+          keyCost: (section.unlockKeyCost || 1)
+        }
+      })
+    } else {
+      this.setState({
+        genshinModalInfo: {
+          canUnlock: false,
+        }
+      })
+    }
     this.setState({ genshinModalVisible: true })
   }
 
@@ -628,6 +689,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       confirmQuitLoading,
       endCompetitionLoading,
     } = this.props;
+
     return (
       <>
         <div className="genshin-theme-page">
@@ -667,95 +729,105 @@ class CompetitionOverview extends React.Component<Props, State> {
                 <div className="genshin-state-key-icon"></div>
                 <div className="genshin-state-key-text">{this.currentKeyNum}</div>
               </div>
-              {/* <div className="genshin-state-qa"></div> */}
               <GenshinButton buttonType="icon" iconType="help" />
             </div>
             <div className="genshin-sections">
-              {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((item, index) => {
+              {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map((section, index) => {
                 return (
                   <div className={classNames(
                     "genshin-section",
-                    `genshin-section-${item.id}`
+                    `genshin-section-${section.id}`
                   )}>
                     {/* 标题区 */}
                     <div className="genshin-section-header">
-                      <span className="genshin-section-header-title">{item.title}</span>
+                      <span className="genshin-section-header-title">{section.title}</span>
                       <span className="genshin-section-header-icon"></span>
                     </div>
                     {/* 解锁遮罩 */}
-                    <div className="genshin-section-curtain" style={{ height: item.problemIndexes.length * 48 }} onClick={() => this.handleUnlockSection()}>
-                      <div className="genshin-section-curtain-bg"></div>
-                      <div className="genshin-section-curtain-icon"></div>
-                    </div>
+                    {!(this.state.unlockedSectionIds.includes(section.id) ||
+                      section?.unlockByDefault) &&
+                      <div
+                        className="genshin-section-curtain"
+                        style={{ height: section.problemIndexes.length * 48 }}
+                        onClick={() => this.handleUnlockSection(section)}
+                      >
+                        <div className="genshin-section-curtain-bg"></div>
+                        <div className="genshin-section-curtain-icon"></div>
+                      </div>}
                     {/* 表格部分 */}
-                    <Table
-                      dataSource={item.problemIndexes.map(id => problems?.rows?.[id]).filter(Boolean)}
-                      rowKey="problemId"
-                      loading={problemsLoading}
-                      pagination={false}
-                      showHeader={false}
-                      className="genshin-section-table"
-                      rowClassName={(record: ICompetitionProblem) =>
-                        classNames("genshin-section-table-row")
-                      }
-                    >
-                      <Table.Column
-                        title="Alias"
-                        key="Alias"
-                        align="center"
-                        width={120}
-                        className="genshin-section-table-alias genshin-problem-complete"
-                        render={(text, record: ICompetitionProblem, index) => {
-                          return <div>
-                            <Link
-                              to={urlf(pages.competitions.problemDetail, {
-                                param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
-                              })}
-                            >
-                              {record.alias}
-                            </Link>
-                          </div>
-                        }}
-                      />
-                      <Table.Column
-                        title="Title"
-                        key="Title"
-                        className="genshin-section-table-title"
-                        render={(text, record: ICompetitionProblem, index) => {
-                          return <div>
-                            <Link
-                              to={urlf(pages.competitions.problemDetail, {
-                                param: { id, index: numberToAlphabet(item.problemIndexes[index]) },
-                              })}
-                              className="genshin-problem-hasEgg"
-                            >
-                              {record.title}
-                            </Link>
-                          </div>
-                        }}
-                      />
-                      <Table.Column
-                        title="Score"
-                        key="Score"
-                        width={120}
-                        className="genshin-section-table-score"
-                        render={(text, record: ICompetitionProblem, index) => {
-                          return <>
-                            <div className="genshin-section-table-score-icon"></div>
-                            <span>{record.score}</span>
-                          </>
-                        }}
-                      />
-                      <Table.Column
-                        title="State"
-                        key="State"
-                        width={120}
-                        className="genshin-section-table-state"
-                        render={(text, record: ICompetitionProblem, index) => {
-                          return <div>29 / 55</div>
-                        }}
-                      />
-                    </Table>
+                    {(this.state.unlockedSectionIds.includes(section.id) ||
+                      section?.unlockByDefault) &&
+                      <Table
+                        dataSource={section.problemIndexes.map(id => problems?.rows?.[id]).filter(Boolean)}
+                        rowKey="problemId"
+                        loading={problemsLoading}
+                        pagination={false}
+                        showHeader={false}
+                        className="genshin-section-table"
+                        rowClassName={(record: ICompetitionProblem) =>
+                          classNames("genshin-section-table-row")
+                        }
+                      >
+                        <Table.Column
+                          title="Alias"
+                          key="Alias"
+                          align="center"
+                          width={120}
+                          className="genshin-section-table-alias"
+                          render={(text, record: ICompetitionProblem, index) => {
+                            return <div className={classNames(
+                              { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
+                              { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
+                            )}>
+                              <Link
+                                to={urlf(pages.competitions.problemDetail, {
+                                  param: { id, index: numberToAlphabet(section.problemIndexes[index]) },
+                                })}
+                              >
+                                {record.alias}
+                              </Link>
+                            </div>
+                          }}
+                        />
+                        <Table.Column
+                          title="Title"
+                          key="Title"
+                          className="genshin-section-table-title"
+                          render={(text, record: ICompetitionProblem, index) => {
+                            return <div>
+                              <Link
+                                to={urlf(pages.competitions.problemDetail, {
+                                  param: { id, index: numberToAlphabet(section.problemIndexes[index]) },
+                                })}
+                                className="genshin-problem-hasEgg"
+                              >
+                                {record.title}
+                              </Link>
+                            </div>
+                          }}
+                        />
+                        <Table.Column
+                          title="Score"
+                          key="Score"
+                          width={120}
+                          className="genshin-section-table-score"
+                          render={(text, record: ICompetitionProblem, index) => {
+                            return <>
+                              <div className="genshin-section-table-score-icon"></div>
+                              <span>{record.score}</span>
+                            </>
+                          }}
+                        />
+                        <Table.Column
+                          title="State"
+                          key="State"
+                          width={120}
+                          className="genshin-section-table-state"
+                          render={(text, record: ICompetitionProblem, index) => {
+                            return <div>29 / 55</div>
+                          }}
+                        />
+                      </Table>}
                   </div>
                 )
               })
@@ -768,8 +840,14 @@ class CompetitionOverview extends React.Component<Props, State> {
             onHide={() => {
               this.setState({ genshinModalVisible: false })
             }}
+            onOk={() => this.handleModalButtonOk()}
+            okText={this.state.genshinModalInfo.canUnlock ? "解锁" : "确认"}
+            cancelButton={this.state.genshinModalInfo.canUnlock}
+            confirmButton={true}
           >
-            您确定花费xxx解锁当前区域吗？
+            {this.state.genshinModalInfo.canUnlock ?
+              <p>是否使用<div className='genshin-icon-key'></div> {this.state.genshinModalInfo.keyCost} 解锁？</p> :
+              <p>当前持有<div className='genshin-icon-key'></div> <span style={{ color: "#d2392f" }}>{this.currentKeyNum}</span> 不足。</p>}
           </GenshinModal>
         </div>
       </>

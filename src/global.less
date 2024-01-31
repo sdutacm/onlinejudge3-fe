@@ -2303,8 +2303,6 @@ a {
             }
 
             &-alias {
-              position: relative;
-
               a {
                 color: #7A6044;
                 font-size: 18px;
@@ -2314,7 +2312,8 @@ a {
                 }
               }
 
-              &::before {
+              .accepted::before,
+              .attempted::before {
                 content: "";
                 width: 20px;
                 height: 20px;
@@ -2324,11 +2323,11 @@ a {
                 transform: translate(0, -50%);
               }
 
-              &.genshin-problem-complete::before {
+              .accepted::before {
                 background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-complete.png);
               }
 
-              &.genshin-problem-fail::before {
+              .attempted::before {
                 background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-fail.png);
               }
             }
@@ -2375,5 +2374,13 @@ a {
         }
       }
     }
+  }
+
+  .genshin-icon-key {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 2px;
+    background: no-repeat center / contain url(./assets/images/sp-genshin-theme/key.png);
   }
 }

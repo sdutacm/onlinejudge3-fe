@@ -10,7 +10,10 @@ export interface IGenshinModalProps extends ReduxProps {
     [x: string]: boolean;
   }
   visible: boolean;
+  cancelButton: boolean; // 是否展示取消按钮
+  confirmButton: boolean; // 是否展示确认按钮
   onHide(): void;
+  onOk(): void;
   loadingEffect?: string;
   title: string;
   disabled?: boolean;
@@ -31,9 +34,9 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
     this.state = {};
   }
 
-  handleOk = () => {
-    console.log("okokok")
-  }
+  // handleOk = () => {
+  //   console.log("okokok")
+  // }
 
   handleHideModel = () => {
     this.props.onHide();
@@ -50,6 +53,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
       cancelText,
       maskClosable,
       onHide,
+      onOk,
     } = this.props;
 
     return (
@@ -57,11 +61,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
         <Modal
           title={title}
           visible={visible}
-          okText={okText || '确认'}
-          cancelText={cancelText || '取消'}
           confirmLoading={loadings[loadingEffect] || false}
-          onOk={this.handleOk}
-          onCancel={this.handleHideModel}
           maskClosable={maskClosable}
           className={style.genshinModal}
           closable={false}
@@ -69,8 +69,8 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
           okType="default"
           footer={(
             <div className={style.genshinModalFooter}>
-              <GenshinButton text="取消" buttonType="default" iconType="cancel" onClick={() => onHide()}/>
-              <GenshinButton text="解锁" buttonType="default" onClick={() => this.handleOk()} />
+              {this.props.cancelButton && <GenshinButton text={cancelText || '取消'}buttonType="default" iconType="cancel" onClick={() => onHide()} />}
+              {this.props.confirmButton && <GenshinButton text={okText || '确认'} buttonType="default" onClick={() => onOk()} />}
             </div>
           )}
         >

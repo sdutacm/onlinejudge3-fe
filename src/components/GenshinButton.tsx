@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 export interface IGenshinButtonProps {
   buttonType?: "default" | "text" | "icon";
+  theme?: "light" | "dark"
   text?: string;
   iconType?: "default" | "cancel" | "complete" | "help";
   onClick?: React.MouseEventHandler;
@@ -22,6 +23,7 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
       text,
       buttonType,
       iconType = "default",
+      theme = "dark"
     } = this.props;
 
     const width = buttonType === "icon" ? "36px" : "220px"
@@ -29,7 +31,10 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
 
     return (
       <>
-        <div className={style.genshinButton} style={{ width, height }} onClick={(e) => {
+        <div className={classNames(
+          style.genshinButton,
+          theme === "light" ? style.light : null
+        )} style={{ width, height }} onClick={(e) => {
           if (this.props.onClick) {
             this.props.onClick(e)
           }

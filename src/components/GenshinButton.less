@@ -85,5 +85,20 @@
     .text {
       color: #3c4255;
     }
+
+    &:hover {
+      border-color: #565c72;
+      box-shadow: 0 0 2px #9098b5;
+    }
+
+    &:active {
+      background-color: #fefefe;
+      border-color: #565c72;
+      box-shadow: 0 0 2px #EAE4D9;
+
+      &::after {
+        opacity: 0;
+      }
+    }
   }
 }

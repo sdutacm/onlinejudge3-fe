@@ -758,7 +758,7 @@ class CompetitionOverview extends React.Component<Props, State> {
             />
           )}
 
-          <Card bordered={false} style={{ width: '100%' }}>
+          <Card bordered={false} className="genshin-theme-card">
             <h2 className="text-center">{detail.title}</h2>
             <p className="text-center" style={{ marginBottom: '5px' }}>
               <span>

@@ -124,6 +124,7 @@ class CompetitionLayout extends React.Component<Props, State> {
     }
     const progressTimer: any = setInterval(this.updateProgress, 1000);
     this.setState({ progressTimer });
+    this.checkDetail(this.props.detail);
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>): void {
@@ -198,12 +199,35 @@ class CompetitionLayout extends React.Component<Props, State> {
       clearInterval(this.pollParticipantDataTimer);
       router.replace(urlf(pages.competitions.home, { param: { id } }));
     }
+
+    if (this.props.detail !== nextProps.detail) {
+      this.checkDetail(nextProps.detail);
+    }
   }
 
   componentWillUnmount() {
     clearInterval(this.state.progressTimer);
     clearInterval(this.pollParticipantDataTimer);
+    this.uninstallGenshinTheme();
   }
+
+  checkDetail = (detail?: ICompetition) => {
+    const spConfig = detail?.spConfig || {};
+    if (spConfig.preset === 'genshin') {
+      this.installGenshinTheme();
+    } else {
+      this.uninstallGenshinTheme();
+    }
+  };
+
+  installGenshinTheme = () => {
+    document.body.classList.add('genshin-theme');
+    console.log('Genshin, start!');
+  };
+
+  uninstallGenshinTheme = () => {
+    document.body.classList.remove('genshin-theme');
+  };
 
   render() {
     const { id, loading, session, detail, children } = this.props;

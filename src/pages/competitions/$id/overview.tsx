@@ -167,20 +167,10 @@ class CompetitionOverview extends React.Component<Props, State> {
   };
 
   componentDidMount(): void {
-    if (this.props.detail.spConfig?.preset === 'genshin') {
-      const BodyElement = document.querySelector('body');
-      BodyElement.classList.add('genshin-theme');
-      console.log('Genshin, start!');
-    }
     this.checkDetail(this.props.detail);
   }
 
   componentWillUnmount(): void {
-    if (this.props.detail.spConfig?.preset === 'genshin') {
-      const BodyElement = document.querySelector('body');
-      BodyElement.classList.remove('genshin-theme');
-      console.log('Genshin, exit!');
-    }
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {

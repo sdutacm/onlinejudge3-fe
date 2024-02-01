@@ -10,7 +10,7 @@ import { IProblemSpConfig } from '@/common/interfaces/problem';
 import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
 import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
-import { randomlyPickOne } from '@/utils/misc';
+import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
 
 export interface Props {
   loading: boolean;
@@ -139,9 +139,7 @@ class ProblemContent extends React.Component<Props, State> {
         : null;
 
     const audioConf = spConfig.onEnteredAudio;
-    const urls = audioConf?.urls || [];
-    const toUseOnEnteredAudioUrl =
-      audioConf?.playMode === 'random' ? randomlyPickOne(urls) : urls[0];
+    const toUseOnEnteredAudioUrl = pickGenshinAudioUrlFromConf(audioConf);
     toUseOnEnteredAudioUrl && console.log('[onEnteredAudio] use:', toUseOnEnteredAudioUrl);
 
     return (

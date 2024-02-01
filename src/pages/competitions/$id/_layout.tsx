@@ -17,6 +17,9 @@ import { ICompetition } from '@/common/interfaces/competition';
 import NotFound from '@/pages/404';
 import { ECompetitionUserRole } from '@/common/enums';
 import { ICompetitionEvenData, CompetitionEvents, competitionEmitter } from '@/events/competition';
+import ReactPlayer from 'react-player/file';
+import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
+import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -27,18 +30,23 @@ export interface Props extends RouteProps, ReduxProps {
 interface State {
   currentTime: ITimestamp;
   progressTimer: number;
+  audioUrl: string;
+  audioPlaying: boolean;
 }
 
 class CompetitionLayout extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
   setStatePromise = setStatePromise.bind(this);
   pollParticipantDataTimer = 0;
+  audioPlayList: string[] = [];
 
   constructor(props) {
     super(props);
     this.state = {
       currentTime: Date.now() - ((window as any)._t_diff || 0),
       progressTimer: 0,
+      audioUrl: '',
+      audioPlaying: false,
     };
   }
 
@@ -101,12 +109,6 @@ class CompetitionLayout extends React.Component<Props, State> {
     } else {
       console.log('[pollParticipantData] not in running time, skipped');
     }
-  };
-
-  onSpGenshinSectionUnlocked = (
-    data: ICompetitionEvenData[CompetitionEvents.SpGenshinSectionUnlocked],
-  ) => {
-    console.log('[event.onSpGenshinSectionUnlocked]', data);
   };
 
   componentDidMount(): void {
@@ -244,6 +246,57 @@ class CompetitionLayout extends React.Component<Props, State> {
     document.body.classList.remove('genshin-theme');
   };
 
+  onSpGenshinSectionUnlocked = (
+    data: ICompetitionEvenData[CompetitionEvents.SpGenshinSectionUnlocked],
+  ) => {
+    console.log('[event.onSpGenshinSectionUnlocked]', data);
+    const toUseUrl = pickGenshinAudioUrlFromConf(data.section?.onUnlock?.playAudio);
+    if (toUseUrl) {
+      console.log('[event.onSpGenshinSectionUnlocked] play url:', toUseUrl);
+      this.audioPlayList.push(toUseUrl);
+      if (this.audioPlayList.length === 1) {
+        this.setState({
+          audioUrl: this.audioPlayList[0],
+        });
+      }
+      console.log('new play list', this.audioPlayList);
+    }
+  };
+
+  handleAudioReady = () => {
+    if (
+      // @ts-ignore
+      ('userActivation' in navigator && navigator.userActivation.hasBeenActive) ||
+      // @ts-ignore
+      window._userHasBeenActive
+    ) {
+      this.playAudio();
+    } else {
+      userActiveEmitter.on(UserActiveEvents.UserHasBeenActive, this.playAudio);
+    }
+  };
+
+  handleAudioEnded = () => {
+    this.audioPlayList.shift();
+    if (this.audioPlayList.length > 0) {
+      this.setState({
+        audioUrl: this.audioPlayList[0],
+      });
+      console.log('play next audio', this.audioPlayList[0]);
+    } else {
+      this.setState({
+        audioUrl: '',
+      });
+      console.log('no more audio to play');
+    }
+  };
+
+  playAudio = () => {
+    this.setState({
+      audioPlaying: true,
+    });
+  };
+
   render() {
     const { id, loading, session, detail, children } = this.props;
     const { currentTime } = this.state;
@@ -297,6 +350,16 @@ class CompetitionLayout extends React.Component<Props, State> {
           </div>
         </Popover>
         {children}
+        {!!this.state.audioUrl && (
+          <ReactPlayer
+            url={this.state.audioUrl}
+            playing={this.state.audioPlaying}
+            onReady={this.handleAudioReady}
+            onError={console.error}
+            onEnded={this.handleAudioEnded}
+            style={{ display: 'none' }}
+          />
+        )}
       </ContestTimeStatusWatcher>
     );
   }

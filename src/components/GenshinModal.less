@@ -1,3 +1,7 @@
+@inner-border-margin: 6px;
+@inner-border-corner-size: 16px;
+@inner-border-width: calc(3 * @inner-border-corner-size / 24);
+
 // 角标耦合样式
 .genshin-corner() {
   content: "";
@@ -11,25 +15,100 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+
+  .genshinModalInnerBorder {
+    position: absolute;
+    top: -45px;
+    left: 0;
+    width: 520px;
+    height: calc(100% + 45px + 66px);
+    z-index: 1;
+    opacity: 0.4;
+
+    .genshinModalInnerBorderCorner {
+      position: absolute;
+      width: @inner-border-corner-size;
+      height: @inner-border-corner-size;
+
+      // 左上
+      &:nth-child(1) {
+        background: no-repeat center / contain url(../assets/images/sp-genshin-theme/inner-border-corner.png);
+        top: @inner-border-margin;
+        left: @inner-border-margin;
+      }
+
+      // 右上
+      &:nth-child(2) {
+        background: no-repeat center / contain url(../assets/images/sp-genshin-theme/inner-border-corner.png);
+        top: @inner-border-margin;
+        right: @inner-border-margin;
+        transform: rotate(90deg);
+      }
+
+      // 左下
+      &:nth-child(3) {
+        background: no-repeat center / contain url(../assets/images/sp-genshin-theme/inner-border-corner.png);
+        bottom: @inner-border-margin;
+        left: @inner-border-margin;
+        transform: rotate(270deg);
+      }
+
+      // 右下
+      &:nth-child(4) {
+        background: no-repeat center / contain url(../assets/images/sp-genshin-theme/inner-border-corner.png);
+        bottom: @inner-border-margin;
+        right: @inner-border-margin;
+        transform: rotate(180deg);
+      }
+    }
+
+    .genshinModalInnerBorderSide {
+      position: absolute;
+      background-color: #d1bb8d;
+
+      // 上
+      &:nth-child(5) {
+        top: @inner-border-margin;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: calc(100% - 2 * @inner-border-corner-size);
+        height: @inner-border-width;
+      }
+
+      // 下
+      &:nth-child(6) {
+        bottom: @inner-border-margin;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: calc(100% - 2 * @inner-border-corner-size);
+        height: @inner-border-width;
+      }
+
+      // 左
+      &:nth-child(7) {
+        top: 50%;
+        right: @inner-border-margin;
+        transform: translate(0, -50%);
+        width: @inner-border-width;
+        height: calc(100% - 2 * @inner-border-corner-size);
+      }
+
+      // 右
+      &:nth-child(8) {
+        top: 50%;
+        left: @inner-border-margin;
+        transform: translate(0, -50%);
+        width: @inner-border-width;
+        height: calc(100% - 2 * @inner-border-corner-size);
+      }
+    }
+  }
 }
 
 .genshinModal {
   color: #565656;
-
-  // todo 模态框装饰线
-  // :global(.ant-modal-content) {
-  //   position: relative;
-
-  //   &::after {
-  //     content: "";
-  //     position: absolute;
-  //     top: 0;
-  //     left: 0;
-  //     width: 100%;
-  //     height: 100%;
-  //     background-color: #ffffff55;
-  //   }
-  // }
 
   :global(.ant-modal-header) {
     background-color: #e5e2dc;

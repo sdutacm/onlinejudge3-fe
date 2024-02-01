@@ -127,7 +127,6 @@ class CompetitionOverview extends React.Component<Props, State> {
 
   checkDetail = (detail: ICompetition) => {
     const { id, session, dispatch } = this.props;
-    console.log('check', detail);
     if (!detail) {
       return;
     }

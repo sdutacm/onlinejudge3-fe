@@ -27,7 +27,7 @@ export interface IGenshinModalProps extends ReduxProps {
   onFail?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
 }
 
-interface State {}
+interface State { }
 
 class GenshinModal extends React.Component<IGenshinModalProps, State> {
   constructor(props: IGenshinModalProps) {
@@ -76,6 +76,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
                 buttonType="default"
                 iconType="cancel"
                 onClick={() => onHide()}
+                style={{ zIndex: 10 }}
               />
             )}
             {this.props.confirmButton && (
@@ -84,12 +85,29 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
                 buttonType="default"
                 onClick={() => onOk()}
                 loading={confirmLoading ?? (loadings[loadingEffect] || false)}
+                style={{ zIndex: 10 }}
               />
             )}
           </div>
         }
       >
-        <div className={style.genshinModalContent}>{children}</div>
+        <div className={style.genshinModalContent}>
+          <div className={style.genshinModalInnerBorder}>
+            {/* 内边框-四角:  1左上，2右上，3左下，4右下*/}
+            <div className={style.genshinModalInnerBorderCorner}></div>
+            <div className={style.genshinModalInnerBorderCorner}></div>
+            <div className={style.genshinModalInnerBorderCorner}></div>
+            <div className={style.genshinModalInnerBorderCorner}></div>
+            {/* 内边框-四边： 1上，2下，3左，4左*/}
+            <div className={style.genshinModalInnerBorderSide}></div>
+            <div className={style.genshinModalInnerBorderSide}></div>
+            <div className={style.genshinModalInnerBorderSide}></div>
+            <div className={style.genshinModalInnerBorderSide}></div>
+          </div>
+          <div style={{ zIndex: 10 }}>
+            {children}
+          </div>
+        </div>
       </Modal>
     );
   }

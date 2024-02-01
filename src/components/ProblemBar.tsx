@@ -36,7 +36,7 @@ const ProblemBar: React.FC<Props> = ({
       })
     : competitionId
     ? urlf(pages.competitions.problemDetail, {
-        param: { id: competitionId, index: numberToAlphabet(index) },
+        param: { id: competitionId, alias: alias || numberToAlphabet(index) },
       })
     : urlf(pages.problems.detail, {
         param: { id: problem.problemId },

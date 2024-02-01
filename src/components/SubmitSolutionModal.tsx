@@ -21,6 +21,7 @@ export interface Props extends ReduxProps, FormProps {
   problemId: number;
   problemDetail?: IProblem;
   problemIndex?: number;
+  problemAlias?: string;
   contestId?: number;
   competitionId?: number;
   title: string;
@@ -325,7 +326,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, loading, form, problemId, problemIndex, title, languageConfig } = this.props;
+    const { children, loading, form, problemId, problemIndex, problemAlias, title, languageConfig } = this.props;
     const { getFieldDecorator } = form;
     const selectedLanguage = form.getFieldValue('language');
     const selectedLanguageConfig = languageConfig.find(
@@ -361,7 +362,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               <Form.Item label="Problem">
                 {getFieldDecorator('problemId', { initialValue: problemId })(
                   <span className="ant-form-text">
-                    {problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}
+                    {problemAlias ? problemAlias : problemIndex ? numberToAlphabet(problemIndex) : problemId} - {title}
                   </span>,
                 )}
               </Form.Item>

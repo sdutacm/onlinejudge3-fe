@@ -29,6 +29,7 @@ export interface Props extends RouteProps {
   competitionId?: number;
   contestTimeStatus?: ContestTimeStatus;
   problemIndex?: number;
+  problemAlias?: string;
   favorites: IFavorite[];
   mobile: boolean;
 }
@@ -40,6 +41,7 @@ const ProblemDetailPage: React.FC<Props> = ({
   contestId,
   competitionId,
   problemIndex,
+  problemAlias,
   favorites,
   location,
   mobile,
@@ -109,6 +111,7 @@ const ProblemDetailPage: React.FC<Props> = ({
         contestId={contestId}
         competitionId={competitionId}
         problemIndex={problemIndex}
+        problemAlias={problemAlias}
         location={location}
       >
         <Button type="primary" block>
@@ -293,7 +296,9 @@ const ProblemDetailPage: React.FC<Props> = ({
   return (
     <PageTitle
       title={
-        Number.isInteger(problemIndex)
+        problemAlias
+          ? problemAlias
+          : Number.isInteger(problemIndex)
           ? `${numberToAlphabet(problemIndex)} - ${data.title}`
           : data.title
       }
@@ -303,7 +308,7 @@ const ProblemDetailPage: React.FC<Props> = ({
         <Col xs={24} md={18} xxl={18}>
           <PageAnimation>
             <Card bordered={false}>
-              <ProblemContent loading={loading} data={data} problemIndex={problemIndex} />
+              <ProblemContent loading={loading} data={data} problemIndex={problemIndex} problemAlias={problemAlias} />
             </Card>
           </PageAnimation>
         </Col>

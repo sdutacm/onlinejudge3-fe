@@ -27,6 +27,8 @@ export interface Props extends RouteProps {
   competition?: ICompetition;
   loading: boolean;
   problemNum: number;
+  problemAliasList?: string;
+  problemBalloonList?: string;
   userCellRender: (user: IUser) => React.ReactNode;
   needAutoUpdate: boolean;
   session: ISessionStatus;
@@ -168,7 +170,12 @@ class Ranklist extends React.Component<Props, State> {
         aoa.push(row);
       });
       console.log(aoa);
-      aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} ${competition ? 'competition' : 'contest'}_ranklist_${id}.xlsx`);
+      aoa2Excel(
+        aoa,
+        `${moment().format('YYYY-MM-DD HH_mm_ss')} ${
+          competition ? 'competition' : 'contest'
+        }_ranklist_${id}.xlsx`,
+      );
     } finally {
       this.exportLoading = false;
     }
@@ -180,6 +187,8 @@ class Ranklist extends React.Component<Props, State> {
       data,
       loading,
       problemNum,
+      problemAliasList,
+      problemBalloonList,
       userCellRender,
       existedHeaderClassName,
       session,
@@ -197,12 +206,12 @@ class Ranklist extends React.Component<Props, State> {
       .fill(undefined)
       .map((value, index) => index);
     const width = {
-      rank: 64,
-      user: 250,
+      rank: 40,
+      user: 180,
       delta: 108,
-      solved: 64,
-      time: 80,
-      stat: 80,
+      solved: 55,
+      time: 55,
+      stat: 60,
     };
     const infoWidth = width.rank + width.user + width.solved + width.time;
     const widthSum = infoWidth + width.stat * problemNum;
@@ -266,9 +275,10 @@ class Ranklist extends React.Component<Props, State> {
             pageSize: showAll ? ranklist.length : limits.contests.ranklist,
             onChange: this.handlePageChange,
           }}
+          size="middle"
         >
           <Table.Column
-            title="Rank"
+            title="#"
             key="Rank"
             align="right"
             width={width.rank}
@@ -319,10 +329,15 @@ class Ranklist extends React.Component<Props, State> {
             render={(text, record: IRanklistRow) => (
               <div>
                 <Link
-                  to={urlf(this.props.competition ? pages.competitions.solutions : pages.contests.solutions, {
-                    param: { id },
-                    query: { userId: record.user && record.user.userId },
-                  })}
+                  to={urlf(
+                    this.props.competition
+                      ? pages.competitions.solutions
+                      : pages.contests.solutions,
+                    {
+                      param: { id },
+                      query: { userId: record.user && record.user.userId },
+                    },
+                  )}
                 >
                   {record.score}
                 </Link>
@@ -339,11 +354,22 @@ class Ranklist extends React.Component<Props, State> {
           />
           {problemIndex.map((index) => (
             <Table.Column
-              title={numberToAlphabet(index)}
+              title={problemAliasList?.[index] || numberToAlphabet(index)}
               key={`prob-${index}`}
               className="stat"
               align="center"
               width={width.stat}
+              onHeaderCell={(column) => {
+                const color = problemBalloonList?.[index]?.trim();
+                if (!color) {
+                  return column;
+                }
+                return {
+                  style: {
+                    backgroundImage: `linear-gradient(${color} 0%, ${color} 10%, ${color}45 10%, transparent 100%)`,
+                  },
+                };
+              }}
               render={(text, record: IRanklistRow) => {
                 const stat = record.stats[index];
                 let statText = '';

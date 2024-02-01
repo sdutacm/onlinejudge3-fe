@@ -22,7 +22,7 @@ import {
   ICompetitionNotification,
   ICompetitionQuestion,
 } from '@/common/interfaces/competition';
-import { ECompetitionUserRole, ECompetitionUserStatus, ESolutionResult } from '@/common/enums';
+import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import GeneralFormModal from '@/components/GeneralFormModal';
@@ -36,6 +36,7 @@ import GenshinModal from '@/components/GenshinModal';
 import GenshinDivider from '@/components/GenshinDivider';
 import GenshinButton from '@/components/GenshinButton';
 import { getSpGenshinExplorationKeyInfo } from '@/common/utils/competition-genshin';
+import { competitionEmitter, CompetitionEvents } from '@/events/competition';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -45,7 +46,6 @@ export interface Props extends ReduxProps {
   detail: ICompetition;
   problemsLoading: boolean;
   problems: IFullList<ICompetitionProblem>;
-  userProblemResultStats: IUserProblemResultStats;
   competitionProblemResultStats: ICompetitionProblemResultStats;
   notifications: ICompetitionNotification[];
   notificationsLoading: boolean;
@@ -89,13 +89,11 @@ class CompetitionOverview extends React.Component<Props, State> {
   }
 
   get acceptedProblemIndexes(): number[] {
-    const {
-      userProblemResultStats: { acceptedProblemIds },
-      problems,
-    } = this.props;
+    const { competitionProblemResultStats, problems } = this.props;
     const indexes: number[] = [];
     for (let i = 0; i < problems.rows.length; i++) {
-      if (~acceptedProblemIds.indexOf(problems.rows[i].problemId)) {
+      const stats = competitionProblemResultStats[problems.rows[i].problemId];
+      if (stats?.selfAccepted) {
         indexes.push(i);
       }
     }
@@ -147,14 +145,6 @@ class CompetitionOverview extends React.Component<Props, State> {
         },
       });
       // TODO 考虑去掉 force，当用户 AC 后主动用 force=true 请求一次
-      dispatch({
-        type: 'users/getProblemResultStats',
-        payload: {
-          userId: session.user.userId,
-          competitionId: id,
-          force: true,
-        },
-      });
       dispatch({
         type: 'competitions/getProblemResultStats',
         payload: { id, force: true },
@@ -304,8 +294,11 @@ class CompetitionOverview extends React.Component<Props, State> {
   };
 
   handleTryUnlockModalConfirm = () => {
-    const { id, dispatch } = this.props;
+    const { id, dispatch, detail } = this.props;
     if (this.state.genshinTryUnlockModalInfo.canUnlock) {
+      const section = detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.find(
+        (section) => section.id === this.state.genshinTryUnlockModalInfo.selectedSectionId,
+      );
       dispatch({
         type: 'competitions/doCompetitionSpGenshinExplorationUnlock',
         payload: { id, sectionId: this.state.genshinTryUnlockModalInfo.selectedSectionId },
@@ -341,6 +334,11 @@ class CompetitionOverview extends React.Component<Props, State> {
             msg.error('获取数据失败，请刷新页面重试');
           } finally {
             this.setState({ genshinTryUnlockModalVisible: false });
+            competitionEmitter.emit(CompetitionEvents.SpGenshinSectionUnlocked, {
+              competitionId: id,
+              competition: detail,
+              section,
+            });
             // TODO 触发解锁动画
           }
         }
@@ -380,7 +378,6 @@ class CompetitionOverview extends React.Component<Props, State> {
       detail,
       problemsLoading,
       problems,
-      userProblemResultStats: { acceptedProblemIds, attemptedProblemIds },
       competitionProblemResultStats,
       notifications,
       notificationsLoading,
@@ -483,13 +480,14 @@ class CompetitionOverview extends React.Component<Props, State> {
                 loading={problemsLoading}
                 pagination={false}
                 className="responsive-table"
-                rowClassName={(record: ICompetitionProblem) =>
-                  classNames(
+                rowClassName={(record: ICompetitionProblem) => {
+                  const stats = competitionProblemResultStats[record.problemId];
+                  return classNames(
                     'problem-result-mark-row',
-                    { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
-                    { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
-                  )
-                }
+                    { accepted: stats?.selfAccepted },
+                    { attempted: !stats?.selfAccepted && stats?.selfTries > 0 },
+                  );
+                }}
               >
                 <Table.Column
                   title=""
@@ -505,7 +503,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                     <div>
                       <Link
                         to={urlf(pages.competitions.problemDetail, {
-                          param: { id, index: numberToAlphabet(index) },
+                          param: { id, alias: numberToAlphabet(index) },
                         })}
                       >
                         {record.title}
@@ -708,7 +706,6 @@ class CompetitionOverview extends React.Component<Props, State> {
       detail,
       problemsLoading,
       problems,
-      userProblemResultStats: { acceptedProblemIds, attemptedProblemIds },
       competitionProblemResultStats,
       notifications,
       notificationsLoading,
@@ -838,18 +835,21 @@ class CompetitionOverview extends React.Component<Props, State> {
                           width={120}
                           className="genshin-section-table-alias"
                           render={(text, record: ICompetitionProblem, index) => {
+                            const stats = competitionProblemResultStats[record.problemId];
                             return (
                               <div
                                 className={classNames(
-                                  { accepted: ~acceptedProblemIds.indexOf(record.problemId) },
-                                  { attempted: ~attemptedProblemIds.indexOf(record.problemId) },
+                                  { accepted: stats?.selfAccepted },
+                                  { attempted: !stats?.selfAccepted && stats?.selfTries > 0 },
                                 )}
                               >
                                 <Link
                                   to={urlf(pages.competitions.problemDetail, {
                                     param: {
                                       id,
-                                      index: numberToAlphabet(section.problemIndexes[index]),
+                                      alias:
+                                        record.alias ||
+                                        numberToAlphabet(section.problemIndexes[index]),
                                     },
                                   })}
                                 >
@@ -870,7 +870,9 @@ class CompetitionOverview extends React.Component<Props, State> {
                                   to={urlf(pages.competitions.problemDetail, {
                                     param: {
                                       id,
-                                      index: numberToAlphabet(section.problemIndexes[index]),
+                                      alias:
+                                        record.alias ||
+                                        numberToAlphabet(section.problemIndexes[index]),
                                     },
                                   })}
                                   className={
@@ -1063,7 +1065,6 @@ function mapStateToProps(state) {
       count: 0,
       rows: [],
     },
-    userProblemResultStats: state.users.problemResultStats,
     competitionProblemResultStats: state.competitions.problemResultStats[id] || {},
     notifications: state.competitions.notifications[id]?.rows || [],
     notificationsLoading: state.loading.effects['competitions/getNotifications'],
@@ -1076,8 +1077,7 @@ function mapStateToProps(state) {
       state.loading.effects['competitions/getSpGenshinUnlockedSectionIds'] ||
       state.loading.effects['competitions/getProblems'] ||
       state.loading.effects['competitions/getDetail'] ||
-      state.loading.effects['competitions/getProblemResultStats'] ||
-      state.loading.effects['users/getProblemResultStats'],
+      state.loading.effects['competitions/getProblemResultStats'],
     confirmEnterLoading:
       state.loading.effects['competitions/confirmEnter'] ||
       state.loading.effects['competitions/getSelfUserDetail'],

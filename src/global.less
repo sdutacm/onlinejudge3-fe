@@ -982,35 +982,40 @@ ul {
 // Ranklist
 
 .ranklist {
-  .ant-table-tbody>tr>td.stat {
-    padding: 0;
-    height: 1px;
-    border-left: 1px solid transparent;
-    border-right: 1px solid transparent;
+  .ant-table, .ant-table-middle {
+    .ant-table-thead>tr>th {
+      padding: 8px 4px !important;
+    }
+    .ant-table-tbody>tr>td.stat {
+      padding: 0 !important;
+      height: 1px;
+      border-left: 1px solid transparent;
+      border-right: 1px solid transparent;
 
-    .stat-inner {
-      position: relative;
-      height: 100%;
-      width: 100%;
-      display: inline-table;
+      .stat-inner {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        display: inline-table;
 
-      div {
-        display: table-cell;
-        vertical-align: middle;
-        padding: 8px;
+        div {
+          display: table-cell;
+          vertical-align: middle;
+          padding: 4px;
 
-        p {
-          margin-bottom: 0;
+          p {
+            margin-bottom: 0;
+          }
+
+          .stat-inner-extra {
+            font-size: 75%;
+            opacity: 0.65;
+          }
         }
 
-        .stat-inner-extra {
-          font-size: 75%;
-          opacity: 0.65;
+        &.stat-type-score .stat-inner-text {
+          font-weight: 500;
         }
-      }
-
-      &.stat-type-score .stat-inner-text {
-        font-weight: 500;
       }
     }
   }

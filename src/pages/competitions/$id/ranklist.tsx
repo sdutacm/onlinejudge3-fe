@@ -233,6 +233,8 @@ class CompetitionRanklist extends React.Component<Props, State> {
                   competition={detail}
                   loading={ranklistLoading}
                   problemNum={problems.count || 0}
+                  problemAliasList={problems.rows?.map((item) => item.alias) || []}
+                  problemBalloonList={problems.rows?.map((item) => (item as ICompetitionProblem).balloonColor) || []}
                   session={session}
                   userCellRender={(user) => <UserBar user={user} showRating={isRating} />}
                   needAutoUpdate={true}

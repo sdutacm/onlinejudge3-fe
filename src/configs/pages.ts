@@ -53,7 +53,7 @@ export default {
     index: '/competitions',
     home: '/competitions/:id',
     overview: '/competitions/:id/overview',
-    problemDetail: '/competitions/:id/problems/:index',
+    problemDetail: '/competitions/:id/problems/:alias',
     solutions: '/competitions/:id/solutions',
     solutionDetail: '/competitions/:id/solutions/:sid',
     ranklist: '/competitions/:id/ranklist',

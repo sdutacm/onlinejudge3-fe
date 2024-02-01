@@ -60,8 +60,19 @@ class CompetitionProblem extends React.Component<Props, State> {
     if (detailLoading || detailLoading === undefined || !detail) {
       return <PageLoading />;
     }
-    const index = alphabetToNumber(match.params.index);
-    const problem = (rows && rows[index]) || ({} as IProblem);
+
+    const aliasOrIndex = match.params.alias;
+    const matchedProblemByAliasIndex = rows?.findIndex((item) => item.alias === aliasOrIndex);
+    let alias = '';
+    let index = -1;
+    if (matchedProblemByAliasIndex > -1) {
+      alias = aliasOrIndex;
+      index = matchedProblemByAliasIndex;
+    } else {
+      index = alphabetToNumber(match.params.alias);
+    }
+
+    const problem = rows?.[index] || ({} as IProblem);
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     const timeStatus = getSetTimeStatus(
       toLongTs(detail.startAt),
@@ -76,6 +87,7 @@ class CompetitionProblem extends React.Component<Props, State> {
         competitionId={id}
         contestTimeStatus={timeStatus}
         problemIndex={index}
+        problemAlias={alias}
         favorites={[]}
       />
     );

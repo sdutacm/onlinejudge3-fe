@@ -399,7 +399,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
 
     return (
-      <Row gutter={16} className="content-view">
+      <Row gutter={16} className="content-view" style={{ marginTop: '84px', marginBottom: '32px' }}>
         {selfUserDetail.banned && (
           <Col xs={24} className="mb-lg">
             <Alert
@@ -992,17 +992,19 @@ class CompetitionOverview extends React.Component<Props, State> {
           confirmLoading={spGenshinLoading || doCompetitionSpGenshinExplorationUnlockLoading}
         >
           {this.state.genshinTryUnlockModalInfo.canUnlock ? (
-            <p style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <p style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               是否使用
               <span className="genshin-icon-key" />
-              {this.state.genshinTryUnlockModalInfo.keyCost}{' '}
-              解锁？
+              {this.state.genshinTryUnlockModalInfo.keyCost} 解锁？
             </p>
           ) : (
-            <p style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <p style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               当前持有
-              <span className="genshin-icon-key" />{' '}
-              <span style={{ color: '#d2392f' }}>{this.currentKeyNum}</span> 不足。
+              <span className="genshin-icon-key" />
+              <span className="mr-sm" style={{ color: '#d2392f' }}>
+                {this.currentKeyNum}{' '}
+              </span>
+              不足。
             </p>
           )}
         </GenshinModal>

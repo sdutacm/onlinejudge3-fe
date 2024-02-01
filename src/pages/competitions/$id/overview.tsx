@@ -793,7 +793,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                     {!unlocked && (
                       <div
                         className="genshin-section-curtain"
-                        style={{ height: section.problemIndexes.length * 39 }}
+                        style={{ height: section.problemIndexes.length * 39 + 2 }}
                         onClick={() => this.handleTryUnlockSection(section)}
                       >
                         <div className="genshin-section-curtain-bg" />

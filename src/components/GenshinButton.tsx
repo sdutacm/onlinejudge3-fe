@@ -3,50 +3,61 @@ import style from './GenshinButton.less';
 import classNames from 'classnames';
 
 export interface IGenshinButtonProps {
-  buttonType?: 'default' | 'text' | 'icon';
+  buttonType?: 'default' | 'text' | 'icon' | 'auto';
   theme?: 'light' | 'dark';
   text?: string;
   iconType?: 'default' | 'cancel' | 'complete' | 'help';
   loading?: boolean;
+  disabled?: boolean;
   style?: React.CSSProperties;
   onClick?: React.MouseEventHandler;
 }
 
-interface State {}
+interface State { }
 
 class GenshinButton extends React.Component<IGenshinButtonProps, State> {
+  static defaultProps: Partial<IGenshinButtonProps> = {
+    buttonType: 'default',
+    theme: 'dark',
+    iconType: 'default',
+    disabled: false,
+  };
+
   constructor(props: IGenshinButtonProps) {
     super(props);
     this.state = {};
   }
 
   render() {
-    const { text, buttonType, iconType = 'default', theme = 'dark' } = this.props;
-
-    const width = buttonType === 'icon' ? '36px' : '220px';
-    const height = '36px';
+    const {
+      buttonType,
+      theme,
+      text,
+      iconType,
+      loading,
+      disabled,
+    } = this.props;
 
     return (
       <div
-        className={classNames(style.genshinButton, theme === 'light' ? style.light : null)}
-        style={{ width, height, ...this.props?.style }}
+        className={classNames(
+          style.genshinButton,
+          theme === 'light' ? style.light : null,
+          buttonType === 'auto' ? style.autoLayout : null,
+          buttonType === 'icon' ? style.iconLayout : null,
+          disabled || loading ? style.disabled : null
+        )}
+        style={this.props?.style}
         onClick={(e) => {
-          if (this.props.onClick && !this.props.loading) {
+          if (this.props.onClick && !loading && !disabled) {
             this.props.onClick(e);
           }
         }}
       >
-        {buttonType !== 'text' && (
-          <div
-            className={classNames(style.icon, `genshin-btn-${iconType}`)}
-            style={{
-              top: '50%',
-              left: buttonType === 'icon' ? '50%' : '2px',
-              transform: buttonType === 'icon' ? 'translate(-50%, -50%)' : 'translate(0, -50%)',
-            }}
-          />
-        )}
-        {buttonType !== 'icon' && <span className={style.text}>{text}</span>}
+        {buttonType !== 'text' &&
+          <div className={classNames(style.icon, `genshin-btn-${iconType}`)} />}
+        {buttonType !== 'icon' &&
+          <span className={style.text}>{text}</span>}
       </div>
     );
   }

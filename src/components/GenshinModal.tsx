@@ -73,16 +73,14 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
             {this.props.cancelButton && (
               <GenshinButton
                 text={cancelText || '取消'}
-                buttonType="default"
                 iconType="cancel"
                 onClick={() => onHide()}
                 style={{ zIndex: 10 }}
-              />
+              />  
             )}
             {this.props.confirmButton && (
               <GenshinButton
                 text={okText || '确认'}
-                buttonType="default"
                 onClick={() => onOk()}
                 loading={confirmLoading ?? (loadings[loadingEffect] || false)}
                 style={{ zIndex: 10 }}

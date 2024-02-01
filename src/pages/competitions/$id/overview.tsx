@@ -21,6 +21,7 @@ import {
   ICompetitionUser,
   ICompetitionNotification,
   ICompetitionQuestion,
+  ICompetitionSpConfigGenhinExplorationW2KByDistributePeriodically,
 } from '@/common/interfaces/competition';
 import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import msg from '@/utils/msg';
@@ -71,6 +72,7 @@ interface State {
 
 class CompetitionOverview extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {};
+  private _keyInfoRefreshTimer: number;
 
   constructor(props) {
     super(props);
@@ -162,15 +164,65 @@ class CompetitionOverview extends React.Component<Props, State> {
           type: 'competitions/getSpGenshinUnlockedSectionIds',
           payload: { id },
         });
+        this.setSpGenshinKeyForceRefresh(detail);
       }
     }
+  };
+
+  setSpGenshinKeyForceRefresh = (detail: ICompetition) => {
+    clearTimeout(this._keyInfoRefreshTimer);
+    if (!detail) {
+      return;
+    }
+    const spConfig = detail.spConfig || {};
+    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const startTime = toLongTs(detail.startAt);
+    const endTime = toLongTs(detail.endAt);
+    const durationSecond = Math.floor((endTime - startTime) / 1000);
+    const elapsedTimeSecond = Math.floor((currentTime - startTime) / 1000);
+    const options = spConfig.genshinConfig?.explorationModeOptions || {};
+    const distributeOptions = options.waysToGetKey?.find(
+      (w) => w.by === 'distributePeriodically',
+    ) as ICompetitionSpConfigGenhinExplorationW2KByDistributePeriodically;
+    if (!distributeOptions) {
+      return;
+    }
+
+    const dStart = distributeOptions.startAtSecond;
+    const dPeriod = distributeOptions.periodSecond;
+
+    let nextSecond = dStart;
+    do {
+      if (nextSecond > elapsedTimeSecond || nextSecond >= durationSecond) {
+        break;
+      }
+      if (!(dPeriod > 0)) {
+        break;
+      }
+      nextSecond += dPeriod;
+    } while (true);
+
+    if (nextSecond >= durationSecond) {
+      return;
+    }
+
+    const delay = Math.max(0, nextSecond - elapsedTimeSecond) + 1;
+    console.log('key refresh delay:', delay, 'next:', nextSecond, 'elpsed:', elapsedTimeSecond);
+
+    this._keyInfoRefreshTimer = window.setTimeout(() => {
+      console.log('force update due to key need to refresh');
+      this.forceUpdate();
+      this.setSpGenshinKeyForceRefresh(this.props.detail);
+    }, delay * 1000);
   };
 
   componentDidMount(): void {
     this.checkDetail(this.props.detail);
   }
 
-  componentWillUnmount(): void {}
+  componentWillUnmount(): void {
+    clearTimeout(this._keyInfoRefreshTimer);
+  }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
     if (!this.props.detail && nextProps.detail) {

@@ -806,11 +806,14 @@ class CompetitionOverview extends React.Component<Props, State> {
                     {!unlocked && (
                       <div
                         className="genshin-section-curtain"
-                        style={{ height: section.problemIndexes.length * 48 }}
+                        style={{ height: section.problemIndexes.length * 39 }}
                         onClick={() => this.handleTryUnlockSection(section)}
                       >
                         <div className="genshin-section-curtain-bg" />
-                        <div className="genshin-section-curtain-icon" />
+                        {/* todo 解锁动画 */}
+                        {/* <div className="genshin-section-curtain-icon" />
+                        <div className="genshin-section-curtain-rect" /> */}
+                        <div className="genshin-section-curtain-staticLock" />
                       </div>
                     )}
                     {/* 表格部分 */}
@@ -885,6 +888,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                             title="Score"
                             key="Score"
                             width={120}
+                            align="left"
                             className="genshin-section-table-score"
                             render={(text, record: ICompetitionProblem, index) => {
                               return (
@@ -941,6 +945,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                           title="State"
                           key="State"
                           width={120}
+                          align="right"
                           className="genshin-section-table-state"
                           render={(text, record: ICompetitionProblem, index) => {
                             if (!competitionProblemResultStats[record.problemId]) {
@@ -985,13 +990,14 @@ class CompetitionOverview extends React.Component<Props, State> {
           confirmLoading={spGenshinLoading || doCompetitionSpGenshinExplorationUnlockLoading}
         >
           {this.state.genshinTryUnlockModalInfo.canUnlock ? (
-            <p>
+            <p style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
               是否使用
-              <span className="genshin-icon-key" /> {this.state.genshinTryUnlockModalInfo.keyCost}{' '}
+              <span className="genshin-icon-key" />
+              {this.state.genshinTryUnlockModalInfo.keyCost}{' '}
               解锁？
             </p>
           ) : (
-            <p>
+            <p style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
               当前持有
               <span className="genshin-icon-key" />{' '}
               <span style={{ color: '#d2392f' }}>{this.currentKeyNum}</span> 不足。

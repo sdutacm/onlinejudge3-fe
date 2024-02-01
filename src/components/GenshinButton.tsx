@@ -8,6 +8,7 @@ export interface IGenshinButtonProps {
   text?: string;
   iconType?: 'default' | 'cancel' | 'complete' | 'help';
   loading?: boolean;
+  style?: React.CSSProperties;
   onClick?: React.MouseEventHandler;
 }
 
@@ -28,7 +29,7 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
     return (
       <div
         className={classNames(style.genshinButton, theme === 'light' ? style.light : null)}
-        style={{ width, height }}
+        style={{ width, height, ...this.props?.style }}
         onClick={(e) => {
           if (this.props.onClick && !this.props.loading) {
             this.props.onClick(e);

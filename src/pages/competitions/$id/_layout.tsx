@@ -16,6 +16,7 @@ import ContestTimeStatusWatcher from '@/components/ContestTimeStatusWatcher';
 import { ICompetition } from '@/common/interfaces/competition';
 import NotFound from '@/pages/404';
 import { ECompetitionUserRole } from '@/common/enums';
+import { ICompetitionEvenData, CompetitionEvents, competitionEmitter } from '@/events/competition';
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -102,6 +103,12 @@ class CompetitionLayout extends React.Component<Props, State> {
     }
   };
 
+  onSpGenshinSectionUnlocked = (
+    data: ICompetitionEvenData[CompetitionEvents.SpGenshinSectionUnlocked],
+  ) => {
+    console.log('[event.onSpGenshinSectionUnlocked]', data);
+  };
+
   componentDidMount(): void {
     const { id, session, dispatch } = this.props;
     dispatch({
@@ -125,6 +132,10 @@ class CompetitionLayout extends React.Component<Props, State> {
     const progressTimer: any = setInterval(this.updateProgress, 1000);
     this.setState({ progressTimer });
     this.checkDetail(this.props.detail);
+    competitionEmitter.on(
+      CompetitionEvents.SpGenshinSectionUnlocked,
+      this.onSpGenshinSectionUnlocked,
+    );
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>): void {
@@ -209,6 +220,10 @@ class CompetitionLayout extends React.Component<Props, State> {
     clearInterval(this.state.progressTimer);
     clearInterval(this.pollParticipantDataTimer);
     this.uninstallGenshinTheme();
+    competitionEmitter.off(
+      CompetitionEvents.SpGenshinSectionUnlocked,
+      this.onSpGenshinSectionUnlocked,
+    );
   }
 
   checkDetail = (detail?: ICompetition) => {

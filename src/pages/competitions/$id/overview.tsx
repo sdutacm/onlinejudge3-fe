@@ -38,6 +38,7 @@ import GenshinDivider from '@/components/GenshinDivider';
 import GenshinButton from '@/components/GenshinButton';
 import { getSpGenshinExplorationKeyInfo } from '@/common/utils/competition-genshin';
 import { competitionEmitter, CompetitionEvents } from '@/events/competition';
+import ProblemTitle from '@/components/ProblemTitle';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -773,16 +774,18 @@ class CompetitionOverview extends React.Component<Props, State> {
 
     let totalScore = 0;
     if (useScore) {
-      totalScore = problems.rows.reduce((acc, cur, index) => {
-        const score = this.evalVarScoreExpression(
-          cur.score,
-          cur.varScoreExpression,
-          detail,
-          index,
-          (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
-            (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
-          competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
-        );
+      totalScore = (problems.rows || []).reduce((acc, cur, index) => {
+        const score = competitionProblemResultStats[cur.problemId]?.selfAccepted
+          ? this.evalVarScoreExpression(
+              cur.score,
+              cur.varScoreExpression,
+              detail,
+              index,
+              (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
+                (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
+              competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
+            )
+          : 0;
         return acc + (score || 0);
       }, 0);
     }
@@ -853,15 +856,11 @@ class CompetitionOverview extends React.Component<Props, State> {
                 timeSyncInterval={30000}
               />
             ) : announcement ? (
-              <>
-                <div
-                  className="genshin-notice"
-                  dangerouslySetInnerHTML={{ __html: xss(announcement) }}
-                />
-                <GenshinDivider />
-              </>
+              <div className="mt-lg" dangerouslySetInnerHTML={{ __html: xss(announcement) }} />
             ) : null}
           </Card>
+
+          {timeStatus !== 'Pending' && <GenshinDivider />}
 
           {timeStatus !== 'Pending' && (
             <>
@@ -975,7 +974,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                                         record.spConfig?.hasEgg ? 'genshin-problem-hasEgg' : ''
                                       }
                                     >
-                                      {record.title}
+                                      <ProblemTitle problem={record} fallback="--" />
                                     </Link>
                                   </div>
                                 );

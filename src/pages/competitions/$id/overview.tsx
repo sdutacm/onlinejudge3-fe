@@ -977,25 +977,23 @@ class CompetitionOverview extends React.Component<Props, State> {
                               render={(text, record: ICompetitionProblem, index) => {
                                 const stats = competitionProblemResultStats[record.problemId];
                                 return (
-                                  <div
-                                    className={classNames(
+                                  <Link
+                                    to={urlf(pages.competitions.problemDetail, {
+                                      param: {
+                                        id,
+                                        alias:
+                                          record.alias ||
+                                          numberToAlphabet(section.problemIndexes[index]),
+                                      },
+                                    })}
+                                  >
+                                    <div className={classNames(
+                                      "genshin-section-table-alias-icon",
                                       { accepted: stats?.selfAccepted },
                                       { attempted: !stats?.selfAccepted && stats?.selfTries > 0 },
-                                    )}
-                                  >
-                                    <Link
-                                      to={urlf(pages.competitions.problemDetail, {
-                                        param: {
-                                          id,
-                                          alias:
-                                            record.alias ||
-                                            numberToAlphabet(section.problemIndexes[index]),
-                                        },
-                                      })}
-                                    >
-                                      {record.alias}
-                                    </Link>
-                                  </div>
+                                    )} />
+                                    <div className="genshin-section-table-alias-title">{record.alias}</div>
+                                  </Link>
                                 );
                               }}
                             />

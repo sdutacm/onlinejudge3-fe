@@ -2360,30 +2360,39 @@ a {
           }
 
           &-alias {
+            padding: 0;
+
             a {
+              width: 100%;
+              height: 39px;
               color: #7A6044;
+              position: relative;
+              display: flex;
+              justify-content: flex-start;
+              align-items: center;
+              padding: 0 30px;
+              gap: 10px;
 
               &:hover {
                 color: #56565699;
               }
             }
 
-            .accepted::before,
-            .attempted::before {
-              content: "";
+            &-icon {
               width: 20px;
               height: 20px;
-              position: absolute;
-              top: 50%;
-              left: 14px;
-              transform: translate(0, -50%);
+              flex: none;
             }
 
-            .accepted::before {
+            &-title {
+              flex: 1;
+            }
+
+            .accepted {
               background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-complete.png);
             }
 
-            .attempted::before {
+            .attempted {
               background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-fail.png);
             }
           }

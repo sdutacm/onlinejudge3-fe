@@ -36,7 +36,7 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
       this.props.onClick(e);
       if (this.props.useSound) {
         const sound = new Howl({
-          src: ['/assets/music/Genshin_UIAudio_ButtonClick.mp3'],
+          src: [`${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ButtonClick.mp3`],
         })
         sound.play();
       }

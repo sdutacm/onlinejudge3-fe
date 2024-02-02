@@ -225,7 +225,7 @@ class CompetitionOverview extends React.Component<Props, State> {
 
   handleGenshinTableRowClick = () => {
     const sound = new Howl({
-      src: ['/assets/music/Genshin_UIAudio_ThirdParty_ItemClick.mp3']
+      src: [`${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ThirdParty_ItemClick.mp3`]
     })
     sound.play();
   }
@@ -370,7 +370,7 @@ class CompetitionOverview extends React.Component<Props, State> {
         if (ret.success) {
           // 控制区域解锁音效
           const sound = new Howl({
-            src: ['/assets/music/Genshin_UIAudio_ThirdParty_MapUnlock.mp3'],
+            src: [`${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ThirdParty_MapUnlock.mp3'`],
           })
           sound.play();
           msg.success('章节已解锁');

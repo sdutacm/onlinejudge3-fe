@@ -4,6 +4,7 @@ import { ReduxProps } from '@/@types/props';
 import { connect } from 'dva';
 import style from './GenshinModal.less';
 import GenshinButton from './GenshinButton';
+import { Howl } from 'howler';
 
 export interface IGenshinModalProps extends ReduxProps {
   loadings: {
@@ -51,12 +52,12 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
       if (this.props.visible) {
         // 打开
         const sound = new Howl({
-          src: ['/assets/music/Genshin_UIAudio_ModalOpen.mp3']
+          src: [`${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ModalOpen.mp3`]
         })
         sound.play();
       } else {
         const sound = new Howl({
-          src: ['/assets/music/Genshin_UIAudio_ModalClose.mp3']
+          src: [`${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ModalClose.mp3`]
         })
         sound.play();
       }

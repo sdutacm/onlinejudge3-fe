@@ -69,6 +69,7 @@ interface State {
     canUnlock: boolean;
     keyCost: number;
   };
+  nextSecond: number;
 }
 
 class CompetitionOverview extends React.Component<Props, State> {
@@ -84,6 +85,7 @@ class CompetitionOverview extends React.Component<Props, State> {
         canUnlock: false,
         keyCost: 999,
       },
+      nextSecond: 0,
     };
   }
 
@@ -192,6 +194,7 @@ class CompetitionOverview extends React.Component<Props, State> {
     const dPeriod = distributeOptions.periodSecond;
 
     let nextSecond = dStart;
+    this.setState({ nextSecond })
     do {
       if (nextSecond > elapsedTimeSecond || nextSecond >= durationSecond) {
         break;
@@ -200,6 +203,7 @@ class CompetitionOverview extends React.Component<Props, State> {
         break;
       }
       nextSecond += dPeriod;
+      this.setState({ nextSecond })
     } while (true);
 
     if (nextSecond >= durationSecond) {
@@ -763,6 +767,7 @@ class CompetitionOverview extends React.Component<Props, State> {
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
+    const durationSecond = Math.floor((endTime - startTime) / 1000);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);
     const useScore = ['ICPCWithScore'].includes(detail.rule);
     const canEndCompetition =
@@ -874,12 +879,8 @@ class CompetitionOverview extends React.Component<Props, State> {
                 </Popover>
                 <Popover content={<>
                   <p>章节钥匙：{this.currentKeyNum}</p>
-                  {/* <Countdown
-                    secs={Math.floor((30 * 60 * 1000) / 1000)}
-                    renderTime={(secs: number) => (
-                      <p>下次发放：{secToTimeStr(secs, true)}</p>
-                    )}
-                  /> */}
+                  {this.state.nextSecond < durationSecond &&
+                    <p>下次发放：{secToTimeStr(this.state.nextSecond)}</p>}
                 </>} >
                   <div className="genshin-state-key">
                     <div className="genshin-state-key-icon" />

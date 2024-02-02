@@ -1085,6 +1085,92 @@ class CompetitionOverview extends React.Component<Props, State> {
               </div>
             </>
           )}
+
+          {timeStatus !== 'Pending' && <GenshinDivider />}
+
+          {timeStatus !== 'Pending' && (
+            <>
+              <div className="genshin-section">
+                <div className="genshin-section-header">
+                  <div className="genshin-section-header-title">通知</div>
+                </div>
+                <Table
+                  // dataSource={section.problemIndexes
+                  //   .map((id) => problems?.rows?.[id])
+                  //   .filter(Boolean)}
+                  rowKey="problemId"
+                  loading={problemsLoading}
+                  pagination={false}
+                  showHeader={false}
+                  className="genshin-section-table"
+                  rowClassName={(record: ICompetitionProblem) =>
+                    classNames('genshin-section-table-row')
+                  }
+                >
+                  <Table.Column
+                    title="Something"
+                    key="Something"
+                    align="center"
+                    width={120}
+                    className="genshin-section-table-something"
+                    render={(text, record: ICompetitionProblem, index) => {
+                      return (
+                        <>something</>
+                      );
+                    }}
+                  />
+                </Table>
+              </div>
+            </>
+          )}
+
+          {timeStatus !== 'Pending' && (
+            <>
+              <div className="genshin-section">
+                <div className="genshin-section-header">
+                  <div className="genshin-section-header-title">问答区</div>
+                  <GenshinButton
+                    text='提问'
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "20px",
+                      transform: "translate(0, -50%)"
+                    }}
+                    buttonType='auto'
+                  />
+                </div>
+                <Table
+                  // dataSource={section.problemIndexes
+                  //   .map((id) => problems?.rows?.[id])
+                  //   .filter(Boolean)}
+                  rowKey="problemId"
+                  loading={problemsLoading}
+                  pagination={false}
+                  showHeader={false}
+                  className="genshin-section-table"
+                  rowClassName={(record: ICompetitionProblem) =>
+                    classNames('genshin-section-table-row')
+                  }
+                >
+                  <Table.Column
+                    title="Something"
+                    key="Something"
+                    align="center"
+                    width={120}
+                    className="genshin-section-table-something"
+                    render={(text, record: ICompetitionProblem, index) => {
+                      return (
+                        <>something</>
+                      );
+                    }}
+                  />
+                </Table>
+              </div>
+            </>
+          )}
+
+
         </div>
 
         {

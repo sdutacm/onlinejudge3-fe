@@ -2093,307 +2093,307 @@ a {
         justify-content: center;
         align-items: center;
         gap: 20px;
+      }
 
-        .genshin-section {
+      .genshin-section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        // 1蒙德部分
+        &-mondstadt {
+          .genshin-section-header {
+            background-color: #2e9c9e;
+            border: #2b8184 solid 2px;
+
+            &::before {
+              background-color: #2b8184;
+            }
+          }
+
+          .genshin-section-header-icon {
+            background-image: url(./assets/images/sp-genshin-theme/icon-mondstadt.png);
+          }
+
+          .genshin-section-curtain-bg {
+            background-image: url(./assets/images/sp-genshin-theme/bg-mondstadt.jpg);
+          }
+        }
+
+        // 2璃月部分
+        &-liyue {
+          .genshin-section-header {
+            background-color: #c7a652;
+            border: #aa8727 solid 2px;
+
+            &::before {
+              background-color: #aa8727;
+            }
+          }
+
+          .genshin-section-header-icon {
+            background-image: url(./assets/images/sp-genshin-theme/icon-liyue.png);
+          }
+
+          .genshin-section-curtain-bg {
+            background-image: url(./assets/images/sp-genshin-theme/bg-liyue.jpg);
+          }
+        }
+
+        // 3稻妻部分
+        &-inazuma {
+          .genshin-section-header {
+            background-color: #9262bb;
+            border: #6b3e96 solid 2px;
+
+            &::before {
+              background-color: #6b3e96;
+            }
+          }
+
+          .genshin-section-header-icon {
+            background-image: url(./assets/images/sp-genshin-theme/icon-inazuma.png);
+          }
+
+          .genshin-section-curtain-bg {
+            background-image: url(./assets/images/sp-genshin-theme/bg-inazuma.jpg);
+          }
+        }
+
+        // 4须弥部分
+        &-sumeru {
+          .genshin-section-header {
+            background-color: #559c00;
+            border: #487e00 solid 2px;
+
+            &::before {
+              background-color: #487e00;
+            }
+          }
+
+          .genshin-section-header-icon {
+            background-image: url(./assets/images/sp-genshin-theme/icon-sumeru.png);
+          }
+
+          .genshin-section-curtain-bg {
+            background-image: url(./assets/images/sp-genshin-theme/bg-sumeru.jpg);
+          }
+        }
+
+        // 5枫丹部分
+        &-fontaine {
+          .genshin-section-header {
+            background-color: #009fd2;
+            border: #008ab9 solid 2px;
+
+            &::before {
+              background-color: #008ab9;
+            }
+          }
+
+          .genshin-section-header-icon {
+            background-image: url(./assets/images/sp-genshin-theme/icon-fontaine.png);
+          }
+
+          .genshin-section-curtain-bg {
+            background-image: url(./assets/images/sp-genshin-theme/bg-fontaine.jpg);
+          }
+        }
+
+        // 标题部分
+        &-header {
+          position: relative;
+          height: 50px;
           width: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
+          background-color: #525f6f;
+          border: #363E49 solid 2px;
+          box-sizing: border-box;
+          z-index: 10;
 
-          // 1蒙德部分
-          &-mondstadt {
-            .genshin-section-header {
-              background-color: #2e9c9e;
-              border: #2b8184 solid 2px;
-
-              &::before {
-                background-color: #2b8184;
-              }
-            }
-
-            .genshin-section-header-icon {
-              background-image: url(./assets/images/sp-genshin-theme/icon-mondstadt.png);
-            }
-
-            .genshin-section-curtain-bg {
-              background-image: url(./assets/images/sp-genshin-theme/bg-mondstadt.jpg);
-            }
+          // 搭配前面的背景色和边框色共同实现边框不靠边
+          &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            transform: translate(2px, 2px);
+            background-color: #363E49;
+            z-index: -1;
           }
 
-          // 2璃月部分
-          &-liyue {
-            .genshin-section-header {
-              background-color: #c7a652;
-              border: #aa8727 solid 2px;
-
-              &::before {
-                background-color: #aa8727;
-              }
-            }
-
-            .genshin-section-header-icon {
-              background-image: url(./assets/images/sp-genshin-theme/icon-liyue.png);
-            }
-
-            .genshin-section-curtain-bg {
-              background-image: url(./assets/images/sp-genshin-theme/bg-liyue.jpg);
-            }
+          &-title {
+            position: absolute;
+            top: 50%;
+            left: 30px;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #EAE4D9;
           }
 
-          // 3稻妻部分
-          &-inazuma {
-            .genshin-section-header {
-              background-color: #9262bb;
-              border: #6b3e96 solid 2px;
-
-              &::before {
-                background-color: #6b3e96;
-              }
-            }
-
-            .genshin-section-header-icon {
-              background-image: url(./assets/images/sp-genshin-theme/icon-inazuma.png);
-            }
-
-            .genshin-section-curtain-bg {
-              background-image: url(./assets/images/sp-genshin-theme/bg-inazuma.jpg);
-            }
+          &-icon {
+            position: absolute;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
           }
+        }
 
-          // 4须弥部分
-          &-sumeru {
-            .genshin-section-header {
-              background-color: #559c00;
-              border: #487e00 solid 2px;
+        // 遮罩
+        &-curtain {
+          position: relative;
+          width: calc(100% - 8px);
+          overflow: hidden;
 
-              &::before {
-                background-color: #487e00;
-              }
-            }
-
-            .genshin-section-header-icon {
-              background-image: url(./assets/images/sp-genshin-theme/icon-sumeru.png);
-            }
-
-            .genshin-section-curtain-bg {
-              background-image: url(./assets/images/sp-genshin-theme/bg-sumeru.jpg);
-            }
-          }
-
-          // 5枫丹部分
-          &-fontaine {
-            .genshin-section-header {
-              background-color: #009fd2;
-              border: #008ab9 solid 2px;
-
-              &::before {
-                background-color: #008ab9;
-              }
-            }
-
-            .genshin-section-header-icon {
-              background-image: url(./assets/images/sp-genshin-theme/icon-fontaine.png);
-            }
-
-            .genshin-section-curtain-bg {
-              background-image: url(./assets/images/sp-genshin-theme/bg-fontaine.jpg);
-            }
-          }
-
-          // 标题部分
-          &-header {
-            position: relative;
-            height: 50px;
+          &-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            background-color: #525f6f;
-            border: #363E49 solid 2px;
-            box-sizing: border-box;
-            z-index: 10;
+            height: 100%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
 
-            // 搭配前面的背景色和边框色共同实现边框不靠边
             &::before {
               content: "";
               position: absolute;
               top: 0;
               left: 0;
-              width: calc(100% - 4px);
-              height: calc(100% - 4px);
-              transform: translate(2px, 2px);
-              background-color: #363E49;
-              z-index: -1;
-            }
-
-            &-title {
-              position: absolute;
-              top: 50%;
-              left: 30px;
-              transform: translateY(-50%);
-              font-size: 18px;
-              color: #EAE4D9;
-            }
-
-            &-icon {
-              position: absolute;
-              top: 50%;
-              right: 30px;
-              transform: translateY(-50%);
-              width: 36px;
-              height: 36px;
-              background-size: contain;
-              background-position: center;
-              background-repeat: no-repeat;
+              width: calc(100%);
+              height: calc(100%);
+              background-color: rgba(51, 51, 51, 70%);
             }
           }
 
-          // 遮罩
-          &-curtain {
+          &-staticLock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            width: 50px;
+            height: 50px;
+            background: url(./assets/images/sp-genshin-theme/curtain/static-lock.png) no-repeat center / contain;
+          }
+
+          &-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            width: 16px;
+            height: 16px;
+            background: url(./assets/images/sp-genshin-theme/curtain/lock.png) no-repeat center / contain;
+          }
+
+          &-rect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            width: 60px;
+            height: 60px;
+            background: url(./assets/images/sp-genshin-theme/curtain/rect.png) no-repeat center / contain;
+          }
+        }
+
+        // 题目表格
+        &-table {
+          width: calc(100% - 8px);
+
+          &-row {
+            background-color: #F3EEE9;
+            border: #DBD1C6 solid 2px;
+            transform-origin: center center;
             position: relative;
-            width: calc(100% - 8px);
-            overflow: hidden;
 
-            &-bg {
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              background-size: cover;
-              background-repeat: no-repeat;
-              background-position: center;
+            &:hover {
+              transform: scale(1.04);
 
-              &::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: calc(100%);
-                height: calc(100%);
-                background-color: rgba(51, 51, 51, 70%);
+              td {
+                background-color: #eee4d9;
               }
             }
 
-            &-staticLock {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              z-index: 20;
-              width: 50px;
-              height: 50px;
-              background: url(./assets/images/sp-genshin-theme/curtain/static-lock.png) no-repeat center / contain;
-            }
+            &:active {
+              transform: scale(0.99);
 
-            &-icon {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              z-index: 20;
-              width: 16px;
-              height: 16px;
-              background: url(./assets/images/sp-genshin-theme/curtain/lock.png) no-repeat center / contain;
-            }
-
-            &-rect {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              z-index: 10;
-              width: 60px;
-              height: 60px;
-              background: url(./assets/images/sp-genshin-theme/curtain/rect.png) no-repeat center / contain;
+              td {
+                background-color: #ffffff;
+              }
             }
           }
 
-          // 题目表格
-          &-table {
-            width: calc(100% - 8px);
-
-            &-row {
-              background-color: #F3EEE9;
-              border: #DBD1C6 solid 2px;
-              transform-origin: center center;
-              position: relative;
-
-              &:hover {
-                transform: scale(1.04);
-
-                td {
-                  background-color: #eee4d9;
-                }
-              }
-
-              &:active {
-                transform: scale(0.99);
-
-                td {
-                  background-color: #ffffff;
-                }
-              }
-            }
-
-            &-alias {
-              a {
-                color: #7A6044;
-
-                &:hover {
-                  color: #56565699;
-                }
-              }
-
-              .accepted::before,
-              .attempted::before {
-                content: "";
-                width: 20px;
-                height: 20px;
-                position: absolute;
-                top: 50%;
-                left: 14px;
-                transform: translate(0, -50%);
-              }
-
-              .accepted::before {
-                background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-complete.png);
-              }
-
-              .attempted::before {
-                background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-fail.png);
-              }
-            }
-
-            &-title a {
-              color: #565656;
-              position: relative;
+          &-alias {
+            a {
+              color: #7A6044;
 
               &:hover {
                 color: #56565699;
               }
-
-              &.genshin-problem-hasEgg::after {
-                content: "";
-                width: 20px;
-                height: 20px;
-                position: absolute;
-                top: 50%;
-                right: 0;
-                transform: translate(30px, -50%);
-                background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-egg.png);
-              }
             }
 
-            &-score {
-              &-icon {
-                width: 20px;
-                height: 20px;
-                background: no-repeat center / contain url(./assets/images/sp-genshin-theme/score.png);
-              }
+            .accepted::before,
+            .attempted::before {
+              content: "";
+              width: 20px;
+              height: 20px;
+              position: absolute;
+              top: 50%;
+              left: 14px;
+              transform: translate(0, -50%);
             }
 
-            &-state {
-              padding-right: 40px;
+            .accepted::before {
+              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-complete.png);
             }
+
+            .attempted::before {
+              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-fail.png);
+            }
+          }
+
+          &-title a {
+            color: #565656;
+            position: relative;
+
+            &:hover {
+              color: #56565699;
+            }
+
+            &.genshin-problem-hasEgg::after {
+              content: "";
+              width: 20px;
+              height: 20px;
+              position: absolute;
+              top: 50%;
+              right: 0;
+              transform: translate(30px, -50%);
+              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-egg.png);
+            }
+          }
+
+          &-score {
+            &-icon {
+              width: 20px;
+              height: 20px;
+              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/score.png);
+            }
+          }
+
+          &-state {
+            padding-right: 40px;
           }
         }
       }

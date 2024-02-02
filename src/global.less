@@ -1985,7 +1985,9 @@ a {
 
   font-family: "Genshin Impact Unpacked";
 
-  .ant-modal, .ant-card, .ant-table {
+  .ant-modal,
+  .ant-card,
+  .ant-table {
     font-family: "Genshin Impact Unpacked";
   }
 
@@ -2204,7 +2206,8 @@ a {
         }
 
         // 通知区
-        &-notification, &-QA {
+        &-notification,
+        &-QA {
           .genshin-section-header {
             background-color: #fef9ed;
             border: #dad0ca solid 2px;
@@ -2421,12 +2424,39 @@ a {
     }
   }
 
+  .genshin-icon-score {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0 2px;
+    background: no-repeat center / contain url(./assets/images/sp-genshin-theme/score.png);
+  }
+
   .genshin-icon-key {
     display: inline-block;
     width: 20px;
     height: 20px;
     margin: 0 2px;
     background: no-repeat center / contain url(./assets/images/sp-genshin-theme/key.png);
+  }
+
+
+  .genshin-state-help-popover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 4px 10px;
+    gap: 14px;
+
+    &-score,
+    &-key {
+      width: 100%;
+
+      p {
+        margin-bottom: 4px;
+      }
+    }
   }
 }
 

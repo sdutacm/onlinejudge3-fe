@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Table, Button, Alert, Popover } from 'antd';
+import { Row, Col, Card, Table, Button, Alert, Popover, Tooltip } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
@@ -70,6 +70,7 @@ interface State {
     keyCost: number;
   };
   nextSecond: number;
+  genshinHelpPopoverVisible: boolean;
 }
 
 class CompetitionOverview extends React.Component<Props, State> {
@@ -86,6 +87,7 @@ class CompetitionOverview extends React.Component<Props, State> {
         keyCost: 999,
       },
       nextSecond: 0,
+      genshinHelpPopoverVisible: false,
     };
   }
 
@@ -869,18 +871,18 @@ class CompetitionOverview extends React.Component<Props, State> {
           {timeStatus !== 'Pending' && (
             <>
               <div className="genshin-state">
-                <Popover content={<>总计得分：{spGenshinLoading ? '-' : totalScore}</>} >
+                <Tooltip placement='bottom' title={<>总计得分：{spGenshinLoading ? '-' : totalScore}</>} >
                   <div className="genshin-state-score">
                     <div className="genshin-state-score-icon" />
                     <div className="genshin-state-score-text">
                       {spGenshinLoading ? '-' : totalScore}
                     </div>
                   </div>
-                </Popover>
-                <Popover content={<>
+                </Tooltip>
+                <Tooltip placement='bottom' title={<>
                   <p>章节钥匙：{this.currentKeyNum}</p>
                   {this.state.nextSecond < durationSecond &&
-                    <p>下次发放：{secToTimeStr(this.state.nextSecond)}</p>}
+                    <p>下次发放：{moment(new Date(startTime + this.state.nextSecond * 1000)).format('HH:mm:ss')}</p>}
                 </>} >
                   <div className="genshin-state-key">
                     <div className="genshin-state-key-icon" />
@@ -888,8 +890,39 @@ class CompetitionOverview extends React.Component<Props, State> {
                       {spGenshinLoading ? '-' : this.currentKeyNum}
                     </div>
                   </div>
+                </Tooltip>
+                <Popover
+                  content={
+                    <div className="genshin-state-help-popover">
+                      <div className="genshin-icon-score" />
+                      <div className="genshin-state-help-popover-score">
+                        <p>每道题目在通过后可获取奖励得分，具体分值由题目的基础分数、通过时间、失误次数等决定。</p>
+                        <p>依据每位旅行者的总得分进行排名。</p>
+                      </div>
+                      <div className="genshin-icon-key" />
+                      <div className="genshin-state-help-popover-key">
+                        <p>章节钥匙用来解锁题目章节区域。可以通过以下方式获取钥匙。</p>
+                        <p>- 每30分钟获赠1 个钥匙</p>
+                        <p>- 对于每个章节，当全部题目都被完成时，获赠 1 个钥匙</p>
+                        <p>每个题目区域都需 1 个章节钥匙解锁。</p>
+                      </div>
+                      <GenshinButton
+                        text='确认'
+                        onClick={() => this.setState({ genshinHelpPopoverVisible: false })}
+                        theme='light'
+                      />
+                    </div>}
+                  trigger="click"
+                  visible={this.state.genshinHelpPopoverVisible}
+                  placement="bottom"
+                >
+                  <GenshinButton
+                    buttonType="icon"
+                    iconType="help"
+                    onClick={() => this.setState({ genshinHelpPopoverVisible: true })}
+                  />
+
                 </Popover>
-                <GenshinButton buttonType="icon" iconType="help" />
               </div>
               <div className="genshin-sections">
                 {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map(

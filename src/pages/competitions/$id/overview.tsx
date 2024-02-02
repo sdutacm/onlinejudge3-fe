@@ -42,6 +42,7 @@ import ProblemTitle from '@/components/ProblemTitle';
 import { Howl } from 'howler';
 import GeneralForm from '@/components/GeneralForm';
 import constants from '@/configs/constants';
+import { sleep } from '@/utils/misc';
 
 export interface Props extends ReduxProps, FormProps {
   id: number;
@@ -382,7 +383,7 @@ class CompetitionOverview extends React.Component<Props, State> {
           // 控制区域解锁音效
           const sound = new Howl({
             src: [
-              `${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ThirdParty_MapUnlock.mp3'`,
+              `${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ThirdParty_MapUnlock.mp3`,
             ],
           });
           sound.play();
@@ -392,6 +393,8 @@ class CompetitionOverview extends React.Component<Props, State> {
             action: 'spGenshinUnlockSection',
             label: this.state.genshinTryUnlockModalInfo.selectedSectionId,
           });
+          this.setState({ genshinTryUnlockModalVisible: false });
+          await sleep(700);
 
           try {
             await Promise.all([
@@ -414,7 +417,6 @@ class CompetitionOverview extends React.Component<Props, State> {
             console.error('Failed to refresh data after unlocked', e);
             msg.error('获取数据失败，请刷新页面重试');
           } finally {
-            this.setState({ genshinTryUnlockModalVisible: false });
             competitionEmitter.emit(CompetitionEvents.SpGenshinSectionUnlocked, {
               competitionId: id,
               competition: detail,

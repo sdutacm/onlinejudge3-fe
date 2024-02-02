@@ -25,6 +25,7 @@ export interface Props extends RouteProps, ReduxProps {
   id: number;
   session: ICompetitionSessionStatus;
   detail: ICompetition;
+  settingsTheme: ISettingsTheme;
 }
 
 interface State {
@@ -39,6 +40,8 @@ class CompetitionLayout extends React.Component<Props, State> {
   setStatePromise = setStatePromise.bind(this);
   pollParticipantDataTimer = 0;
   audioPlayList: string[] = [];
+
+  _oldTheme: ISettingsTheme = 'auto';
 
   constructor(props) {
     super(props);
@@ -239,11 +242,28 @@ class CompetitionLayout extends React.Component<Props, State> {
 
   installGenshinTheme = () => {
     document.body.classList.add('genshin-theme');
+    this._oldTheme = this.props.settingsTheme;
+    this.props.dispatch({
+      type: 'settings/setTheme',
+      payload: { theme: 'light', isTemp: true },
+    });
+    this.props.dispatch({
+      type: 'settings/setThemeLocked',
+      payload: { themeLocked: true },
+    });
     console.log('Genshin, start!');
   };
 
   uninstallGenshinTheme = () => {
     document.body.classList.remove('genshin-theme');
+    this.props.dispatch({
+      type: 'settings/setTheme',
+      payload: { theme: this._oldTheme },
+    });
+    this.props.dispatch({
+      type: 'settings/setThemeLocked',
+      payload: { themeLocked: false },
+    });
   };
 
   onSpGenshinSectionUnlocked = (
@@ -369,6 +389,7 @@ function mapStateToProps(state) {
   const id = getPathParamId(state.routing.location.pathname, pages.competitions.home);
   return {
     id,
+    settingsTheme: state.settings.theme,
     loading:
       !state.competitions.session[id] ||
       !!state.loading.effects['competitions/getSession'] ||

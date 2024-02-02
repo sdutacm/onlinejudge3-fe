@@ -106,7 +106,7 @@ class SettingsModal extends React.Component<Props, State> {
     //   path: pages.competitions.public.intro,
     //   // exact: true,
     // });
-    const matchForceDarkPage = false;
+    // const matchForceDarkPage = false;
 
     return (
       <>
@@ -125,7 +125,7 @@ class SettingsModal extends React.Component<Props, State> {
               value={settings.theme}
               size="small"
               className="float-right"
-              disabled={!!matchForceDarkPage}
+              disabled={settings.themeLocked}
             >
               <Radio.Button value="auto">Auto</Radio.Button>
               <Radio.Button value="light">Light</Radio.Button>

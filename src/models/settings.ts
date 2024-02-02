@@ -1,8 +1,9 @@
 import localStorage from '@/utils/localStorage';
-import { merge } from 'lodash';
+import { merge, omit } from 'lodash';
 
 const initialState = {
   theme: 'auto',
+  themeLocked: false,
   color: 'default',
   improveAnimation: true,
   proMode: false,
@@ -10,7 +11,7 @@ const initialState = {
 } as ISettings;
 
 function genState() {
-  const merged = merge(initialState, localStorage.get('settings'));
+  const merged = omit(merge(initialState, localStorage.get('settings')), ['themeLocked']);
   localStorage.set('settings', merged);
   return merged;
 }
@@ -18,7 +19,7 @@ function genState() {
 export default {
   state: genState(),
   reducers: {
-    setTheme(state, { payload: { theme } }) {
+    setTheme(state, { payload: { theme, isTemp } }) {
       document.body.classList.remove('auto');
       document.body.classList.remove('dark');
       if (theme === 'auto') {
@@ -26,8 +27,11 @@ export default {
       } else if (theme === 'dark') {
         document.body.classList.add('dark');
       }
-      localStorage.set('settings', { ...state, theme });
+      !isTemp && localStorage.set('settings', omit({ ...state, theme }, ['themeLocked']));
       state.theme = theme;
+    },
+    setThemeLocked(state, { payload: { themeLocked } }) {
+      state.themeLocked = themeLocked;
     },
     setColor(state, { payload: { color } }) {
       if (color === 'colorblind-dp') {
@@ -35,19 +39,19 @@ export default {
       } else {
         document.body.classList.remove('colorblind-dp');
       }
-      localStorage.set('settings', { ...state, color });
+      localStorage.set('settings', omit({ ...state, color }, ['themeLocked']));
       state.color = color;
     },
     setImproveAnimation(state, { payload: { improveAnimation } }) {
-      localStorage.set('settings', { ...state, improveAnimation });
+      localStorage.set('settings', omit({ ...state, improveAnimation }, ['themeLocked']));
       state.improveAnimation = improveAnimation;
     },
     setProMode(state, { payload: { proMode } }) {
-      localStorage.set('settings', { ...state, proMode });
+      localStorage.set('settings', omit({ ...state, proMode }, ['themeLocked']));
       state.proMode = proMode;
     },
     setUseAbsoluteTime(state, { payload: { useAbsoluteTime } }) {
-      localStorage.set('settings', { ...state, useAbsoluteTime });
+      localStorage.set('settings', omit({ ...state, useAbsoluteTime }, ['themeLocked']));
       state.useAbsoluteTime = useAbsoluteTime;
     },
   },

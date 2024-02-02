@@ -618,6 +618,7 @@ type ISettingsColor = 'default' | 'colorful' | 'colorblind-dp';
 
 interface ISettings {
   theme: ISettingsTheme;
+  themeLocked?: boolean;
   color: ISettingsColor;
   improveAnimation: boolean;
   proMode: boolean;

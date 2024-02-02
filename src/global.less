@@ -2093,6 +2093,7 @@ a {
         justify-content: center;
         align-items: center;
         gap: 20px;
+        margin-bottom: 40px;
       }
 
       .genshin-section {
@@ -2199,6 +2200,22 @@ a {
 
           .genshin-section-curtain-bg {
             background-image: url(./assets/images/sp-genshin-theme/bg-fontaine.jpg);
+          }
+        }
+
+        // 通知区
+        &-notification, &-QA {
+          .genshin-section-header {
+            background-color: #fef9ed;
+            border: #dad0ca solid 2px;
+
+            &-title {
+              color: #565656;
+            }
+
+            &::before {
+              background-color: #dad0ca;
+            }
           }
         }
 
@@ -2311,6 +2328,10 @@ a {
         // 题目表格
         &-table {
           width: calc(100% - 8px);
+
+          .ant-table-placeholder {
+            background-color: #f2eee9;
+          }
 
           &-row {
             background-color: #F3EEE9;

@@ -1091,7 +1091,7 @@ class CompetitionOverview extends React.Component<Props, State> {
 
           {timeStatus !== 'Pending' && (
             <>
-              <div className="genshin-section">
+              <div className={classNames("genshin-section", "genshin-section-notification")}>
                 <div className="genshin-section-header">
                   <div className="genshin-section-header-title">通知</div>
                 </div>
@@ -1127,7 +1127,7 @@ class CompetitionOverview extends React.Component<Props, State> {
 
           {timeStatus !== 'Pending' && (
             <>
-              <div className="genshin-section">
+              <div className={classNames("genshin-section", "genshin-section-QA")}>
                 <div className="genshin-section-header">
                   <div className="genshin-section-header-title">问答区</div>
                   <GenshinButton
@@ -1139,6 +1139,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                       transform: "translate(0, -50%)"
                     }}
                     buttonType='auto'
+                    theme='light'
                   />
                 </div>
                 <Table

@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './GenshinButton.less';
 import classNames from 'classnames';
+import { Howl } from 'howler';
 
 export interface IGenshinButtonProps {
   buttonType?: 'default' | 'text' | 'icon' | 'auto';
@@ -9,6 +10,7 @@ export interface IGenshinButtonProps {
   iconType?: 'default' | 'cancel' | 'complete' | 'help';
   loading?: boolean;
   disabled?: boolean;
+  useSound?: boolean,
   style?: React.CSSProperties;
   onClick?: React.MouseEventHandler;
 }
@@ -21,11 +23,24 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
     theme: 'dark',
     iconType: 'default',
     disabled: false,
+    useSound: false
   };
 
   constructor(props: IGenshinButtonProps) {
     super(props);
     this.state = {};
+  }
+
+  handleClick = (e) => {
+    if (this.props.onClick && !this.props.loading && !this.props.disabled) {
+      this.props.onClick(e);
+      if (this.props.useSound) {
+        const sound = new Howl({
+          src: ['/assets/music/Genshin_UIAudio_ButtonClick.mp3'],
+        })
+        sound.play();
+      }
+    }
   }
 
   render() {
@@ -48,11 +63,7 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
           disabled || loading ? style.disabled : null
         )}
         style={this.props?.style}
-        onClick={(e) => {
-          if (this.props.onClick && !loading && !disabled) {
-            this.props.onClick(e);
-          }
-        }}
+        onClick={(e) => this.handleClick(e)}
       >
         {buttonType !== 'text' &&
           <div className={classNames(style.icon, `genshin-btn-${iconType}`)} />}

@@ -21,6 +21,7 @@ export interface IGenshinModalProps extends ReduxProps {
   okText?: string;
   cancelText?: string;
   maskClosable?: boolean;
+  useSound?: boolean;
   submit(dispatch: ReduxProps['dispatch'], values): Promise<IApiResponse<any>>;
   onSuccess?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
   onSuccessModalClosed?(dispatch: ReduxProps['dispatch'], ret: IApiResponse<any>): void;
@@ -33,6 +34,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
   static defaultProps: Partial<IGenshinModalProps> = {
     cancelButton: true,
     confirmButton: true,
+    useSound: false,
   };
 
   constructor(props: IGenshinModalProps) {
@@ -43,6 +45,23 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
   handleHideModel = () => {
     this.props.onHide();
   };
+
+  componentDidUpdate(prevProps: Readonly<IGenshinModalProps>, prevState: Readonly<State>, snapshot?: any): void {
+    if (prevProps.visible !== this.props.visible && this.props.useSound) {
+      if (this.props.visible) {
+        // 打开
+        const sound = new Howl({
+          src: ['/assets/music/Genshin_UIAudio_ModalOpen.mp3']
+        })
+        sound.play();
+      } else {
+        const sound = new Howl({
+          src: ['/assets/music/Genshin_UIAudio_ModalClose.mp3']
+        })
+        sound.play();
+      }
+    }
+  }
 
   render() {
     const {
@@ -77,7 +96,8 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
                 iconType="cancel"
                 onClick={() => onHide()}
                 style={{ zIndex: 10 }}
-              />  
+                useSound
+              />
             )}
             {this.props.confirmButton && (
               <GenshinButton
@@ -85,6 +105,7 @@ class GenshinModal extends React.Component<IGenshinModalProps, State> {
                 onClick={() => onOk()}
                 loading={confirmLoading ?? (loadings[loadingEffect] || false)}
                 style={{ zIndex: 10 }}
+                useSound
               />
             )}
           </div>

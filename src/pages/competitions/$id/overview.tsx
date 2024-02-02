@@ -39,6 +39,7 @@ import GenshinButton from '@/components/GenshinButton';
 import { getSpGenshinExplorationKeyInfo } from '@/common/utils/competition-genshin';
 import { competitionEmitter, CompetitionEvents } from '@/events/competition';
 import ProblemTitle from '@/components/ProblemTitle';
+import { Howl } from 'howler';
 
 export interface Props extends ReduxProps {
   id: number;
@@ -222,12 +223,27 @@ class CompetitionOverview extends React.Component<Props, State> {
     }, delay * 1000);
   };
 
+  handleGenshinTableRowClick = () => {
+    const sound = new Howl({
+      src: ['/assets/music/Genshin_UIAudio_ThirdParty_ItemClick.mp3']
+    })
+    sound.play();
+  }
+
   componentDidMount(): void {
     this.checkDetail(this.props.detail);
+    const tbodys = document.querySelectorAll('.genshin-section-table-row')
+    tbodys.forEach((el) => {
+      el.addEventListener('click', this.handleGenshinTableRowClick)
+    })
   }
 
   componentWillUnmount(): void {
     clearTimeout(this._keyInfoRefreshTimer);
+    const tbodys = document.querySelectorAll('.genshin-section-table-row')
+    tbodys.forEach((el) => {
+      el.removeEventListener('click', this.handleGenshinTableRowClick)
+    })
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
@@ -352,6 +368,11 @@ class CompetitionOverview extends React.Component<Props, State> {
       }).then(async (ret) => {
         msg.auto(ret);
         if (ret.success) {
+          // 控制区域解锁音效
+          const sound = new Howl({
+            src: ['/assets/music/Genshin_UIAudio_ThirdParty_MapUnlock.mp3'],
+          })
+          sound.play();
           msg.success('章节已解锁');
           tracker.event({
             category: 'competitions',
@@ -895,6 +916,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                   buttonType="icon"
                   iconType="help"
                   onClick={() => this.setState({ genshinHelpModalVisible: true })}
+                  useSound
                 />
               </div>
               <div className="genshin-sections">
@@ -1138,6 +1160,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                     }}
                     buttonType='auto'
                     theme='light'
+                    useSound
                   />
                 </div>
                 <Table
@@ -1186,6 +1209,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               cancelButton={this.state.genshinTryUnlockModalInfo.canUnlock}
               confirmButton={true}
               confirmLoading={spGenshinLoading || doCompetitionSpGenshinExplorationUnlockLoading}
+              useSound
             >
               {this.state.genshinTryUnlockModalInfo.canUnlock ? (
                 <p style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -1216,6 +1240,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               okText={'确认'}
               cancelButton={false}
               confirmLoading={spGenshinLoading || doCompetitionSpGenshinExplorationUnlockLoading}
+              useSound
             >
               <div className="genshin-state-help-modal">
                 <div className="genshin-state-help-modal-header">

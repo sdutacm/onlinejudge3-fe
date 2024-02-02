@@ -899,7 +899,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               </span>
             </p>
             <p className="text-center">
-              <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} />
+              <TimeStatusBadge start={startTime} end={endTime} cur={currentTime} lang="zh-cn" />
             </p>
             {canEndCompetition && (
               <p className="text-center">

@@ -70,7 +70,7 @@ interface State {
     keyCost: number;
   };
   nextSecond: number;
-  genshinHelpPopoverVisible: boolean;
+  genshinHelpModalVisible: boolean;
 }
 
 class CompetitionOverview extends React.Component<Props, State> {
@@ -87,7 +87,7 @@ class CompetitionOverview extends React.Component<Props, State> {
         keyCost: 999,
       },
       nextSecond: 0,
-      genshinHelpPopoverVisible: false,
+      genshinHelpModalVisible: false,
     };
   }
 
@@ -894,7 +894,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                 <GenshinButton
                   buttonType="icon"
                   iconType="help"
-                  onClick={() => this.setState({ genshinHelpPopoverVisible: true })}
+                  onClick={() => this.setState({ genshinHelpModalVisible: true })}
                 />
               </div>
               <div className="genshin-sections">
@@ -1217,8 +1217,8 @@ class CompetitionOverview extends React.Component<Props, State> {
           timeStatus !== 'Pending' && (
             <GenshinModal
               title="规则介绍"
-              visible={this.state.genshinHelpPopoverVisible}
-              onOk={() => this.setState({ genshinHelpPopoverVisible: false })}
+              visible={this.state.genshinHelpModalVisible}
+              onOk={() => this.setState({ genshinHelpModalVisible: false })}
               okText={'确认'}
               cancelButton={false}
               confirmLoading={spGenshinLoading || doCompetitionSpGenshinExplorationUnlockLoading}

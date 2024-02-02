@@ -891,38 +891,11 @@ class CompetitionOverview extends React.Component<Props, State> {
                     </div>
                   </div>
                 </Tooltip>
-                <Popover
-                  content={
-                    <div className="genshin-state-help-popover">
-                      <div className="genshin-icon-score" />
-                      <div className="genshin-state-help-popover-score">
-                        <p>每道题目在通过后可获取奖励得分，具体分值由题目的基础分数、通过时间、失误次数等决定。</p>
-                        <p>依据每位旅行者的总得分进行排名。</p>
-                      </div>
-                      <div className="genshin-icon-key" />
-                      <div className="genshin-state-help-popover-key">
-                        <p>章节钥匙用来解锁题目章节区域。可以通过以下方式获取钥匙。</p>
-                        <p>- 每30分钟获赠1 个钥匙</p>
-                        <p>- 对于每个章节，当全部题目都被完成时，获赠 1 个钥匙</p>
-                        <p>每个题目区域都需 1 个章节钥匙解锁。</p>
-                      </div>
-                      <GenshinButton
-                        text='确认'
-                        onClick={() => this.setState({ genshinHelpPopoverVisible: false })}
-                        theme='light'
-                      />
-                    </div>}
-                  trigger="click"
-                  visible={this.state.genshinHelpPopoverVisible}
-                  placement="bottom"
-                >
-                  <GenshinButton
-                    buttonType="icon"
-                    iconType="help"
-                    onClick={() => this.setState({ genshinHelpPopoverVisible: true })}
-                  />
-
-                </Popover>
+                <GenshinButton
+                  buttonType="icon"
+                  iconType="help"
+                  onClick={() => this.setState({ genshinHelpPopoverVisible: true })}
+                />
               </div>
               <div className="genshin-sections">
                 {detail?.spConfig?.genshinConfig?.explorationModeOptions?.sections?.map(
@@ -1236,6 +1209,42 @@ class CompetitionOverview extends React.Component<Props, State> {
                   不足。
                 </p>
               )}
+            </GenshinModal>
+          )
+        }
+
+        {
+          timeStatus !== 'Pending' && (
+            <GenshinModal
+              title="规则介绍"
+              visible={this.state.genshinHelpPopoverVisible}
+              onOk={() => this.setState({ genshinHelpPopoverVisible: false })}
+              okText={'确认'}
+              cancelButton={false}
+              confirmLoading={spGenshinLoading || doCompetitionSpGenshinExplorationUnlockLoading}
+            >
+              <div className="genshin-state-help-modal">
+                <div className="genshin-state-help-modal-header">
+                  <div className="genshin-icon-score" />
+                  <span>积分</span>
+                </div>
+                <div className="genshin-state-help-modal-score">
+                  <p>每道题目在通过后可获取奖励得分，具体分值由题目的基础分数、通过时间、失误次数等决定。</p>
+                  <p>依据每位旅行者的总得分进行排名。</p>
+                </div>
+                <div className="genshin-state-help-modal-header">
+                  <div className="genshin-icon-key" />
+                  <span>章节钥匙</span>
+                </div>
+                <div className="genshin-state-help-modal-key">
+                  <p>章节钥匙用来解锁题目章节区域。可以通过以下方式获取钥匙。</p>
+                  <ul>
+                    <li>每 30 分钟获赠 1 个钥匙</li>
+                    <li>对于每个章节，当全部题目都被完成时，获赠 1 个钥匙</li>
+                  </ul>
+                  <p>每个题目区域都需 1 个章节钥匙解锁。</p>
+                </div>
+              </div>
             </GenshinModal>
           )
         }

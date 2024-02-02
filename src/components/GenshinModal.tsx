@@ -30,14 +30,15 @@ export interface IGenshinModalProps extends ReduxProps {
 interface State { }
 
 class GenshinModal extends React.Component<IGenshinModalProps, State> {
+  static defaultProps: Partial<IGenshinModalProps> = {
+    cancelButton: true,
+    confirmButton: true,
+  };
+
   constructor(props: IGenshinModalProps) {
     super(props);
     this.state = {};
   }
-
-  // handleOk = () => {
-  //   console.log("okokok")
-  // }
 
   handleHideModel = () => {
     this.props.onHide();

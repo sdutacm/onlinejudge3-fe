@@ -2450,18 +2450,37 @@ a {
   }
 
 
-  .genshin-state-help-popover {
+  .genshin-state-help-modal {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     padding: 4px 10px;
-    gap: 14px;
+    gap: 8px;
+
+    .genshin-state-help-modal-header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+
+      span {
+        font-size: 18px;
+      }
+    }
 
     &-score,
     &-key {
       width: 100%;
+      margin-bottom: 10px;
 
+      li,
+      p {
+        text-align: left;
+      }
+
+      ul,
       p {
         margin-bottom: 4px;
       }

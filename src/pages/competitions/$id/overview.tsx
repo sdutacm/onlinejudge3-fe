@@ -976,23 +976,19 @@ class CompetitionOverview extends React.Component<Props, State> {
                               className="genshin-section-table-title"
                               render={(text, record: ICompetitionProblem, index) => {
                                 return (
-                                  <div>
-                                    <Link
-                                      to={urlf(pages.competitions.problemDetail, {
-                                        param: {
-                                          id,
-                                          alias:
-                                            record.alias ||
-                                            numberToAlphabet(section.problemIndexes[index]),
-                                        },
-                                      })}
-                                      className={
-                                        record.spConfig?.hasEgg ? 'genshin-problem-hasEgg' : ''
-                                      }
-                                    >
-                                      <ProblemTitle problem={record} fallback="--" />
-                                    </Link>
-                                  </div>
+                                  <Link
+                                    to={urlf(pages.competitions.problemDetail, {
+                                      param: {
+                                        id,
+                                        alias:
+                                          record.alias ||
+                                          numberToAlphabet(section.problemIndexes[index]),
+                                      },
+                                    })}
+                                  >
+                                    <ProblemTitle problem={record} fallback="--" />
+                                    {record.spConfig?.hasEgg && <div className='genshin-problem-hasEgg-icon' />}
+                                  </Link>
                                 );
                               }}
                             />
@@ -1065,19 +1061,17 @@ class CompetitionOverview extends React.Component<Props, State> {
                                   return null;
                                 }
                                 return (
-                                  <div>
-                                    <Link
-                                      to={urlf(pages.competitions.solutions, {
-                                        param: { id },
-                                        query: {
-                                          problemId: record.problemId,
-                                        },
-                                      })}
-                                    >
-                                      {competitionProblemResultStats[record.problemId].accepted} /{' '}
-                                      {competitionProblemResultStats[record.problemId].submitted}
-                                    </Link>
-                                  </div>
+                                  <Link
+                                    to={urlf(pages.competitions.solutions, {
+                                      param: { id },
+                                      query: {
+                                        problemId: record.problemId,
+                                      },
+                                    })}
+                                  >
+                                    {competitionProblemResultStats[record.problemId].accepted} /{' '}
+                                    {competitionProblemResultStats[record.problemId].submitted}
+                                  </Link>
                                 );
                               }}
                             />

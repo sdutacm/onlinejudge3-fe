@@ -2363,15 +2363,15 @@ a {
             padding: 0;
 
             a {
-              width: 100%;
-              height: 39px;
-              color: #7A6044;
-              position: relative;
               display: flex;
               justify-content: flex-start;
               align-items: center;
               padding: 0 30px;
               gap: 10px;
+              width: 100%;
+              height: 39px;
+              color: #7A6044;
+              position: relative;
 
               &:hover {
                 color: #56565699;
@@ -2397,23 +2397,29 @@ a {
             }
           }
 
-          &-title a {
-            color: #565656;
-            position: relative;
+          &-title {
+            padding: 0;
 
-            &:hover {
-              color: #56565699;
-            }
+            a {
+              display: flex;
+              justify-content: flex-start;
+              align-items: center;
+              padding: 0 30px;
+              gap: 10px;
+              width: 100%;
+              height: 39px;
+              color: #565656;
+              position: relative;
 
-            &.genshin-problem-hasEgg::after {
-              content: "";
-              width: 20px;
-              height: 20px;
-              position: absolute;
-              top: 50%;
-              right: 0;
-              transform: translate(30px, -50%);
-              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-egg.png);
+              &:hover {
+                color: #56565699;
+              }
+
+              .genshin-problem-hasEgg-icon {
+                width: 20px;
+                height: 20px;
+                background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-egg.png);
+              }
             }
           }
 
@@ -2426,7 +2432,17 @@ a {
           }
 
           &-state {
-            padding-right: 40px;
+            padding: 0;
+
+            a {
+              display: flex;
+              justify-content: flex-start;
+              align-items: center;
+              padding: 0 30px;
+              gap: 10px;
+              width: 100%;
+              height: 39px;
+            }
           }
         }
       }

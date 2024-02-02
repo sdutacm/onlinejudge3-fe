@@ -141,6 +141,17 @@ class CompetitionLayout extends React.Component<Props, State> {
       CompetitionEvents.SpGenshinSectionUnlocked,
       this.onSpGenshinSectionUnlocked,
     );
+    if (
+      this.props.session?.loggedIn &&
+      this.props.session.user?.role === ECompetitionUserRole.participant
+    ) {
+      console.log('[pollParticipantData] start');
+      this.pollParticipantDataInBackground(this.props);
+      this.pollParticipantDataTimer = window.setInterval(
+        () => this.pollParticipantDataInBackground(),
+        30 * 1000,
+      );
+    }
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>): void {
@@ -174,7 +185,9 @@ class CompetitionLayout extends React.Component<Props, State> {
     ) {
       console.log('session', nextProps.session);
       if (nextProps.session.user?.role === ECompetitionUserRole.participant) {
+        console.log('[pollParticipantData] start');
         this.pollParticipantDataInBackground(nextProps);
+        clearInterval(this.pollParticipantDataTimer);
         this.pollParticipantDataTimer = window.setInterval(
           () => this.pollParticipantDataInBackground(),
           30 * 1000,

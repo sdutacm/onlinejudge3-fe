@@ -264,11 +264,17 @@ class CompetitionOverview extends React.Component<Props, State> {
     }
   }
 
+  componentWillUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: any): void {
+    const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+    genshinTableRowEle.forEach((el) => {
+      el.removeEventListener('click', this.handleGenshinTableRowClick);
+    });
+  }
+
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
     this.handleGenshinWindowResize(); // 初始化尺寸
     const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
     genshinTableRowEle.forEach((el) => {
-      el.removeEventListener('click', this.handleGenshinTableRowClick);
       el.addEventListener('click', this.handleGenshinTableRowClick);
     });
   }

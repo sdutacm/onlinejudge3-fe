@@ -476,6 +476,12 @@ ul {
   white-space: nowrap;
 }
 
+.deep-cursor-none {
+  * {
+    cursor: none !important;
+  }
+}
+
 .flex-justify-space-between {
   display: flex;
   justify-content: space-between;
@@ -1980,7 +1986,7 @@ a {
 
 .genshin-theme {
   * {
-    cursor: url(./assets/images/sp-genshin-theme/cursor.png), auto !important;
+    cursor: url(./assets/images/sp-genshin-theme/cursor.png), auto;
   }
 
   font-family: "Genshin Impact Unpacked";

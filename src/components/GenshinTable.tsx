@@ -6,7 +6,6 @@ export interface IGenshinTableProps<T> extends TableProps<T> { }
 
 interface State { }
 
-
 export default class GenshinTable<T> extends React.Component<IGenshinTableProps<T>, State> {
   constructor(props: IGenshinTableProps<T>) {
     super(props);
@@ -20,11 +19,26 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
     sound.play();
   };
 
+  handleGenshinWindowResize = () => {
+    const genshinSectionHeaderEle = document.querySelector('.genshin-section-header') as HTMLElement;
+    if (!genshinSectionHeaderEle) {
+      return;
+    }
+    const genshinSectionHeaderWidth = genshinSectionHeaderEle.offsetWidth;
+    const genshinTableTitleColumnWidth = genshinSectionHeaderWidth - 460 + "px";
+    // console.log('!header width', genshinSectionHeaderWidth, 'Column width', genshinTableTitleColumnWidth)
+    const genshinTableRowTitleEle = document.querySelectorAll('.genshin-section-table-title a span') as NodeListOf<HTMLElement>;
+    genshinTableRowTitleEle.forEach((el) => {
+      el.style.maxWidth = genshinTableTitleColumnWidth;
+    })
+  }
+
   componentDidMount(): void {
     const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
     genshinTableRowEle.forEach((el) => {
       el.addEventListener('click', this.handleGenshinTableRowClick);
     });
+    window.addEventListener('resize', this.handleGenshinWindowResize);
   }
 
   componentWillUpdate(nextProps: Readonly<IGenshinTableProps<T>>, nextState: Readonly<State>, nextContext: any): void {
@@ -32,6 +46,7 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
     genshinTableRowEle.forEach((el) => {
       el.removeEventListener('click', this.handleGenshinTableRowClick);
     });
+    window.removeEventListener('resize', this.handleGenshinWindowResize);
   }
 
   componentDidUpdate(prevProps: Readonly<IGenshinTableProps<T>>, prevState: Readonly<State>, snapshot?: any): void {
@@ -39,6 +54,7 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
     genshinTableRowEle.forEach((el) => {
       el.addEventListener('click', this.handleGenshinTableRowClick);
     });
+    window.addEventListener('resize', this.handleGenshinWindowResize);
   }
 
   componentWillUnmount(): void {
@@ -46,6 +62,7 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
     genshinTableRowEle.forEach((el) => {
       el.removeEventListener('click', this.handleGenshinTableRowClick);
     });
+    window.removeEventListener('resize', this.handleGenshinWindowResize);
   }
 
   render(): React.ReactNode {

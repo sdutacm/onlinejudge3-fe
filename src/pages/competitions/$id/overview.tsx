@@ -232,57 +232,12 @@ class CompetitionOverview extends React.Component<Props, State> {
     }, delay * 1000);
   };
 
-  handleGenshinTableRowClick = () => {
-    const sound = new Howl({
-      src: [`${process.env.PUBLIC_PATH}assets/music/Genshin_UIAudio_ThirdParty_ItemClick.mp3`],
-    });
-    sound.play();
-  };
-
-  handleGenshinWindowResize = () => {
-    const genshinSectionHeaderEle = document.querySelector('.genshin-section-header') as HTMLElement;
-    if (!genshinSectionHeaderEle) {
-      return;
-    }
-    const genshinSectionHeaderWidth = genshinSectionHeaderEle.offsetWidth;
-    const genshinTableTitleColumnWidth = genshinSectionHeaderWidth - 460 + "px";
-    // console.log('!header width', genshinSectionHeaderWidth, 'Column width', genshinTableTitleColumnWidth)
-    const genshinTableRowTitleEle = document.querySelectorAll('.genshin-section-table-title a span') as NodeListOf<HTMLElement>;
-    genshinTableRowTitleEle.forEach((el) => {
-      el.style.maxWidth = genshinTableTitleColumnWidth;
-    })
-  }
-
   componentDidMount(): void {
     this.checkDetail(this.props.detail);
-    if (this.props.detail.spConfig.preset === 'genshin') {
-      this.handleGenshinWindowResize(); // 初始化尺寸
-      // const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
-      // genshinTableRowEle.forEach((el) => {
-      //   el.addEventListener('click', this.handleGenshinTableRowClick);
-      // });
-      window.addEventListener('resize', this.handleGenshinWindowResize);
-    }
-  }
-
-  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
-    this.handleGenshinWindowResize(); // 初始化尺寸
-    // const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
-    // genshinTableRowEle.forEach((el) => {
-    //   el.removeEventListener('click', this.handleGenshinTableRowClick);
-    //   el.addEventListener('click', this.handleGenshinTableRowClick);
-    // });
   }
 
   componentWillUnmount(): void {
     clearTimeout(this._keyInfoRefreshTimer);
-    if (this.props.detail.spConfig.preset === 'genshin') {
-      // const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
-      // genshinTableRowEle.forEach((el) => {
-      //   el.removeEventListener('click', this.handleGenshinTableRowClick);
-      // });
-      window.removeEventListener('resize', this.handleGenshinWindowResize);
-    }
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {

@@ -2,6 +2,7 @@ import React from 'react';
 import { notification } from 'antd';
 import tracker from '@/utils/tracker';
 import { ContestTimeStatus } from '@/utils/getSetTimeStatus';
+import { Howl } from 'howler';
 
 export interface Props {
   contestId: number;
@@ -29,6 +30,11 @@ class ContestTimeStatusWatcher extends React.Component<Props, State> {
             message: 'Contest Ended',
             duration: 0,
           });
+          // TODO remove later
+          const sound = new Howl({
+            src: ['https://cdn.sdutacm.cn/oj/dist/public/AzurSeries/assets/ASR2_Audio_Paimon_Ended.mp3'],
+          })
+          sound.play();
           break;
       }
     }

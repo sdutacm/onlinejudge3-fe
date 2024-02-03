@@ -43,6 +43,7 @@ import { Howl } from 'howler';
 import GeneralForm from '@/components/GeneralForm';
 import constants from '@/configs/constants';
 import { sleep } from '@/utils/misc';
+import GenshinTable from '@/components/GenshinTable';
 
 export interface Props extends ReduxProps, FormProps {
   id: number;
@@ -256,30 +257,30 @@ class CompetitionOverview extends React.Component<Props, State> {
     this.checkDetail(this.props.detail);
     if (this.props.detail.spConfig.preset === 'genshin') {
       this.handleGenshinWindowResize(); // 初始化尺寸
-      const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
-      genshinTableRowEle.forEach((el) => {
-        el.addEventListener('click', this.handleGenshinTableRowClick);
-      });
+      // const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+      // genshinTableRowEle.forEach((el) => {
+      //   el.addEventListener('click', this.handleGenshinTableRowClick);
+      // });
       window.addEventListener('resize', this.handleGenshinWindowResize);
     }
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>): void {
     this.handleGenshinWindowResize(); // 初始化尺寸
-    const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
-    genshinTableRowEle.forEach((el) => {
-      el.removeEventListener('click', this.handleGenshinTableRowClick);
-      el.addEventListener('click', this.handleGenshinTableRowClick);
-    });
+    // const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+    // genshinTableRowEle.forEach((el) => {
+    //   el.removeEventListener('click', this.handleGenshinTableRowClick);
+    //   el.addEventListener('click', this.handleGenshinTableRowClick);
+    // });
   }
 
   componentWillUnmount(): void {
     clearTimeout(this._keyInfoRefreshTimer);
     if (this.props.detail.spConfig.preset === 'genshin') {
-      const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
-      genshinTableRowEle.forEach((el) => {
-        el.removeEventListener('click', this.handleGenshinTableRowClick);
-      });
+      // const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+      // genshinTableRowEle.forEach((el) => {
+      //   el.removeEventListener('click', this.handleGenshinTableRowClick);
+      // });
       window.removeEventListener('resize', this.handleGenshinWindowResize);
     }
   }
@@ -1031,7 +1032,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                         {!unlocked && (
                           <div
                             className="genshin-section-curtain"
-                            style={{ height: section.problemIndexes.length * 39 + 2 }}
+                            style={{ height: section.problemIndexes.length * 41 + 2 }}
                             onClick={() => this.handleTryUnlockSection(section)}
                           >
                             <div className="genshin-section-curtain-bg" />
@@ -1043,7 +1044,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                         )}
                         {/* 表格部分 */}
                         {unlocked && (
-                          <Table
+                          <GenshinTable
                             dataSource={section.problemIndexes
                               .map((id) => problems?.rows?.[id])
                               .filter(Boolean)}
@@ -1196,7 +1197,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                                 );
                               }}
                             />
-                          </Table>
+                          </GenshinTable>
                         )}
                       </div>
                     );

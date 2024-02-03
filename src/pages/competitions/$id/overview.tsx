@@ -383,6 +383,10 @@ class CompetitionOverview extends React.Component<Props, State> {
             label: this.state.genshinTryUnlockModalInfo.selectedSectionId,
           });
           this.setState({ genshinTryUnlockModalVisible: false });
+          const ele = document.querySelector(`.genshin-section-${this.state.genshinTryUnlockModalInfo.selectedSectionId} .genshin-section-curtain`)
+          if (ele) {
+            ele.classList.add("genshin-section-curtain-unlock")
+          }
           await sleep(700);
 
           try {
@@ -853,8 +857,6 @@ class CompetitionOverview extends React.Component<Props, State> {
       }, 0);
     }
 
-    console.log("!!!", this.props.form)
-
     return (
       <div className="genshin-theme-page">
         <div className="genshin-banner" />
@@ -989,15 +991,26 @@ class CompetitionOverview extends React.Component<Props, State> {
                         {/* 解锁遮罩 */}
                         {!unlocked && (
                           <div
-                            className="genshin-section-curtain"
+                            className={classNames(
+                              "genshin-section-curtain"
+                            )}
                             style={{ height: section.problemIndexes.length * 41 + 2 }}
                             onClick={() => this.handleTryUnlockSection(section)}
                           >
+                            {/* 背景 */}
                             <div className="genshin-section-curtain-bg" />
-                            {/* todo 解锁动画 */}
-                            {/* <div className="genshin-section-curtain-icon" />
-                        <div className="genshin-section-curtain-rect" /> */}
+                            {/* 黑色滤镜 */}
+                            <div className="genshin-section-curtain-filter" />
+                            {/* 未解锁图标 */}
                             <div className="genshin-section-curtain-staticLock" />
+                            {/* 锁 - 锁定状态 */}
+                            <div className="genshin-section-curtain-iconLock" />
+                            {/* 锁 - 解锁状态 */}
+                            <div className="genshin-section-curtain-iconUnlock" />
+                            {/* 框 - 黑色 */}
+                            <div className="genshin-section-curtain-blackFrame" />
+                            {/* 框 - 白色 */}
+                            <div className="genshin-section-curtain-whiteFrame" />
                           </div>
                         )}
                         {/* 表格部分 */}

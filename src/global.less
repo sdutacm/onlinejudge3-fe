@@ -2343,6 +2343,7 @@ a {
 
           .ant-table-placeholder {
             background-color: #f2eee9;
+            border: #DBD1C6 solid 2px;
           }
 
           &-row {
@@ -2524,4 +2525,27 @@ a {
   padding: 10px 8px;
   background-color: #F3EFEA;
   border: #DCD4CA solid 2px;
+}
+
+.genshin-theme-form {
+
+  .ant-form-item-label,
+  .ant-input,
+  .ant-form-explain {
+    font-family: "Genshin Impact Unpacked";
+  }
+
+  textarea.ant-input {
+    width: 400px;
+    background-color: #e9e8e622;
+
+    &:hover {
+      border-color: #bfbab1;
+    }
+
+    &:focus {
+      border-color: #bfbab1;
+      box-shadow: 0 0 0 2px #f9e4be;
+    }
+  }
 }

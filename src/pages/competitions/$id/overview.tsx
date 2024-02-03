@@ -276,10 +276,11 @@ class CompetitionOverview extends React.Component<Props, State> {
   getCreateQuestionFormItems = () => {
     return [
       {
-        name: 'Content',
+        name: '我想问...',
         field: 'content',
         component: 'textarea',
         initialValue: '',
+        rows: 6,
         rules: [
           {
             required: true,
@@ -852,6 +853,8 @@ class CompetitionOverview extends React.Component<Props, State> {
       }, 0);
     }
 
+    console.log("!!!", this.props.form)
+
     return (
       <div className="genshin-theme-page">
         <div className="genshin-banner" />
@@ -1169,7 +1172,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               <div className="genshin-section-header">
                 <div className="genshin-section-header-title">通知</div>
               </div>
-              <Table
+              <GenshinTable
                 dataSource={notifications}
                 rowKey="competitionNotificationId"
                 loading={notificationsLoading}
@@ -1189,7 +1192,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                     <div style={{ whiteSpace: 'pre-line' }}>{record.content}</div>
                   )}
                 />
-              </Table>
+              </GenshinTable>
             </div>
           )}
 
@@ -1213,7 +1216,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                   size='small'
                 />
               </div>
-              <Table
+              <GenshinTable
                 dataSource={questions}
                 rowKey="competitionQuestionId"
                 loading={questionsLoading}
@@ -1245,7 +1248,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                     );
                   }}
                 />
-              </Table>
+              </GenshinTable>
             </div>
           )}
         </div>
@@ -1264,7 +1267,9 @@ class CompetitionOverview extends React.Component<Props, State> {
             confirmLoading={createQuestionsLoading}
             useSound
           >
-            <GeneralForm form={this.props.form} items={this.getCreateQuestionFormItems()} />
+            <div className="genshin-theme-form">
+              <GeneralForm form={this.props.form} items={this.getCreateQuestionFormItems()} />
+            </div>
           </GenshinModal>
         )}
 

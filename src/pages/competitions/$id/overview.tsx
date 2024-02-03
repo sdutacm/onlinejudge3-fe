@@ -276,7 +276,7 @@ class CompetitionOverview extends React.Component<Props, State> {
   getCreateQuestionFormItems = () => {
     return [
       {
-        name: '我想问...',
+        name: '提问内容',
         field: 'content',
         component: 'textarea',
         initialValue: '',
@@ -852,8 +852,6 @@ class CompetitionOverview extends React.Component<Props, State> {
         return acc + (score || 0);
       }, 0);
     }
-
-    console.log("!!!", this.props.form)
 
     return (
       <div className="genshin-theme-page">

@@ -8,6 +8,8 @@ export interface IGenshinTableProps<T> extends TableProps<T> {}
 interface State {}
 
 export default class GenshinTable<T> extends React.Component<IGenshinTableProps<T>, State> {
+  uniqueKey = `${Math.floor(Math.random() * 100000000)}`;
+
   constructor(props: IGenshinTableProps<T>) {
     super(props);
     this.state = {};
@@ -39,7 +41,9 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
   };
 
   componentDidMount(): void {
-    const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+    const genshinTableRowEle = document.querySelectorAll(
+      `.genshin-table-u-${this.uniqueKey} .genshin-section-table-row`,
+    );
     genshinTableRowEle.forEach((el) => {
       el.addEventListener('click', this.handleGenshinTableRowClick);
     });
@@ -52,7 +56,9 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
     nextState: Readonly<State>,
     nextContext: any,
   ): void {
-    const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+    const genshinTableRowEle = document.querySelectorAll(
+      `.genshin-table-u-${this.uniqueKey} .genshin-section-table-row`,
+    );
     genshinTableRowEle.forEach((el) => {
       el.removeEventListener('click', this.handleGenshinTableRowClick);
     });
@@ -64,7 +70,9 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
     prevState: Readonly<State>,
     snapshot?: any,
   ): void {
-    const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+    const genshinTableRowEle = document.querySelectorAll(
+      `.genshin-table-u-${this.uniqueKey} .genshin-section-table-row`,
+    );
     genshinTableRowEle.forEach((el) => {
       el.addEventListener('click', this.handleGenshinTableRowClick);
     });
@@ -73,7 +81,9 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
   }
 
   componentWillUnmount(): void {
-    const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+    const genshinTableRowEle = document.querySelectorAll(
+      `.genshin-table-u-${this.uniqueKey} .genshin-section-table-row`,
+    );
     genshinTableRowEle.forEach((el) => {
       el.removeEventListener('click', this.handleGenshinTableRowClick);
     });
@@ -83,6 +93,10 @@ export default class GenshinTable<T> extends React.Component<IGenshinTableProps<
   render(): React.ReactNode {
     const { children, ...restProps } = this.props;
 
-    return <Table {...restProps}>{children}</Table>;
+    return (
+      <Table {...restProps} className={`${restProps.className} genshin-table-u-${this.uniqueKey}`}>
+        {children}
+      </Table>
+    );
   }
 }

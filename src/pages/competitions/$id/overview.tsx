@@ -276,7 +276,7 @@ class CompetitionOverview extends React.Component<Props, State> {
   getCreateQuestionFormItems = () => {
     return [
       {
-        name: '我想问...',
+        name: '提问内容',
         field: 'content',
         component: 'textarea',
         initialValue: '',

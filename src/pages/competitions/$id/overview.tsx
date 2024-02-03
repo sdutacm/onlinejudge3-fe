@@ -77,6 +77,7 @@ interface State {
   nextSecond: number;
   genshinHelpModalVisible: boolean;
   genshinAskQuestionModalVisible: boolean;
+  genshinSectionHeaderWidth: number;
 }
 
 class CompetitionOverview extends React.Component<Props, State> {
@@ -95,6 +96,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       nextSecond: 0,
       genshinHelpModalVisible: false,
       genshinAskQuestionModalVisible: false,
+      genshinSectionHeaderWidth: 800,
     };
   }
 
@@ -236,20 +238,38 @@ class CompetitionOverview extends React.Component<Props, State> {
     sound.play();
   };
 
+  handleGenshinWindowResize = () => {
+    const genshinSectionHeaderEle = document.querySelector('.genshin-section-header') as HTMLElement;
+    const genshinSectionHeaderWidth = genshinSectionHeaderEle.offsetWidth;
+    const genshinTableTitleColumnWidth = genshinSectionHeaderWidth - 460 + "px";
+    // console.log('!header width', genshinSectionHeaderWidth, 'Column width', genshinTableTitleColumnWidth)
+    const genshinTableRowTitleEle = document.querySelectorAll('.genshin-section-table-title a span') as NodeListOf<HTMLElement>;
+    genshinTableRowTitleEle.forEach((el) => {
+      el.style.maxWidth = genshinTableTitleColumnWidth;
+    })
+  }
+
   componentDidMount(): void {
     this.checkDetail(this.props.detail);
-    const tbodys = document.querySelectorAll('.genshin-section-table-row');
-    tbodys.forEach((el) => {
-      el.addEventListener('click', this.handleGenshinTableRowClick);
-    });
+    if (this.props.detail.spConfig.preset === 'genshin') {
+      this.handleGenshinWindowResize(); // 初始化尺寸
+      const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+      genshinTableRowEle.forEach((el) => {
+        el.addEventListener('click', this.handleGenshinTableRowClick);
+      });
+      window.addEventListener('resize', this.handleGenshinWindowResize);
+    }
   }
 
   componentWillUnmount(): void {
     clearTimeout(this._keyInfoRefreshTimer);
-    const tbodys = document.querySelectorAll('.genshin-section-table-row');
-    tbodys.forEach((el) => {
-      el.removeEventListener('click', this.handleGenshinTableRowClick);
-    });
+    if (this.props.detail.spConfig.preset === 'genshin') {
+      const genshinTableRowEle = document.querySelectorAll('.genshin-section-table-row');
+      genshinTableRowEle.forEach((el) => {
+        el.removeEventListener('click', this.handleGenshinTableRowClick);
+      });
+      window.removeEventListener('resize', this.handleGenshinWindowResize);
+    }
   }
 
   componentWillReceiveProps(nextProps: Readonly<Props>, nextContext: any): void {
@@ -649,9 +669,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                             detail,
                             index,
                             (competitionProblemResultStats[record.problemId]?.selfTries || 0) -
-                              (competitionProblemResultStats[record.problemId]?.selfAccepted
-                                ? 1
-                                : 0),
+                            (competitionProblemResultStats[record.problemId]?.selfAccepted ? 1 : 0),
                             competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
                           ) ?? '-'}
                         </span>
@@ -852,17 +870,16 @@ class CompetitionOverview extends React.Component<Props, State> {
     let totalScore = 0;
     if (useScore) {
       totalScore = (problems.rows || []).reduce((acc, cur, index) => {
-        const score = competitionProblemResultStats[cur.problemId]?.selfAccepted
-          ? this.evalVarScoreExpression(
-              cur.score,
-              cur.varScoreExpression,
-              detail,
-              index,
-              (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
-                (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
-              competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
-            )
-          : 0;
+        const score = competitionProblemResultStats[cur.problemId]?.selfAccepted ?
+          this.evalVarScoreExpression(
+            cur.score,
+            cur.varScoreExpression,
+            detail,
+            index,
+            (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
+            (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
+            competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
+          ) : 0;
         return acc + (score || 0);
       }, 0);
     }
@@ -1128,10 +1145,10 @@ class CompetitionOverview extends React.Component<Props, State> {
                                             index,
                                             (competitionProblemResultStats[record.problemId]
                                               ?.selfTries || 0) -
-                                              (competitionProblemResultStats[record.problemId]
-                                                ?.selfAccepted
-                                                ? 1
-                                                : 0),
+                                            (competitionProblemResultStats[record.problemId]
+                                              ?.selfAccepted
+                                              ? 1
+                                              : 0),
                                             competitionProblemResultStats[record.problemId]
                                               ?.selfAcceptedTime,
                                           ) ?? '-'}

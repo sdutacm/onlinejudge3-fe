@@ -240,6 +240,9 @@ class CompetitionOverview extends React.Component<Props, State> {
 
   handleGenshinWindowResize = () => {
     const genshinSectionHeaderEle = document.querySelector('.genshin-section-header') as HTMLElement;
+    if (!genshinSectionHeaderEle) {
+      return;
+    }
     const genshinSectionHeaderWidth = genshinSectionHeaderEle.offsetWidth;
     const genshinTableTitleColumnWidth = genshinSectionHeaderWidth - 460 + "px";
     // console.log('!header width', genshinSectionHeaderWidth, 'Column width', genshinTableTitleColumnWidth)

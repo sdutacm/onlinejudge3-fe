@@ -84,6 +84,10 @@
     background-image: url(../assets/images/sp-genshin-theme/TouchIcon/help.png);
   }
 
+  :global(.genshin-btn-add) {
+    background-image: url(../assets/images/sp-genshin-theme/TouchIcon/add.png);
+  }
+
   &.iconLayout {
     width: 36px;
 
@@ -122,13 +126,12 @@
     }
 
     &:hover {
-      border-color: #565c72;
-      box-shadow: 0 0 2px #9098b5;
+      border-color: #ffeba5;
+      box-shadow: 0 0 2px rgb(248, 238, 180);
     }
 
     &:active {
       background-color: #fefefe;
-      border-color: #565c72;
       box-shadow: 0 0 2px #EAE4D9;
 
       &::after {
@@ -170,6 +173,19 @@
 
     :global(.genshin-btn-help) {
       background-image: url(../assets/images/sp-genshin-theme/TouchIcon/help.png);
+    }
+  }
+
+  &.small {
+    height: 30px;
+
+    .icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    &.iconLayout {
+      width: 30px;
     }
   }
 }

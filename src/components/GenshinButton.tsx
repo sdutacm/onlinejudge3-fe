@@ -7,11 +7,12 @@ export interface IGenshinButtonProps {
   buttonType?: 'default' | 'text' | 'icon' | 'auto';
   theme?: 'light' | 'dark';
   text?: string;
-  iconType?: 'default' | 'cancel' | 'complete' | 'help';
+  iconType?: 'default' | 'cancel' | 'complete' | 'help' | 'add';
   loading?: boolean;
   disabled?: boolean;
   useSound?: boolean,
   style?: React.CSSProperties;
+  size?: 'default' | 'small'
   onClick?: React.MouseEventHandler;
 }
 
@@ -22,6 +23,7 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
     buttonType: 'default',
     theme: 'dark',
     iconType: 'default',
+    size: 'default',
     disabled: false,
     useSound: false
   };
@@ -51,6 +53,7 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
       iconType,
       loading,
       disabled,
+      size,
     } = this.props;
 
     return (
@@ -60,7 +63,8 @@ class GenshinButton extends React.Component<IGenshinButtonProps, State> {
           theme === 'light' ? style.light : null,
           buttonType === 'auto' ? style.autoLayout : null,
           buttonType === 'icon' ? style.iconLayout : null,
-          disabled || loading ? style.disabled : null
+          disabled || loading ? style.disabled : null,
+          size === 'small' ? style.small : null,
         )}
         style={this.props?.style}
         onClick={(e) => this.handleClick(e)}

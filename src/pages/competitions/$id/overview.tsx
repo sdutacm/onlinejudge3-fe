@@ -1241,6 +1241,8 @@ class CompetitionOverview extends React.Component<Props, State> {
                   theme="light"
                   useSound
                   onClick={() => this.setState({ genshinAskQuestionModalVisible: true })}
+                  iconType='add'
+                  size='small'
                 />
               </div>
               <Table

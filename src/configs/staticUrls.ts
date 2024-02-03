@@ -11,6 +11,10 @@ const staticUrls = {
     judgerDataArchive:
       `${process.env.PUBLIC_PATH}assets/misc/%E9%A2%98%E7%9B%AE%E8%AF%84%E6%B5%8B%E6%95%B0%E6%8D%AE%E7%A4%BA%E4%BE%8B.zip`,
   },
+  resources: {
+    spGenshinLaunchMusic: `${process.env.PUBLIC_PATH}assets/music/Genshin_Music_Launch_Mix.mp3`,
+    spGenshinLaunchDoorOpenAudio: `${process.env.PUBLIC_PATH}assets/music/Genshin_Audio_DoorOpen.mp3`,
+  },
 };
 
 export default staticUrls;

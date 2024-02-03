@@ -20,6 +20,11 @@ import { ICompetitionEvenData, CompetitionEvents, competitionEmitter } from '@/e
 import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
+import { Howl } from 'howler';
+import staticUrls from '@/configs/staticUrls';
+
+const SP_GENSHIN_LAUNCHING_AUDIO_DURATION = 1 * 60 + 40;
+const SP_GENSHIN_LAUNCHING_AUDIO_PLAY_OFFSET = -2;
 
 export interface Props extends RouteProps, ReduxProps {
   id: number;
@@ -40,8 +45,17 @@ class CompetitionLayout extends React.Component<Props, State> {
   setStatePromise = setStatePromise.bind(this);
   pollParticipantDataTimer = 0;
   audioPlayList: string[] = [];
+  spGenshinLaunchingAudioPlayRange = [];
+  spGenshinLaunchingAudioPlayer: Howl | null = null;
+  spGenshinLaunchingAudioLoaded = false;
+  spGenshinLaunchingAudioPlayaing = false;
+  spGenshinEnteredAudioPlayer: Howl | null = null;
 
   _oldTheme: ISettingsTheme = 'auto';
+
+  get isGenshin() {
+    return this.props?.detail?.spConfig?.preset === 'genshin';
+  }
 
   constructor(props) {
     super(props);
@@ -74,6 +88,11 @@ class CompetitionLayout extends React.Component<Props, State> {
     }
     await this.setStatePromise({ currentTime: Date.now() - ((window as any)._t_diff || 0) });
     const newTimeStatus = this.getContestTimeStatus();
+    if (newTimeStatus === 'Pending') {
+      if (this.isTimeToPlayGenshinLaunchAudio()) {
+        this.playGenshinLaunchingAudio();
+      }
+    }
     if (oldTimeStatus === 'Pending' && newTimeStatus === 'Running') {
       // 比赛开始
       const { id, dispatch } = this.props;
@@ -84,6 +103,9 @@ class CompetitionLayout extends React.Component<Props, State> {
           force: true,
         },
       });
+      if (this.isGenshin) {
+        this.spGenshinEnteredAudioPlayer?.play();
+      }
     }
   };
 
@@ -128,7 +150,7 @@ class CompetitionLayout extends React.Component<Props, State> {
       type: 'competitions/getSettings',
       payload: { id },
     });
-    if (session && session.loggedIn) {
+    if (session?.loggedIn) {
       // dispatch({
       //   type: 'competitions/getProblems',
       //   payload: { id },
@@ -242,12 +264,27 @@ class CompetitionLayout extends React.Component<Props, State> {
       CompetitionEvents.SpGenshinSectionUnlocked,
       this.onSpGenshinSectionUnlocked,
     );
+    this.spGenshinLaunchingAudioPlayer?.unload();
+    this.spGenshinEnteredAudioPlayer?.unload();
   }
 
   checkDetail = (detail?: ICompetition) => {
     const spConfig = detail?.spConfig || {};
     if (spConfig.preset === 'genshin') {
       this.installGenshinTheme();
+      if (!this.spGenshinLaunchingAudioPlayer) {
+        this.spGenshinLaunchingAudioPlayer = new Howl({
+          src: [staticUrls.resources.spGenshinLaunchMusic],
+          preload: true,
+        });
+        this.spGenshinLaunchingAudioPlayer.once('load', this.handleLaunchingAudioLoaded);
+      }
+      if (!this.spGenshinEnteredAudioPlayer) {
+        this.spGenshinEnteredAudioPlayer = new Howl({
+          src: [staticUrls.resources.spGenshinLaunchDoorOpenAudio],
+          preload: true,
+        });
+      }
     } else {
       this.uninstallGenshinTheme();
     }
@@ -277,6 +314,63 @@ class CompetitionLayout extends React.Component<Props, State> {
       type: 'settings/setThemeLocked',
       payload: { themeLocked: false },
     });
+  };
+
+  isTimeToPlayGenshinLaunchAudio = () => {
+    if (!this.isGenshin) {
+      return;
+    }
+
+    const currentTime = this.state.currentTime;
+    const startTime = toLongTs(this.props.detail.startAt);
+    const timeElapsedSecs = Math.floor((currentTime - startTime) / 1000);
+    const audioDuration = SP_GENSHIN_LAUNCHING_AUDIO_DURATION;
+    const startPlayAt = -audioDuration + SP_GENSHIN_LAUNCHING_AUDIO_PLAY_OFFSET;
+    return timeElapsedSecs >= startPlayAt && timeElapsedSecs < startPlayAt + audioDuration;
+  }
+
+  playGenshinLaunchingAudio = () => {
+    if (!this.isGenshin) {
+      return;
+    }
+    if (!this.spGenshinLaunchingAudioPlayer) {
+      return;
+    }
+    if (this.spGenshinLaunchingAudioPlayaing || !this.spGenshinLaunchingAudioLoaded) {
+      return;
+    }
+    const currentTime = this.state.currentTime;
+    const startTime = toLongTs(this.props.detail.startAt);
+    const timeElapsedSecs = Math.floor((currentTime - startTime) / 1000);
+    const audioDuration = SP_GENSHIN_LAUNCHING_AUDIO_DURATION;
+    const startPlayAt = -audioDuration + SP_GENSHIN_LAUNCHING_AUDIO_PLAY_OFFSET;
+
+    if (!this.isTimeToPlayGenshinLaunchAudio()) {
+      console.log(
+        '[playGenshinLaunchingAudio] not in proper progress, skipped',
+        timeElapsedSecs,
+        [startPlayAt, startPlayAt + audioDuration],
+      );
+      return;
+    }
+
+    const playSeekAt = Math.min(audioDuration, timeElapsedSecs - startPlayAt);
+    if (playSeekAt < audioDuration) {
+      playSeekAt > 1 && this.spGenshinLaunchingAudioPlayer.seek(playSeekAt);
+      this.spGenshinLaunchingAudioPlayer.play();
+    }
+    this.spGenshinLaunchingAudioPlayaing = true;
+    console.log('[playGenshinLaunchingAudio] play at', playSeekAt, {
+      timeElapsedSecs,
+      startPlayAt,
+      audioDuration,
+    });
+  };
+
+  handleLaunchingAudioLoaded = () => {
+    console.log('[handleLaunchingAudioLoaded]');
+    this.spGenshinLaunchingAudioLoaded = true;
+    this.playGenshinLaunchingAudio();
   };
 
   onSpGenshinSectionUnlocked = (

@@ -232,7 +232,7 @@ class CompetitionBase extends React.Component<Props, State> {
     }
 
     return (
-      <div className="content-view-xs center-view">
+      <div className="content-view-us center-view">
         <div className="text-center" style={{ marginBottom: '30px' }}>
           <h2>{this.tabs[tab].title}</h2>
         </div>

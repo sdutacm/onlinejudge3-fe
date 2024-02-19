@@ -7,6 +7,7 @@ import {
   IGetUserAcceptedProblemsResp,
   IGetUserSubmittedProblemsReq,
   IGetUserSubmittedProblemsResp,
+  IGetJudgeQueueStatsResp,
 } from '@/common/contracts/stat';
 import { IGetActiveUserCountResp } from '@/common/contracts/user';
 
@@ -36,4 +37,8 @@ export function getUserSubmittedProblems(userIds: number[]) {
 
 export function getActiveUserCount() {
   return post<void, IGetActiveUserCountResp>(routesBe.getActiveUserCount.url);
+}
+
+export function getJudgeQueueStats() {
+  return post<void, IGetJudgeQueueStatsResp>(routesBe.getJudgeQueueStats.url);
 }

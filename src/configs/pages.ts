@@ -91,6 +91,9 @@ export default {
     fields: '/admin/fields',
     fieldSettings: '/admin/fields/:id/settings',
   },
+  stats: {
+    judge: '/stats/judge',
+  },
   beta: '/beta',
   OJBK: '/OJBK',
 };

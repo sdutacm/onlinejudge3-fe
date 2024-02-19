@@ -42,6 +42,14 @@ function genInitialState() {
     activeUserCount: {
       count: 0,
     },
+    judgeQueueStats: {
+      running: 0,
+      waiting: 0,
+      queueSize: 0,
+      deadQueueSize: 0,
+      workers: [],
+      _updatedAt: -1,
+    },
   };
 }
 
@@ -72,6 +80,11 @@ export default {
       state.activeUserCount = {
         ...data,
         ...genTimeFlag(5 * 60 * 1000),
+      };
+    },
+    setJudgeQueueStats(state, { payload: { data } }) {
+      state.judgeQueueStats = {
+        ...data,
       };
     },
   },
@@ -202,6 +215,18 @@ export default {
       if (res.success) {
         yield put({
           type: 'setActiveUserCount',
+          payload: {
+            data: res.data,
+          },
+        });
+      }
+      return res;
+    },
+    *getJudgeQueueStats({ payload }, { call, put }) {
+      const res = yield call(service.getJudgeQueueStats);
+      if (res.success) {
+        yield put({
+          type: 'setJudgeQueueStats',
           payload: {
             data: res.data,
           },

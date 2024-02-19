@@ -836,4 +836,56 @@ a {
   color: #f6ac06 !important;
 }
 
+// stats
+.judge-queue-stats-process {
+  &.ant-progress-status-success .ant-progress-bg {
+    background-color: @primary-6;
+  }
+}
+
+.judge-queue-stats-board {
+  .judge-queue-stats-board-row {
+    .judge-queue-stats-board-item-judging {
+      border-color: #ffc107;
+      background: darken(#ffc107, 45%);
+    }
+
+    .judge-queue-stats-board-item-in-queue {
+      color: @primary-6;
+    }
+  }
+}
+
+.judge-queue-stats-node-graph {
+  .judge-queue-stats-node-graph-header {
+    border-right: 4px solid @border-color-split;
+  }
+
+  .judge-queue-stats-node-graph-item {
+    border: @border-width-base @border-style-base @input-border-color;
+    background-color: @component-background;
+
+    &.type-judging {
+      background-color: darken(#ffc107, 23%);
+      border-color: #ffc107;
+    }
+  }
+}
+
+.judge-queue-stats-bg-success {
+  background-color: @color-green;
+}
+
+.judge-queue-stats-bg-warn {
+  background-color: @color-yellow;
+}
+
+.judge-queue-stats-bg-danger {
+  background-color: @color-red;
+}
+
+.judge-queue-stats-bg-super-danger {
+  background-color: @color-purple;
+}
+
 // }

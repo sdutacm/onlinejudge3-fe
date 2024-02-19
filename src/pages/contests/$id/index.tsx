@@ -259,7 +259,7 @@ class ContestHome extends React.Component<Props, State> {
     const { tab } = this.state;
     if (tab) {
       return (
-        <div className="content-view-xs center-view">
+        <div className="content-view-us center-view">
           <div className={styles.header}>
             <h2>{this.tabs[tab].title}</h2>
           </div>

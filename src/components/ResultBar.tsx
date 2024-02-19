@@ -119,8 +119,9 @@ class ResultBar extends React.Component<Props, State> {
     }
     const resultInfo = resultsMap[result] || {};
     const isRejected = isRejectedResult(result);
+    const canShowJudgeDetail = judgeInfo?.detail?.cases?.length > 0;
     const title =
-      isRejected && judgeInfo
+      isRejected && judgeInfo?.totalCase > 0
         ? `${resultInfo.fullName} on test ${judgeInfo.lastCase}/${judgeInfo.totalCase}`
         : resultInfo.fullName;
     return (
@@ -142,14 +143,14 @@ class ResultBar extends React.Component<Props, State> {
               colorSettings === 'colorful' ? resultInfo.colorfulColor : resultInfo.normalColor
             }`,
             {
-              'cursor-pointer': judgeInfo,
+              'cursor-pointer': canShowJudgeDetail,
             },
           )}
-          onClick={judgeInfo ? this.handleShowDetailModal : () => {}}
+          onClick={canShowJudgeDetail ? this.handleShowDetailModal : () => {}}
         >
           <span>{resultInfo.shortName}</span>
         </div>
-        {judgeInfo ? (
+        {canShowJudgeDetail ? (
           <Modal
             title="Judgement Info"
             visible={this.state.showDetail}
@@ -160,7 +161,7 @@ class ResultBar extends React.Component<Props, State> {
           >
             <div>
               <Row gutter={16}>
-                {judgeInfo.detail?.cases.map((j, index) => {
+                {judgeInfo.detail.cases.map((j, index) => {
                   return (
                     <Col xs={12} md={4} key={index} style={{ padding: '6px' }}>
                       {j.errMsg || j.outMsg ? (

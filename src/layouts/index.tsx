@@ -251,11 +251,11 @@ class Index extends React.Component<Props, State> {
         path: pages.competitions.overview,
         exact: true,
       });
-    const inFullHeightPage = 
+    const inFullHeightPage =
       matchPath(location.pathname, {
         path: pages.competitions.public.intro,
         exact: true,
-      }) || 
+      }) ||
       matchPath(location.pathname, {
         path: pages.competitions.overview,
         exact: true,
@@ -323,21 +323,19 @@ class Index extends React.Component<Props, State> {
               )}
               {!isCompetitionSide() && (
                 <p>
-                  <ExtLink
-                    className="normal-text-link"
-                    href="https://github.com/sdutacm/onlinejudge3/blob/master/CHANGELOG.md"
-                  >
-                    Changelog
-                  </ExtLink>
-                </p>
-              )}
-              {!isCompetitionSide() && (
-                <p>
                   <a className="normal-text-link" href="mailto:sdutacm@163.com">
                     Contact us
                   </a>
                 </p>
               )}
+              <p>
+                <Link
+                  to={pages.stats.judge}
+                  className="normal-text-link"
+                >
+                  Judge Status
+                </Link>
+              </p>
               <p>Current Active Users: {activeUserCount}</p>
             </Col>
 

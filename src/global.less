@@ -80,14 +80,13 @@ ul {
     //color: @font-color; // dark;
 
     &.ant-menu-horizontal {
-
-      &>.ant-menu-item,
-      &>.ant-menu-submenu {
+      & > .ant-menu-item,
+      & > .ant-menu-submenu {
         border-bottom: none;
         top: 0;
         margin-top: 0;
 
-        &>a:before {
+        & > a:before {
           bottom: 0;
         }
 
@@ -95,13 +94,13 @@ ul {
       }
     }
 
-    &>.ant-menu-item-selected {
+    & > .ant-menu-item-selected {
       background-color: rgba(220, 220, 220, 0.2);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       backdrop-filter: saturate(180%) blur(20px);
       color: inherit;
 
-      &>a {
+      & > a {
         color: inherit;
       }
     }
@@ -232,7 +231,7 @@ ul {
   }
 }
 
-.ant-table-thead>tr>th {
+.ant-table-thead > tr > th {
   padding: 16px 8px 8px;
 
   &:first-of-type {
@@ -244,7 +243,7 @@ ul {
   }
 }
 
-.ant-table-tbody>tr>td {
+.ant-table-tbody > tr > td {
   padding: 8px;
 
   &:first-of-type {
@@ -280,7 +279,6 @@ ul {
   .input-button;
 
   .ant-input-search-button {
-
     &,
     &:hover,
     &:focus,
@@ -291,7 +289,7 @@ ul {
 
     cursor: not-allowed;
 
-    >* {
+    > * {
       pointer-events: none;
     }
   }
@@ -370,7 +368,7 @@ ul {
     visibility: hidden;
   }
 
-  >.ant-collapse-item {
+  > .ant-collapse-item {
     .message-footer {
       font-size: 14px;
       color: @text-color;
@@ -520,6 +518,22 @@ ul {
 }
 
 .content-view-xs {
+  @media only screen and (min-width: 640px) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 540px;
+  }
+}
+
+.content-view-xxs {
+  @media only screen and (min-width: 480px) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 380px;
+  }
+}
+
+.content-view-us {
   width: 90%;
 
   @media only screen and (min-width: 400px) {
@@ -548,7 +562,7 @@ ul {
     display: none;
   }
 
-  tbody>tr.problem-result-mark-row {
+  tbody > tr.problem-result-mark-row {
     border-left-width: 4px !important;
   }
 }
@@ -580,7 +594,7 @@ ul {
 }
 
 .click-table {
-  .ant-table-tbody>tr {
+  .ant-table-tbody > tr {
     .float-btn {
       padding: 0;
 
@@ -597,7 +611,7 @@ ul {
     }
 
     &:hover {
-      >td {
+      > td {
         cursor: pointer;
       }
 
@@ -695,7 +709,7 @@ ul {
   width: 50px;
 }
 
-.ant-table-tbody>tr>td.result-bar {
+.ant-table-tbody > tr > td.result-bar {
   padding: 0;
   height: 1px;
   border-left: 1px solid rgb(232, 232, 232);
@@ -744,15 +758,15 @@ ul {
   }
 }
 
-.ant-table-thead>tr>th,
-.ant-table-tbody>tr>td {
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
   &.near-result-bar {
     padding-left: 20px;
   }
 }
 
 @-moz-document url-prefix() {
-  .ant-table-tbody>tr>td.result-bar {
+  .ant-table-tbody > tr > td.result-bar {
     height: 100%;
   }
 }
@@ -988,14 +1002,13 @@ ul {
 // Ranklist
 
 .ranklist {
-
   .ant-table,
   .ant-table-middle {
-    .ant-table-thead>tr>th {
+    .ant-table-thead > tr > th {
       padding: 8px 4px !important;
     }
 
-    .ant-table-tbody>tr>td.stat {
+    .ant-table-tbody > tr > td.stat {
       padding: 0 !important;
       height: 1px;
       border-left: 1px solid transparent;
@@ -1029,7 +1042,7 @@ ul {
     }
   }
 
-  .self-rank-row>td {
+  .self-rank-row > td {
     border-bottom: 2px solid @primary-color;
   }
 
@@ -1140,7 +1153,6 @@ ul {
   }
 
   &:hover {
-
     .ant-avatar::before,
     .upload-mask-icon {
       opacity: 1;
@@ -1148,7 +1160,6 @@ ul {
   }
 
   &.hold {
-
     .ant-avatar::before,
     .upload-mask-icon {
       opacity: 1;
@@ -1238,7 +1249,7 @@ ul {
   transition: all 0.3s;
 
   .active(@color: @outline-color) {
-    border-color:~`colorPalette('@{color}', 5) `;
+    border-color: ~`colorPalette('@{color}', 5) `;
     outline: 0;
     box-shadow: @input-outline-offset @outline-blur-size @outline-width fade(@color, 20%);
     border-right-width: @border-width-base !important;
@@ -1246,7 +1257,7 @@ ul {
 
   // == when hoverd
   .hover(@color: @input-hover-border-color) {
-    border-color:~`colorPalette('@{color}', 5) `;
+    border-color: ~`colorPalette('@{color}', 5) `;
     border-right-width: @border-width-base !important;
   }
 
@@ -1531,7 +1542,6 @@ a {
 // red packet
 
 .red-packet-modal {
-
   .ant-modal-header,
   .ant-modal-body,
   .ant-modal-title {
@@ -1759,7 +1769,7 @@ a {
 // competition
 
 @import url('./assets/fonts/Marcellus/Marcellus.css');
-@import (inline) "./assets/fonts/ZCOOL_XiaoWei/ZCOOL_XiaoWei.remote.css";
+@import (inline) './assets/fonts/ZCOOL_XiaoWei/ZCOOL_XiaoWei.remote.css';
 
 .font-family-amaz-chinese {
   font-family: 'ZCOOL XiaoWei', serif;
@@ -1841,6 +1851,127 @@ a {
   }
 }
 
+// stats
+.judge-queue-stats-process {
+  .ant-progress-success-bg {
+    background-color: #ffc107;
+  }
+  &.ant-progress-status-success .ant-progress-bg {
+    background-color: @primary-6;
+  }
+}
+
+.judge-queue-stats-board {
+  .judge-queue-stats-board-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .judge-queue-stats-board-row-label {
+      font-size: 18px;
+    }
+
+    .judge-queue-stats-board-row-value {
+      font-size: 18px;
+      font-weight: 500;
+
+      .ant-tag {
+        font-size: 18px;
+        font-weight: 500;
+        margin-right: 0;
+      }
+    }
+
+    .judge-queue-stats-board-item-judging {
+      color: #ffc107;
+      border-color: lighten(#ffc107, 20%);
+      background: lighten(#ffc107, 45%);
+    }
+
+    .judge-queue-stats-board-item-in-queue {
+      color: @primary-6;
+    }
+  }
+}
+
+.judge-queue-stats-node-graph {
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  justify-content: center;
+
+  .judge-queue-stats-node-graph-header {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    border-right: 4px solid @border-color-split;
+    padding: 0 4px;
+    margin-right: 16px;
+  }
+
+  .judge-queue-stats-node-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .judge-queue-stats-node-graph-item {
+    // background-color: #f0f0f0;
+    width: 100%;
+    position: relative;
+    border: @border-width-base @border-style-base @input-border-color;
+    border-radius: @border-radius-base;
+    background-color: @component-background;
+
+    &.type-judging {
+      background-color: lighten(#ffc107, 25%);
+      border-color: #ffc107;
+    }
+  }
+
+  .judge-queue-stats-node-graph-item::before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+
+  .judge-queue-stats-node-graph-item-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.judge-queue-stats-bg-success {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: @color-green;
+}
+
+.judge-queue-stats-bg-warn {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: @color-yellow;
+}
+
+.judge-queue-stats-bg-danger {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: @color-red;
+}
+
+.judge-queue-stats-bg-super-danger {
+  color: rgba(255, 255, 255, 0.8);
+  background-color: @color-purple;
+}
+
 // sp
 .sp-genshin-start-container {
   background: #ffffff;
@@ -1849,7 +1980,7 @@ a {
   animation: genshinFadeIn 0.5s 0s, genshinKeepUntilEnd 0.5s 13s;
   animation-fill-mode: forwards;
 
-  &>div {
+  & > div {
     width: 100%;
     height: 100%;
     background-size: contain;
@@ -1989,7 +2120,7 @@ a {
     cursor: url(./assets/images/sp-genshin-theme/cursor.png), auto;
   }
 
-  font-family: "Genshin Impact Unpacked";
+  font-family: 'Genshin Impact Unpacked';
 
   .ant-modal,
   .ant-card,
@@ -1997,7 +2128,7 @@ a {
   .ant-popover-inner-content,
   .ant-badge,
   .ant-menu {
-    font-family: "Genshin Impact Unpacked";
+    font-family: 'Genshin Impact Unpacked';
   }
 
   .genshin-theme-page {
@@ -2007,7 +2138,7 @@ a {
     align-items: center;
     min-height: calc(100vh - 235px);
     padding-bottom: 100px;
-    background-color: #ECE6DE;
+    background-color: #ece6de;
 
     @media only screen and (max-width: 1000px) {
       min-height: calc(100vh - 489px);
@@ -2018,8 +2149,7 @@ a {
       max-width: 2560px;
       height: calc(340px + 8vw);
       max-height: 600px;
-      background:
-        linear-gradient(to bottom, transparent 90%, #ECE6DEff),
+      background: linear-gradient(to bottom, transparent 90%, #ece6deff),
         url(./assets/images/sp-genshin-theme/oj-genshin-banner.png) no-repeat center / cover;
       margin-bottom: 30px;
     }
@@ -2040,8 +2170,8 @@ a {
       .genshin-notice {
         width: 100%;
         padding: 10px 8px;
-        background-color: #F3EFEA;
-        border: #DCD4CA solid 2px;
+        background-color: #f3efea;
+        border: #dcd4ca solid 2px;
       }
 
       .genshin-state {
@@ -2059,8 +2189,8 @@ a {
           padding-right: 10px;
           border-radius: 999px;
           box-sizing: border-box;
-          border: #9DA5AE solid 2px;
-          color: #EAE4D9;
+          border: #9da5ae solid 2px;
+          color: #eae4d9;
           background-color: #4b5367;
           display: flex;
           justify-content: center;
@@ -2237,20 +2367,20 @@ a {
           height: 50px;
           width: 100%;
           background-color: #525f6f;
-          border: #363E49 solid 2px;
+          border: #363e49 solid 2px;
           box-sizing: border-box;
           z-index: 10;
 
           // 搭配前面的背景色和边框色共同实现边框不靠边
           &::before {
-            content: "";
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: calc(100% - 4px);
             height: calc(100% - 4px);
             transform: translate(2px, 2px);
-            background-color: #363E49;
+            background-color: #363e49;
             z-index: -1;
           }
 
@@ -2260,7 +2390,7 @@ a {
             left: 30px;
             transform: translateY(-50%);
             font-size: 18px;
-            color: #EAE4D9;
+            color: #eae4d9;
           }
 
           &-icon {
@@ -2311,7 +2441,8 @@ a {
             z-index: 20;
             width: 50px;
             height: 50px;
-            background: url(./assets/images/sp-genshin-theme/curtain/static-lock.png) no-repeat center / contain;
+            background: url(./assets/images/sp-genshin-theme/curtain/static-lock.png) no-repeat
+              center / contain;
           }
 
           &-iconLock {
@@ -2322,7 +2453,8 @@ a {
             left: calc(50% - 15px);
             width: 30px;
             height: 30px;
-            background: url(./assets/images/sp-genshin-theme/curtain/lock.png) no-repeat center / contain;
+            background: url(./assets/images/sp-genshin-theme/curtain/lock.png) no-repeat center /
+              contain;
             transform-origin: center;
           }
 
@@ -2334,7 +2466,8 @@ a {
             left: calc(50% - 18px);
             width: 36px;
             height: 36px;
-            background: url(./assets/images/sp-genshin-theme/curtain/unlock.png) no-repeat center / contain;
+            background: url(./assets/images/sp-genshin-theme/curtain/unlock.png) no-repeat center /
+              contain;
             transform-origin: center;
           }
 
@@ -2346,18 +2479,20 @@ a {
             left: calc(50% - 30px);
             width: 60px;
             height: 60px;
-            background: url(./assets/images/sp-genshin-theme/curtain/blackFrame.png) no-repeat center / contain;
+            background: url(./assets/images/sp-genshin-theme/curtain/blackFrame.png) no-repeat
+              center / contain;
           }
 
           &-whiteFrame {
-            z-index:70;
+            z-index: 70;
             opacity: 0;
             position: absolute;
             top: calc(50% - 30px);
             left: calc(50% - 30px);
             width: 60px;
             height: 60px;
-            background: url(./assets/images/sp-genshin-theme/curtain/whiteFrame.png) no-repeat center / contain;
+            background: url(./assets/images/sp-genshin-theme/curtain/whiteFrame.png) no-repeat
+              center / contain;
           }
 
           @keyframes unlockSectionFilter {
@@ -2486,12 +2621,12 @@ a {
 
           .ant-table-placeholder {
             background-color: #f2eee9;
-            border: #DBD1C6 solid 2px;
+            border: #dbd1c6 solid 2px;
           }
 
           &-row {
-            background-color: #F3EEE9;
-            border: #DBD1C6 solid 2px;
+            background-color: #f3eee9;
+            border: #dbd1c6 solid 2px;
             transform-origin: center center;
             position: relative;
 
@@ -2523,7 +2658,7 @@ a {
               gap: 10px;
               width: 100%;
               height: 39px;
-              color: #7A6044;
+              color: #7a6044;
               position: relative;
 
               &:hover {
@@ -2542,11 +2677,13 @@ a {
             }
 
             .accepted {
-              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-complete.png);
+              background: no-repeat center / contain
+                url(./assets/images/sp-genshin-theme/icon-problem-complete.png);
             }
 
             .attempted {
-              background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-problem-fail.png);
+              background: no-repeat center / contain
+                url(./assets/images/sp-genshin-theme/icon-problem-fail.png);
             }
           }
 
@@ -2577,7 +2714,8 @@ a {
               .genshin-problem-hasEgg-icon {
                 width: 20px;
                 height: 20px;
-                background: no-repeat center / contain url(./assets/images/sp-genshin-theme/icon-egg.png);
+                background: no-repeat center / contain
+                  url(./assets/images/sp-genshin-theme/icon-egg.png);
               }
             }
           }
@@ -2623,7 +2761,6 @@ a {
     background: no-repeat center / contain url(./assets/images/sp-genshin-theme/key.png);
   }
 
-
   .genshin-state-help-modal {
     display: flex;
     justify-content: center;
@@ -2665,16 +2802,15 @@ a {
 .genshin-theme-card {
   width: 100%;
   padding: 10px 8px;
-  background-color: #F3EFEA;
-  border: #DCD4CA solid 2px;
+  background-color: #f3efea;
+  border: #dcd4ca solid 2px;
 }
 
 .genshin-theme-form {
-
   .ant-form-item-label,
   .ant-input,
   .ant-form-explain {
-    font-family: "Genshin Impact Unpacked";
+    font-family: 'Genshin Impact Unpacked';
   }
 
   textarea.ant-input {

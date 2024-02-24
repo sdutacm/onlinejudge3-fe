@@ -168,6 +168,23 @@ class Index extends React.Component<Props, State> {
     window.addEventListener('click', this.checkUserActive);
     window.addEventListener('scroll', this.checkUserActive);
     window.addEventListener('keydown', this.checkUserActive);
+
+    // try to load VIN (Very Important Notice)
+    fetch(`${process.env.PUBLIC_PATH}vin.txt`)
+      .then((r) => r.text())
+      .then((res) => {
+        const vin = res.trim();
+        if (vin) {
+          notification.warning({
+            message: 'Important Notice',
+            description: vin,
+            duration: null,
+          });
+        }
+      })
+      .catch(() => {
+        console.log('No valid vin file, skip');
+      });
   }
 
   componentWillUnmount() {
@@ -329,10 +346,7 @@ class Index extends React.Component<Props, State> {
                 </p>
               )}
               <p>
-                <Link
-                  to={pages.stats.judge}
-                  className="normal-text-link"
-                >
+                <Link to={pages.stats.judge} className="normal-text-link">
                   Judge Status
                 </Link>
               </p>

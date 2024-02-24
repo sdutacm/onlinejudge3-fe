@@ -170,7 +170,7 @@ class Index extends React.Component<Props, State> {
     window.addEventListener('keydown', this.checkUserActive);
 
     // try to load VIN (Very Important Notice)
-    fetch(`${process.env.PUBLIC_PATH}vin.txt`)
+    fetch(`${process.env.PUBLIC_PATH}vin.txt?_r=${Math.random()}`)
       .then((r) => {
         if (
           r.headers.get('content-type').startsWith('text/plain') &&

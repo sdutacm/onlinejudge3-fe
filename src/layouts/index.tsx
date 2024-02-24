@@ -171,10 +171,20 @@ class Index extends React.Component<Props, State> {
 
     // try to load VIN (Very Important Notice)
     fetch(`${process.env.PUBLIC_PATH}vin.txt`)
-      .then((r) => r.text())
+      .then((r) => {
+        if (
+          r.headers.get('content-type').startsWith('text/plain') &&
+          r.status >= 200 &&
+          r.status < 400
+        ) {
+          return r.text();
+        }
+        throw new Error('No invalid txt');
+      })
       .then((res) => {
-        const vin = res.trim();
-        if (vin) {
+        const content = res.trim();
+        if (content.startsWith('VIN:')) {
+          const vin = content.substr(4);
           notification.warning({
             message: 'Important Notice',
             description: vin,
@@ -182,8 +192,8 @@ class Index extends React.Component<Props, State> {
           });
         }
       })
-      .catch(() => {
-        console.log('No valid vin file, skip');
+      .catch((e) => {
+        console.log('No valid vin file, skip.', e);
       });
   }
 

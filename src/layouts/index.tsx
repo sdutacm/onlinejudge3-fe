@@ -184,16 +184,17 @@ class Index extends React.Component<Props, State> {
       .then((res) => {
         const content = res.trim();
         if (content.startsWith('VIN:')) {
-          const vin = content.substr(4);
-          notification.warning({
-            message: 'Important Notice',
-            description: vin,
-            duration: null,
-          });
+          const vin = content.substr(4).trim();
+          vin &&
+            notification.warning({
+              message: 'Important Notice',
+              description: vin,
+              duration: null,
+            });
         }
       })
       .catch((e) => {
-        console.log('No valid vin file, skip.', e);
+        console.log('No vin file, skip.', e);
       });
   }
 

@@ -42,7 +42,7 @@
     "js-cookie": "^2.2.0",
     "jscookie": "^1.1.0",
     "katex": "^0.16.9",
-    "lodash": "^4.17.11",
+    "lodash-es": "^4.17.21",
     "lodash.throttle": "^4.1.1",
     "markdown-it": "^13.0.2",
     "math-precision": "^1.0.5",

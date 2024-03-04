@@ -1,5 +1,5 @@
 import localStorage from '@/utils/localStorage';
-import { merge, omit } from 'lodash';
+import { merge, omit } from 'lodash-es';
 
 const initialState = {
   theme: 'auto',

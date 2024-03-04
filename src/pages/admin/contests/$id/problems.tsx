@@ -10,7 +10,7 @@ import PageAnimation from '@/components/PageAnimation';
 import { getPathParamId } from '@/utils/getPathParams';
 import { Row, Col, Card, Table, Input, Icon, Button } from 'antd';
 import { numberToAlphabet } from '@/utils/format';
-import { isEqual, noop } from 'lodash';
+import { isEqual, noop } from 'lodash-es';
 import classNames from 'classnames';
 import AddItemByIdCard from '@/components/AddItemByIdCard';
 import msg from '@/utils/msg';

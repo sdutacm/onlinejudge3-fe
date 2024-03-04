@@ -9,7 +9,7 @@ import staticUrls from '@/configs/staticUrls';
 import constants from '@/configs/constants';
 import { withRouter } from 'react-router';
 import { ICompetitionUser } from '@/common/interfaces/competition';
-import { set as safeSet } from 'lodash';
+import { set as safeSet } from 'lodash-es';
 import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 
 const MAX_MEMBER_NUM = 3;

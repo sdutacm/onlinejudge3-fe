@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Spin } from 'antd';
 import { ReduxProps } from '@/@types/props';
 import Select, { SelectProps } from 'antd/lib/select';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import UserBar from './UserBar';
 
 export interface Props extends ReduxProps, SelectProps {

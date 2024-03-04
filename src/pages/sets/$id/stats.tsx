@@ -15,7 +15,7 @@ import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 import router from 'umi/router';
 import PromiseQueue from 'promise-queue';
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 import { TreeSelectProps } from 'antd/lib/tree-select';
 import { memoize } from '@/utils/decorators';
 import Explanation from '@/components/Explanation';

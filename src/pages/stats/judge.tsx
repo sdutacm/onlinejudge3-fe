@@ -6,6 +6,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Progress, Tag, Popover } from 'antd';
 import classNames from 'classnames';
+import { capitalize } from 'lodash-es';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import { IGetJudgeQueueStatsResp } from '@/common/contracts/stat';
@@ -174,7 +175,15 @@ class Judge extends React.Component<Props, State> {
               <div className="judge-queue-stats-node-container">
                 {workers.map((worker) => (
                   <Popover
-                    content={`Status: ${this.getNodeStatus(worker.status)}`}
+                    content={
+                      <div>
+                        <p className="mb-sm">Status: {this.getNodeStatus(worker.status)}</p>
+                        <p className="mb-sm">
+                          Platform Arch: {capitalize(worker.platform)} {worker.arch}
+                        </p>
+                        <p className="mb-none">CPU: {worker.cpuModel}</p>
+                      </div>
+                    }
                     title={`Node ID: ${worker.id}`}
                     key={worker.id}
                   >

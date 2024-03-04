@@ -2,7 +2,7 @@ import * as service from '../services/stats';
 import { genTimeFlag, isStateExpired } from '@/utils/misc';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 
 function genInitialState() {
   return {

@@ -43,7 +43,7 @@ import TimeBar from '@/components/TimeBar';
 import UserBar from '@/components/UserBar';
 import msg from '@/utils/msg';
 import constants from '@/configs/constants';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import AddGroupMemberModal from '@/components/AddGroupMemberModal';
 import AddFavorite from '@/components/AddFavorite';
 import DeleteFavorite from '@/components/DeleteFavorite';

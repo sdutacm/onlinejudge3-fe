@@ -11,7 +11,7 @@ import { getPathParamId } from '@/utils/getPathParams';
 import { Button, Form, Row, Col, Card, Table, Input, Icon, Tag } from 'antd';
 import msg from '@/utils/msg';
 import PageLoading from '@/components/PageLoading';
-import { isEqual, noop } from 'lodash';
+import { isEqual, noop } from 'lodash-es';
 import { numberToAlphabet } from '@/utils/format';
 import AddItemByIdCard from '@/components/AddItemByIdCard';
 import classNames from 'classnames';

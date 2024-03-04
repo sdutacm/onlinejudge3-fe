@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import SolutionDetailPage from '@/components/SolutionDetailPage';
 import PageLoading from '@/components/PageLoading';
 import { ICompetition } from '@/common/interfaces/competition';

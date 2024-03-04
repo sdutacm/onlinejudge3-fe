@@ -13,7 +13,7 @@ import NotFound from '@/pages/404';
 import PageTitle from '@/components/PageTitle';
 import FieldSeatInput from '@/components/FieldSeatInput';
 import { memoize } from '@/utils/decorators';
-import { padStart } from 'lodash';
+import { padStart } from 'lodash-es';
 import msg from '@/utils/msg';
 import tracker from '@/utils/tracker';
 

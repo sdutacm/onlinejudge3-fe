@@ -9,7 +9,7 @@ import limits from '@/configs/limits';
 import router from 'umi/router';
 import { withRouter } from 'react-router';
 import { RouteProps } from '@/@types/props';
-import { get as safeGet } from 'lodash';
+import { get as safeGet } from 'lodash-es';
 import { getRatingLevel } from '@/utils/rating';
 import tracker from '@/utils/tracker';
 import moment from 'moment';

@@ -1,5 +1,5 @@
 import localStorage from '@/utils/localStorage';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 const initialState = {
   read: {},

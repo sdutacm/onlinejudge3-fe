@@ -13,7 +13,7 @@ import { workbook2Excel } from '@/utils/misc';
 import XLSX from 'xlsx';
 import { memoize } from '@/utils/decorators';
 import tracker from '@/utils/tracker';
-import { isEqual, pick } from 'lodash';
+import { isEqual, pick } from 'lodash-es';
 
 export interface Props extends RouteProps {
   id: number;

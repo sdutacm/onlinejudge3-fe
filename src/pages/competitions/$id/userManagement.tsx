@@ -19,7 +19,7 @@ import tracker from '@/utils/tracker';
 import msg from '@/utils/msg';
 import { aoa2Excel } from '@/utils/misc';
 import moment from 'moment';
-import { get as safeGet } from 'lodash';
+import { get as safeGet } from 'lodash-es';
 import ImportCompetitionUserModal from '@/components/ImportCompetitionUserModal';
 
 const contestUserRoleOptions = [

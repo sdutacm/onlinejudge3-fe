@@ -14,7 +14,7 @@ import { checkPerms } from '@/utils/permission';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import msg from '@/utils/msg';
 import { matchPath, withRouter } from 'react-router';
-import { get as safeGet } from 'lodash';
+import { get as safeGet } from 'lodash-es';
 import tracker from '@/utils/tracker';
 import contestUserStatus, { ContestUserStatus } from '@/configs/contestUserStatus';
 import ImportContestUserModal from './ImportContestUserModal';

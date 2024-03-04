@@ -11,7 +11,7 @@ import FilterCard from '@/components/FilterCard';
 import results, { Results } from '@/configs/results';
 import constants from '@/configs/constants';
 import gStyles from '@/general.less';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import router from 'umi/router';
 import PageLoading from '@/components/PageLoading';
 import PageTitle from '@/components/PageTitle';

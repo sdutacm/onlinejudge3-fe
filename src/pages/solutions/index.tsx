@@ -13,7 +13,7 @@ import SolutionTable from '@/components/SolutionTable';
 import results, { Results } from '@/configs/results';
 import pages from '@/configs/pages';
 import gStyles from '@/general.less';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import router from 'umi/router';
 import constants from '@/configs/constants';
 import PageAnimation from '@/components/PageAnimation';

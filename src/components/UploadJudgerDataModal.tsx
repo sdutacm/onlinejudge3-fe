@@ -10,6 +10,9 @@ import { withRouter } from 'react-router';
 import { getCsrfHeader } from '@/utils/misc';
 import { RcFile, UploadFile } from 'antd/lib/upload/interface';
 import ExtLink from './ExtLink';
+import { validateFile } from '@/utils/validate';
+
+const USING_GIT = process.env.DATA_USING_GIT;
 
 export interface Props extends RouteProps, ReduxProps, FormProps {
   problemId?: number;
@@ -34,6 +37,11 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
   }
 
   beforeUpload = (file: RcFile, _fileList: RcFile[]) => {
+    const valid = validateFile([{ name: 'ZIP', type: 'application/zip' }], 50)(file);
+    if (!valid) {
+      console.log('Invalid file type or size');
+      return false;
+    }
     this.setState({
       fileList: [file],
     });
@@ -67,9 +75,9 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
         formData.append('problemId', `${problemId}`);
         // @ts-ignore
         formData.append('data', data, `upload-data.zip`);
-        formData.append('commitMessage', commitMessage);
-        formData.append('name', name);
-        formData.append('email', email);
+        commitMessage && formData.append('commitMessage', commitMessage);
+        name && formData.append('name', name);
+        email &&  formData.append('email', email);
         this.setState({
           loading: true,
         });
@@ -134,6 +142,7 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
     const { children, form } = this.props;
     const { getFieldDecorator } = form;
     const { loading, fileList } = this.state;
+    const dataUsingGit = process.env.DATA_USING_GIT;
 
     return (
       <>
@@ -174,21 +183,25 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
                 </p>
               </Upload.Dragger>
             </Form.Item>
-            <Form.Item key="commitMessage" label="Commit Message">
-              {getFieldDecorator('commitMessage', {
-                rules: [{ required: true, message: 'Please input this field' }],
-              })(<Input />)}
-            </Form.Item>
-            <Form.Item key="gitUsername" label="Git Username">
-              {getFieldDecorator('gitUsername', {
-                rules: [{ required: true, message: 'Please input this field' }],
-              })(<Input />)}
-            </Form.Item>
-            <Form.Item key="email" label="Git Email">
-              {getFieldDecorator('email', {
-                rules: [{ required: true, message: 'Please input this field' }],
-              })(<Input />)}
-            </Form.Item>
+            {dataUsingGit && (
+              <>
+                <Form.Item key="commitMessage" label="Commit Message">
+                  {getFieldDecorator('commitMessage', {
+                    rules: [{ required: true, message: 'Please input this field' }],
+                  })(<Input />)}
+                </Form.Item>
+                <Form.Item key="gitUsername" label="Git Username">
+                  {getFieldDecorator('gitUsername', {
+                    rules: [{ required: true, message: 'Please input this field' }],
+                  })(<Input />)}
+                </Form.Item>
+                <Form.Item key="email" label="Git Email">
+                  {getFieldDecorator('email', {
+                    rules: [{ required: true, message: 'Please input this field' }],
+                  })(<Input />)}
+                </Form.Item>
+              </>
+            )}
           </Form>
 
           <div>
@@ -197,29 +210,36 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
               archive.
             </p>
             <p>DO NOT use Windows Notepad and other CRLF mode editors to edit file.</p>
-            <p>The maximum number of test cases is 255, and the maximum archive size is 50 MiB.</p>
-            <p>Everytime you upload data archive, you must input all fields above.</p>
-            <ul>
-              <li>
-                <strong>Commit Message</strong>: briefly describe what you update
-              </li>
-              <li>
-                <strong>Git Username</strong>: your GitHub username (for example, if your GitHub
-                page URL is{' '}
-                <ExtLink href="https://github.com/dreamerblue">
-                  https://github.com/dreamerblue
-                </ExtLink>
-                , your username is "dreamerblue" (without quotes)
-              </li>
-              <li>
-                <strong>Git Email</strong>: Your GitHub email address. If you don't know which is,
-                browse{' '}
-                <ExtLink href="https://github.com/settings/emails">
-                  https://github.com/settings/emails
-                </ExtLink>{' '}
-                to review it
-              </li>
-            </ul>
+            <p>
+              The maximum number of test cases is <strong>100</strong>, and the maximum archive size
+              is <strong>50 MiB</strong>.
+            </p>
+            {dataUsingGit && (
+              <>
+                <p>Everytime you upload data archive, you must input all fields above.</p>
+                <ul>
+                  <li>
+                    <strong>Commit Message</strong>: briefly describe what you update
+                  </li>
+                  <li>
+                    <strong>Git Username</strong>: your GitHub username (for example, if your GitHub
+                    page URL is{' '}
+                    <ExtLink href="https://github.com/dreamerblue">
+                      https://github.com/dreamerblue
+                    </ExtLink>
+                    , your username is "dreamerblue" (without quotes)
+                  </li>
+                  <li>
+                    <strong>Git Email</strong>: Your GitHub email address. If you don't know which
+                    is, browse{' '}
+                    <ExtLink href="https://github.com/settings/emails">
+                      https://github.com/settings/emails
+                    </ExtLink>{' '}
+                    to review it
+                  </li>
+                </ul>
+              </>
+            )}
           </div>
         </Modal>
       </>

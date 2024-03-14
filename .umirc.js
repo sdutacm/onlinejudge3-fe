@@ -36,7 +36,7 @@ export default {
     'process.env.CDN_URL': process.env.CDN_URL || '',
     'process.env.MEDIA_URL': process.env.MEDIA_URL || '',
     'process.env.PUBLIC_PATH': process.env.NODE_ENV === 'production' ? usingPublicPath : '/',
-    'process.env.DATA_USING_GIT': false,
+    'process.env.DATA_USING_GIT': process.env.DATA_USING_GIT === '1',
   },
   plugins: [
     [

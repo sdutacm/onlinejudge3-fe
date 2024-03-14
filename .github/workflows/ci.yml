@@ -16,6 +16,7 @@ jobs:
       COS_TARGET_BASE: ${{ secrets.COS_TARGET_BASE }}
       CDN_URL: ${{ secrets.CDN_URL }}
       MEDIA_URL: ${{ secrets.MEDIA_URL }}
+      DATA_USING_GIT: ${{ secrets.DATA_USING_GIT }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

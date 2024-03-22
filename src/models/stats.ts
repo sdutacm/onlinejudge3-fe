@@ -47,7 +47,7 @@ function genInitialState() {
       waiting: 0,
       queueSize: 0,
       deadQueueSize: 0,
-      workers: [],
+      workerGroups: [],
       _updatedAt: -1,
     },
   };

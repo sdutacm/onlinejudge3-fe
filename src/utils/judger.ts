@@ -3,13 +3,13 @@ import Results from '@/configs/results/resultsEnum';
 export function decodeJudgeStatusBuffer(buffer: ArrayBuffer): IJudgeStatus {
   const dv = new DataView(buffer);
   const solutionId = dv.getUint32(0);
-  const type = dv.getUint8(4);
+  const state = dv.getUint8(4);
   const result = dv.getUint8(5);
   const current = dv.getUint8(6);
   const total = dv.getUint8(7);
   return {
     solutionId,
-    type,
+    state,
     result,
     current,
     total,

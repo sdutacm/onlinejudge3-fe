@@ -64,14 +64,15 @@ class Judge extends React.Component<Props, State> {
   }
 
   getJudgerClusterLoad = () => {
-    const { waiting, workers } = this.props.judgeQueueStats;
-    if (workers.length <= 0) {
+    const { waiting, workerGroups } = this.props.judgeQueueStats;
+    const workerNum = workerGroups.reduce((acc, group) => acc + group.workers.length, 0);
+    if (workerNum <= 0) {
       return null;
     }
     if (waiting <= 0) {
       return 'Normal';
     }
-    const waitingLoad = waiting / workers.length;
+    const waitingLoad = waiting / workerNum;
     if (waitingLoad < 1) {
       return JudgerClusterLoad.Normal;
     }
@@ -101,17 +102,17 @@ class Judge extends React.Component<Props, State> {
       return <PageLoading />;
     }
 
-    const { running, waiting, queueSize, workers } = judgeQueueStats;
-    const nodeCount = workers.length;
+    const { running, waiting, queueSize, workerGroups } = judgeQueueStats;
+    const workerNum = workerGroups.reduce((acc, group) => acc + group.workers.length, 0);
     let totalPercent = 0;
     let judgingPercent = 0;
     if (queueSize > 0) {
       if (waiting > 0) {
         totalPercent = 100;
         judgingPercent = (running / queueSize) * 100;
-      } else if (nodeCount > 0) {
-        totalPercent = (running / nodeCount) * 100;
-        judgingPercent = (running / nodeCount) * 100;
+      } else if (workerNum > 0) {
+        totalPercent = (running / workerNum) * 100;
+        judgingPercent = (running / workerNum) * 100;
       }
     }
     const load = this.getJudgerClusterLoad();
@@ -142,7 +143,7 @@ class Judge extends React.Component<Props, State> {
           </div>
 
           <div className="judge-queue-stats-board" style={{ marginTop: '45px' }}>
-            {nodeCount > 0 && (
+            {workerGroups.length > 0 && (
               <div className="judge-queue-stats-board-row">
                 <div className="judge-queue-stats-board-row-label">Judger Cluster Load</div>
                 <div className="judge-queue-stats-board-row-value">
@@ -164,36 +165,50 @@ class Judge extends React.Component<Props, State> {
               </div>
             )}
             <div className="judge-queue-stats-board-row mt-md">
-              <div className="judge-queue-stats-board-row-label">Judger Nodes</div>
-              <div className="judge-queue-stats-board-row-value">{nodeCount}</div>
+              <div className="judge-queue-stats-board-row-label">Judger Total Cores</div>
+              <div className="judge-queue-stats-board-row-value">{workerNum}</div>
             </div>
           </div>
 
-          {nodeCount > 0 && (
+          {workerGroups.length > 0 && (
             <div className="judge-queue-stats-node-graph mt-md-lg">
               <div className="judge-queue-stats-node-graph-header">Node Status</div>
-              <div className="judge-queue-stats-node-container">
-                {workers.map((worker) => (
-                  <Popover
-                    content={
-                      <div>
-                        <p className="mb-sm">Status: {this.getNodeStatus(worker.status)}</p>
-                        <p className="mb-sm">
-                          Platform Arch: {capitalize(worker.platform)} {worker.arch}
-                        </p>
-                        <p className="mb-none">CPU: {worker.cpuModel}</p>
-                      </div>
-                    }
-                    title={`Node ID: ${worker.id}`}
-                    key={worker.id}
-                  >
-                    <div
-                      className={classNames('judge-queue-stats-node-graph-item', {
-                        'type-judging': worker.status === EStatJudgeQueueWorkerStatus.judging,
-                        'type-fault': worker.status === EStatJudgeQueueWorkerStatus.fault,
-                      })}
-                    />
-                  </Popover>
+              <div className="judge-queue-stats-node-groups">
+                {workerGroups.map((g) => (
+                  <div key={g.group} className="judge-queue-stats-node-group-container">
+                    <Popover
+                      content={
+                        <div>
+                          <p className="mb-sm">
+                            Platform Arch: {capitalize(g.platform)} {g.arch}
+                          </p>
+                          <p className="mb-none">CPU: {g.cpuModel}</p>
+                        </div>
+                      }
+                    >
+                      <div className="judge-queue-stats-node-group-header">Cluster Node: {g.group}</div>
+                    </Popover>
+                    <div className="judge-queue-stats-node-container">
+                      {g.workers.map((w) => (
+                        <Popover
+                          content={
+                            <div>
+                              <p className="mb-sm">Status: {this.getNodeStatus(w.status)}</p>
+                            </div>
+                          }
+                          title={`Node ID: ${w.id}`}
+                          key={w.id}
+                        >
+                          <div
+                            className={classNames('judge-queue-stats-node-graph-item', {
+                              'type-judging': w.status === EStatJudgeQueueWorkerStatus.judging,
+                              'type-fault': w.status === EStatJudgeQueueWorkerStatus.fault,
+                            })}
+                          />
+                        </Popover>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

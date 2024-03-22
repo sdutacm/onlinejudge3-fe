@@ -633,7 +633,7 @@ interface INotices {
 
 interface IJudgeStatus {
   solutionId: number;
-  type: number;
+  state: number; // 0: running, 1: finished
   result: number;
   current: number;
   total: number;

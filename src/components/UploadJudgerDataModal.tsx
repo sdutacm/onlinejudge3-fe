@@ -37,7 +37,15 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
   }
 
   beforeUpload = (file: RcFile, _fileList: RcFile[]) => {
-    const valid = validateFile([{ name: 'ZIP', type: 'application/zip' }], 50)(file);
+    const valid = validateFile(
+      [
+        { name: 'ZIP', type: 'application/zip' },
+        { name: 'ZIP', type: 'application/x-zip' },
+        { name: 'ZIP', type: 'application/zip-compressed' },
+        { name: 'ZIP', type: 'application/x-zip-compressed' },
+      ],
+      50,
+    )(file);
     if (!valid) {
       console.log('Invalid file type or size');
       return false;
@@ -77,7 +85,7 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
         formData.append('data', data, `upload-data.zip`);
         commitMessage && formData.append('commitMessage', commitMessage);
         name && formData.append('name', name);
-        email &&  formData.append('email', email);
+        email && formData.append('email', email);
         this.setState({
           loading: true,
         });

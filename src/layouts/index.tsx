@@ -361,6 +361,11 @@ class Index extends React.Component<Props, State> {
                   Judge Status
                 </Link>
               </p>
+              <p>
+                <ExtLink href="https://service-status.sdutacm.cn" className="normal-text-link">
+                  Service Status
+                </ExtLink>
+              </p>
               <p>Current Active Users: {activeUserCount}</p>
             </Col>
 

@@ -84,101 +84,138 @@ class Index extends React.Component<Props, State> {
                 Practice coding, compete with players, and become a master.
               </p>
             </Col>
-
             {/* Banner for SDUTPC */}
-            {false && <Col xs={24} className="mt-lg">
-              <Alert
-                message={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div>
-                      <i>
-                        <SdutpcLogoSvg
-                          className="svg-fill"
-                          width={80}
-                          height={80}
-                          viewBox="0 0 256 256"
-                        />
-                      </i>
-                    </div>
-                    <div className="ml-xl">
-                      {/* Pending */}
-                      {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is coming!</h3>
+            {false && (
+              <Col xs={24} className="mt-lg">
+                <Alert
+                  message={
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div>
+                        <i>
+                          <SdutpcLogoSvg
+                            className="svg-fill"
+                            width={80}
+                            height={80}
+                            viewBox="0 0 256 256"
+                          />
+                        </i>
+                      </div>
+                      <div className="ml-xl">
+                        {/* Pending */}
+                        {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is coming!</h3>
                       <div>
                         <Link to={urlf(pages.competitions.public.intro, { param: { id: 8 } })}>
                           Sign Up Now
                         </Link>
                       </div> */}
-                      {/* <div>
+                        {/* <div>
                         <Link to={urlf(pages.competitions.home, { param: { id: 2 } })}>
                           进入模拟赛
                         </Link>
                       </div> */}
-                      {/* Ended */}
-                      <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
-                      <div>
-                        <ExtLink href="https://rl.algoux.org/ranklist/sdutpc15">View Ranklist</ExtLink>
+                        {/* Ended */}
+                        <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
+                        <div>
+                          <ExtLink href="https://rl.algoux.org/ranklist/sdutpc15">
+                            View Ranklist
+                          </ExtLink>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
-                type="info"
-                showIcon={false}
-              />
-            </Col>}
-
+                  }
+                  type="info"
+                  showIcon={false}
+                />
+              </Col>
+            )}
             {/* Banner for Azur Series */}
-            {<Col xs={24} className="mt-lg">
-              <Alert
-                message={
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div>
-                      <i>
-                        <AzurSeriesLogoSvg
-                          className="svg-fill mt-md"
-                          width={220}
-                          height={70}
-                          viewBox="0 0 1320 420"
-                        />
-                      </i>
-                    </div>
-                    <div className="ml-xl">
-                      {/* Pending */}
-                      <h3 className="mb-sm">蔚蓝系列赛 Azur Series - Sponsored by bLue 现已启动！</h3>
+            {false && (
+              <Col xs={24} className="mt-lg">
+                <Alert
+                  message={
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                       <div>
-                        {/* <ExtLink href="https://as.shaly.best">
+                        <i>
+                          <AzurSeriesLogoSvg
+                            className="svg-fill mt-md"
+                            width={220}
+                            height={70}
+                            viewBox="0 0 1320 420"
+                          />
+                        </i>
+                      </div>
+                      <div className="ml-xl">
+                        {/* Pending */}
+                        <h3 className="mb-sm">
+                          蔚蓝系列赛 Azur Series - Sponsored by bLue 现已启动！
+                        </h3>
+                        <div>
+                          {/* <ExtLink href="https://as.shaly.best">
                           立即报名
                         </ExtLink> */}
-                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 22 } })}>
-                        【Round 2】报名原神主题赛
-                        </Link>
-                      </div>
-                      {/* <div>
+                          <Link to={urlf(pages.competitions.public.intro, { param: { id: 22 } })}>
+                            【Round 2】报名原神主题赛
+                          </Link>
+                        </div>
+                        {/* <div>
                         <Link to={urlf(pages.competitions.home, { param: { id: tbd } })}>
                           进入比赛
                         </Link>
                       </div> */}
-                      {/* Ended */}
-                      {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
+                        {/* Ended */}
+                        {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
                       <div>
                         <ExtLink href="https://rl.algoux.cn/ranklist/tbd?">View Ranklist</ExtLink>
                       </div> */}
+                      </div>
                     </div>
-                  </div>
-                }
-                type="info"
-                showIcon={false}
-              />
-            </Col>}
+                  }
+                  type="info"
+                  showIcon={false}
+                />
+              </Col>
+            )}
 
+            {/* Banner for normal contest */}
             <Col xs={24} className="mt-lg">
               <Alert
-                message="限时推广"
-                description={<span>全新的<ExtLink href="https://rl.algoux.org/collection/official?from=sdutoj" className="ml-sm-md">历届赛事榜单合集</ExtLink> 现已推出（亦提供<ExtLink href="https://xn--4kr68kc5p295b.xn--jhqu4ar82bu5jq8jjvjft8c.xn--fiqs8s/?from=sdutoj" className="ml-sm-md">中国大陆加速站点</ExtLink>），欢迎收藏和分享！</span>}
+                message="「2024 愚人节专场赛」现已开始！开放时间：2024.4.1 全天"
+                description={
+                  <div>
+                    <Link to={urlf(pages.contests.home, { param: { id: 4148 } })}>进入比赛</Link>
+                  </div>
+                }
                 type="info"
                 showIcon
               />
             </Col>
 
+            <Col xs={24} className="mt-lg">
+              <Alert
+                message="限时推广"
+                description={
+                  <span>
+                    全新的
+                    <ExtLink
+                      href="https://rl.algoux.org/collection/official?from=sdutoj"
+                      className="ml-sm-md"
+                    >
+                      历届赛事榜单合集
+                    </ExtLink>{' '}
+                    现已推出（亦提供
+                    <ExtLink
+                      href="https://xn--4kr68kc5p295b.xn--jhqu4ar82bu5jq8jjvjft8c.xn--fiqs8s/?from=sdutoj"
+                      className="ml-sm-md"
+                    >
+                      中国大陆加速站点
+                    </ExtLink>
+                    ），欢迎收藏和分享！
+                  </span>
+                }
+                type="info"
+                showIcon
+              />
+            </Col>
             {/* <Col xs={24} className="mt-lg">
               <Alert
                 message={null}
@@ -187,7 +224,6 @@ class Index extends React.Component<Props, State> {
                 showIcon
               />
             </Col> */}
-
             <Col xs={24} className="mt-xl">
               <h3 className="full-width-inner-content">Recent Competitions</h3>
               <Card bordered={false} className="list-card">
@@ -213,7 +249,11 @@ class Index extends React.Component<Props, State> {
                     title="Title"
                     key="Title"
                     render={(text, record: ICompetition) => (
-                      <Link to={urlf(pages.competitions.public.intro, { param: { id: record.competitionId } })}>
+                      <Link
+                        to={urlf(pages.competitions.public.intro, {
+                          param: { id: record.competitionId },
+                        })}
+                      >
                         {record.title}
                       </Link>
                     )}
@@ -269,7 +309,6 @@ class Index extends React.Component<Props, State> {
                 </Table>
               </Card>
             </Col>
-
             {['month', 'week', 'day'].map((type: 'day' | 'week' | 'month') => {
               const data = userACRank[type];
               const rankNameMap = {

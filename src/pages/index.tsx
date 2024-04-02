@@ -177,18 +177,20 @@ class Index extends React.Component<Props, State> {
             )}
 
             {/* Banner for normal contest */}
-            <Col xs={24} className="mt-lg">
-              <Alert
-                message="「2024 愚人节专场赛」现已开始！开放时间：2024.4.1 全天"
-                description={
-                  <div>
-                    <Link to={urlf(pages.contests.home, { param: { id: 4148 } })}>进入比赛</Link>
-                  </div>
-                }
-                type="info"
-                showIcon
-              />
-            </Col>
+            {false && (
+              <Col xs={24} className="mt-lg">
+                <Alert
+                  message="「2024 愚人节专场赛」现已开始！开放时间：2024.4.1 全天"
+                  description={
+                    <div>
+                      <Link to={urlf(pages.contests.home, { param: { id: 4148 } })}>进入比赛</Link>
+                    </div>
+                  }
+                  type="info"
+                  showIcon
+                />
+              </Col>
+            )}
 
             <Col xs={24} className="mt-lg">
               <Alert
@@ -216,6 +218,7 @@ class Index extends React.Component<Props, State> {
                 showIcon
               />
             </Col>
+
             {/* <Col xs={24} className="mt-lg">
               <Alert
                 message={null}

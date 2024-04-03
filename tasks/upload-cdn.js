@@ -121,6 +121,10 @@ fastListFolder(localFolder, function(err, list) {
       },
       onFileFinish: function(err, data, options) {
         console.log(options.Key + ' upload ' + (err ? 'failed' : 'success'));
+        if (err) {
+          // 有文件上传失败时不会进入到最终的回调 err，只能在此直接退出
+          process.exit(1);
+        }
       },
     },
     function(err, data) {

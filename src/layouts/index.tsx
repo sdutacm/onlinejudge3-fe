@@ -149,7 +149,9 @@ class Index extends React.Component<Props, State> {
     window._router = router;
     // socket
     const sockets: Record<string, SocketIOClient.Socket> = {};
-    sockets.judger = io(socketConfig.judger.url);
+    sockets.judger = io(socketConfig.judger.url, {
+      path: socketConfig.path,
+    });
     sockets.judger.on('connect', () => {
       // console.log('judger socket connected');
       // sockets.judger.emit('subscribe', [4597206]);

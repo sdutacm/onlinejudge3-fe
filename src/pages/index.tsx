@@ -206,7 +206,7 @@ class Index extends React.Component<Props, State> {
                     </ExtLink>{' '}
                     现已推出（亦提供
                     <ExtLink
-                      href="https://xn--4kr68kc5p295b.xn--jhqu4ar82bu5jq8jjvjft8c.xn--fiqs8s/?from=sdutoj"
+                      href="https://rl.algoux.cn/collection/official?from=sdutoj"
                       className="ml-sm-md"
                     >
                       中国大陆加速站点

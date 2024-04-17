@@ -85,7 +85,7 @@ class Index extends React.Component<Props, State> {
               </p>
             </Col>
             {/* Banner for SDUTPC */}
-            {false && (
+            {
               <Col xs={24} className="mt-lg">
                 <Alert
                   message={
@@ -102,24 +102,24 @@ class Index extends React.Component<Props, State> {
                       </div>
                       <div className="ml-xl">
                         {/* Pending */}
-                        {/* <h3 className="mb-sm">The 15th SDUT Programming Contest is coming!</h3>
-                      <div>
-                        <Link to={urlf(pages.competitions.public.intro, { param: { id: 8 } })}>
-                          Sign Up Now
-                        </Link>
-                      </div> */}
+                        <h3 className="mb-sm">The 16th SDUT Programming Contest is coming!</h3>
+                        <div>
+                          <Link to={urlf(pages.competitions.public.intro, { param: { id: 25 } })}>
+                            Sign Up Now
+                          </Link>
+                        </div>
                         {/* <div>
                         <Link to={urlf(pages.competitions.home, { param: { id: 2 } })}>
                           进入模拟赛
                         </Link>
                       </div> */}
                         {/* Ended */}
-                        <h3 className="mb-sm">The 15th SDUT Programming Contest is ended!</h3>
+                        {/* <h3 className="mb-sm">The 16th SDUT Programming Contest is ended!</h3>
                         <div>
                           <ExtLink href="https://rl.algoux.org/ranklist/sdutpc15">
                             View Ranklist
                           </ExtLink>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   }
@@ -127,7 +127,7 @@ class Index extends React.Component<Props, State> {
                   showIcon={false}
                 />
               </Col>
-            )}
+            }
             {/* Banner for Azur Series */}
             {false && (
               <Col xs={24} className="mt-lg">

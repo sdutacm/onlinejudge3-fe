@@ -69,7 +69,8 @@ class CompetitionProblem extends React.Component<Props, State> {
       alias = aliasOrIndex;
       index = matchedProblemByAliasIndex;
     } else {
-      index = alphabetToNumber(match.params.alias);
+      alias = aliasOrIndex;
+      index = alphabetToNumber(aliasOrIndex);
     }
 
     const problem = rows?.[index] || ({} as IProblem);

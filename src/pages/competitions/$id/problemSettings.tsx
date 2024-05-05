@@ -32,6 +32,7 @@ export interface Props extends ReduxProps, RouteProps {
   id: number;
   problems: IProblemConfig[];
   submitLoading: boolean;
+  rejudgeLoading: boolean;
 }
 
 interface State {
@@ -200,7 +201,10 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
   };
 
   handleRejudge = (problemId) => {
-    const { id, dispatch } = this.props;
+    const { id, dispatch, rejudgeLoading } = this.props;
+    if (rejudgeLoading) {
+      return;
+    }
     dispatch({
       type: 'solutions/rejudgeSolution',
       payload: {
@@ -210,7 +214,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
     }).then((ret) => {
       msg.auto(ret);
       if (ret.success) {
-        msg.success('Rejudged');
+        msg.success(`Rejudged ${ret.data?.rejudgedCount} solutions`);
       }
     });
   };
@@ -254,7 +258,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, submitLoading } = this.props;
+    const { loading, submitLoading, rejudgeLoading } = this.props;
     const { data } = this.state;
     if (loading) {
       return <PageLoading />;
@@ -431,7 +435,7 @@ class CompetitionProblemSettings extends React.Component<Props, State> {
                           <Icon type="down" />
                         </a>
                         <a
-                          className="ml-md-lg"
+                          className={classNames('ml-md-lg', { 'text-disabled': rejudgeLoading })}
                           onClick={() => this.handleRejudge(record.problemId)}
                         >
                           Rejudge
@@ -483,6 +487,7 @@ function mapStateToProps(state) {
     id,
     loading: !!state.loading.effects['competitions/getCompetitionProblemConfig'],
     submitLoading: !!state.loading.effects['competitions/setCompetitionProblemConfig'],
+    rejudgeLoading: !!state.loading.effects['solutions/rejudgeSolution'],
     problems: state.competitions.problemConfig[id],
   };
 }

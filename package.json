@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "gulp dev",
+    "dev:competition-side": "cross-env COMPETITION_SIDE=1 gulp dev",
     "start": "cross-env BROWSER=none umi dev",
     "dup-less": "gulp dup-less",
     "build": "umi build",

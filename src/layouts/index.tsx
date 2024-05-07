@@ -151,6 +151,7 @@ class Index extends React.Component<Props, State> {
     const sockets: Record<string, SocketIOClient.Socket> = {};
     sockets.judger = io(socketConfig.judger.url, {
       path: socketConfig.path,
+      transports: ['websocket'],
     });
     sockets.judger.on('connect', () => {
       // console.log('judger socket connected');
@@ -296,7 +297,10 @@ class Index extends React.Component<Props, State> {
     const blockedByCompetitionSide =
       isCompetitionSide() && !location.pathname.startsWith('/competitions');
     const hideNav =
-      blockedByCompetitionSide || (isCompetitionSide() && location.pathname === '/competitions');
+      blockedByCompetitionSide ||
+      (isCompetitionSide() &&
+        (location.pathname === '/competitions' ||
+          location.pathname.startsWith('/competitions-public')));
     return (
       <Layout
         className={classNames({
@@ -327,8 +331,14 @@ class Index extends React.Component<Props, State> {
         </Header>
         <Content>
           <NoticeModal />
-          {blockedByCompetitionSide ? null : this.state.sessionLoaded ||
-            location.pathname === '/OJBK' ? (
+          {blockedByCompetitionSide ? (
+            <div className="center-view">
+              <h3 className="mb-xl">This page is not allowed to access</h3>
+              <Link to={pages.competitions.index}>
+                <Button type="default">Back to Competitions</Button>
+              </Link>
+            </div>
+          ) : this.state.sessionLoaded || location.pathname === '/OJBK' ? (
             children
           ) : (
             <PageLoading />

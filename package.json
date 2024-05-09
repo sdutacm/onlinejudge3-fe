@@ -1,6 +1,6 @@
 {
   "name": "onlinejudge3-fe",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "",
   "scripts": {
     "dev": "gulp dev",
@@ -8,8 +8,9 @@
     "start": "cross-env BROWSER=none umi dev",
     "dup-less": "gulp dup-less",
     "build": "umi build",
-    "build:cdn": "umi build && node tasks/upload-cdn.js",
-    "build:competition-side": "cross-env COMPETITION_SIDE=1 umi build",
+    "build:cdn": "npm run build && node tasks/upload-cdn.js",
+    "build:competition-side": "cross-env COMPETITION_SIDE=1 OJ3_BUILD4=release_competition_side umi build",
+    "build:competition-side:cdn": "npm run build:competition-side && cross-env COMPETITION_SIDE=1 node tasks/upload-cdn.js onlinejudge3_cs",
     "build-analyze": "cross-env ANALYZE=1 umi build",
     "line-count": "cloc src/ --exclude-dir=.umi,.umi-production --fullpath --not-match-f='/(styles/dark_antd|styles/dark_antd_duplicated4auto|assets|configs/codes)/'",
     "pull-submodule": "git submodule foreach git pull origin master",

@@ -13,6 +13,11 @@ const buildConfig = {
     publicPath: `${publicPathPrefix}/onlinejudge3/`,
     outputPath: './onlinejudge3',
   },
+  release_competition_side: {
+    base: '/onlinejudge3_cs/',
+    publicPath: `${publicPathPrefix}/onlinejudge3_cs/`,
+    outputPath: './onlinejudge3_cs',
+  },
   // exp: {
   //   base: '/onlinejudge3_exp/',
   //   publicPath: `${publicPathPrefix}/onlinejudge3_exp/`,

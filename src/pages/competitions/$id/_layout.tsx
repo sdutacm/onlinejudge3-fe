@@ -222,13 +222,13 @@ class CompetitionLayout extends React.Component<Props, State> {
       // if (!canEnter) {
       //   router.replace(urlf(pages.competitions.home, { param: { id } }));
       // }
-      // dispatch({
-      //   type: 'competitions/getDetail',
-      //   payload: {
-      //     id,
-      //     force: true,
-      //   },
-      // });
+      dispatch({
+        type: 'competitions/getDetail',
+        payload: {
+          id,
+          force: true,
+        },
+      });
       // dispatch({
       //   type: 'competitions/getProblems',
       //   payload: {

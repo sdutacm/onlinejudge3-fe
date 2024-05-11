@@ -4,6 +4,8 @@ console.log('Using build target:', buildTarget);
 console.log('Using COMPETITION_SIDE:', process.env.COMPETITION_SIDE === '1');
 process.env.CDN_URL && console.log('Using CDN_URL:', process.env.CDN_URL);
 process.env.MEDIA_URL && console.log('Using MEDIA_URL:', process.env.MEDIA_URL);
+process.env.CDN_RAW_URL_BEFORE_PROXY && console.log('Using CDN_RAW_URL_BEFORE_PROXY:', process.env.CDN_RAW_URL_BEFORE_PROXY);
+process.env.CDN_PROXY && console.log('Using CDN_PROXY:', process.env.CDN_PROXY);
 
 const publicPathPrefix = process.env.CDN_URL || '';
 
@@ -40,6 +42,8 @@ export default {
     'process.env.COMPETITION_SIDE': process.env.COMPETITION_SIDE === '1' ? '1' : '',
     'process.env.CDN_URL': process.env.CDN_URL || '',
     'process.env.MEDIA_URL': process.env.MEDIA_URL || '',
+    'process.env.CDN_RAW_URL_BEFORE_PROXY': process.env.CDN_RAW_URL_BEFORE_PROXY || '',
+    'process.env.CDN_PROXY': process.env.CDN_PROXY || '',
     'process.env.PUBLIC_PATH': process.env.NODE_ENV === 'production' ? usingPublicPath : '/',
     'process.env.DATA_USING_GIT': process.env.DATA_USING_GIT === '1',
   },

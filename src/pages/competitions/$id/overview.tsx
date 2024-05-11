@@ -42,7 +42,7 @@ import ProblemTitle from '@/components/ProblemTitle';
 import { Howl } from 'howler';
 import GeneralForm from '@/components/GeneralForm';
 import constants from '@/configs/constants';
-import { sleep } from '@/utils/misc';
+import { sleep, replaceString } from '@/utils/misc';
 import GenshinTable from '@/components/GenshinTable';
 
 export interface Props extends ReduxProps, FormProps {
@@ -480,6 +480,7 @@ class CompetitionOverview extends React.Component<Props, State> {
     if (res === '<p></p>') {
       res = '';
     }
+    process.env.CDN_PROXY && (res = replaceString(res, [process.env.CDN_RAW_URL_BEFORE_PROXY], process.env.CDN_PROXY));
     return res;
   };
 

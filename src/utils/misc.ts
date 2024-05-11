@@ -208,3 +208,14 @@ export function isCompetitionSide() {
 export function randomlyPickOne<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+export function replaceString(str: string, sourceString: string[], targetString: string): string {
+  let result = str;
+  sourceString.forEach((sourcePath) => {
+    // 为了安全地替换字符串，需要对 sourcePath 进行转义，因为它可能包含正则表达式的特殊字符
+    const escapedSourcePath = sourcePath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const regex = new RegExp(escapedSourcePath, 'g');
+    result = result.replace(regex, targetString);
+  });
+  return result;
+}

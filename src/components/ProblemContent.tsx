@@ -11,6 +11,7 @@ import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
 import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
+import { replaceString } from '@/utils/misc';
 
 export interface Props {
   loading: boolean;
@@ -97,6 +98,7 @@ class ProblemContent extends React.Component<Props, State> {
     if (res === '<p></p>') {
       res = '';
     }
+    process.env.CDN_PROXY && (res = replaceString(res, [process.env.CDN_RAW_URL_BEFORE_PROXY], process.env.CDN_PROXY));
     return res;
   };
 

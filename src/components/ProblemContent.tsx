@@ -167,7 +167,7 @@ class ProblemContent extends React.Component<Props, State> {
         {description && (
           <>
             <h3>Description</h3>
-            {this.renderContent(data.description)}
+            {this.renderContent(description)}
           </>
         )}
 

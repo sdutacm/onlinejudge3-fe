@@ -383,9 +383,11 @@ class CompetitionOverview extends React.Component<Props, State> {
             label: this.state.genshinTryUnlockModalInfo.selectedSectionId,
           });
           this.setState({ genshinTryUnlockModalVisible: false });
-          const ele = document.querySelector(`.genshin-section-${this.state.genshinTryUnlockModalInfo.selectedSectionId} .genshin-section-curtain`)
+          const ele = document.querySelector(
+            `.genshin-section-${this.state.genshinTryUnlockModalInfo.selectedSectionId} .genshin-section-curtain`,
+          );
           if (ele) {
-            ele.classList.add("genshin-section-curtain-unlock")
+            ele.classList.add('genshin-section-curtain-unlock');
           }
           await sleep(700);
 
@@ -480,7 +482,8 @@ class CompetitionOverview extends React.Component<Props, State> {
     if (res === '<p></p>') {
       res = '';
     }
-    process.env.CDN_PROXY && (res = replaceString(res, [process.env.CDN_RAW_URL_BEFORE_PROXY], process.env.CDN_PROXY));
+    process.env.CDN_PROXY &&
+      (res = replaceString(res, [process.env.CDN_RAW_URL_BEFORE_PROXY], process.env.CDN_PROXY));
     return res;
   };
 
@@ -510,6 +513,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       timeStatus === 'Ended' &&
       !detail.ended &&
       [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
+    const announcement = this.simpleFilterHTML(detail.announcement);
 
     return (
       <Row gutter={16} className="content-view" style={{ marginTop: '84px', marginBottom: '32px' }}>
@@ -579,7 +583,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               />
             ) : (
               <div
-                dangerouslySetInnerHTML={{ __html: xss(detail.announcement) }}
+                dangerouslySetInnerHTML={{ __html: xss(announcement) }}
                 className="content-area"
                 style={{ marginTop: '15px' }}
               />
@@ -643,7 +647,9 @@ class CompetitionOverview extends React.Component<Props, State> {
                             detail,
                             index,
                             (competitionProblemResultStats[record.problemId]?.selfTries || 0) -
-                            (competitionProblemResultStats[record.problemId]?.selfAccepted ? 1 : 0),
+                              (competitionProblemResultStats[record.problemId]?.selfAccepted
+                                ? 1
+                                : 0),
                             competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
                           ) ?? '-'}
                         </span>
@@ -844,16 +850,17 @@ class CompetitionOverview extends React.Component<Props, State> {
     let totalScore = 0;
     if (useScore) {
       totalScore = (problems.rows || []).reduce((acc, cur, index) => {
-        const score = competitionProblemResultStats[cur.problemId]?.selfAccepted ?
-          this.evalVarScoreExpression(
-            cur.score,
-            cur.varScoreExpression,
-            detail,
-            index,
-            (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
-            (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
-            competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
-          ) : 0;
+        const score = competitionProblemResultStats[cur.problemId]?.selfAccepted
+          ? this.evalVarScoreExpression(
+              cur.score,
+              cur.varScoreExpression,
+              detail,
+              index,
+              (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
+                (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
+              competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
+            )
+          : 0;
         return acc + (score || 0);
       }, 0);
     }
@@ -992,9 +999,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                         {/* 解锁遮罩 */}
                         {!unlocked && (
                           <div
-                            className={classNames(
-                              "genshin-section-curtain"
-                            )}
+                            className={classNames('genshin-section-curtain')}
                             style={{ height: section.problemIndexes.length * 41 + 2 }}
                             onClick={() => this.handleTryUnlockSection(section)}
                           >
@@ -1130,10 +1135,10 @@ class CompetitionOverview extends React.Component<Props, State> {
                                             index,
                                             (competitionProblemResultStats[record.problemId]
                                               ?.selfTries || 0) -
-                                            (competitionProblemResultStats[record.problemId]
-                                              ?.selfAccepted
-                                              ? 1
-                                              : 0),
+                                              (competitionProblemResultStats[record.problemId]
+                                                ?.selfAccepted
+                                                ? 1
+                                                : 0),
                                             competitionProblemResultStats[record.problemId]
                                               ?.selfAcceptedTime,
                                           ) ?? '-'}
@@ -1226,8 +1231,8 @@ class CompetitionOverview extends React.Component<Props, State> {
                   theme="light"
                   useSound
                   onClick={() => this.setState({ genshinAskQuestionModalVisible: true })}
-                  iconType='add'
-                  size='small'
+                  iconType="add"
+                  size="small"
                 />
               </div>
               <GenshinTable

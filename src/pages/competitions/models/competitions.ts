@@ -627,6 +627,10 @@ export default {
       const ret = yield call(service.endCompetition, id);
       return ret;
     },
+    *cancelEndCompetition({ payload: { id } }, { call, put }) {
+      const ret = yield call(service.cancelEndCompetition, id);
+      return ret;
+    },
     *getSpGenshinUnlockedSectionIds({ payload: { id } }, { call, put }) {
       const ret: IApiResponse<IGetCompetitionSpGenshinExplorationUnlockRecordsResp> = yield call(
         service.getSpGenshinExplorationUnlockRecords,

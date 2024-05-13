@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Row, Col, Card, Table, Button, Alert, Popover, Tooltip, Form } from 'antd';
+import { Row, Col, Card, Table, Button, Alert, Popover, Tooltip, Form, Modal } from 'antd';
 import { ReduxProps, FormProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
@@ -65,6 +65,7 @@ export interface Props extends ReduxProps, FormProps {
   confirmEnterLoading: boolean;
   confirmQuitLoading: boolean;
   endCompetitionLoading: boolean;
+  cancelEndCompetitionLoading: boolean;
   doCompetitionSpGenshinExplorationUnlockLoading: boolean;
 }
 
@@ -79,6 +80,7 @@ interface State {
   genshinHelpModalVisible: boolean;
   genshinAskQuestionModalVisible: boolean;
   genshinSectionHeaderWidth: number;
+  cancelEndCompetitionModalVisable: boolean;
 }
 
 class CompetitionOverview extends React.Component<Props, State> {
@@ -98,6 +100,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       genshinHelpModalVisible: false,
       genshinAskQuestionModalVisible: false,
       genshinSectionHeaderWidth: 800,
+      cancelEndCompetitionModalVisable: false,
     };
   }
 
@@ -357,6 +360,31 @@ class CompetitionOverview extends React.Component<Props, State> {
     });
   };
 
+  // 取消比赛结束状态，回滚用户评分
+  handleCancelEndCompetitionModalConfirm = () => {
+    const { id, dispatch } = this.props;
+    dispatch({
+      type: 'competitions/cancelEndCompetition',
+      payload: { id },
+    }).then((ret) => {
+      // msg.auto(ret);
+      // if (ret.success) {
+      //   msg.success('Canceled End');
+      //   tracker.event({
+      //     category: 'competitions',
+      //     action: 'cancel end',
+      //   });
+      //   dispatch({
+      //     type: 'competitions/getDetail',
+      //     payload: {
+      //       id,
+      //       force: true,
+      //     },
+      //   });
+      // }
+    });
+  }
+
   handleTryUnlockModalConfirm = () => {
     const { id, dispatch, detail } = this.props;
     if (this.state.genshinTryUnlockModalInfo.canUnlock) {
@@ -502,6 +530,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       questions,
       questionsLoading,
       endCompetitionLoading,
+      cancelEndCompetitionLoading,
     } = this.props;
 
     const currentTime = Date.now() - ((window as any)._t_diff || 0);
@@ -512,6 +541,10 @@ class CompetitionOverview extends React.Component<Props, State> {
     const canEndCompetition =
       timeStatus === 'Ended' &&
       !detail.ended &&
+      [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
+    const canCancelEndCompetition =
+      timeStatus === "Ended" &&
+      detail.ended &&
       [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
     const announcement = this.simpleFilterHTML(detail.announcement);
 
@@ -563,6 +596,22 @@ class CompetitionOverview extends React.Component<Props, State> {
                   <small>
                     Once confirmed, it will release all frozen solutions, and will also trigger a
                     settlement if it's Rating Mode.
+                  </small>
+                </p>
+              </p>
+            )}
+            {canCancelEndCompetition && (
+              <p className="text-center">
+                <Button
+                  type="danger"
+                  loading={detailLoading || cancelEndCompetitionLoading}
+                  onClick={() => this.setState({ cancelEndCompetitionModalVisable: true })}
+                >
+                  Cancel End Competition & Rollback Rating
+                </Button>
+                <p className="text-center text-secondary mt-sm">
+                  <small>
+                    If confirmed, it will freeze the submission after being blocked again, and recycling points that have been issued if it's Rating Mode.
                   </small>
                 </p>
               </p>
@@ -647,9 +696,9 @@ class CompetitionOverview extends React.Component<Props, State> {
                             detail,
                             index,
                             (competitionProblemResultStats[record.problemId]?.selfTries || 0) -
-                              (competitionProblemResultStats[record.problemId]?.selfAccepted
-                                ? 1
-                                : 0),
+                            (competitionProblemResultStats[record.problemId]?.selfAccepted
+                              ? 1
+                              : 0),
                             competitionProblemResultStats[record.problemId]?.selfAcceptedTime,
                           ) ?? '-'}
                         </span>
@@ -809,6 +858,16 @@ class CompetitionOverview extends React.Component<Props, State> {
               </div>
             </>
           )}
+          <Modal
+            title="回滚结束比赛"
+            visible={this.state.cancelEndCompetitionModalVisable}
+            onOk={this.handleCancelEndCompetitionModalConfirm}
+            onCancel={() => {
+              this.setState({ cancelEndCompetitionModalVisable: false })
+            }}
+          >
+            这会导致重新冻结封榜之后的题解提交状态；如果是评分模式，还会回收因此次比赛发放的积分。
+          </Modal>
         </Col>
       </Row>
     );
@@ -852,14 +911,14 @@ class CompetitionOverview extends React.Component<Props, State> {
       totalScore = (problems.rows || []).reduce((acc, cur, index) => {
         const score = competitionProblemResultStats[cur.problemId]?.selfAccepted
           ? this.evalVarScoreExpression(
-              cur.score,
-              cur.varScoreExpression,
-              detail,
-              index,
-              (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
-                (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
-              competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
-            )
+            cur.score,
+            cur.varScoreExpression,
+            detail,
+            index,
+            (competitionProblemResultStats[cur.problemId]?.selfTries || 0) -
+            (competitionProblemResultStats[cur.problemId]?.selfAccepted ? 1 : 0),
+            competitionProblemResultStats[cur.problemId]?.selfAcceptedTime,
+          )
           : 0;
         return acc + (score || 0);
       }, 0);
@@ -1135,10 +1194,10 @@ class CompetitionOverview extends React.Component<Props, State> {
                                             index,
                                             (competitionProblemResultStats[record.problemId]
                                               ?.selfTries || 0) -
-                                              (competitionProblemResultStats[record.problemId]
-                                                ?.selfAccepted
-                                                ? 1
-                                                : 0),
+                                            (competitionProblemResultStats[record.problemId]
+                                              ?.selfAccepted
+                                              ? 1
+                                              : 0),
                                             competitionProblemResultStats[record.problemId]
                                               ?.selfAcceptedTime,
                                           ) ?? '-'}

@@ -61,6 +61,7 @@ import {
   IGetCompetitionSpGenshinExplorationUnlockRecordsReq,
   IGetCompetitionSpGenshinExplorationUnlockRecordsResp,
   IDoCompetitionSpGenshinExplorationUnlockReq,
+  ICancelEndCompetitionReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import {
@@ -412,6 +413,12 @@ export function endCompetition(competitionId) {
   return post<IEndCompetitionReq, void>(routesBe.endCompetition.url, {
     competitionId,
   });
+}
+
+export function cancelEndCompetition(competitionId) {
+  return post<ICancelEndCompetitionReq, void>(routesBe.cancelEndCompetition.url, {
+    competitionId
+  })
 }
 
 export function getSpGenshinExplorationUnlockRecords(competitionId) {

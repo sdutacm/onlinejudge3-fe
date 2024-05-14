@@ -372,7 +372,7 @@ class CompetitionOverview extends React.Component<Props, State> {
         msg.success('Canceled End');
         tracker.event({
           category: 'competitions',
-          action: 'cancel end',
+          action: 'cancelEnd',
         });
         dispatch({
           type: 'competitions/getDetail',

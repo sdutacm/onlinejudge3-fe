@@ -367,21 +367,21 @@ class CompetitionOverview extends React.Component<Props, State> {
       type: 'competitions/cancelEndCompetition',
       payload: { id },
     }).then((ret) => {
-      // msg.auto(ret);
-      // if (ret.success) {
-      //   msg.success('Canceled End');
-      //   tracker.event({
-      //     category: 'competitions',
-      //     action: 'cancel end',
-      //   });
-      //   dispatch({
-      //     type: 'competitions/getDetail',
-      //     payload: {
-      //       id,
-      //       force: true,
-      //     },
-      //   });
-      // }
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Canceled End');
+        tracker.event({
+          category: 'competitions',
+          action: 'cancel end',
+        });
+        dispatch({
+          type: 'competitions/getDetail',
+          payload: {
+            id,
+            force: true,
+          },
+        });
+      }
     });
   }
 
@@ -1500,6 +1500,7 @@ function mapStateToProps(state) {
       state.loading.effects['competitions/confirmQuit'] ||
       state.loading.effects['competitions/getSelfUserDetail'],
     endCompetitionLoading: !!state.loading.effects['competitions/endCompetition'],
+    cancelEndCompetitionLoading: !!state.loading.effects['competitions/cancelEndCompetition'],
     doCompetitionSpGenshinExplorationUnlockLoading: !!state.loading.effects[
       'competitions/doCompetitionSpGenshinExplorationUnlock'
     ],

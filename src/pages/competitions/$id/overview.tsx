@@ -866,7 +866,7 @@ class CompetitionOverview extends React.Component<Props, State> {
               this.setState({ cancelEndCompetitionModalVisable: false })
             }}
           >
-            这会导致重新冻结封榜之后的题解提交状态；如果是评分模式，还会回收因此次比赛发放的积分。
+            这会导致重新冻结封榜之后的提交状态；如果是 Rating 模式，还会回滚 Rating。
           </Modal>
         </Col>
       </Row>

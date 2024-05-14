@@ -611,7 +611,7 @@ class CompetitionOverview extends React.Component<Props, State> {
                 </Button>
                 <p className="text-center text-secondary mt-sm">
                   <small>
-                    If confirmed, it will freeze the submission after being blocked again, and recycling points that have been issued if it's Rating Mode.
+                    If confirmed, it will freeze the submission after being blocked again, and rollbacking ratings that have been issued if it's Rating Mode.
                   </small>
                 </p>
               </p>

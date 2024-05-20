@@ -96,7 +96,7 @@ class Standings extends React.Component<Props, State> {
                     render={(text, record: IUser) => <span>{record.userId}</span>}
                   />
                 )}
-                {proMode && (
+                {false && proMode && (
                   <Table.Column
                     title="Username"
                     key="Username"

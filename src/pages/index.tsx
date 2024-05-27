@@ -85,7 +85,7 @@ class Index extends React.Component<Props, State> {
               </p>
             </Col>
             {/* Banner for SDUTPC */}
-            {
+            {false && (
               <Col xs={24} className="mt-lg">
                 <Alert
                   message={
@@ -127,7 +127,7 @@ class Index extends React.Component<Props, State> {
                   showIcon={false}
                 />
               </Col>
-            }
+            )}
             {/* Banner for Azur Series */}
             {false && (
               <Col xs={24} className="mt-lg">

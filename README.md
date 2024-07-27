@@ -15,14 +15,38 @@
 
 ## 本地开发
 
-### 1. 初始化项目
+### 0. 先决条件
+
+- Node.js 16+
+- 启动 `onlinejudge3-be` 后端开发服务
+
+### 1. 配置环境与代理
+
+> 仅首次启动需要执行此步
+
+配置 hosts（编辑 `/etc/hosts` 手动追加或使用其他工具如 [SwitchHosts](https://switchhosts.vercel.app/zh)）：
+```plain
+127.0.0.1 oj3.local
+```
+
+配置代理，以 [whistle](https://wproxy.org/whistle/) 为例：
+```plain
+oj3.local/onlinejudge3/socket.io 127.0.0.1:7002/onlinejudge3/socket.io
+oj3.local/api/(.*) 127.0.0.1:7001/$1
+$oj3.local/ redirect://onlinejudge3/
+oj3.local 127.0.0.1:8102
+```
+
+### 2. 初始化项目
+
+> 首次启动需要执行此步；子模块/依赖发生改变时亦需要执行相应命令更新
 
 ```bash
 git submodule init && git submodule update
 npm i
 ```
 
-### 2. 启动本地开发
+### 3. 启动本地开发服务
 
 启动前端本地开发服务：
 
@@ -35,6 +59,7 @@ npm run dev
 COMPETITION_SIDE=1 npm run dev
 ```
 
+访问 `http://oj3.local/`。
 
 ## 部署
 

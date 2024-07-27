@@ -93,7 +93,6 @@ export default {
   proxy: {
     '/onlinejudge3/api/': {
       target: 'http://127.0.0.1:7001/',
-      // target: 'https://acm.sdut.edu.cn/onlinejudge2/index.php/API_ng/',
       changeOrigin: true,
       pathRewrite: { '^/onlinejudge3/api/': '' },
     },

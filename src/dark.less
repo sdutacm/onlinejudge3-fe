@@ -613,6 +613,70 @@ li.ant-calendar-time-picker-select-option-selected {
 //  }
 //}
 
+// achievement panel
+
+.achievement-panel {
+  .achievement-category-container {
+    background-color: @bg-color;
+
+    .achievement-category-list {
+      .achievement-category-item {
+        &:hover {
+          background-color: lighten(@bg-color, 4%);
+        }
+
+        &.active {
+          background-color: lighten(@bg-color, 8%);
+        }
+      }
+    }
+  }
+
+  .achievement-list-container {
+    .achievement-list {
+      .achievement-list-item {
+        &:hover {
+          background-color: #2b2b2b;
+        }
+
+        .achievement-list-item-trophy {
+          &.achievement-list-item-trophy-gold svg {
+            fill: @color-gold;
+          }
+
+          &.achievement-list-item-trophy-silver svg {
+            fill: @color-silver;
+          }
+
+          &.achievement-list-item-trophy-bronze svg {
+            fill: @color-bronze;
+          }
+        }
+
+        .achievement-list-item-info {
+          .achievement-list-item-description {
+            color: fade(@text-color, 65%);
+          }
+
+          .achievement-list-item-annotation {
+            color: fade(@text-color, 40%);
+          }
+        }
+
+        .achievement-list-item-status {
+          .achievement-list-item-status-text {
+            color: @color-gray;
+          }
+
+          .achievement-list-item-status-date {
+            color: @color-green;
+          }
+        }
+      }
+    }
+  }
+}
+
 // rich text editor
 
 .rt-editor {

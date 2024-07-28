@@ -55,6 +55,9 @@ export default {
           payload: { user: ret.data },
         });
         yield put({
+          type: 'users/getSelfCompletedAchievements',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId: ret.data.userId },
         });
@@ -94,6 +97,9 @@ export default {
           payload: { userId },
         });
         yield put({
+          type: 'users/getSelfCompletedAchievements',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId },
         });
@@ -126,6 +132,9 @@ export default {
         });
         yield put({
           type: 'users/clearProblemResultStats',
+        });
+        yield put({
+          type: 'users/clearSelfCompletedAchievements',
         });
         yield put({
           type: 'messages/clearAllMessages',

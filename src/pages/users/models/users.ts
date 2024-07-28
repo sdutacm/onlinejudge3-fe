@@ -7,6 +7,7 @@ import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { Results } from '@/configs/results';
 import * as groupService from '../../groups/services/groups';
+import { IGetSelfCompletedAchievementsResp } from '@/common/contracts/user';
 
 const initialState = {
   list: {
@@ -20,6 +21,7 @@ const initialState = {
     acceptedProblemIds: [],
     attemptedProblemIds: [],
   },
+  completedAchievements: [],
 };
 
 export default {
@@ -53,6 +55,12 @@ export default {
     },
     clearProblemResultStats(state) {
       state.problemResultStats = initialState.problemResultStats;
+    },
+    setSelfCompletedAchievements(state, { payload: data }) {
+      state.completedAchievements = [...data];
+    },
+    clearSelfCompletedAchievements(state) {
+      state.completedAchievements = [];
     },
   },
   effects: {
@@ -193,6 +201,18 @@ export default {
         return;
       }
       return yield call(service.changeEmail, userId, data);
+    },
+    *getSelfCompletedAchievements(_, { call, put }) {
+      const ret: IApiResponse<IGetSelfCompletedAchievementsResp> = yield call(
+        service.getSelfCompletedAchievements,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setSelfCompletedAchievements',
+          payload: ret.data.rows,
+        });
+      }
+      return ret;
     },
   },
   subscriptions: {

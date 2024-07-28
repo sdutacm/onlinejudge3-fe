@@ -17,6 +17,7 @@ import {
   IUpdateUserDetailReq,
   IUpdateUserEmailReq,
   IResetUserPasswordAndEmailReq,
+  IGetSelfCompletedAchievementsResp,
 } from '@/common/contracts/user';
 
 export function register(data) {
@@ -93,4 +94,8 @@ export function changeEmail(userId, data) {
     userId,
     ...data,
   });
+}
+
+export function getSelfCompletedAchievements() {
+  return post<void, IGetSelfCompletedAchievementsResp>(routesBe.getSelfCompletedAchievements.url);
 }

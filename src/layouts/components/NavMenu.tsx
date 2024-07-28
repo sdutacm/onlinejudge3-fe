@@ -18,6 +18,7 @@ import NoteSvg from '@/assets/svg/note.svg';
 import tracker from '@/utils/tracker';
 import { checkPerms } from '@/utils/permission';
 import { EPerm } from '@/common/configs/perm.config';
+import AchievementsModal from '@/components/AchievementsModal';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -306,6 +307,17 @@ class NavMenu extends React.Component<Props, State> {
               <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>
                 Profile
               </Link>
+            </Menu.Item>
+            <Menu.Item key="achievements">
+              <AchievementsModal
+                onClickShowModal={(e) => {
+                  if (mobileVersion && onLinkClick) {
+                    onLinkClick(e);
+                  }
+                }}
+              >
+                <span>Achievements</span>
+              </AchievementsModal>
             </Menu.Item>
             <Menu.Item key="favorites">
               <Link to={urlf(pages.favorites.index)}>Favorites</Link>

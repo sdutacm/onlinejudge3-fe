@@ -1241,6 +1241,150 @@ ul {
   }
 }
 
+// achievement panel
+
+.achievement-panel {
+  width: 100%;
+  height: 404px;
+  display: flex;
+  flex-direction: row;
+  user-select: none;
+
+  .achievement-category-container {
+    width: 250px;
+    overflow: auto;
+    background-color: @bg-color;
+
+    .achievement-category-list {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      padding: 8px;
+      margin-bottom: 0;
+
+      .achievement-category-item {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        padding: 8px 8px 8px 16px;
+        font-size: 18px;
+        font-weight: 500;
+
+        &:hover {
+          background-color: darken(@bg-color, 5%);
+        }
+
+        &.active {
+          background-color: darken(@bg-color, 10%);
+        }
+      }
+    }
+  }
+
+  .achievement-list-container {
+    flex: 1;
+    overflow: auto;
+
+    .achievement-list {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+      padding-inline-start: 0;
+
+      .achievement-list-item {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        padding: 8px 16px;
+        align-items: center;
+        width: 100%;
+        min-height: 88px;
+
+        &.achievement-list-item-uncompleted {
+          opacity: 0.5;
+        }
+
+        &:hover {
+          background-color: darken(@bg-color, 1%);
+        }
+
+        .achievement-list-item-trophy {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .anticon {
+            width: 32px;
+            height: 32px;
+          }
+
+          &.achievement-list-item-trophy-gold svg {
+            fill: @color-gold;
+          }
+
+          &.achievement-list-item-trophy-silver svg {
+            fill: @color-silver;
+          }
+
+          &.achievement-list-item-trophy-bronze svg {
+            fill: @color-bronze;
+          }
+
+          svg {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .achievement-list-item-info {
+          margin-left: 16px;
+          flex: 1;
+          overflow: hidden;
+
+          .achievement-list-item-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 4px;
+          }
+
+          .achievement-list-item-description {
+            margin-top: 2px;
+            font-size: 13px;
+            color: fade(@text-color, 65%);
+          }
+
+          .achievement-list-item-annotation {
+            margin-top: 2px;
+            font-size: 11px;
+            font-style: italic;
+            color: fade(@text-color, 40%);
+          }
+        }
+
+        .achievement-list-item-status {
+          font-size: 14px;
+          margin-left: 8px;
+          margin-right: 12px;
+
+          .achievement-list-item-status-text {
+            color: @color-gray;
+          }
+
+          .achievement-list-item-status-date {
+            font-weight: 500;
+            color: @color-green;
+          }
+        }
+      }
+    }
+  }
+}
+
 // rich text editor
 
 .rt-editor {

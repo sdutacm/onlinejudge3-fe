@@ -16,6 +16,7 @@ import GenshinStartScreen from './GenshinStartScreen';
 import Results from '@/configs/results/resultsEnum';
 import { IProblemSpConfig } from '@/common/interfaces/problem';
 import AutoVideoScreen from '@/components/AutoVideoScreen';
+import { getSocket } from '@/utils/socket';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -303,9 +304,8 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               }
             } else {
               this.handleHideModel();
-              // @ts-ignore
-              window._sockets.judger.emit('subscribe', [solutionId]);
-              console.log('subscribe', [solutionId]);
+              getSocket('judger')!.emit('subscribe', [solutionId]);
+              console.log('[socket.judger] subscribe', [solutionId]);
               this.redirectToSolutionDetail(solutionId);
             }
           }

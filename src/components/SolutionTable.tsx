@@ -19,6 +19,7 @@ import { checkPerms } from '@/utils/permission';
 import { isFinishedResult } from '@/utils/judger';
 import IdBasedPagination from './IdBasedPagination';
 import { EPerm } from '@/common/configs/perm.config';
+import { getSocket } from '@/utils/socket';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -110,9 +111,8 @@ class SolutionTable extends React.Component<Props, State> {
         solutionIds.unshift(row.solutionId);
       }
     }
-    // @ts-ignore
-    window._sockets.judger.emit('subscribe', solutionIds);
-    console.log('subscribe', solutionIds);
+    getSocket('judger')!.emit('subscribe', solutionIds);
+    console.log('[socket.judger] subscribe', solutionIds);
   };
 
   updatePendingSolutions = async () => {

@@ -31,6 +31,7 @@ import socketConfig from '@/configs/socket';
 import { decodeJudgeStatusBuffer } from '@/utils/judger';
 import FullScreenContent from './components/FullScreenContent';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
+import { setSocket } from '@/utils/socket';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -148,22 +149,20 @@ class Index extends React.Component<Props, State> {
     // @ts-ignore
     window._router = router;
     // socket
-    const sockets: Record<string, SocketIOClient.Socket> = {};
-    sockets.judger = io(socketConfig.judger.url, {
+    const judgerSocket = io(socketConfig.judger.url, {
       path: socketConfig.path,
       transports: ['websocket'],
+      multiplex: false,
     });
-    sockets.judger.on('connect', () => {
-      // console.log('judger socket connected');
-      // sockets.judger.emit('subscribe', [4597206]);
+    judgerSocket.on('connect', () => {
+      console.log('judger socket connected');
     });
-    sockets.judger.on('s', (b) => {
+    judgerSocket.on('s', (b) => {
       const event = new CustomEvent('status', { detail: decodeJudgeStatusBuffer(b) });
       // @ts-ignore
       window._eventSource.judger.dispatchEvent(event);
     });
-    // @ts-ignore
-    window._sockets = sockets;
+    setSocket('judger', judgerSocket);
     // @ts-ignore
     window._eventSource = {
       judger: document.getElementById('event-source-judger'),

@@ -1,9 +1,13 @@
-const isProd = process.env.NODE_ENV === 'production';
-
 const socketConfig = {
   path: '/onlinejudge3/socket.io',
+  general: {
+    url: '/general',
+  },
   judger: {
     url: '/judger',
+  },
+  competition: {
+    url: '/competition',
   },
 };
 

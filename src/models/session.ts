@@ -2,6 +2,9 @@ import * as service from '../services/session';
 import { endInterception, initInterceptor, startInterception } from '@/utils/effectInterceptor';
 import OJBK from '@/utils/OJBK';
 import { genTimeFlag } from '@/utils/misc';
+import io from 'socket.io-client';
+import socketConfig from '@/configs/socket';
+import { clearSocket, setSocket } from '@/utils/socket';
 
 function genInitialState() {
   return {
@@ -12,6 +15,22 @@ function genInitialState() {
       rows: [],
     },
   };
+}
+
+function createSessionSocket() {
+  console.log('create session socket');
+  const socket = io(socketConfig.general.url, {
+    path: socketConfig.path,
+    transports: ['websocket'],
+    multiplex: false,
+  });
+  socket.on('connect', () => {
+    console.log('session socket connected');
+  });
+  socket.on('disconnect', () => {
+    console.log('session socket disconnected');
+  });
+  return socket;
 }
 
 export default {
@@ -69,6 +88,7 @@ export default {
           type: 'notes/getList',
           payload: { userId: ret.data.userId },
         });
+        setSocket('session', createSessionSocket());
       }
       endInterception();
       return ret;
@@ -111,6 +131,7 @@ export default {
           type: 'notes/getList',
           payload: { userId },
         });
+        setSocket('session', createSessionSocket());
         OJBK.logLogin(ret.data);
       }
       return ret;
@@ -148,6 +169,7 @@ export default {
         yield put({
           type: 'groups/clearAllJoinedGroups',
         });
+        clearSocket('session');
       }
       return ret;
     },

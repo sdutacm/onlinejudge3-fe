@@ -41,15 +41,21 @@ const langsMap4Hljs = {
   java: 'java',
   python2: 'python',
   python3: 'python',
-  'c#': 'cs',
+  'c#': 'csharp',
   C: 'cpp',
   'C++': 'cpp',
+  'C#': 'csharp',
   Java: 'java',
   Python: 'python',
   JavaScript: 'javascript',
   TypeScript: 'typescript',
   Go: 'go',
-  Rest: 'rust',
+  Rust: 'rust',
+  Pascal: 'pascal',
+  Perl: 'perl',
+  Ruby: 'ruby',
+  PHP: 'php',
+  Haskell: 'haskell',
 };
 
 const highlighterLineNumberStyle = {
@@ -130,7 +136,7 @@ class SolutionDetailPage extends React.Component<Props, State> {
       });
       addPiece({
         code: this.props.data.code,
-        lang: this.props.data.language,
+        lang: langsMap4Hljs[this.props.data.language],
         ttl: 2592000, // 1 month
         rel: window.location.href,
       })

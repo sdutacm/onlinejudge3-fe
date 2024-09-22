@@ -2,7 +2,7 @@ import React from 'react';
 import { ReduxProps } from '@/@types/props';
 import { connect } from 'dva';
 import SolutionTable from '@/components/SolutionTable';
-import { Card, Switch, Skeleton } from 'antd';
+import { Card, Switch, Skeleton, Icon, Popover, Spin, Button } from 'antd';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneLight, atomOneDark } from 'react-syntax-highlighter/styles/hljs';
 import CopyToClipboardButton from '@/components/CopyToClipboardButton';
@@ -13,6 +13,8 @@ import PageTitle from '@/components/PageTitle';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import Explanation from '@/components/Explanation';
+import { addPiece } from '@/utils/pasteThenAC';
+import ExtLink from './ExtLink';
 
 export interface Props extends ReduxProps {
   loading: boolean;
@@ -29,6 +31,8 @@ export interface Props extends ReduxProps {
 
 interface State {
   systemTheme: 'light' | 'dark';
+  pasteCodeStatus: 'pending' | 'submitting' | 'success' | 'error';
+  pasteCodeUrl?: string;
 }
 
 const langsMap4Hljs = {
@@ -57,6 +61,8 @@ const highlighterLineNumberStyle = {
 
 class SolutionDetailPage extends React.Component<Props, State> {
   private systemThemeMediaQuery: MediaQueryList;
+  private _pastingCodeLock = false;
+  private _mounted = false;
 
   static defaultProps: Partial<Props> = {};
 
@@ -64,6 +70,8 @@ class SolutionDetailPage extends React.Component<Props, State> {
     super(props);
     this.state = {
       systemTheme: 'light',
+      pasteCodeStatus: 'pending',
+      pasteCodeUrl: '',
     };
   }
 
@@ -79,10 +87,12 @@ class SolutionDetailPage extends React.Component<Props, State> {
       systemTheme: this.systemThemeMediaQuery.matches ? 'dark' : 'light',
     });
     this.systemThemeMediaQuery.addListener(this.systemThemeListener);
+    this._mounted = true;
   }
 
   componentWillUnmount() {
     this.systemThemeMediaQuery.removeListener(this.systemThemeListener);
+    this._mounted = false;
   }
 
   onShareChange = (checked) => {
@@ -111,8 +121,45 @@ class SolutionDetailPage extends React.Component<Props, State> {
     return theme;
   };
 
+  handlePasteCodePrimaryClick = () => {
+    if (['pending', 'error'].includes(this.state.pasteCodeStatus) && !this._pastingCodeLock) {
+      this._pastingCodeLock = true;
+      this.setState({
+        pasteCodeStatus: 'submitting',
+        pasteCodeUrl: '',
+      });
+      addPiece({
+        code: this.props.data.code,
+        lang: this.props.data.language,
+        ttl: 2592000, // 1 month
+        rel: window.location.href,
+      })
+        .then((res) => {
+          if (!this._mounted) {
+            return;
+          }
+          this.setState({
+            pasteCodeStatus: 'success',
+            pasteCodeUrl: res.url,
+          });
+          this._pastingCodeLock = false;
+        })
+        .catch((e) => {
+          console.error('paste code to paste.then.ac failed:', e);
+          if (!this._mounted) {
+            return;
+          }
+          this.setState({
+            pasteCodeStatus: 'error',
+            pasteCodeUrl: '',
+          });
+          this._pastingCodeLock = false;
+        });
+    }
+  };
+
   renderCompilicationInfo = () => {
-    const { loading, data, theme, compilationInfoLoading } = this.props;
+    const { loading, data, compilationInfoLoading } = this.props;
     if (loading) {
       return null;
     } else if (data.compileInfo) {
@@ -155,6 +202,44 @@ class SolutionDetailPage extends React.Component<Props, State> {
     return null;
   };
 
+  renderPastCodeContent = () => {
+    if (this.state.pasteCodeStatus === 'pending') {
+      return null;
+    } else if (this.state.pasteCodeStatus === 'submitting') {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Spin indicator={<Icon type="loading" spin />} className="mr-md" /> Getting piece...
+        </div>
+      );
+    } else if (this.state.pasteCodeStatus === 'success') {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div>Share code link!</div>
+          <ExtLink href={this.state.pasteCodeUrl}>{this.state.pasteCodeUrl}</ExtLink>
+          <CopyToClipboardButton text={this.state.pasteCodeUrl} addNewLine={false}>
+            <Button type="primary" size="small" className="mt-md">
+              Copy URL
+            </Button>
+          </CopyToClipboardButton>
+        </div>
+      );
+    } else if (this.state.pasteCodeStatus === 'error') {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div>Failed to paste.</div>
+          <Button
+            type="default"
+            size="small"
+            className="mt-md"
+            onClick={this.handlePasteCodePrimaryClick}
+          >
+            Retry
+          </Button>
+        </div>
+      );
+    }
+  };
+
   renderCodeInside = () => {
     const { loading, data, session, changeSharedLoading } = this.props;
     if (loading) {
@@ -186,9 +271,9 @@ class SolutionDetailPage extends React.Component<Props, State> {
           {isSelf(session, data.user.userId) ? (
             <div className="float-left">
               <span>
-                Share Code
+                Make Public
                 <Explanation
-                  title="Shared code will be disabled in one of these cases"
+                  title="Make code public will be disabled in one of these cases"
                   className="ml-sm-md"
                 >
                   <div>
@@ -213,6 +298,15 @@ class SolutionDetailPage extends React.Component<Props, State> {
             </div>
           )}
           <div className="float-right">
+            <Popover
+              placement="bottomRight"
+              title="Paste code to paste.then.ac"
+              content={this.renderPastCodeContent()}
+              trigger="click"
+              onClick={this.handlePasteCodePrimaryClick}
+            >
+              <Icon type="share-alt" theme="outlined" className="pointer mr-md" />
+            </Popover>
             <CopyToClipboardButton text={data.code} addNewLine={false} />
           </div>
         </div>

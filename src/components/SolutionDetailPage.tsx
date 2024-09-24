@@ -15,6 +15,8 @@ import tracker from '@/utils/tracker';
 import Explanation from '@/components/Explanation';
 import { addPiece } from '@/utils/pasteThenAC';
 import ExtLink from './ExtLink';
+import { urlf } from '@/utils/format';
+import pages from '@/configs/pages';
 
 export interface Props extends ReduxProps {
   loading: boolean;
@@ -134,11 +136,18 @@ class SolutionDetailPage extends React.Component<Props, State> {
         pasteCodeStatus: 'submitting',
         pasteCodeUrl: '',
       });
+      const problemId = this.props.data.problem?.problemId;
       addPiece({
         code: this.props.data.code,
         lang: langsMap4Hljs[this.props.data.language],
         ttl: 2592000, // 1 month
-        rel: window.location.href,
+        relLinks: [
+          window.location.href,
+          problemId &&
+            `${window.location.origin}${process.env.BASE}${urlf(pages.problems.detail, {
+              param: { id: problemId },
+            }).substring(1)}`,
+        ].filter(Boolean),
       })
         .then((res) => {
           if (!this._mounted) {
@@ -221,7 +230,9 @@ class SolutionDetailPage extends React.Component<Props, State> {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div>Share code link!</div>
-          <ExtLink href={this.state.pasteCodeUrl}>{this.state.pasteCodeUrl}</ExtLink>
+          <ExtLink href={this.state.pasteCodeUrl}>
+            <code>{this.state.pasteCodeUrl}</code>
+          </ExtLink>
           <CopyToClipboardButton text={this.state.pasteCodeUrl} addNewLine={false}>
             <Button type="primary" size="small" className="mt-md">
               Copy URL

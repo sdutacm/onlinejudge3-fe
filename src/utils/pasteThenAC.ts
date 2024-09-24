@@ -12,7 +12,7 @@ function formatAPIResponse(res: any) {
 
 
 export function addPiece(
-  data: { code: string; lang: string; ttl: number, rel?: string },
+  data: { code: string; lang: string; ttl: number, relLinks?: string[] },
   options: RequestInit = {},
 ): Promise<{ key: string; url: string }> {
   return fetch(`${PASTE_THEN_AC_API_BASE_URL}/addPiece`, {

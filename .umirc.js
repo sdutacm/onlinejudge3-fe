@@ -40,6 +40,7 @@ export default {
   hash: true,
   define: {
     'process.env.COMPETITION_SIDE': process.env.COMPETITION_SIDE === '1' ? '1' : '',
+    'process.env.BASE': usingBuildConfig.base || '/',
     'process.env.CDN_URL': process.env.CDN_URL || '',
     'process.env.MEDIA_URL': process.env.MEDIA_URL || '',
     'process.env.CDN_RAW_URL_BEFORE_PROXY': process.env.CDN_RAW_URL_BEFORE_PROXY || '',

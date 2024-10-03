@@ -47,7 +47,7 @@ export default class CopyToClipboardButton extends React.Component<Props, State>
               });
             }
           }}>
-          <Icon type="copy" theme="outlined" className="pointer" />
+          {this.props.children || <Icon type="copy" theme="outlined" className="pointer" />}
         </CopyToClipboard>
       </Tooltip>
     );

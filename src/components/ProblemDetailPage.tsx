@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon, Popover, Form } from 'antd';
+import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon, Popover, Form, Tooltip } from 'antd';
 import Link from 'umi/link';
 import pages from '@/configs/pages';
 import { numberToAlphabet, urlf } from '@/utils/format';
@@ -73,6 +73,7 @@ const ProblemDetailPage: React.FC<Props> = ({
   const favorite = favorites.find(
     (v) => v.type === 'problem' && v.target && v.target.problemId === data.problemId,
   );
+
   const renderSubmitButton = () => {
     if (loading) {
       return (
@@ -120,6 +121,7 @@ const ProblemDetailPage: React.FC<Props> = ({
       </SubmissionModal>
     );
   };
+
   const renderSecondaryArea = () => {
     return (
       <PageAnimation>
@@ -174,9 +176,21 @@ const ProblemDetailPage: React.FC<Props> = ({
                   <Icon type="star" theme="outlined" />
                 </Button>
               )}
-              <Button disabled className="text-ellipsis" style={{ width: '50%' }} title="Share">
-                <Icon type="share-alt" theme="outlined" />
-              </Button>
+              <Tooltip title="Paste code of this problem" placement="bottom">
+                <Button
+                  className="text-ellipsis"
+                  style={{ width: '50%' }}
+                  title="Paste Code"
+                  onClick={() => {
+                    window.open(
+                      `https://paste.then.ac/?relLinks=${encodeURIComponent(window.location.href)}`,
+                      '_blank',
+                    );
+                  }}
+                >
+                  <Icon type="snippets" theme="outlined" />
+                </Button>
+              </Tooltip>
             </Button.Group>
           )}
         </Card>
@@ -308,7 +322,12 @@ const ProblemDetailPage: React.FC<Props> = ({
         <Col xs={24} md={18} xxl={18}>
           <PageAnimation>
             <Card bordered={false}>
-              <ProblemContent loading={loading} data={data} problemIndex={problemIndex} problemAlias={problemAlias} />
+              <ProblemContent
+                loading={loading}
+                data={data}
+                problemIndex={problemIndex}
+                problemAlias={problemAlias}
+              />
             </Card>
           </PageAnimation>
         </Col>

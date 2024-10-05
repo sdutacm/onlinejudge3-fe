@@ -1385,6 +1385,128 @@ ul {
   }
 }
 
+// achievement toast
+
+.achievement-toast-container {
+  .Toastify--animate {
+    animation-duration: 0.4s;
+  }
+
+  .Toastify__toast {
+    height: 72px;
+    border-radius: 36px;
+    background-color: @bg-color;
+
+    .achievement-toast-body {
+      width: 100%;
+      padding: 0;
+
+      > div {
+        width: 100%;
+      }
+
+      .achievement-toast {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        @keyframes achievementFadeLeft {
+          0% {
+            opacity: 0;
+            transform: translate3d(25px, 0, 0);
+          }
+
+          25% {
+            opacity: 0;
+            transform: translate3d(25px, 0, 0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        @keyframes achievementFadeRight {
+          0% {
+            opacity: 0;
+            transform: translate3d(-25px, 0, 0);
+          }
+
+          25% {
+            opacity: 0;
+            transform: translate3d(-25px, 0, 0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .achievement-toast-trophy {
+          margin-left: 8px;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: achievementFadeLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+          .anticon {
+            width: 32px;
+            height: 32px;
+          }
+
+          &.achievement-toast-trophy-gold svg {
+            fill: @color-gold;
+          }
+
+          &.achievement-toast-trophy-silver svg {
+            fill: @color-silver;
+          }
+
+          &.achievement-toast-trophy-bronze svg {
+            fill: @color-bronze;
+          }
+
+          svg {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .achievement-toast-info {
+          margin-left: 16px;
+          flex: 1;
+          overflow: hidden;
+          animation: achievementFadeRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+          .achievement-toast-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: @text-color;
+            margin-top: 4px;
+          }
+
+          .achievement-toast-description {
+            margin-top: 2px;
+            font-size: 13px;
+            color: fade(@text-color, 65%);
+          }
+
+          .achievement-toast-annotation {
+            margin-top: 2px;
+            font-size: 11px;
+            font-style: italic;
+            color: fade(@text-color, 40%);
+          }
+        }
+      }
+    }
+  }
+}
+
 // rich text editor
 
 .rt-editor {

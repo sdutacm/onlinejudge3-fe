@@ -32,6 +32,8 @@ import { decodeJudgeStatusBuffer } from '@/utils/judger';
 import FullScreenContent from './components/FullScreenContent';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { setSocket } from '@/utils/socket';
+import AchievementToastContainer from '@/components/AchievementToastContainer';
+import 'react-toastify/dist/ReactToastify.css';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -445,6 +447,8 @@ class Index extends React.Component<Props, State> {
           {/* </div> */}
         </Footer>
         <FullScreenContent />
+
+        <AchievementToastContainer />
       </Layout>
     );
   }

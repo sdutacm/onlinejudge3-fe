@@ -677,6 +677,47 @@ li.ant-calendar-time-picker-select-option-selected {
   }
 }
 
+// achievement toast
+
+.achievement-toast-container {
+  .Toastify__toast {
+    background-color: @bg-color;
+
+    .achievement-toast-body {
+
+      .achievement-toast {
+        .achievement-toast-trophy {
+          &.achievement-toast-trophy-gold svg {
+            fill: @color-gold;
+          }
+
+          &.achievement-toast-trophy-silver svg {
+            fill: @color-silver;
+          }
+
+          &.achievement-toast-trophy-bronze svg {
+            fill: @color-bronze;
+          }
+        }
+
+        .achievement-toast-info {
+          .achievement-toast-title {
+            color: @text-color;
+          }
+
+          .achievement-toast-description {
+            color: fade(@text-color, 65%);
+          }
+
+          .achievement-toast-annotation {
+            color: fade(@text-color, 40%);
+          }
+        }
+      }
+    }
+  }
+}
+
 // rich text editor
 
 .rt-editor {

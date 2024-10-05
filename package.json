@@ -63,6 +63,7 @@
     "react-player": "~2.13.0",
     "react-scroll": "^1.7.12",
     "react-syntax-highlighter": "^9.0.0",
+    "react-toastify": "^8.2.0",
     "react-tooltip": "^3.9.2",
     "short-number": "^1.0.6",
     "socket.io-client": "^2.4.0",

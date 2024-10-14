@@ -2,6 +2,7 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import classNames from 'classnames';
 import { Icon } from 'antd';
+import { Howl } from 'howler';
 import { IAchievement } from '@/common/interfaces/achievement';
 import { EAchievementKey } from '@/common/configs/achievement.config';
 import { getAchievementByKey } from '@/utils/achievement';
@@ -13,6 +14,13 @@ export interface IAchievementToastProps {
 }
 
 class AchievementToast extends React.Component<IAchievementToastProps> {
+  componentDidMount() {
+    const sound = new Howl({
+      src: [`${process.env.PUBLIC_PATH}assets/audio/achievement-toast.mp3`],
+    });
+    setTimeout(() => sound.play(), 200);
+  }
+
   render() {
     const { achievement } = this.props;
 
@@ -27,9 +35,7 @@ class AchievementToast extends React.Component<IAchievementToastProps> {
           <Icon theme="outlined" component={AchievementTrophySvg} />
         </div>
         <div className="achievement-toast-info">
-          <div className="achievement-toast-title text-ellipsis">
-            {achievement.title}
-          </div>
+          <div className="achievement-toast-title text-ellipsis">{achievement.title}</div>
           <div className="achievement-toast-description text-ellipsis">
             {achievement.description}
           </div>

@@ -5,7 +5,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import tracker from '@/utils/tracker';
 import { withRouter } from 'react-router';
 import { IAchievementCategory } from '@/common/interfaces/achievement';
-import achievementConfig from '@/common/configs/achievement.config.json';
+import achievementConfig from '@/common/configs/achievement-config.json';
 import moment from 'moment';
 import classNames from 'classnames';
 import { EAchievementLevel } from '@/common/enums';

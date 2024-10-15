@@ -5,6 +5,7 @@ import { genTimeFlag } from '@/utils/misc';
 import io from 'socket.io-client';
 import socketConfig from '@/configs/socket';
 import { clearSocket, setSocket } from '@/utils/socket';
+import { globalGeneralSocketHandler } from '@/lib/socketHandlers/general';
 
 function genInitialState() {
   return {
@@ -17,8 +18,8 @@ function genInitialState() {
   };
 }
 
-function createSessionSocket() {
-  console.log('create session socket');
+function createGeneralSocket() {
+  console.log('create general socket');
   const socket = io(socketConfig.general.url, {
     path: socketConfig.path,
     transports: ['websocket'],
@@ -26,6 +27,7 @@ function createSessionSocket() {
   });
   socket.on('connect', () => {
     console.log('session socket connected');
+    globalGeneralSocketHandler.bindEvents(socket);
   });
   socket.on('disconnect', () => {
     console.log('session socket disconnected');
@@ -88,7 +90,7 @@ export default {
           type: 'notes/getList',
           payload: { userId: ret.data.userId },
         });
-        setSocket('session', createSessionSocket());
+        setSocket('general', createGeneralSocket());
       }
       endInterception();
       return ret;
@@ -131,7 +133,7 @@ export default {
           type: 'notes/getList',
           payload: { userId },
         });
-        setSocket('session', createSessionSocket());
+        setSocket('general', createGeneralSocket());
         OJBK.logLogin(ret.data);
       }
       return ret;
@@ -169,7 +171,7 @@ export default {
         yield put({
           type: 'groups/clearAllJoinedGroups',
         });
-        clearSocket('session');
+        clearSocket('general');
       }
       return ret;
     },

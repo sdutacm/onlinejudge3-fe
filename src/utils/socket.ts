@@ -1,6 +1,6 @@
 export type SocketMap = Record<string, SocketIOClient.Socket>;
 
-export type SocketKey = 'session' | 'judger' | 'competition';
+export type SocketKey = 'general' | 'judger' | 'competition';
 
 export function getSocket(key: SocketKey): SocketIOClient.Socket | undefined {
   // @ts-ignore

@@ -34,6 +34,7 @@ import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { setSocket } from '@/utils/socket';
 import AchievementToastContainer from '@/components/AchievementToastContainer';
 import 'react-toastify/dist/ReactToastify.css';
+import { initGeneralGlobalEvents } from '@/lib/socketHandlers/general/globalEvents';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -200,6 +201,8 @@ class Index extends React.Component<Props, State> {
       .catch((e) => {
         console.log('No vin file, skip.', e);
       });
+
+    initGeneralGlobalEvents();
   }
 
   componentWillUnmount() {

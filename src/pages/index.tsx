@@ -192,7 +192,7 @@ class Index extends React.Component<Props, State> {
               </Col>
             )}
 
-            <Col xs={24} className="mt-lg">
+            {/* <Col xs={24} className="mt-lg">
               <Alert
                 message="限时推广"
                 description={
@@ -212,6 +212,25 @@ class Index extends React.Component<Props, State> {
                       中国大陆加速站点
                     </ExtLink>
                     ），欢迎收藏和分享！
+                  </span>
+                }
+                type="info"
+                showIcon
+              />
+            </Col> */}
+
+            <Col xs={24} className="mt-lg">
+              <Alert
+                message="限时推广"
+                description={
+                  <span>
+                    欢迎使用轻量的全新代码剪贴分享工具
+                    <ExtLink
+                      href="https://paste.then.ac/?from=sdutoj"
+                      className="ml-sm-md"
+                    >
+                      paste.then.ac
+                    </ExtLink>{' '}
                   </span>
                 }
                 type="info"

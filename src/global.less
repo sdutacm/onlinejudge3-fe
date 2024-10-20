@@ -1247,139 +1247,223 @@ ul {
   width: 100%;
   height: 404px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   user-select: none;
 
-  .achievement-category-container {
-    width: 250px;
-    overflow: auto;
-    background-color: @bg-color;
+  .achievement-panel-main {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
 
-    .achievement-category-list {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: wrap;
-      padding: 8px;
-      margin-bottom: 0;
+    .achievement-category-container {
+      width: 250px;
+      overflow: auto;
+      background-color: @bg-color;
 
-      .achievement-category-item {
-        cursor: pointer;
+      .achievement-category-list {
         display: flex;
         flex-direction: column;
-        flex-shrink: 0;
         flex-wrap: wrap;
-        padding: 8px 8px 8px 16px;
-        font-size: 18px;
-        font-weight: 500;
+        padding: 8px;
+        margin-bottom: 0;
 
-        &:hover {
-          background-color: darken(@bg-color, 5%);
+        .achievement-category-item {
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          flex-wrap: wrap;
+          padding: 8px 8px 8px 16px;
+
+          &:hover {
+            background-color: darken(@bg-color, 5%);
+          }
+
+          &.active {
+            background-color: darken(@bg-color, 10%);
+          }
+
+          .achievement-category-item-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+          }
+
+          .achievement-category-item-secondary {
+            margin-top: 2px;
+            font-size: 13px;
+            color: fade(@text-color, 50%);
+          }
         }
+      }
+    }
 
-        &.active {
-          background-color: darken(@bg-color, 10%);
+    .achievement-list-container {
+      flex: 1;
+      overflow: auto;
+
+      .achievement-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+        padding-inline-start: 0;
+
+        .achievement-list-item {
+          cursor: pointer;
+          display: flex;
+          flex-direction: row;
+          padding: 8px 16px;
+          align-items: center;
+          width: 100%;
+          min-height: 88px;
+
+          &.achievement-list-item-uncompleted {
+            opacity: 0.5;
+          }
+
+          &:hover {
+            background-color: darken(@bg-color, 1%);
+          }
+
+          .achievement-list-item-trophy {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .anticon {
+              width: 32px;
+              height: 32px;
+            }
+
+            &.achievement-list-item-trophy-gold svg {
+              fill: @color-gold;
+            }
+
+            &.achievement-list-item-trophy-silver svg {
+              fill: @color-silver;
+            }
+
+            &.achievement-list-item-trophy-bronze svg {
+              fill: @color-bronze;
+            }
+
+            svg {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .achievement-list-item-info {
+            margin-left: 16px;
+            flex: 1;
+            overflow: hidden;
+
+            .achievement-list-item-title {
+              font-size: 16px;
+              font-weight: 500;
+              margin-top: 4px;
+            }
+
+            .achievement-list-item-description {
+              margin-top: 2px;
+              font-size: 13px;
+              color: fade(@text-color, 65%);
+            }
+
+            .achievement-list-item-annotation {
+              margin-top: 2px;
+              font-size: 11px;
+              font-style: italic;
+              color: fade(@text-color, 40%);
+            }
+          }
+
+          .achievement-list-item-status {
+            font-size: 14px;
+            margin-left: 8px;
+            margin-right: 12px;
+
+            .achievement-list-item-status-text {
+              color: @color-gray;
+            }
+
+            .achievement-list-item-status-date {
+              font-weight: 500;
+              color: @color-green;
+            }
+          }
         }
       }
     }
   }
 
-  .achievement-list-container {
-    flex: 1;
-    overflow: auto;
+  .achievement-panel-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 16px 0;
 
-    .achievement-list {
+    .achievement-statistics-count {
+      .achievement-statistics-count-value {
+        margin-left: 8px;
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
+
+    .achievement-statistics-divider {
+      height: 100%;
+      margin: 0 32px;
+      border-left: @border-width-base @border-style-base @border-color-split
+    }
+
+    .achievement-statistics-trophy-board {
       display: flex;
-      flex-direction: column;
-      flex-wrap: wrap;
-      margin-bottom: 0;
-      padding-inline-start: 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
 
-      .achievement-list-item {
-        cursor: pointer;
+      .achievement-statistics-trophy {
         display: flex;
-        flex-direction: row;
-        padding: 8px 16px;
         align-items: center;
-        width: 100%;
-        min-height: 88px;
+        justify-content: center;
+        margin-right: 16px;
 
-        &.achievement-list-item-uncompleted {
-          opacity: 0.5;
-        }
-
-        &:hover {
-          background-color: darken(@bg-color, 1%);
-        }
-
-        .achievement-list-item-trophy {
-          width: 48px;
-          height: 48px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          .anticon {
-            width: 32px;
-            height: 32px;
-          }
-
-          &.achievement-list-item-trophy-gold svg {
-            fill: @color-gold;
-          }
-
-          &.achievement-list-item-trophy-silver svg {
-            fill: @color-silver;
-          }
-
-          &.achievement-list-item-trophy-bronze svg {
-            fill: @color-bronze;
-          }
-
-          svg {
-            width: 100%;
-            height: 100%;
-          }
-        }
-
-        .achievement-list-item-info {
+        &:not(:first-of-type) {
           margin-left: 16px;
-          flex: 1;
-          overflow: hidden;
-
-          .achievement-list-item-title {
-            font-size: 16px;
-            font-weight: 500;
-            margin-top: 4px;
-          }
-
-          .achievement-list-item-description {
-            margin-top: 2px;
-            font-size: 13px;
-            color: fade(@text-color, 65%);
-          }
-
-          .achievement-list-item-annotation {
-            margin-top: 2px;
-            font-size: 11px;
-            font-style: italic;
-            color: fade(@text-color, 40%);
-          }
         }
 
-        .achievement-list-item-status {
-          font-size: 14px;
-          margin-left: 8px;
-          margin-right: 12px;
-
-          .achievement-list-item-status-text {
-            color: @color-gray;
-          }
-
-          .achievement-list-item-status-date {
-            font-weight: 500;
-            color: @color-green;
-          }
+        .anticon {
+          width: 20px;
+          height: 20px;
         }
+
+        .achievement-statistics-trophy-icon-gold svg {
+          fill: @color-gold;
+        }
+
+        .achievement-statistics-trophy-icon-silver svg {
+          fill: @color-silver;
+        }
+
+        .achievement-statistics-trophy-icon-bronze svg {
+          fill: @color-bronze;
+        }
+
+        .achievement-statistics-trophy-icon svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .achievement-statistics-trophy-count {
+        font-size: 18px;
+        font-weight: 500;
+        margin-left: 8px;
       }
     }
   }

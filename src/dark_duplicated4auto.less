@@ -261,7 +261,8 @@ a {
   content: none;
 }
 
-.ant-badge-count, .ant-badge-dot {
+.ant-badge-count,
+.ant-badge-dot {
   box-shadow: 0 0 0 1px #000;
 }
 
@@ -616,61 +617,89 @@ li.ant-calendar-time-picker-select-option-selected {
 // achievement panel
 
 .achievement-panel {
-  .achievement-category-container {
-    background-color: @bg-color;
+  .achievement-panel-main {
+    .achievement-category-container {
+      background-color: @bg-color;
 
-    .achievement-category-list {
-      .achievement-category-item {
-        &:hover {
-          background-color: lighten(@bg-color, 4%);
+      .achievement-category-list {
+        .achievement-category-item {
+          &:hover {
+            background-color: lighten(@bg-color, 4%);
+          }
+
+          &.active {
+            background-color: lighten(@bg-color, 8%);
+          }
+
+          .achievement-category-item-secondary {
+            color: fade(@text-color, 50%);
+          }
         }
+      }
+    }
 
-        &.active {
-          background-color: lighten(@bg-color, 8%);
+    .achievement-list-container {
+      .achievement-list {
+        .achievement-list-item {
+          &:hover {
+            background-color: #2b2b2b;
+          }
+
+          .achievement-list-item-trophy {
+            &.achievement-list-item-trophy-gold svg {
+              fill: @color-gold;
+            }
+
+            &.achievement-list-item-trophy-silver svg {
+              fill: @color-silver;
+            }
+
+            &.achievement-list-item-trophy-bronze svg {
+              fill: @color-bronze;
+            }
+          }
+
+          .achievement-list-item-info {
+            .achievement-list-item-description {
+              color: fade(@text-color, 65%);
+            }
+
+            .achievement-list-item-annotation {
+              color: fade(@text-color, 40%);
+            }
+          }
+
+          .achievement-list-item-status {
+            .achievement-list-item-status-text {
+              color: @color-gray;
+            }
+
+            .achievement-list-item-status-date {
+              color: @color-green;
+            }
+          }
         }
       }
     }
   }
 
-  .achievement-list-container {
-    .achievement-list {
-      .achievement-list-item {
-        &:hover {
-          background-color: #2b2b2b;
+  .achievement-panel-footer {
+    .achievement-statistics-divider {
+      border-left: @border-width-base @border-style-base @border-color-split;
+    }
+
+    .achievement-statistics-trophy-board {
+      .achievement-statistics-trophy {
+        .achievement-statistics-trophy-icon-gold svg {
+          fill: @color-gold;
         }
 
-        .achievement-list-item-trophy {
-          &.achievement-list-item-trophy-gold svg {
-            fill: @color-gold;
-          }
-
-          &.achievement-list-item-trophy-silver svg {
-            fill: @color-silver;
-          }
-
-          &.achievement-list-item-trophy-bronze svg {
-            fill: @color-bronze;
-          }
+        .achievement-statistics-trophy-icon-silver svg {
+          fill: @color-silver;
         }
 
-        .achievement-list-item-info {
-          .achievement-list-item-description {
-            color: fade(@text-color, 65%);
-          }
-
-          .achievement-list-item-annotation {
-            color: fade(@text-color, 40%);
-          }
-        }
-
-        .achievement-list-item-status {
-          .achievement-list-item-status-text {
-            color: @color-gray;
-          }
-
-          .achievement-list-item-status-date {
-            color: @color-green;
-          }
+        .achievement-statistics-trophy-icon-bronze svg {
+          fill: @color-bronze;
         }
       }
     }
@@ -684,7 +713,6 @@ li.ant-calendar-time-picker-select-option-selected {
     background-color: @bg-color;
 
     .achievement-toast-body {
-
       .achievement-toast {
         .achievement-toast-trophy {
           &.achievement-toast-trophy-gold svg {

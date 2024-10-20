@@ -1386,8 +1386,18 @@ ul {
             margin-left: 8px;
             margin-right: 12px;
 
+            .achievement-list-item-status-group {
+              display: flex;
+              flex-direction: column;
+              align-items: end;
+            }
+
             .achievement-list-item-status-text {
-              color: @color-gray;
+              font-weight: 500;
+
+              &.uncompleted {
+                color: @color-gray;
+              }
             }
 
             .achievement-list-item-status-date {
@@ -1418,7 +1428,7 @@ ul {
     .achievement-statistics-divider {
       height: 100%;
       margin: 0 32px;
-      border-left: @border-width-base @border-style-base @border-color-split
+      border-left: @border-width-base @border-style-base @border-color-split;
     }
 
     .achievement-statistics-trophy-board {

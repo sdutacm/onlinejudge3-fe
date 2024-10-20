@@ -86,7 +86,7 @@ class AchievementsModal extends React.Component<Props, State> {
         <a onClick={this.handleShowModel}>{children}</a>
         <Modal
           title="Achievements"
-          visible={true || this.state.visible}
+          visible={this.state.visible}
           onOk={this.handleHideModel}
           onCancel={this.handleHideModel}
           footer={null}
@@ -107,7 +107,8 @@ class AchievementsModal extends React.Component<Props, State> {
                     >
                       <span className="achievement-category-item-title">{category.title}</span>
                       <span className="achievement-category-item-secondary">
-                        已达成 {
+                        已达成{' '}
+                        {
                           category.achievements.filter((achievement) =>
                             completedAchievements.find(
                               (ca) => ca.achievementKey === achievement.achievementKey,
@@ -155,11 +156,14 @@ class AchievementsModal extends React.Component<Props, State> {
                         </div>
                         <div className="achievement-list-item-status">
                           {completedAchievement ? (
-                            <div className="achievement-list-item-status-date nowrap">
-                              {moment(completedAchievement.createdAt).format('YYYY-M-D')}
+                            <div  className="achievement-list-item-status-group">
+                              <div className="achievement-list-item-status-text nowrap">已达成</div>
+                              <div className="achievement-list-item-status-date nowrap">
+                                {moment(completedAchievement.createdAt).format('YYYY-MM-DD')}
+                              </div>
                             </div>
                           ) : (
-                            <div className="achievement-list-item-status-text nowrap">未达成</div>
+                            <div className="achievement-list-item-status-text uncompleted nowrap">未达成</div>
                           )}
                         </div>
                       </li>

@@ -671,7 +671,9 @@ li.ant-calendar-time-picker-select-option-selected {
 
           .achievement-list-item-status {
             .achievement-list-item-status-text {
-              color: @color-gray;
+              &.uncompleted {
+                color: @color-gray;
+              }
             }
 
             .achievement-list-item-status-date {

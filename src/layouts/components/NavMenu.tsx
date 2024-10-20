@@ -19,6 +19,7 @@ import tracker from '@/utils/tracker';
 import { checkPerms } from '@/utils/permission';
 import { EPerm } from '@/common/configs/perm.config';
 import AchievementsModal from '@/components/AchievementsModal';
+import { EUserAchievementStatus } from '@/common/enums';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -30,6 +31,7 @@ export interface Props extends ReduxProps, RouteProps {
   unreadMessagesLoading: boolean;
   unreadMessages: IList<IMessage>;
   proMode: boolean;
+  hasUnreadProfileMessages: boolean;
 }
 
 interface State {
@@ -101,6 +103,18 @@ class NavMenu extends React.Component<Props, State> {
     );
   };
 
+  renderAvatar = (useDot = false) => {
+    const { session, hasUnreadProfileMessages } = this.props;
+    const inner = (
+      <Avatar
+        icon="user"
+        src={formatAvatarUrl(session.user.avatar)}
+        className={styles.avatarDefault}
+      />
+    );
+    return useDot && hasUnreadProfileMessages ? <Badge dot>{inner}</Badge> : inner;
+  };
+
   render() {
     const {
       mobileVersion,
@@ -111,6 +125,7 @@ class NavMenu extends React.Component<Props, State> {
       location,
       unreadMessages,
       proMode,
+      hasUnreadProfileMessages,
     } = this.props;
     let activeLinkKey = location.pathname;
     if (activeLinkKey.startsWith(pages.problems.index)) {
@@ -129,6 +144,7 @@ class NavMenu extends React.Component<Props, State> {
       activeLinkKey = pages.groups.index;
     }
     const from = location.query.from;
+
     return (
       <Menu
         mode={mobileVersion ? 'vertical' : 'horizontal'}
@@ -235,11 +251,7 @@ class NavMenu extends React.Component<Props, State> {
             <Menu.ItemGroup
               title={
                 <span>
-                  <Avatar
-                    icon="user"
-                    src={formatAvatarUrl(session.user.avatar)}
-                    className={styles.avatarDefault}
-                  />
+                  {this.renderAvatar()}
                   <span style={{ marginLeft: '8px' }}>{session.user.nickname}</span>
                 </span>
               }
@@ -287,11 +299,7 @@ class NavMenu extends React.Component<Props, State> {
           <Menu.SubMenu
             title={
               <span>
-                <Avatar
-                  icon="user"
-                  src={formatAvatarUrl(session.user.avatar)}
-                  className={styles.avatarDefault}
-                />
+                {this.renderAvatar(true)}
                 <Icon type="down" className={gStyles.iconRight} />
               </span>
             }
@@ -309,14 +317,11 @@ class NavMenu extends React.Component<Props, State> {
               </Link>
             </Menu.Item>
             <Menu.Item key="achievements">
-              <AchievementsModal
-                onClickShowModal={(e) => {
-                  if (mobileVersion && onLinkClick) {
-                    onLinkClick(e);
-                  }
-                }}
-              >
-                <span>Achievements</span>
+              <AchievementsModal>
+                <span>
+                  Achievements
+                  {hasUnreadProfileMessages && <Badge status="error" className="ml-md" />}
+                </span>
               </AchievementsModal>
             </Menu.Item>
             <Menu.Item key="favorites">
@@ -417,6 +422,9 @@ function mapStateToProps(state) {
     unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,
     proMode: !!state.settings.proMode,
+    hasUnreadProfileMessages: state.users.completedAchievements.some(
+      (a) => a.status !== EUserAchievementStatus.received,
+    ),
   };
 }
 

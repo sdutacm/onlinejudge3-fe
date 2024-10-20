@@ -35,6 +35,7 @@ import { setSocket } from '@/utils/socket';
 import AchievementToastContainer from '@/components/AchievementToastContainer';
 import 'react-toastify/dist/ReactToastify.css';
 import { initGeneralGlobalEvents } from '@/lib/socketHandlers/general/globalEvents';
+import { reduxEmitter, ReduxEvents, IReduxEvenData } from '@/events/redux';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -108,6 +109,13 @@ class Index extends React.Component<Props, State> {
     dispatch({
       type: 'solutions/getLanguageConfig',
       payload: {},
+    });
+  };
+
+  handleReduxDispatch = ({ type, payload }: IReduxEvenData[ReduxEvents.Dispatch]) => {
+    this.props.dispatch({
+      type,
+      payload,
     });
   };
 
@@ -203,6 +211,7 @@ class Index extends React.Component<Props, State> {
       });
 
     initGeneralGlobalEvents();
+    reduxEmitter.on(ReduxEvents.Dispatch, this.handleReduxDispatch);
   }
 
   componentWillUnmount() {
@@ -212,6 +221,7 @@ class Index extends React.Component<Props, State> {
     window.removeEventListener('click', this.checkUserActive);
     window.removeEventListener('scroll', this.checkUserActive);
     window.removeEventListener('keydown', this.checkUserActive);
+    reduxEmitter.off(ReduxEvents.Dispatch, this.handleReduxDispatch);
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {

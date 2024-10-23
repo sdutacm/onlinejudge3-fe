@@ -620,6 +620,7 @@ li.ant-calendar-time-picker-select-option-selected {
   .achievement-panel-main {
     .achievement-category-container {
       background-color: @bg-color;
+      border-right-color: #0d0d0d;
 
       .achievement-category-list {
         .achievement-category-item {
@@ -646,16 +647,34 @@ li.ant-calendar-time-picker-select-option-selected {
           }
 
           .achievement-list-item-trophy {
-            &.achievement-list-item-trophy-gold svg {
-              fill: @color-gold;
+            &.achievement-list-item-trophy-gold {
+              border-color: @color-gold;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, darken(@color-gold, 5%));
+
+              svg {
+                fill: @color-gold;
+              }
             }
 
-            &.achievement-list-item-trophy-silver svg {
-              fill: @color-silver;
+            &.achievement-list-item-trophy-silver {
+              border-color: @color-silver;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, darken(@color-silver, 5%));
+
+              svg {
+                fill: @color-silver;
+              }
             }
 
-            &.achievement-list-item-trophy-bronze svg {
-              fill: @color-bronze;
+            &.achievement-list-item-trophy-bronze {
+              border-color: @color-bronze;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, darken(@color-bronze, 5%));
+
+              svg {
+                fill: @color-bronze;
+              }
             }
           }
 
@@ -686,6 +705,8 @@ li.ant-calendar-time-picker-select-option-selected {
   }
 
   .achievement-panel-footer {
+    border-top-color: #2d2d2d;
+
     .achievement-statistics-divider {
       border-left: @border-width-base @border-style-base @border-color-split;
     }

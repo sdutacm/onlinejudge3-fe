@@ -1259,6 +1259,7 @@ ul {
       width: 250px;
       overflow: auto;
       background-color: @bg-color;
+      border-right: 1px solid #d3d3d3;
 
       .achievement-category-list {
         display: flex;
@@ -1320,6 +1321,11 @@ ul {
 
           &.achievement-list-item-uncompleted {
             opacity: 0.5;
+
+            .achievement-list-item-trophy {
+              border-style: dashed;
+              background-image: none !important;
+            }
           }
 
           &:hover {
@@ -1332,22 +1338,42 @@ ul {
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid #aaa;
+            border-radius: 50%;
 
             .anticon {
               width: 32px;
               height: 32px;
             }
 
-            &.achievement-list-item-trophy-gold svg {
-              fill: @color-gold;
+            &.achievement-list-item-trophy-gold {
+              border-color: @color-gold;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, lighten(@color-gold, 5%));
+
+              svg {
+                fill: @color-gold;
+              }
             }
 
-            &.achievement-list-item-trophy-silver svg {
-              fill: @color-silver;
+            &.achievement-list-item-trophy-silver {
+              border-color: @color-silver;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, lighten(@color-silver, 5%));
+
+              svg {
+                fill: @color-silver;
+              }
             }
 
-            &.achievement-list-item-trophy-bronze svg {
-              fill: @color-bronze;
+            &.achievement-list-item-trophy-bronze {
+              border-color: @color-bronze;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, lighten(@color-bronze, 5%));
+
+              svg {
+                fill: @color-bronze;
+              }
             }
 
             svg {
@@ -1392,6 +1418,8 @@ ul {
               align-items: end;
             }
 
+            .achievement-list-item-status-action {}
+
             .achievement-list-item-status-text {
               font-weight: 500;
 
@@ -1415,7 +1443,8 @@ ul {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: 16px 0;
+    padding: 16px 0;
+    border-top: 1px solid #ececec;
 
     .achievement-statistics-count {
       .achievement-statistics-count-value {

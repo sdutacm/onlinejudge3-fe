@@ -214,6 +214,9 @@ export default {
       }
       return ret;
     },
+    *receiveAchievement({ payload: { achievementKey } }, { call }) {
+      return yield call(service.receiveAchievement, achievementKey);
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {

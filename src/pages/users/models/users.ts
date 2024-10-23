@@ -214,6 +214,9 @@ export default {
       }
       return ret;
     },
+    *confirmAchievementDeliveried({ payload: { achievementKey } }, { call }) {
+      return yield call(service.confirmAchievementDeliveried, achievementKey);
+    },
     *receiveAchievement({ payload: { achievementKey } }, { call }) {
       return yield call(service.receiveAchievement, achievementKey);
     },

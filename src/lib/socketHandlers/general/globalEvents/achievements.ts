@@ -11,8 +11,14 @@ export function bindEvents() {
       achievementKeys.forEach((key) => {
         showAchievementToast(key);
         reduxEmitter.emit(ReduxEvents.Dispatch, {
-          type: 'users/getSelfCompletedAchievements',
-        })
+          type: 'users/confirmAchievementDeliveried',
+          payload: {
+            achievementKey: key,
+          },
+        });
+      });
+      reduxEmitter.emit(ReduxEvents.Dispatch, {
+        type: 'users/getSelfCompletedAchievements',
       });
     },
   );

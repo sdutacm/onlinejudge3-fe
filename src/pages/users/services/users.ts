@@ -18,6 +18,7 @@ import {
   IUpdateUserEmailReq,
   IResetUserPasswordAndEmailReq,
   IGetSelfCompletedAchievementsResp,
+  IConfirmAchievementDeliveriedReq,
   IReceiveAchievementReq,
 } from '@/common/contracts/user';
 
@@ -99,6 +100,12 @@ export function changeEmail(userId, data) {
 
 export function getSelfCompletedAchievements() {
   return post<void, IGetSelfCompletedAchievementsResp>(routesBe.getSelfCompletedAchievements.url);
+}
+
+export function confirmAchievementDeliveried(achievementKey) {
+  return post<IConfirmAchievementDeliveriedReq, void>(routesBe.confirmAchievementDeliveried.url, {
+    achievementKey,
+  });
 }
 
 export function receiveAchievement(achievementKey) {

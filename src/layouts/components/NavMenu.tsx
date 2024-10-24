@@ -422,7 +422,7 @@ function mapStateToProps(state) {
     unreadMessagesLoading: !!state.loading.effects['messages/getUnreadList'],
     unreadMessages: state.messages.unread,
     proMode: !!state.settings.proMode,
-    hasUnreadProfileMessages: state.users.completedAchievements.some(
+    hasUnreadProfileMessages: state.users.achievedAchievements.some(
       (a) => a.status !== EUserAchievementStatus.received,
     ),
   };

@@ -5,9 +5,9 @@ import { reduxEmitter, ReduxEvents } from '@/events/redux';
 
 export function bindEvents() {
   globalGeneralSocketHandler.registerEvent(
-    'achievementCompleted',
+    'achievementAchieved',
     (achievementKeys: EAchievementKey[]) => {
-      console.log('achievement completed', achievementKeys);
+      console.log('achievement achieved', achievementKeys);
       achievementKeys.forEach((key) => {
         showAchievementToast(key);
         reduxEmitter.emit(ReduxEvents.Dispatch, {
@@ -18,7 +18,7 @@ export function bindEvents() {
         });
       });
       reduxEmitter.emit(ReduxEvents.Dispatch, {
-        type: 'users/getSelfCompletedAchievements',
+        type: 'users/getSelfAchievedAchievements',
       });
     },
   );

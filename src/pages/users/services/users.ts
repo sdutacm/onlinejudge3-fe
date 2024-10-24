@@ -17,7 +17,7 @@ import {
   IUpdateUserDetailReq,
   IUpdateUserEmailReq,
   IResetUserPasswordAndEmailReq,
-  IGetSelfCompletedAchievementsResp,
+  IGetSelfAchievedAchievementsResp,
   IConfirmAchievementDeliveriedReq,
   IReceiveAchievementReq,
 } from '@/common/contracts/user';
@@ -98,8 +98,8 @@ export function changeEmail(userId, data) {
   });
 }
 
-export function getSelfCompletedAchievements() {
-  return post<void, IGetSelfCompletedAchievementsResp>(routesBe.getSelfCompletedAchievements.url);
+export function getSelfAchievedAchievements() {
+  return post<void, IGetSelfAchievedAchievementsResp>(routesBe.getSelfAchievedAchievements.url);
 }
 
 export function confirmAchievementDeliveried(achievementKey) {

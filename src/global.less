@@ -1319,7 +1319,7 @@ ul {
           width: 100%;
           min-height: 88px;
 
-          &.achievement-list-item-uncompleted {
+          &.achievement-list-item-unachieved {
             opacity: 0.5;
 
             .achievement-list-item-trophy {
@@ -1338,7 +1338,7 @@ ul {
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #aaa;
+            border: 1px solid @text-color;
             border-radius: 50%;
 
             .anticon {
@@ -1423,7 +1423,7 @@ ul {
             .achievement-list-item-status-text {
               font-weight: 500;
 
-              &.uncompleted {
+              &.unachieved {
                 color: @color-gray;
               }
             }

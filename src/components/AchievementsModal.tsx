@@ -20,7 +20,7 @@ const achievementLevels = [
 ];
 
 export interface Props extends ReduxProps, RouteProps {
-  completedAchievements: {
+  achievedAchievements: {
     achievementKey: string;
     status: EUserAchievementStatus;
     createdAt: string;
@@ -74,7 +74,7 @@ class AchievementsModal extends React.Component<Props, State> {
       msg.auto(ret);
       if (ret.success) {
         dispatch({
-          type: 'users/getSelfCompletedAchievements',
+          type: 'users/getSelfAchievedAchievements',
         });
         tracker.event({
           category: 'users',
@@ -89,38 +89,38 @@ class AchievementsModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, completedAchievements, receiveLoading } = this.props;
+    const { children, achievedAchievements, receiveLoading } = this.props;
     const { selectedCategory } = this.state;
     const currentCategoryAchievements = (
       achievementConfig.find((c) => c.categoryKey === selectedCategory)?.achievements || []
     ).map((a) => ({
       ...a,
-      status: completedAchievements.find((ca) => ca.achievementKey === a.achievementKey)?.status,
+      status: achievedAchievements.find((ca) => ca.achievementKey === a.achievementKey)?.status,
     }));
-    const currentCategoryCompletedAchievements = currentCategoryAchievements.filter(
+    const currentCategoryAchievedAchievements = currentCategoryAchievements.filter(
       (a) => a.status !== undefined,
     );
-    const currentCategoryUnreadAchievements = currentCategoryCompletedAchievements.filter(
+    const currentCategoryUnreadAchievements = currentCategoryAchievedAchievements.filter(
       (a) => a.status !== EUserAchievementStatus.received,
     );
-    const currentCategoryReadAchievements = currentCategoryCompletedAchievements.filter(
+    const currentCategoryReadAchievements = currentCategoryAchievedAchievements.filter(
       (a) => a.status === EUserAchievementStatus.received,
     );
-    const currentCategoryUncompletedAchievements = currentCategoryAchievements.filter(
+    const currentCategoryUnachievedAchievements = currentCategoryAchievements.filter(
       (a) =>
-        !currentCategoryCompletedAchievements.some((ca) => ca.achievementKey === a.achievementKey),
+        !currentCategoryAchievedAchievements.some((ca) => ca.achievementKey === a.achievementKey),
     );
     const shownAchievements = [
       ...currentCategoryUnreadAchievements,
       ...currentCategoryReadAchievements,
-      ...currentCategoryUncompletedAchievements,
+      ...currentCategoryUnachievedAchievements,
     ];
-    const allCompletedAchievements = achievementConfig
+    const allAchievedAchievements = achievementConfig
       .map((c) => c.achievements)
       .reduce((prev, curr) => prev.concat(curr), [])
-      .filter((a) => completedAchievements.some((ca) => a.achievementKey === ca.achievementKey));
-    const completedCountPerLevel = [1, 2, 3].map(
-      (level) => allCompletedAchievements.filter((a) => a.level === level).length,
+      .filter((a) => achievedAchievements.some((ca) => a.achievementKey === ca.achievementKey));
+    const achievedCountPerLevel = [1, 2, 3].map(
+      (level) => allAchievedAchievements.filter((a) => a.level === level).length,
     );
 
     return (
@@ -140,14 +140,14 @@ class AchievementsModal extends React.Component<Props, State> {
               <div className="achievement-category-container">
                 <ul className="achievement-category-list">
                   {achievementConfig.map((category) => {
-                    const completedAchievementsInCategory = category.achievements
+                    const achievedAchievementsInCategory = category.achievements
                       .filter((achievement) =>
-                        this.props.completedAchievements.find(
+                        this.props.achievedAchievements.find(
                           (ca) => ca.achievementKey === achievement.achievementKey,
                         ),
                       )
                       .map((achievement) => {
-                        const a = this.props.completedAchievements.find(
+                        const a = this.props.achievedAchievements.find(
                           (ca) => ca.achievementKey === achievement.achievementKey,
                         );
                         return {
@@ -155,7 +155,7 @@ class AchievementsModal extends React.Component<Props, State> {
                           status: a.status,
                         };
                       });
-                    const hasUnread = completedAchievementsInCategory.some(
+                    const hasUnread = achievedAchievementsInCategory.some(
                       (ca) => ca.status !== EUserAchievementStatus.received,
                     );
 
@@ -172,7 +172,7 @@ class AchievementsModal extends React.Component<Props, State> {
                           {hasUnread && <Badge status="error" className="ml-md" />}
                         </span>
                         <span className="achievement-category-item-secondary">
-                          {completedAchievementsInCategory.length}/{category.achievements.length}
+                          {achievedAchievementsInCategory.length}/{category.achievements.length}
                         </span>
                       </li>
                     );
@@ -182,27 +182,29 @@ class AchievementsModal extends React.Component<Props, State> {
               <div className="achievement-list-container">
                 <ul className="achievement-list">
                   {shownAchievements.map((achievement) => {
-                    const completedAchievement = completedAchievements.find(
+                    const achievedAchievement = achievedAchievements.find(
                       (ca) => ca.achievementKey === achievement.achievementKey,
                     );
-                    const shouldHide = achievement.hidden && !completedAchievement;
+                    const shouldHide = achievement.hidden && !achievedAchievement;
                     const unread =
-                      completedAchievement &&
-                      completedAchievement.status !== EUserAchievementStatus.received;
+                      achievedAchievement &&
+                      achievedAchievement.status !== EUserAchievementStatus.received;
                     return (
                       <li
                         key={achievement.achievementKey}
                         className={classNames('achievement-list-item', {
-                          'achievement-list-item-uncompleted': !completedAchievement,
+                          'achievement-list-item-unachieved': !achievedAchievement,
                         })}
                       >
                         <div
                           className={classNames(
                             'achievement-list-item-trophy',
-                            `achievement-list-item-trophy-${EAchievementLevel[achievement.level]}`,
+                            `achievement-list-item-trophy-${
+                              shouldHide ? 'unknown' : EAchievementLevel[achievement.level]
+                            }`,
                           )}
                         >
-                          <Icon theme="outlined" component={AchievementTrophySvg} />
+                          {!shouldHide && <Icon theme="outlined" component={AchievementTrophySvg} />}
                         </div>
                         <div className="achievement-list-item-info">
                           <div className="achievement-list-item-title text-ellipsis">
@@ -216,7 +218,7 @@ class AchievementsModal extends React.Component<Props, State> {
                           </div>
                         </div>
                         <div className="achievement-list-item-status">
-                          {completedAchievement ? (
+                          {achievedAchievement ? (
                             unread ? (
                               <div className="achievement-list-item-status-action">
                                 <Button
@@ -236,12 +238,12 @@ class AchievementsModal extends React.Component<Props, State> {
                                   Achieved
                                 </div>
                                 <div className="achievement-list-item-status-date nowrap">
-                                  {moment(completedAchievement.createdAt).format('YYYY-MM-DD')}
+                                  {moment(achievedAchievement.createdAt).format('YYYY-MM-DD')}
                                 </div>
                               </div>
                             )
                           ) : (
-                            <div className="achievement-list-item-status-text uncompleted nowrap">
+                            <div className="achievement-list-item-status-text unachieved nowrap">
                               Unachieved
                             </div>
                           )}
@@ -257,7 +259,7 @@ class AchievementsModal extends React.Component<Props, State> {
                 <span>
                   Total Achieved{' '}
                   <span className="achievement-statistics-count-value">
-                    {allCompletedAchievements.length}
+                    {allAchievedAchievements.length}
                   </span>
                 </span>
               </div>
@@ -274,7 +276,7 @@ class AchievementsModal extends React.Component<Props, State> {
                       <Icon theme="outlined" component={AchievementTrophySvg} />
                     </div>
                     <div className="achievement-statistics-trophy-count">
-                      {completedCountPerLevel[index]}
+                      {achievedCountPerLevel[index]}
                     </div>
                   </div>
                 ))}
@@ -289,7 +291,7 @@ class AchievementsModal extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   return {
-    completedAchievements: state.users.completedAchievements,
+    achievedAchievements: state.users.achievedAchievements,
     receiveLoading: !!state.loading.effects['users/receiveAchievement'],
   };
 }

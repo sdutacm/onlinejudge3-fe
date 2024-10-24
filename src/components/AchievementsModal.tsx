@@ -110,10 +110,17 @@ class AchievementsModal extends React.Component<Props, State> {
       (a) =>
         !currentCategoryAchievedAchievements.some((ca) => ca.achievementKey === a.achievementKey),
     );
+    const currentCategoryUnachievedVisibleAchievements = currentCategoryUnachievedAchievements.filter(
+      (a) => !a.hidden,
+    );
+    const currentCategoryUnachievedHiddenAchievements = currentCategoryUnachievedAchievements.filter(
+      (a) => a.hidden,
+    );
     const shownAchievements = [
       ...currentCategoryUnreadAchievements,
       ...currentCategoryReadAchievements,
-      ...currentCategoryUnachievedAchievements,
+      ...currentCategoryUnachievedVisibleAchievements,
+      ...currentCategoryUnachievedHiddenAchievements,
     ];
     const allAchievedAchievements = achievementConfig
       .map((c) => c.achievements)
@@ -204,7 +211,9 @@ class AchievementsModal extends React.Component<Props, State> {
                             }`,
                           )}
                         >
-                          {!shouldHide && <Icon theme="outlined" component={AchievementTrophySvg} />}
+                          {!shouldHide && (
+                            <Icon theme="outlined" component={AchievementTrophySvg} />
+                          )}
                         </div>
                         <div className="achievement-list-item-info">
                           <div className="achievement-list-item-title text-ellipsis">

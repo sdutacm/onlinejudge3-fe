@@ -64,7 +64,10 @@ class AchievementsModal extends React.Component<Props, State> {
   };
 
   handleReceiveAchievement = (achievementKey: string) => {
-    const { dispatch } = this.props;
+    const { dispatch, receiveLoading } = this.props;
+    if (receiveLoading) {
+      return;
+    }
     dispatch({
       type: 'users/receiveAchievement',
       payload: {
@@ -126,7 +129,7 @@ class AchievementsModal extends React.Component<Props, State> {
       .map((c) => c.achievements)
       .reduce((prev, curr) => prev.concat(curr), [])
       .filter((a) => achievedAchievements.some((ca) => a.achievementKey === ca.achievementKey));
-    const achievedCountPerLevel = [1, 2, 3].map(
+    const achievedCountPerLevel = achievementLevels.map(
       (level) => allAchievedAchievements.filter((a) => a.level === level).length,
     );
 
@@ -186,7 +189,7 @@ class AchievementsModal extends React.Component<Props, State> {
                   })}
                 </ul>
               </div>
-              <div className="achievement-list-container">
+              <div className="achievement-list-container" key={selectedCategory}>
                 <ul className="achievement-list">
                   {shownAchievements.map((achievement) => {
                     const achievedAchievement = achievedAchievements.find(
@@ -216,13 +219,22 @@ class AchievementsModal extends React.Component<Props, State> {
                           )}
                         </div>
                         <div className="achievement-list-item-info">
-                          <div className="achievement-list-item-title text-ellipsis">
+                          <div
+                            className="achievement-list-item-title text-ellipsis"
+                            title={shouldHide ? '' : achievement.title}
+                          >
                             {shouldHide ? '???' : achievement.title}
                           </div>
-                          <div className="achievement-list-item-description text-ellipsis">
+                          <div
+                            className="achievement-list-item-description text-ellipsis"
+                            title={shouldHide ? '' : achievement.description}
+                          >
                             {shouldHide ? '' : achievement.description}
                           </div>
-                          <div className="achievement-list-item-annotation text-ellipsis">
+                          <div
+                            className="achievement-list-item-annotation text-ellipsis"
+                            title={shouldHide ? '' : achievement.annotation}
+                          >
                             {shouldHide ? '' : achievement.annotation}
                           </div>
                         </div>
@@ -233,7 +245,6 @@ class AchievementsModal extends React.Component<Props, State> {
                                 <Button
                                   type="primary"
                                   size="small"
-                                  loading={receiveLoading}
                                   onClick={() => {
                                     this.handleReceiveAchievement(achievement.achievementKey);
                                   }}

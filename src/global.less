@@ -1245,7 +1245,7 @@ ul {
 
 .achievement-panel {
   width: 100%;
-  height: 404px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -1383,55 +1383,74 @@ ul {
             }
           }
 
-          .achievement-list-item-info {
-            margin-left: 16px;
+          .achievement-list-item-bar {
             flex: 1;
-            overflow: hidden;
+            margin-left: 16px;
 
-            .achievement-list-item-title {
-              font-size: 16px;
-              font-weight: 500;
-              margin-top: 4px;
-            }
-
-            .achievement-list-item-description {
-              margin-top: 2px;
-              font-size: 13px;
-              color: fade(@text-color, 65%);
-            }
-
-            .achievement-list-item-annotation {
-              margin-top: 2px;
-              font-size: 11px;
-              font-style: italic;
-              color: fade(@text-color, 40%);
-            }
-          }
-
-          .achievement-list-item-status {
-            font-size: 14px;
-            margin-left: 8px;
-            margin-right: 12px;
-
-            .achievement-list-item-status-group {
+            .achievement-list-item-main {
               display: flex;
-              flex-direction: column;
-              align-items: end;
-            }
+              align-items: center;
 
-            .achievement-list-item-status-action {}
+              .achievement-list-item-info {
+                flex: 1;
+                overflow: hidden;
 
-            .achievement-list-item-status-text {
-              font-weight: 500;
+                .achievement-list-item-title {
+                  font-size: 16px;
+                  font-weight: 500;
+                  margin-top: 4px;
+                }
 
-              &.unachieved {
-                color: @color-gray;
+                .achievement-list-item-description {
+                  margin-top: 2px;
+                  font-size: 13px;
+                  color: fade(@text-color, 70%);
+                }
+
+                .achievement-list-item-annotation {
+                  margin-top: 2px;
+                  font-size: 11.5px;
+                  font-style: italic;
+                  color: fade(@text-color, 55%);
+                }
+              }
+
+              .achievement-list-item-status {
+                font-size: 14px;
+                margin-left: 8px;
+                margin-right: 12px;
+
+                .achievement-list-item-status-group {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: end;
+                }
+
+                .achievement-list-item-status-action {
+                }
+
+                .achievement-list-item-status-text {
+                  font-weight: 500;
+
+                  &.unachieved {
+                    color: @color-gray;
+                  }
+                }
+
+                .achievement-list-item-status-date {
+                  font-weight: 500;
+                  color: @color-green;
+                }
               }
             }
 
-            .achievement-list-item-status-date {
-              font-weight: 500;
-              color: @color-green;
+            .achievement-list-item-rate {
+              border-top: 1px solid #ededed;
+              margin-top: 2px;
+              padding-top: 2px;
+              font-size: 10px;
+              font-weight: 300;
+              color: fade(@text-color, 45%);
             }
           }
         }

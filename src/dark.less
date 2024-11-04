@@ -680,25 +680,34 @@ li.ant-calendar-time-picker-select-option-selected {
             }
           }
 
-          .achievement-list-item-info {
-            .achievement-list-item-description {
-              color: fade(@text-color, 65%);
-            }
+          .achievement-list-item-bar {
+            .achievement-list-item-main {
+              .achievement-list-item-info {
+                .achievement-list-item-description {
+                  color: fade(@text-color, 65%);
+                }
 
-            .achievement-list-item-annotation {
-              color: fade(@text-color, 40%);
-            }
-          }
+                .achievement-list-item-annotation {
+                  color: fade(@text-color, 40%);
+                }
+              }
 
-          .achievement-list-item-status {
-            .achievement-list-item-status-text {
-              &.unachieved {
-                color: @color-gray;
+              .achievement-list-item-status {
+                .achievement-list-item-status-text {
+                  &.unachieved {
+                    color: @color-gray;
+                  }
+                }
+
+                .achievement-list-item-status-date {
+                  color: @color-green;
+                }
               }
             }
 
-            .achievement-list-item-status-date {
-              color: @color-green;
+            .achievement-list-item-rate {
+              border-top-color: #2f2f2f;
+              color: fade(@text-color, 45%);
             }
           }
         }

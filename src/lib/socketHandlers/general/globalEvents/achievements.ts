@@ -20,6 +20,9 @@ export function bindEvents() {
       reduxEmitter.emit(ReduxEvents.Dispatch, {
         type: 'users/getSelfAchievedAchievements',
       });
+      reduxEmitter.emit(ReduxEvents.Dispatch, {
+        type: 'achievements/getStats',
+      });
     },
   );
 }

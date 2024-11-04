@@ -79,6 +79,9 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
+          type: 'achievements/getStats',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId: ret.data.userId },
         });
@@ -120,6 +123,9 @@ export default {
         });
         yield put({
           type: 'users/getSelfAchievedAchievements',
+        });
+        yield put({
+          type: 'achievements/getStats',
         });
         yield put({
           type: 'messages/getUnreadList',

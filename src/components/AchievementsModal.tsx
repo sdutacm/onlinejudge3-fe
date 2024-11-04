@@ -12,6 +12,7 @@ import { EAchievementLevel, EUserAchievementStatus } from '@/common/enums';
 import AchievementTrophySvg from '@/assets/svg/achievement-trophy.svg';
 import msg from '@/utils/msg';
 import { Howl } from 'howler';
+import { EAchievementKey } from '@/common/configs/achievement.config';
 
 const achievementLevels = [
   EAchievementLevel.gold,
@@ -25,6 +26,13 @@ export interface Props extends ReduxProps, RouteProps {
     status: EUserAchievementStatus;
     createdAt: string;
   }[];
+  stats: Record<
+    EAchievementKey,
+    {
+      count: number;
+      rate: number;
+    }
+  >;
   receiveLoading: boolean;
   onClickShowModal?: React.MouseEventHandler;
 }
@@ -79,6 +87,9 @@ class AchievementsModal extends React.Component<Props, State> {
         dispatch({
           type: 'users/getSelfAchievedAchievements',
         });
+        dispatch({
+          type: 'achievements/getStats',
+        });
         tracker.event({
           category: 'users',
           action: 'receiveAchievement',
@@ -91,8 +102,20 @@ class AchievementsModal extends React.Component<Props, State> {
     });
   };
 
+  renderRate(achievementKey: string) {
+    const { stats } = this.props;
+    const { count, rate } = stats[achievementKey];
+    if (rate === 0 && count === 0) {
+      return <span>Nobody has achieved</span>;
+    }
+    if (rate === 0 && count > 0) {
+      return <span>{count} {count === 1 ? 'user has' : `users have`} achieved</span>;
+    }
+    return <span>{rate * 100}% users have achieved</span>;
+  }
+
   render() {
-    const { children, achievedAchievements, receiveLoading } = this.props;
+    const { children, achievedAchievements } = this.props;
     const { selectedCategory } = this.state;
     const currentCategoryAchievements = (
       achievementConfig.find((c) => c.categoryKey === selectedCategory)?.achievements || []
@@ -142,7 +165,7 @@ class AchievementsModal extends React.Component<Props, State> {
           onOk={this.handleHideModel}
           onCancel={this.handleHideModel}
           footer={null}
-          width={720}
+          width={760}
           bodyStyle={{ padding: '0' }}
         >
           <div className="achievement-panel">
@@ -218,55 +241,62 @@ class AchievementsModal extends React.Component<Props, State> {
                             <Icon theme="outlined" component={AchievementTrophySvg} />
                           )}
                         </div>
-                        <div className="achievement-list-item-info">
-                          <div
-                            className="achievement-list-item-title text-ellipsis"
-                            title={shouldHide ? '' : achievement.title}
-                          >
-                            {shouldHide ? '???' : achievement.title}
-                          </div>
-                          <div
-                            className="achievement-list-item-description text-ellipsis"
-                            title={shouldHide ? '' : achievement.description}
-                          >
-                            {shouldHide ? '' : achievement.description}
-                          </div>
-                          <div
-                            className="achievement-list-item-annotation text-ellipsis"
-                            title={shouldHide ? '' : achievement.annotation}
-                          >
-                            {shouldHide ? '' : achievement.annotation}
-                          </div>
-                        </div>
-                        <div className="achievement-list-item-status">
-                          {achievedAchievement ? (
-                            unread ? (
-                              <div className="achievement-list-item-status-action">
-                                <Button
-                                  type="primary"
-                                  size="small"
-                                  onClick={() => {
-                                    this.handleReceiveAchievement(achievement.achievementKey);
-                                  }}
-                                >
-                                  Receive
-                                </Button>
+                        <div className="achievement-list-item-bar">
+                          <div className="achievement-list-item-main">
+                            <div className="achievement-list-item-info">
+                              <div
+                                className="achievement-list-item-title text-ellipsis"
+                                title={shouldHide ? '' : achievement.title}
+                              >
+                                {shouldHide ? '???' : achievement.title}
                               </div>
-                            ) : (
-                              <div className="achievement-list-item-status-group">
-                                <div className="achievement-list-item-status-text nowrap">
-                                  Achieved
-                                </div>
-                                <div className="achievement-list-item-status-date nowrap">
-                                  {moment(achievedAchievement.createdAt).format('YYYY-MM-DD')}
-                                </div>
+                              <div
+                                className="achievement-list-item-description text-ellipsis"
+                                title={shouldHide ? '' : achievement.description}
+                              >
+                                {shouldHide ? '' : achievement.description}
                               </div>
-                            )
-                          ) : (
-                            <div className="achievement-list-item-status-text unachieved nowrap">
-                              Unachieved
+                              <div
+                                className="achievement-list-item-annotation text-ellipsis"
+                                title={shouldHide ? '' : achievement.annotation}
+                              >
+                                {shouldHide ? '' : achievement.annotation}
+                              </div>
                             </div>
-                          )}
+                            <div className="achievement-list-item-status">
+                              {achievedAchievement ? (
+                                unread ? (
+                                  <div className="achievement-list-item-status-action">
+                                    <Button
+                                      type="primary"
+                                      size="small"
+                                      onClick={() => {
+                                        this.handleReceiveAchievement(achievement.achievementKey);
+                                      }}
+                                    >
+                                      Receive
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div className="achievement-list-item-status-group">
+                                    <div className="achievement-list-item-status-text nowrap">
+                                      Achieved
+                                    </div>
+                                    <div className="achievement-list-item-status-date nowrap">
+                                      {moment(achievedAchievement.createdAt).format('YYYY-MM-DD')}
+                                    </div>
+                                  </div>
+                                )
+                              ) : (
+                                <div className="achievement-list-item-status-text unachieved nowrap">
+                                  Unachieved
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="achievement-list-item-rate text-ellipsis">
+                            {this.renderRate(achievement.achievementKey)}
+                          </div>
                         </div>
                       </li>
                     );
@@ -312,6 +342,7 @@ class AchievementsModal extends React.Component<Props, State> {
 function mapStateToProps(state) {
   return {
     achievedAchievements: state.users.achievedAchievements,
+    stats: state.achievements.stats,
     receiveLoading: !!state.loading.effects['users/receiveAchievement'],
   };
 }

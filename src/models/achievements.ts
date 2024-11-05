@@ -41,5 +41,8 @@ export default {
         });
       }
     },
+    *requestAchievementPush(_, { call }) {
+      return yield call(service.requestAchievementPush);
+    },
   },
 };

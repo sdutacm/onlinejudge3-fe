@@ -1533,6 +1533,12 @@ ul {
 .achievement-toast-container {
   padding-left: 8px;
   padding-right: 8px;
+  user-select: none;
+
+  @media only screen and (min-width: 768px) {
+    width: auto;
+    min-width: var(--toastify-toast-width);
+  }
 
   .Toastify--animate {
     animation-duration: 0.6s;
@@ -1625,6 +1631,7 @@ ul {
 
         .achievement-toast-info {
           margin-left: 16px;
+          margin-right: 16px;
           flex: 1;
           overflow: hidden;
           animation: achievementFadeRight 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -1639,14 +1646,14 @@ ul {
           .achievement-toast-description {
             margin-top: 2px;
             font-size: 13px;
-            color: fade(@text-color, 65%);
+            color: fade(@text-color, 70%);
           }
 
           .achievement-toast-annotation {
             margin-top: 2px;
             font-size: 11px;
             font-style: italic;
-            color: fade(@text-color, 40%);
+            color: fade(@text-color, 55%);
           }
         }
       }

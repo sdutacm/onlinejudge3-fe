@@ -79,9 +79,6 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
-          type: 'achievements/getStats',
-        });
-        yield put({
           type: 'messages/getUnreadList',
           payload: { userId: ret.data.userId },
         });
@@ -92,6 +89,12 @@ export default {
         yield put({
           type: 'notes/getList',
           payload: { userId: ret.data.userId },
+        });
+        yield put({
+          type: 'achievements/getStats',
+        });
+        yield put({
+          type: 'achievements/requestAchievementPush',
         });
         setSocket('general', createGeneralSocket());
       }
@@ -125,9 +128,6 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
-          type: 'achievements/getStats',
-        });
-        yield put({
           type: 'messages/getUnreadList',
           payload: { userId },
         });
@@ -138,6 +138,12 @@ export default {
         yield put({
           type: 'notes/getList',
           payload: { userId },
+        });
+        yield put({
+          type: 'achievements/getStats',
+        });
+        yield put({
+          type: 'achievements/requestAchievementPush',
         });
         setSocket('general', createGeneralSocket());
         OJBK.logLogin(ret.data);

@@ -2,13 +2,20 @@ import { globalGeneralSocketHandler } from '..';
 import { EAchievementKey } from '@/common/configs/achievement.config';
 import { showAchievementToast } from '@/components/AchievementToast';
 import { reduxEmitter, ReduxEvents } from '@/events/redux';
+import { sleep } from '@/utils/misc';
 
 export function bindEvents() {
   globalGeneralSocketHandler.registerEvent(
     'achievementAchieved',
-    (achievementKeys: EAchievementKey[]) => {
+    async (achievementKeys: EAchievementKey[]) => {
       console.log('achievement achieved', achievementKeys);
-      achievementKeys.forEach((key) => {
+      reduxEmitter.emit(ReduxEvents.Dispatch, {
+        type: 'users/getSelfAchievedAchievements',
+      });
+      reduxEmitter.emit(ReduxEvents.Dispatch, {
+        type: 'achievements/getStats',
+      });
+      for (const key of achievementKeys) {
         showAchievementToast(key);
         reduxEmitter.emit(ReduxEvents.Dispatch, {
           type: 'users/confirmAchievementDeliveried',
@@ -16,13 +23,8 @@ export function bindEvents() {
             achievementKey: key,
           },
         });
-      });
-      reduxEmitter.emit(ReduxEvents.Dispatch, {
-        type: 'users/getSelfAchievedAchievements',
-      });
-      reduxEmitter.emit(ReduxEvents.Dispatch, {
-        type: 'achievements/getStats',
-      });
+        await sleep(200);
+      }
     },
   );
 }

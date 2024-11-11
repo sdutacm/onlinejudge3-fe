@@ -17,6 +17,12 @@ export class GeneralSocketHandler {
       socket.on(event, handler);
     });
   }
+
+  unbindEvents(socket: SocketIOClient.Socket) {
+    this.events.forEach(([event, handler]) => {
+      socket.off(event, handler);
+    });
+  }
 }
 
 export const globalGeneralSocketHandler = new GeneralSocketHandler();

@@ -31,6 +31,7 @@ function createGeneralSocket() {
   });
   socket.on('disconnect', () => {
     console.log('session socket disconnected');
+    globalGeneralSocketHandler.unbindEvents(socket);
   });
   return socket;
 }

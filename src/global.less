@@ -1241,6 +1241,426 @@ ul {
   }
 }
 
+// achievement panel
+
+.achievement-panel {
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+
+  .achievement-panel-main {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow: auto;
+
+    .achievement-category-container {
+      width: 216px;
+      overflow: auto;
+      background-color: @bg-color;
+      border-right: 1px solid #d3d3d3;
+
+      .achievement-category-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        padding: 8px;
+        margin-bottom: 0;
+
+        .achievement-category-item {
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          flex-wrap: wrap;
+          padding: 8px 8px 8px 16px;
+
+          &:hover {
+            background-color: darken(@bg-color, 5%);
+          }
+
+          &.active {
+            background-color: darken(@bg-color, 10%);
+          }
+
+          .achievement-category-item-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 4px;
+          }
+
+          .achievement-category-item-secondary {
+            margin-top: 2px;
+            font-size: 13px;
+            color: fade(@text-color, 50%);
+          }
+        }
+      }
+    }
+
+    .achievement-list-container {
+      flex: 1;
+      overflow: auto;
+
+      .achievement-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+        padding-inline-start: 0;
+
+        .achievement-list-item {
+          cursor: pointer;
+          display: flex;
+          flex-direction: row;
+          padding: 8px 16px;
+          align-items: center;
+          width: 100%;
+          min-height: 88px;
+
+          &.achievement-list-item-unachieved {
+            opacity: 0.5;
+
+            .achievement-list-item-trophy {
+              border-style: dashed;
+              background-image: none !important;
+            }
+          }
+
+          &:hover {
+            background-color: darken(@bg-color, 1%);
+          }
+
+          .achievement-list-item-trophy {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid @text-color;
+            border-radius: 50%;
+
+            .anticon {
+              width: 32px;
+              height: 32px;
+            }
+
+            &.achievement-list-item-trophy-gold {
+              border-color: @color-gold;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, lighten(@color-gold, 5%));
+
+              svg {
+                fill: @color-gold;
+              }
+            }
+
+            &.achievement-list-item-trophy-silver {
+              border-color: @color-silver;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, lighten(@color-silver, 5%));
+
+              svg {
+                fill: @color-silver;
+              }
+            }
+
+            &.achievement-list-item-trophy-bronze {
+              border-color: @color-bronze;
+              background-color: transparent;
+              background-image: linear-gradient(135deg, transparent, lighten(@color-bronze, 5%));
+
+              svg {
+                fill: @color-bronze;
+              }
+            }
+
+            svg {
+              width: 100%;
+              height: 100%;
+            }
+          }
+
+          .achievement-list-item-bar {
+            flex: 1;
+            margin-left: 16px;
+
+            .achievement-list-item-main {
+              display: flex;
+              align-items: center;
+
+              .achievement-list-item-info {
+                flex: 1;
+                overflow: hidden;
+
+                .achievement-list-item-title {
+                  font-size: 16px;
+                  font-weight: 500;
+                  margin-top: 4px;
+                }
+
+                .achievement-list-item-description {
+                  margin-top: 2px;
+                  font-size: 13px;
+                  color: fade(@text-color, 70%);
+                }
+
+                .achievement-list-item-annotation {
+                  margin-top: 2px;
+                  font-size: 11.5px;
+                  font-style: italic;
+                  color: fade(@text-color, 55%);
+                }
+              }
+
+              .achievement-list-item-status {
+                font-size: 14px;
+                margin-left: 8px;
+                margin-right: 12px;
+
+                .achievement-list-item-status-group {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: end;
+                }
+
+                .achievement-list-item-status-action {
+                }
+
+                .achievement-list-item-status-text {
+                  font-weight: 500;
+
+                  &.unachieved {
+                    color: @color-gray;
+                  }
+                }
+
+                .achievement-list-item-status-date {
+                  font-weight: 500;
+                  color: @color-green;
+                }
+              }
+            }
+
+            .achievement-list-item-rate {
+              border-top: 1px solid #ededed;
+              margin-top: 2px;
+              padding-top: 2px;
+              font-size: 10px;
+              font-weight: 300;
+              color: fade(@text-color, 45%);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .achievement-panel-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 0;
+    border-top: 1px solid #ececec;
+
+    .achievement-statistics-count {
+      .achievement-statistics-count-value {
+        margin-left: 8px;
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
+
+    .achievement-statistics-divider {
+      height: 100%;
+      margin: 0 32px;
+      border-left: @border-width-base @border-style-base @border-color-split;
+    }
+
+    .achievement-statistics-trophy-board {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      .achievement-statistics-trophy {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+
+        &:not(:first-of-type) {
+          margin-left: 16px;
+        }
+
+        .anticon {
+          width: 20px;
+          height: 20px;
+        }
+
+        .achievement-statistics-trophy-icon-gold svg {
+          fill: @color-gold;
+        }
+
+        .achievement-statistics-trophy-icon-silver svg {
+          fill: @color-silver;
+        }
+
+        .achievement-statistics-trophy-icon-bronze svg {
+          fill: @color-bronze;
+        }
+
+        .achievement-statistics-trophy-icon svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .achievement-statistics-trophy-count {
+        font-size: 18px;
+        font-weight: 500;
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+// achievement toast
+
+.achievement-toast-container {
+  padding-left: 8px;
+  padding-right: 8px;
+  user-select: none;
+
+  @media only screen and (min-width: 768px) {
+    width: auto;
+    min-width: var(--toastify-toast-width);
+  }
+
+  .Toastify--animate {
+    animation-duration: 0.6s;
+  }
+
+  .Toastify__toast {
+    height: 64px;
+    border-radius: 32px;
+    background-color: lighten(@component-background, 10%);
+    margin-bottom: 0.5rem;
+
+    .achievement-toast-body {
+      width: 100%;
+      padding: 0;
+
+      > div {
+        width: 100%;
+      }
+
+      .achievement-toast {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        @keyframes achievementFadeLeft {
+          0% {
+            opacity: 0;
+            transform: translate3d(20px, 0, 0);
+          }
+
+          25% {
+            opacity: 0;
+            transform: translate3d(20px, 0, 0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        @keyframes achievementFadeRight {
+          0% {
+            opacity: 0;
+            transform: translate3d(-20px, 0, 0);
+          }
+
+          25% {
+            opacity: 0;
+            transform: translate3d(-20px, 0, 0);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        .achievement-toast-trophy {
+          margin-left: 8px;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: achievementFadeLeft 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+          .anticon {
+            width: 32px;
+            height: 32px;
+          }
+
+          &.achievement-toast-trophy-gold svg {
+            fill: @color-gold;
+          }
+
+          &.achievement-toast-trophy-silver svg {
+            fill: @color-silver;
+          }
+
+          &.achievement-toast-trophy-bronze svg {
+            fill: @color-bronze;
+          }
+
+          svg {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .achievement-toast-info {
+          margin-left: 16px;
+          margin-right: 16px;
+          flex: 1;
+          overflow: hidden;
+          animation: achievementFadeRight 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+          .achievement-toast-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: @text-color;
+            margin-top: 4px;
+          }
+
+          .achievement-toast-description {
+            margin-top: 2px;
+            font-size: 13px;
+            color: fade(@text-color, 70%);
+          }
+
+          .achievement-toast-annotation {
+            margin-top: 2px;
+            font-size: 11px;
+            font-style: italic;
+            color: fade(@text-color, 55%);
+          }
+        }
+      }
+    }
+  }
+}
+
 // rich text editor
 
 .rt-editor {

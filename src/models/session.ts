@@ -2,6 +2,10 @@ import * as service from '../services/session';
 import { endInterception, initInterceptor, startInterception } from '@/utils/effectInterceptor';
 import OJBK from '@/utils/OJBK';
 import { genTimeFlag } from '@/utils/misc';
+import io from 'socket.io-client';
+import socketConfig from '@/configs/socket';
+import { clearSocket, setSocket } from '@/utils/socket';
+import { globalGeneralSocketHandler } from '@/lib/socketHandlers/general';
 
 function genInitialState() {
   return {
@@ -12,6 +16,23 @@ function genInitialState() {
       rows: [],
     },
   };
+}
+
+function createGeneralSocket() {
+  console.log('create general socket');
+  const socket = io(socketConfig.general.url, {
+    path: socketConfig.path,
+    transports: ['websocket'],
+    multiplex: false,
+  });
+  socket.on('connect', () => {
+    console.log('session socket connected');
+    globalGeneralSocketHandler.bindEvents(socket);
+  });
+  socket.on('disconnect', () => {
+    console.log('session socket disconnected');
+  });
+  return socket;
 }
 
 export default {
@@ -55,6 +76,9 @@ export default {
           payload: { user: ret.data },
         });
         yield put({
+          type: 'users/getSelfAchievedAchievements',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId: ret.data.userId },
         });
@@ -66,6 +90,13 @@ export default {
           type: 'notes/getList',
           payload: { userId: ret.data.userId },
         });
+        yield put({
+          type: 'achievements/getStats',
+        });
+        yield put({
+          type: 'achievements/requestAchievementPush',
+        });
+        setSocket('general', createGeneralSocket());
       }
       endInterception();
       return ret;
@@ -94,6 +125,9 @@ export default {
           payload: { userId },
         });
         yield put({
+          type: 'users/getSelfAchievedAchievements',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId },
         });
@@ -105,6 +139,13 @@ export default {
           type: 'notes/getList',
           payload: { userId },
         });
+        yield put({
+          type: 'achievements/getStats',
+        });
+        yield put({
+          type: 'achievements/requestAchievementPush',
+        });
+        setSocket('general', createGeneralSocket());
         OJBK.logLogin(ret.data);
       }
       return ret;
@@ -128,6 +169,9 @@ export default {
           type: 'users/clearProblemResultStats',
         });
         yield put({
+          type: 'users/clearSelfAchievedAchievements',
+        });
+        yield put({
           type: 'messages/clearAllMessages',
         });
         yield put({
@@ -139,6 +183,7 @@ export default {
         yield put({
           type: 'groups/clearAllJoinedGroups',
         });
+        clearSocket('general');
       }
       return ret;
     },

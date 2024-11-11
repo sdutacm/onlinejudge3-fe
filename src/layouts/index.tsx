@@ -32,6 +32,10 @@ import { decodeJudgeStatusBuffer } from '@/utils/judger';
 import FullScreenContent from './components/FullScreenContent';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { setSocket } from '@/utils/socket';
+import AchievementToastContainer from '@/components/AchievementToastContainer';
+import 'react-toastify/dist/ReactToastify.css';
+import { initGeneralGlobalEvents } from '@/lib/socketHandlers/general/globalEvents';
+import { reduxEmitter, ReduxEvents, IReduxEvenData } from '@/events/redux';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -105,6 +109,13 @@ class Index extends React.Component<Props, State> {
     dispatch({
       type: 'solutions/getLanguageConfig',
       payload: {},
+    });
+  };
+
+  handleReduxDispatch = ({ type, payload }: IReduxEvenData[ReduxEvents.Dispatch]) => {
+    this.props.dispatch({
+      type,
+      payload,
     });
   };
 
@@ -198,6 +209,9 @@ class Index extends React.Component<Props, State> {
       .catch((e) => {
         console.log('No vin file, skip.', e);
       });
+
+    initGeneralGlobalEvents();
+    reduxEmitter.on(ReduxEvents.Dispatch, this.handleReduxDispatch);
   }
 
   componentWillUnmount() {
@@ -207,6 +221,7 @@ class Index extends React.Component<Props, State> {
     window.removeEventListener('click', this.checkUserActive);
     window.removeEventListener('scroll', this.checkUserActive);
     window.removeEventListener('keydown', this.checkUserActive);
+    reduxEmitter.off(ReduxEvents.Dispatch, this.handleReduxDispatch);
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
@@ -445,6 +460,8 @@ class Index extends React.Component<Props, State> {
           {/* </div> */}
         </Footer>
         <FullScreenContent />
+
+        <AchievementToastContainer />
       </Layout>
     );
   }

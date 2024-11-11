@@ -7,6 +7,7 @@ import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { Results } from '@/configs/results';
 import * as groupService from '../../groups/services/groups';
+import { IGetSelfAchievedAchievementsResp } from '@/common/contracts/user';
 
 const initialState = {
   list: {
@@ -20,6 +21,7 @@ const initialState = {
     acceptedProblemIds: [],
     attemptedProblemIds: [],
   },
+  achievedAchievements: [],
 };
 
 export default {
@@ -53,6 +55,12 @@ export default {
     },
     clearProblemResultStats(state) {
       state.problemResultStats = initialState.problemResultStats;
+    },
+    setSelfAchievedAchievements(state, { payload: data }) {
+      state.achievedAchievements = [...data];
+    },
+    clearSelfAchievedAchievements(state) {
+      state.achievedAchievements = [];
     },
   },
   effects: {
@@ -193,6 +201,24 @@ export default {
         return;
       }
       return yield call(service.changeEmail, userId, data);
+    },
+    *getSelfAchievedAchievements(_, { call, put }) {
+      const ret: IApiResponse<IGetSelfAchievedAchievementsResp> = yield call(
+        service.getSelfAchievedAchievements,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setSelfAchievedAchievements',
+          payload: ret.data.rows,
+        });
+      }
+      return ret;
+    },
+    *confirmAchievementDeliveried({ payload: { achievementKey } }, { call }) {
+      return yield call(service.confirmAchievementDeliveried, achievementKey);
+    },
+    *receiveAchievement({ payload: { achievementKey } }, { call }) {
+      return yield call(service.receiveAchievement, achievementKey);
     },
   },
   subscriptions: {

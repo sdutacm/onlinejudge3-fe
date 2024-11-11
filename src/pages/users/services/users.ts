@@ -17,6 +17,9 @@ import {
   IUpdateUserDetailReq,
   IUpdateUserEmailReq,
   IResetUserPasswordAndEmailReq,
+  IGetSelfAchievedAchievementsResp,
+  IConfirmAchievementDeliveriedReq,
+  IReceiveAchievementReq,
 } from '@/common/contracts/user';
 
 export function register(data) {
@@ -92,5 +95,21 @@ export function changeEmail(userId, data) {
   return post<IUpdateUserEmailReq, void>(routesBe.updateUserEmail.url, {
     userId,
     ...data,
+  });
+}
+
+export function getSelfAchievedAchievements() {
+  return post<void, IGetSelfAchievedAchievementsResp>(routesBe.getSelfAchievedAchievements.url);
+}
+
+export function confirmAchievementDeliveried(achievementKey) {
+  return post<IConfirmAchievementDeliveriedReq, void>(routesBe.confirmAchievementDeliveried.url, {
+    achievementKey,
+  });
+}
+
+export function receiveAchievement(achievementKey) {
+  return post<IReceiveAchievementReq, void>(routesBe.receiveAchievement.url, {
+    achievementKey,
   });
 }

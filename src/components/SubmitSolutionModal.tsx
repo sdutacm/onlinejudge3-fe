@@ -17,6 +17,7 @@ import Results from '@/configs/results/resultsEnum';
 import { IProblemSpConfig } from '@/common/interfaces/problem';
 import AutoVideoScreen from '@/components/AutoVideoScreen';
 import { getSocket } from '@/utils/socket';
+import localStorage from '@/utils/localStorage';
 
 export interface Props extends ReduxProps, FormProps {
   problemId: number;
@@ -261,6 +262,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               action: 'submit',
               label: values.language,
             });
+            localStorage.set('defaultLanguage', values.language);
             const solutionId = ret.data.solutionId;
             if (this.useSpSecondaryConfirm) {
               this.setState({
@@ -370,7 +372,7 @@ class SubmitSolutionModal extends React.Component<Props, State> {
               <Form.Item label="Language">
                 {getFieldDecorator('language', {
                   rules: [{ required: true, message: 'Please select language' }],
-                  initialValue: 'C++', // TODO 判断用户默认语言设置
+                  initialValue: localStorage.get('defaultLanguage') || 'C++',
                 })(
                   <Select placeholder="Select a language">
                     {languageConfig.map((lang) => (

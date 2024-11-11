@@ -108,10 +108,10 @@ class AchievementsModal extends React.Component<Props, State> {
     if (rate === 0 && count === 0) {
       return <span>Nobody has achieved</span>;
     }
-    if (rate === 0 && count > 0) {
+    if (rate < 0.05 && count > 0) {
       return <span>{count} {count === 1 ? 'user has' : `users have`} achieved</span>;
     }
-    return <span>{rate * 100}% users have achieved</span>;
+    return <span>{(rate * 100).toFixed(2)}% users have achieved</span>;
   }
 
   render() {

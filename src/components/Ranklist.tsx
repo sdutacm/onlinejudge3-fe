@@ -471,6 +471,17 @@ class Ranklist extends React.Component<Props, State> {
                 />
               </span>
             )}
+            <span
+              style={{
+                position: 'absolute',
+                bottom: '16px',
+                left: '372px',
+                lineHeight: '32px',
+                marginLeft: '36px',
+              }}
+            >
+              {problemNum} Problems
+            </span>
           </span>
         )}
       </div>

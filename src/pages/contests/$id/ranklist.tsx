@@ -226,6 +226,7 @@ class ContestRanklist extends React.Component<Props, State> {
                   data={ranklist}
                   contest={detail}
                   loading={ranklistLoading}
+                  frozenLength={detail.frozenLength}
                   problemNum={problems.count || 0}
                   session={session}
                   userCellRender={(user) => (

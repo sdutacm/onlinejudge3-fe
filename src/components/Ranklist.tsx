@@ -26,6 +26,7 @@ export interface Props extends RouteProps {
   contest?: IContest;
   competition?: ICompetition;
   loading: boolean;
+  frozenLength: number;
   problemNum: number;
   problemAliasList?: string;
   problemBalloonList?: string;
@@ -196,6 +197,7 @@ class Ranklist extends React.Component<Props, State> {
       rating,
       allowGodView,
       useScore,
+      frozenLength,
     } = this.props;
     const { contentWidth, showAll } = this.state;
     // const contentWidth = 0;
@@ -450,7 +452,7 @@ class Ranklist extends React.Component<Props, State> {
             >
               Export Ranklist
             </a>
-            {allowGodView && (
+            {allowGodView && frozenLength > 0 && (
               <span
                 style={{
                   position: 'absolute',

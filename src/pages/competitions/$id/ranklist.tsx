@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Button, Progress } from 'antd';
+import { Row, Col, Card, Progress } from 'antd';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import constants from '@/configs/constants';
@@ -16,7 +16,7 @@ import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import { ContestRatingStatus, contestRatingStatusMap } from '@/configs/contestRatingStatus';
 import router from 'umi/router';
-import { ICompetition, ICompetitionUser } from '@/common/interfaces/competition';
+import { ICompetition, ICompetitionSettings, ICompetitionUser } from '@/common/interfaces/competition';
 import { ECompetitionUserRole } from '@/common/enums';
 
 export interface Props extends ReduxProps, RouteProps {
@@ -26,6 +26,7 @@ export interface Props extends ReduxProps, RouteProps {
   selfUserDetail: ICompetitionUser;
   detailLoading: boolean;
   detail: ICompetition;
+  settings: ICompetitionSettings;
   problemsLoading: boolean;
   problems: IFullList<IProblem>;
   ranklistLoading: boolean;
@@ -187,6 +188,7 @@ class CompetitionRanklist extends React.Component<Props, State> {
       session,
       detailLoading,
       detail,
+      settings,
       problems,
       ranklistLoading,
       ranklist: { rows },
@@ -232,6 +234,7 @@ class CompetitionRanklist extends React.Component<Props, State> {
                   data={ranklist}
                   competition={detail}
                   loading={ranklistLoading}
+                  frozenLength={settings.frozenLength}
                   problemNum={problems.count || 0}
                   problemAliasList={problems.rows?.map((item) => item.alias) || []}
                   problemBalloonList={problems.rows?.map((item) => (item as ICompetitionProblem).balloonColor) || []}
@@ -263,8 +266,9 @@ function mapStateToProps(state) {
     globalSession: state.session,
     session: state.competitions.session[id],
     selfUserDetail: state.competitions.selfUserDetail[id],
-    detailLoading: !!state.loading.effects['competitions/getDetail'],
+    detailLoading: !!state.loading.effects['competitions/getDetail'] || !!state.loading.effects['competitions/getSettings'],
     detail: state.competitions.detail[id],
+    settings: state.competitions.settings[id],
     problemsLoading: !!state.loading.effects['competitions/getProblems'],
     problems: state.competitions.problems[id] || {},
     ranklistLoading: !!state.loading.effects['competitions/getRanklist'],

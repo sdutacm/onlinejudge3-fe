@@ -477,7 +477,7 @@ class Ranklist extends React.Component<Props, State> {
               style={{
                 position: 'absolute',
                 bottom: '16px',
-                left: '372px',
+                left: allowGodView && frozenLength > 0 ? '372px' : '240px',
                 lineHeight: '32px',
                 marginLeft: '36px',
               }}

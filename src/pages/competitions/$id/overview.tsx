@@ -42,8 +42,9 @@ import ProblemTitle from '@/components/ProblemTitle';
 import { Howl } from 'howler';
 import GeneralForm from '@/components/GeneralForm';
 import constants from '@/configs/constants';
-import { sleep, replaceString } from '@/utils/misc';
+import { sleep } from '@/utils/misc';
 import GenshinTable from '@/components/GenshinTable';
+import { simpleFilterHTML } from '@/utils/filter';
 
 export interface Props extends ReduxProps, FormProps {
   id: number;
@@ -505,16 +506,6 @@ class CompetitionOverview extends React.Component<Props, State> {
     });
   };
 
-  simpleFilterHTML = (html: string) => {
-    let res = (html || '').replace(/^&nbsp;/, '').trim();
-    if (res === '<p></p>') {
-      res = '';
-    }
-    process.env.CDN_PROXY &&
-      (res = replaceString(res, [process.env.CDN_RAW_URL_BEFORE_PROXY], process.env.CDN_PROXY));
-    return res;
-  };
-
   renderNormalBody() {
     const {
       id,
@@ -546,7 +537,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       timeStatus === "Ended" &&
       detail.ended &&
       [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
-    const announcement = this.simpleFilterHTML(detail.announcement);
+    const announcement = simpleFilterHTML(detail.announcement);
 
     return (
       <Row gutter={16} className="content-view" style={{ marginTop: '84px', marginBottom: '32px' }}>

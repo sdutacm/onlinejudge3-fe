@@ -11,7 +11,7 @@ import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
 import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
-import { replaceString } from '@/utils/misc';
+import { simpleFilterHTML } from '@/utils/filter';
 
 export interface Props {
   loading: boolean;
@@ -93,15 +93,6 @@ class ProblemContent extends React.Component<Props, State> {
     });
   };
 
-  simpleFilterHTML = (html: string) => {
-    let res = (html || '').replace(/^&nbsp;/, '').trim();
-    if (res === '<p></p>') {
-      res = '';
-    }
-    process.env.CDN_PROXY && (res = replaceString(res, [process.env.CDN_RAW_URL_BEFORE_PROXY], process.env.CDN_PROXY));
-    return res;
-  };
-
   renderContent = (html: string) => {
     return (
       <div style={this.getFontStyle()}>
@@ -129,10 +120,10 @@ class ProblemContent extends React.Component<Props, State> {
     }
 
     const spConfig = (data.spConfig || {}) as IProblemSpConfig;
-    const description = this.simpleFilterHTML(data.description);
-    const input = this.simpleFilterHTML(data.input || '');
-    const output = this.simpleFilterHTML(data.output || '');
-    const hint = this.simpleFilterHTML(data.hint || '');
+    const description = simpleFilterHTML(data.description);
+    const input = simpleFilterHTML(data.input || '');
+    const output = simpleFilterHTML(data.output || '');
+    const hint = simpleFilterHTML(data.hint || '');
     const titlePrefix =
       typeof problemAlias === 'string'
         ? `${problemAlias} - `

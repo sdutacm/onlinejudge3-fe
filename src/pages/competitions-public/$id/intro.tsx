@@ -29,6 +29,7 @@ import getSetTimeStatus from '@/utils/getSetTimeStatus';
 import TimeStatusBadge from '@/components/TimeStatusBadge';
 import PageLoading from '@/components/PageLoading';
 import { genshinCharacters } from '@/configs/genshin';
+import { simpleFilterHTML } from '@/utils/filter';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -502,7 +503,7 @@ class CompetitionIntro extends React.Component<Props, State> {
             <div className="competition-intro-content content-view">
               {/* <h2 className="competition-intro-header">{detail.title}</h2> */}
               <div
-                dangerouslySetInnerHTML={{ __html: xss(detail.introduction) }}
+                dangerouslySetInnerHTML={{ __html: xss(simpleFilterHTML(detail.introduction)) }}
                 className="content-area"
                 style={{ marginTop: '48px' }}
               />

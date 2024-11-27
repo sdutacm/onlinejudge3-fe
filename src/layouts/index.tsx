@@ -308,8 +308,10 @@ class Index extends React.Component<Props, State> {
     const inAdminPage = matchPath(location.pathname, {
       path: pages.admin.index,
     });
+    const competitionSideAllowedPathPrefixes = ['/competitions', '/stats'];
     const blockedByCompetitionSide =
-      isCompetitionSide() && !location.pathname.startsWith('/competitions');
+      isCompetitionSide() &&
+      !competitionSideAllowedPathPrefixes.some((p) => location.pathname.startsWith(p));
     const hideNav =
       blockedByCompetitionSide ||
       (isCompetitionSide() &&

@@ -316,7 +316,8 @@ class Index extends React.Component<Props, State> {
       blockedByCompetitionSide ||
       (isCompetitionSide() &&
         (location.pathname === '/competitions' ||
-          location.pathname.startsWith('/competitions-public')));
+          location.pathname.startsWith('/competitions-public') ||
+          location.pathname.startsWith('/stats')));
     return (
       <Layout
         className={classNames({

@@ -895,7 +895,7 @@ class CompetitionOverview extends React.Component<Props, State> {
       timeStatus === 'Ended' &&
       !detail.ended &&
       [ECompetitionUserRole.admin, ECompetitionUserRole.principal].includes(selfUserDetail?.role);
-    const announcement = this.simpleFilterHTML(detail.announcement);
+    const announcement = simpleFilterHTML(detail.announcement);
 
     let totalScore = 0;
     if (useScore) {

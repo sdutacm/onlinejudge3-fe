@@ -86,6 +86,7 @@ class SelfTeamsModal extends React.Component<Props, State> {
           visible={this.state.visible}
           onCancel={this.handleHideModel}
           footer={null}
+          maskClosable={false}
         >
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="Join an Invited Team">

@@ -63,6 +63,7 @@ class AddTeamMemberModal extends React.Component<Props, State> {
           confirmLoading={confirmLoading}
           onOk={this.handleOk}
           onCancel={this.handleHideModel}
+          maskClosable={false}
         >
           <Form layout="vertical" hideRequiredMark={true}>
             <Form.Item label="User">

@@ -920,6 +920,19 @@ ul {
   //max-width: 500px;
 }
 
+.u-team-member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+  transition: background-color ease-in-out .3s;
+
+  &:hover {
+    background-color: darken(@component-background, 2.5%);
+  }
+}
+
 .u-avatar {
   position: absolute;
   top: -60px;

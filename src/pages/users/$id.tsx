@@ -1,7 +1,21 @@
 import React from 'react';
 import { connect } from 'dva';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { Row, Col, Card, Avatar, Icon, Skeleton, Upload, Button, Select } from 'antd';
+import {
+  Row,
+  Col,
+  Card,
+  Avatar,
+  Icon,
+  Skeleton,
+  Upload,
+  Button,
+  Select,
+  Badge,
+  Popconfirm,
+  Divider,
+  Tooltip,
+} from 'antd';
 import { Link } from 'react-router-dom';
 import styles from './$id.less';
 import { formatAvatarUrl, urlf } from '@/utils/format';
@@ -28,10 +42,18 @@ import tracker from '@/utils/tracker';
 import { routesBe } from '@/common/routes';
 import { getCsrfHeader } from '@/utils/misc';
 import ManageSessionModal from '@/components/ManageSessionModal';
+import { EUserMemberStatus, EUserStatus, EUserType } from '@/common/enums';
+import AddTeamMemberModal from '@/components/AddTeamMemberModal';
+import SelfTeamsModal from '@/components/SelfTeamsModal';
 
 export interface Props extends RouteProps, ReduxProps {
   data: ITypeObject<IUser>;
   session: ISessionStatus;
+  members: ITypeObject<IUserMember[]>;
+  membersLoading: boolean;
+  addMemberLoading: boolean;
+  removeMemberLoading: boolean;
+  confirmTeamSettlementLoading: boolean;
 }
 
 interface State {
@@ -40,6 +62,7 @@ interface State {
   bannerImageLoading: boolean;
   bannerImageUrl: string;
   solutionCalendarPeriod: number | null;
+  addMemberModalVisible: boolean;
 }
 
 class UserDetail extends React.Component<Props, State> {
@@ -70,6 +93,7 @@ class UserDetail extends React.Component<Props, State> {
       bannerImageLoading: false,
       bannerImageUrl: '',
       solutionCalendarPeriod: null,
+      addMemberModalVisible: false,
     };
   }
 
@@ -264,6 +288,206 @@ class UserDetail extends React.Component<Props, State> {
     },
   ];
 
+  handleAddMember = (memberUserId: number) => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'users/addMember',
+      payload: {
+        memberUserId,
+      },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Invited member');
+        dispatch({
+          type: 'users/getMembers',
+          payload: {
+            id: ~~this.props.match.params.id,
+          },
+        });
+        return true;
+      }
+      return false;
+    });
+  };
+
+  handleRemoveMember = (memberUserId: number) => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'users/removeMember',
+      payload: {
+        memberUserId,
+      },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Removed member');
+        dispatch({
+          type: 'users/getMembers',
+          payload: {
+            id: ~~this.props.match.params.id,
+          },
+        });
+        return true;
+      }
+      return false;
+    });
+  };
+
+  confirmTeamSettlement = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'users/confirmTeamSettlement',
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Confirmed ready');
+        dispatch({
+          type: 'users/getDetail',
+          payload: {
+            id: ~~this.props.match.params.id,
+            force: true,
+          },
+        });
+      }
+    });
+  };
+
+  renderTeam() {
+    const {
+      match,
+      session,
+      members: membersMap,
+      membersLoading,
+      addMemberLoading,
+      removeMemberLoading,
+    } = this.props;
+    const id = ~~match.params.id;
+    const data = this.props.data[id] || ({} as IUser);
+    const members = membersMap[id] || [];
+
+    const self = isSelf(session, data.userId);
+    const editable = self && data.status !== EUserStatus.settled;
+
+    if (members.length === 0) {
+      if (membersLoading) {
+        return (
+          <>
+            <h3>Team Members</h3>
+            <Skeleton active />
+          </>
+        );
+      }
+      if (!self) {
+        return (
+          <>
+            <h3>Team Members</h3>
+            <h3 className="warning-text text-secondary">No Members</h3>
+          </>
+        );
+      }
+    }
+
+    const membersCount = members.length;
+    const readyMembersCount = members.filter((m) => m.status === EUserMemberStatus.available)
+      .length;
+    const allReady = membersCount > 0 && membersCount === readyMembersCount;
+
+    return (
+      <>
+        <h3>
+          Team Members{' '}
+          {data.status === EUserStatus.normal
+            ? membersCount === 0
+              ? '(Preparing)'
+              : `(Preparing ${readyMembersCount}/${membersCount})`
+            : `(${membersCount})`}
+          {editable && (
+            <AddTeamMemberModal
+              invitationCode={`${data.userId}`}
+              confirmLoading={addMemberLoading}
+              onAddMember={(userId) => this.handleAddMember(userId)}
+            >
+              <Button size="small" className="float-right">
+                <Icon type="plus" /> Member
+              </Button>
+            </AddTeamMemberModal>
+          )}
+        </h3>
+        {members.length === 0 ? (
+          <h3 className="warning-text text-secondary">No Members</h3>
+        ) : (
+          <Row gutter={8} className="mt-lg">
+            {members.map((member) => (
+              <Col key={member.userId} span={8}>
+                <div className="u-team-member-card mb-md">
+                  <Link
+                    to={urlf(pages.users.detail, { param: { id: member.userId } })}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Avatar icon="user" />
+                    <p className="mt-sm">{member.nickname}</p>
+                  </Link>
+                  {editable && (
+                    <div className="mt-sm">
+                      <div>
+                        {member.status === EUserMemberStatus.pending ? (
+                          <Badge status="processing" text="Waiting" />
+                        ) : (
+                          <Badge status="success" text="Accepted" />
+                        )}
+                      </div>
+                      <Popconfirm
+                        title="Remove this member?"
+                        placement="bottom"
+                        onConfirm={() => {
+                          if (removeMemberLoading) {
+                            return;
+                          }
+                          return this.handleRemoveMember(member.userId);
+                        }}
+                      >
+                        <Button size="small" type="danger" shape="circle" className="mt-md-lg">
+                          <Icon type="close" />
+                        </Button>
+                      </Popconfirm>
+                    </div>
+                  )}
+                </div>
+              </Col>
+            ))}
+          </Row>
+        )}
+        {data.status !== EUserStatus.settled && (
+          <div className="text-center mb-md">
+            <Divider />
+            <p className="mb-none">You can confirm ready when all team members are accepted.</p>
+            <p className="mb-lg">
+              After this, the team account will be activated and{' '}
+              <strong>members cannot be changed</strong>.
+            </p>
+            {allReady ? (
+              <Popconfirm
+                title="Confirm ready and activate account?"
+                onConfirm={this.confirmTeamSettlement}
+              >
+                <Button type="primary" size="small">
+                  Confirm Ready
+                </Button>
+              </Popconfirm>
+            ) : (
+              <Tooltip title="All members should be accepted">
+                <Button type="primary" size="small" disabled>
+                  Confirm Ready
+                </Button>
+              </Tooltip>
+            )}
+          </div>
+        )}
+      </>
+    );
+  }
+
   render() {
     const { loading, data: allData, session, match } = this.props;
     const {
@@ -285,6 +509,7 @@ class UserDetail extends React.Component<Props, State> {
       const year = +d.date.split('-')[0];
       solutionCalendarYears.add(year);
     });
+    const isTeam = data.type === EUserType.team;
 
     let editProfileFormItems = [
       {
@@ -389,7 +614,10 @@ class UserDetail extends React.Component<Props, State> {
                 )}
               </span>
               <span className="u-info">
-                <h1>{data.nickname}</h1>
+                <h1>
+                  {data.nickname}
+                  {isTeam && <Icon type="team" className="ml-md" />}
+                </h1>
               </span>
             </div>
 
@@ -397,6 +625,7 @@ class UserDetail extends React.Component<Props, State> {
               <div className="u-content">
                 <Row gutter={16} className="list-view">
                   <Col xs={24} md={18} xxl={18}>
+                    {isTeam && <Card bordered={false}>{this.renderTeam()}</Card>}
                     <Card bordered={false}>
                       <h3>Rating</h3>
                       <Rating
@@ -616,6 +845,14 @@ class UserDetail extends React.Component<Props, State> {
                           <Button block>Edit Profile</Button>
                         </GeneralFormModal>
 
+                        {!isTeam && (
+                          <SelfTeamsModal userId={data.userId}>
+                            <Button block className="mt-md">
+                              My Teams
+                            </Button>
+                          </SelfTeamsModal>
+                        )}
+
                         <ChangeEmailModal
                           type={data.verified ? 'change' : 'bind'}
                           userId={data.userId}
@@ -660,9 +897,7 @@ class UserDetail extends React.Component<Props, State> {
                           </Button>
                         </GeneralFormModal>
 
-                        <ManageSessionModal
-                          userId={data.userId}
-                        >
+                        <ManageSessionModal userId={data.userId}>
                           <Button block className="mt-md">
                             Manage Session
                           </Button>
@@ -697,6 +932,11 @@ function mapStateToProps(state) {
     loading: !!state.loading.effects['users/getDetail'],
     data: state.users.detail,
     session: state.session,
+    members: state.users.members,
+    membersLoading: !!state.loading.effects['users/getMembers'],
+    addMemberLoading: !!state.loading.effects['users/addMember'],
+    removeMemberLoading: !!state.loading.effects['users/removeMember'],
+    confirmTeamSettlementLoading: !!state.loading.effects['users/confirmTeamSettlement'],
   };
 }
 

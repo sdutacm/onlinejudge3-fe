@@ -7,7 +7,8 @@ import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { Results } from '@/configs/results';
 import * as groupService from '../../groups/services/groups';
-import { IGetSelfAchievedAchievementsResp } from '@/common/contracts/user';
+import { IGetSelfAchievedAchievementsResp, IGetSelfJoinedTeamsResp, IGetUserMembersResp } from '@/common/contracts/user';
+import { EUserType } from '@/common/enums';
 
 const initialState = {
   list: {
@@ -22,6 +23,8 @@ const initialState = {
     attemptedProblemIds: [],
   },
   achievedAchievements: [],
+  members: {},
+  selfJoinedTeams: [],
 };
 
 export default {
@@ -61,6 +64,15 @@ export default {
     },
     clearSelfAchievedAchievements(state) {
       state.achievedAchievements = [];
+    },
+    setMembers(state, { payload: { id, data } }) {
+      state.members[id] = [...data];
+    },
+    setSelfJoinedTeams(state, { payload: data }) {
+      state.selfJoinedTeams = [...data];
+    },
+    clearSelfJoinedTeams(state) {
+      state.selfJoinedTeams = [];
     },
   },
   effects: {
@@ -124,6 +136,14 @@ export default {
             data: detailRet.data,
           },
         });
+        if (detailRet.data.type === EUserType.team) {
+          yield put({
+            type: 'getMembers',
+            payload: {
+              id,
+            },
+          });
+        }
       }
       return detailRet;
     },
@@ -219,6 +239,53 @@ export default {
     },
     *receiveAchievement({ payload: { achievementKey } }, { call }) {
       return yield call(service.receiveAchievement, achievementKey);
+    },
+    *getMembers({ payload: { id } }, { call, put }) {
+      const ret: IApiResponse<IGetUserMembersResp> = yield call(service.getUserMembers, id);
+      if (ret.success) {
+        yield put({
+          type: 'setMembers',
+          payload: {
+            id,
+            data: ret.data.rows,
+          },
+        });
+      }
+      return ret;
+    },
+    *addMember({ payload: { memberUserId } }, { call }) {
+      return yield call(service.addUserMember, memberUserId);
+    },
+    *removeMember({ payload: { memberUserId } }, { call }) {
+      return yield call(service.removeUserMember, memberUserId);
+    },
+    *getSelfJoinedTeams(_, { call, put }) {
+      const ret: IApiResponse<IGetSelfJoinedTeamsResp> = yield call(
+        service.getSelfJoinedTeams,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setSelfJoinedTeams',
+          payload: ret.data.rows,
+        });
+      }
+      return ret;
+    },
+    *confirmJoinTeam({ payload: { teamUserId } }, { call }) {
+      return yield call(service.confirmJoinTeam, teamUserId);
+    },
+    *confirmTeamSettlement(_, { call }) {
+      return yield call(service.confirmTeamSettlement);
+    },
+    *getTeamData({ payload: { id } }, { call, all }) {
+      const [detailRet, membersRet]: IApiResponse<any>[] = yield all([
+        call(service.getDetail, id),
+        call(service.getUserMembers, id),
+      ]);
+      return {
+        detail: detailRet.data,
+        members: membersRet.data || [],
+      };
     },
   },
   subscriptions: {

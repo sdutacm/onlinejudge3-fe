@@ -19,7 +19,7 @@ import tracker from '@/utils/tracker';
 import { checkPerms } from '@/utils/permission';
 import { EPerm } from '@/common/configs/perm.config';
 import AchievementsModal from '@/components/AchievementsModal';
-import { EUserAchievementStatus } from '@/common/enums';
+import { EUserAchievementStatus, EUserType } from '@/common/enums';
 
 // Reference https://github.com/id-kemo/responsive-menu-ant-design
 
@@ -144,6 +144,7 @@ class NavMenu extends React.Component<Props, State> {
       activeLinkKey = pages.groups.index;
     }
     const from = location.query.from;
+    const isTeam = session.loggedIn && session.user.type === EUserType.team;
 
     return (
       <Menu
@@ -252,7 +253,7 @@ class NavMenu extends React.Component<Props, State> {
               title={
                 <span>
                   {this.renderAvatar()}
-                  <span style={{ marginLeft: '8px' }}>{session.user.nickname}</span>
+                  <span style={{ marginLeft: '8px' }}>{session.user.nickname}{isTeam && <Icon type="team" className="ml-sm-md" />}</span>
                 </span>
               }
             >
@@ -309,7 +310,7 @@ class NavMenu extends React.Component<Props, State> {
             className="float-right"
           >
             <Menu.Item key="nickname" disabled>
-              <span>{session.user.nickname}</span>
+              <span>{session.user.nickname}{isTeam && <Icon type="team" className="ml-sm-md" />}</span>
             </Menu.Item>
             <Menu.Item key="profile">
               <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>

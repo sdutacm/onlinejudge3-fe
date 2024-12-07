@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar } from 'antd';
+import { Avatar, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import { formatAvatarUrl, urlf } from '@/utils/format';
@@ -15,6 +15,7 @@ export interface Props {
   disableJump?: boolean;
   showAsText?: boolean;
   showRating?: boolean;
+  useTooltip?: boolean;
   nameFormat?: (user: IUser) => string;
 }
 
@@ -26,6 +27,7 @@ const UserBar: React.FC<Props> = ({
   disableJump = false,
   showAsText = false,
   showRating = false,
+  useTooltip = false,
   nameFormat,
   className,
 }) => {
@@ -59,7 +61,7 @@ const UserBar: React.FC<Props> = ({
       to={urlf(pages.users.detail, { param: { id: user.userId } })}
       onClick={(e) => e.stopPropagation()}
     >
-      {inner}
+      {useTooltip ? <Tooltip title={nameFormat?.(user) ?? user.nickname}>{inner}</Tooltip> : inner}
     </Link>
   );
 };

@@ -20,6 +20,12 @@ import {
   IGetSelfAchievedAchievementsResp,
   IConfirmAchievementDeliveriedReq,
   IReceiveAchievementReq,
+  IGetUserMembersReq,
+  IGetUserMembersResp,
+  IAddUserMemberReq,
+  IRemoveUserMemberReq,
+  IConfirmJoinTeamReq,
+  IGetSelfJoinedTeamsResp,
 } from '@/common/contracts/user';
 
 export function register(data) {
@@ -112,4 +118,36 @@ export function receiveAchievement(achievementKey) {
   return post<IReceiveAchievementReq, void>(routesBe.receiveAchievement.url, {
     achievementKey,
   });
+}
+
+export function getUserMembers(userId) {
+  return post<IGetUserMembersReq, IGetUserMembersResp>(routesBe.getUserMembers.url, {
+    userId,
+  });
+}
+
+export function addUserMember(memberUserId) {
+  return post<IAddUserMemberReq, void>(routesBe.addUserMember.url, {
+    memberUserId,
+  });
+}
+
+export function removeUserMember(memberUserId) {
+  return post<IRemoveUserMemberReq, void>(routesBe.removeUserMember.url, {
+    memberUserId,
+  });
+}
+
+export function getSelfJoinedTeams() {
+  return post<void, IGetSelfJoinedTeamsResp>(routesBe.getSelfJoinedTeams.url);
+}
+
+export function confirmJoinTeam(teamUserId) {
+  return post<IConfirmJoinTeamReq, void>(routesBe.confirmJoinTeam.url, {
+    teamUserId,
+  });
+}
+
+export function confirmTeamSettlement() {
+  return post<void, void>(routesBe.confirmTeamSettlement.url);
 }

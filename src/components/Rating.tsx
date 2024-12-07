@@ -176,7 +176,7 @@ class Rating extends React.Component<Props, State> {
 
     if (!rating) {
       return (
-        <h3 className="warning-text">No Rating</h3>
+        <h3 className="warning-text text-secondary">No Rating</h3>
       );
     }
 

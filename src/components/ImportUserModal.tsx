@@ -8,6 +8,7 @@ import ExcelSelectParser from './ExcelSelectParser';
 import staticUrls from '@/configs/staticUrls';
 import constants from '@/configs/constants';
 import { withRouter } from 'react-router';
+import { EUserType } from '@/common/enums';
 
 export interface Props extends RouteProps, ReduxProps, FormProps {}
 
@@ -20,6 +21,7 @@ interface IImportUser {
   class: IUser['class'];
   grade: string;
   password: string;
+  type: IUser['type'];
 }
 
 interface State {
@@ -49,6 +51,7 @@ class ImportUserModal extends React.Component<Props, State> {
         class: `${row[5] || ''}`,
         grade: `${row[6] || ''}`,
         password: `${row[7] || ''}`,
+        type: row[8] === 'Y' ? EUserType.team : EUserType.personal,
       }));
       for (const user of users) {
         if (!user.username || !user.nickname || !user.password) {
@@ -197,6 +200,11 @@ class ImportUserModal extends React.Component<Props, State> {
                           title="Password"
                           key="password"
                           render={(text, record: IImportUser) => <span>{record.password}</span>}
+                        />
+                         <Table.Column
+                          title="Type"
+                          key="type"
+                          render={(text, record: IImportUser) => <span>{record.type === EUserType.personal ? '个人' : '团队'}</span>}
                         />
                       </Table>
                     </Collapse.Panel>

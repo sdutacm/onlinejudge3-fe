@@ -95,7 +95,7 @@ class UserSelect extends React.Component<Props, State> {
         labelInValue
       >
         {data.map((d) => (
-          <Select.Option key={`${d.userId}`} title={d.nickname}>
+          <Select.Option key={`${d.userId}`} title={nameFormat?.(d) || d.nickname}>
             <UserBar user={d} showAsText nameFormat={nameFormat} />
           </Select.Option>
         ))}

@@ -8,7 +8,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import router from 'umi/router';
 import tracker from '@/utils/tracker';
-import { Row, Col, Card, Table, Pagination, Button } from 'antd';
+import { Row, Col, Card, Table, Pagination, Button, Icon } from 'antd';
 import limits from '@/configs/limits';
 import FilterCard from '@/components/FilterCard';
 import constants from '@/configs/constants';
@@ -25,6 +25,20 @@ import userPermission, { UserPermission } from '@/configs/userPermission';
 import ImportUserModal from '@/components/ImportUserModal';
 import { checkPerms } from '@/utils/permission';
 import { EPerm } from '@/common/configs/perm.config';
+import { EUserType } from '@/common/enums';
+
+const userTypeOptions = [
+  {
+    id: EUserType.personal,
+    name: 'Personal',
+    value: EUserType.personal,
+  },
+  {
+    id: EUserType.team,
+    name: 'Team',
+    value: EUserType.team,
+  },
+];
 
 export interface Props extends RouteProps, ReduxProps {
   session: ISessionStatus;
@@ -83,13 +97,25 @@ class AdminUserList extends React.Component<Props, State> {
   getUserDetailFormItems(userId?: number) {
     const { detailMap } = this.props;
     const detail = detailMap[userId];
-    const items: IGeneralFormItem[] = [
+    let items: IGeneralFormItem[] = [
+      {
+        name: 'Account Type',
+        field: 'type',
+        component: 'select',
+        initialValue: `${detail?.type ?? EUserType.personal}`,
+        options: userTypeOptions.map((item) => ({
+          value: item.id,
+          name: item.name,
+        })),
+        rules: [{ required: true }],
+        disabled: !!detail,
+      },
       {
         name: 'Username',
         field: 'username',
         component: 'input',
         initialValue: detail?.username || '',
-        disabled: !!detail?.username,
+        disabled: !!detail,
         rules: [{ required: true, message: 'Please input the field' }],
       },
       {
@@ -158,17 +184,16 @@ class AdminUserList extends React.Component<Props, State> {
         rules: [{ required: true }],
       },
     ];
-    if (detail) {
-      items.splice(6, 1);
-    } else {
-      items.splice(7);
-    }
+
+    const cannotEditFields = ['password'];
+    items = detail ? items.filter((item) => !cannotEditFields.includes(item.field)) : items;
     return items;
   }
 
   getHandledDataFromForm(values) {
     return {
       ...values,
+      type: +values.type,
       forbidden: +values.forbidden,
       permission: +values.permission,
     };
@@ -233,6 +258,9 @@ class AdminUserList extends React.Component<Props, State> {
                       className={record.forbidden === UserForbidden.normal ? '' : 'text-secondary'}
                     >
                       {record.username}
+                      {record.type === EUserType.team ? (
+                        <Icon type="team" className="ml-sm" />
+                      ) : null}
                     </span>
                   )}
                 />
@@ -290,6 +318,7 @@ class AdminUserList extends React.Component<Props, State> {
                           const data = this.getHandledDataFromForm(values);
                           delete data.username;
                           delete data.password;
+                          delete data.type;
                           console.log('data', data);
                           return dispatch({
                             type: 'admin/updateUserDetail',
@@ -377,7 +406,7 @@ class AdminUserList extends React.Component<Props, State> {
             <Card bordered={false}>
               <GeneralFormDrawer
                 loadingEffect="admin/createUser"
-                title="Add User"
+                title="Create User"
                 autoMsg
                 cancelText="Cancel"
                 width={600}
@@ -412,7 +441,7 @@ class AdminUserList extends React.Component<Props, State> {
                   });
                 }}
               >
-                <Button block>Add User</Button>
+                <Button block>Create User</Button>
               </GeneralFormDrawer>
               <ImportUserModal>
                 <Button block className="mt-md">

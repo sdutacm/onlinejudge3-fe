@@ -80,6 +80,9 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
+          type: 'users/getSelfJoinedTeams',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId: ret.data.userId },
         });
@@ -129,6 +132,9 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
+          type: 'users/getSelfJoinedTeams',
+        });
+        yield put({
           type: 'messages/getUnreadList',
           payload: { userId },
         });
@@ -171,6 +177,9 @@ export default {
         });
         yield put({
           type: 'users/clearSelfAchievedAchievements',
+        });
+        yield put({
+          type: 'users/clearSelfJoinedTeams',
         });
         yield put({
           type: 'messages/clearAllMessages',

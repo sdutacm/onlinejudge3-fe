@@ -5,6 +5,7 @@ interface ISession {
   avatar: string;
   permission: number;
   permissions: string[];
+  type: number;
 }
 
 interface ISessionStatus {
@@ -40,6 +41,8 @@ interface IUser {
   site?: string;
   settings?: any;
   verified?: boolean;
+  type?: number;
+  status?: number;
   coin?: number;
   solutionCalendar?: ISolutionCalendar;
   defaultLanguage?: string;
@@ -94,6 +97,46 @@ interface IRatingHistoryItem {
 
 type IRatingHistory = IRatingHistoryItem[];
 
+interface IUserMember {
+  userId: number;
+  username: string;
+  nickname: string;
+  avatar: string | null;
+  bannerImage: string;
+  accepted: number;
+  submitted: number;
+  rating: number;
+  verified: boolean;
+  status: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface IUserSelfJoinedTeam {
+  teamUserId: number;
+  selfMemberStatus: number;
+  selfJoinedAt: string;
+  username: string;
+  nickname: string;
+  avatar: string | null;
+  bannerImage: string;
+  status: number;
+  members: {
+    userId: number;
+    username: string;
+    nickname: string;
+    avatar: string | null;
+    bannerImage: string;
+    accepted: number;
+    submitted: number;
+    rating: number;
+    verified: boolean;
+    status: number;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+}
+
 interface IProblem {
   problemId: number;
   title: string;
@@ -116,7 +159,7 @@ interface IProblem {
   display: boolean;
   spj: boolean;
   spConfig: any;
-  alias?: string; /** only in competition */
+  alias?: string /** only in competition */;
   createdAt: ITimestamp;
   updatedAt: ITimestamp;
 }

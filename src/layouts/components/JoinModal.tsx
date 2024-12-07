@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Modal, Form, Input, Button, Alert, Badge } from 'antd';
+import { Modal, Form, Input, Button, Alert, Badge, Select } from 'antd';
 import classNames from 'classnames';
 import setStatePromise from '@/utils/setStatePromise';
 import msg from '@/utils/msg';
@@ -12,6 +12,7 @@ import 'csshake';
 import { Codes } from '@/common/codes';
 import tracker from '@/utils/tracker';
 import WeakPasswordChecker from '@/common/utils/weakpwd-check';
+import { EUserType } from '@/common/enums';
 
 class JoinModal extends React.Component<any, any> {
   private setStatePromise = setStatePromise.bind(this);
@@ -60,6 +61,21 @@ class JoinModal extends React.Component<any, any> {
         const passwordStatus = this.state.passwordStatus;
         return (
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
+            <Form.Item label="Account Type">
+              {getFieldDecorator('type', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please selected type',
+                  },
+                ],
+                initialValue: EUserType[EUserType.personal],
+              })(<Select>
+                <Select.Option key={EUserType[EUserType.personal]}>Personal</Select.Option>
+                <Select.Option key={EUserType[EUserType.team]}>Team</Select.Option>
+              </Select>)}
+            </Form.Item>
+
             <Form.Item label="Email">
               {getFieldDecorator('email', {
                 rules: [
@@ -545,6 +561,7 @@ class JoinModal extends React.Component<any, any> {
   register = (data) => {
     const { dispatch, form } = this.props;
     data.code = +data.code;
+    data.type = EUserType[data.type];
     dispatch({
       type: 'users/register',
       payload: data,

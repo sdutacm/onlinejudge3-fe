@@ -61,6 +61,7 @@ interface IUserLite {
   avatar: string;
   bannerImage: string;
   rating?: number;
+  type?: number;
 }
 
 interface IUserProblemResultStats {

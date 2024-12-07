@@ -1,10 +1,11 @@
 import React from 'react';
-import { Avatar, Tooltip } from 'antd';
+import { Avatar, Icon, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import { formatAvatarUrl, urlf } from '@/utils/format';
 import classNames from 'classnames';
 import { getRatingLevel } from '@/utils/rating';
+import { EUserType } from '@/common/enums';
 
 export interface Props {
   user: IUser | IUserLite;
@@ -34,11 +35,15 @@ const UserBar: React.FC<Props> = ({
   if (!user) {
     return <span>--</span>;
   }
+  const isTeam = user.type === EUserType.team;
   const avatar = !hideAvatar ? (
     <Avatar size="small" icon="user" src={formatAvatarUrl(user.avatar)} />
   ) : null;
+  const teamBadge = isTeam ? <Icon type="team" className="ml-sm-md" /> : null;
   const username = !hideName ? (
-    <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>{nameFormat?.(user) ?? user.nickname}</span>
+    <span style={{ marginLeft: hideAvatar ? '0' : '8px' }}>
+      {nameFormat?.(user) ?? user.nickname}
+    </span>
   ) : null;
   const rating = user.rating;
   const userRatingLevel = getRatingLevel(rating);
@@ -48,6 +53,7 @@ const UserBar: React.FC<Props> = ({
     <span className={classNames('no-wrap', className)} style={ratingStyle}>
       {avatar}
       {username}
+      {teamBadge}
     </span>
   );
   if (isContestUser || showAsText) {

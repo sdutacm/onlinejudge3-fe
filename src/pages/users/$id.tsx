@@ -425,7 +425,7 @@ class UserDetail extends React.Component<Props, State> {
                     to={urlf(pages.users.detail, { param: { id: member.userId } })}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Avatar icon="user" />
+                    <Avatar icon="user" src={formatAvatarUrl(member.avatar)} />
                     <p className="mt-sm">{member.nickname}</p>
                   </Link>
                   {editable && (

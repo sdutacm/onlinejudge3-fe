@@ -349,6 +349,9 @@ class UserDetail extends React.Component<Props, State> {
             force: true,
           },
         });
+        dispatch({
+          type: 'users/getSelfOfficialMembers',
+        });
       }
     });
   };

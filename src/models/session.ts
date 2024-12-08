@@ -80,6 +80,9 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
+          type: 'users/getSelfOfficialMembers',
+        });
+        yield put({
           type: 'users/getSelfJoinedTeams',
         });
         yield put({
@@ -132,6 +135,9 @@ export default {
           type: 'users/getSelfAchievedAchievements',
         });
         yield put({
+          type: 'users/getSelfOfficialMembers',
+        });
+        yield put({
           type: 'users/getSelfJoinedTeams',
         });
         yield put({
@@ -177,6 +183,9 @@ export default {
         });
         yield put({
           type: 'users/clearSelfAchievedAchievements',
+        });
+        yield put({
+          type: 'users/clearSelfOfficialMembers',
         });
         yield put({
           type: 'users/clearSelfJoinedTeams',

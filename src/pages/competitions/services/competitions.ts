@@ -62,6 +62,7 @@ import {
   IGetCompetitionSpGenshinExplorationUnlockRecordsResp,
   IDoCompetitionSpGenshinExplorationUnlockReq,
   ICancelEndCompetitionReq,
+  IDeleteSignedUpCompetitionParticipantReq,
 } from '@/common/contracts/competition';
 import { ICompetition } from '@/common/interfaces/competition';
 import {
@@ -178,6 +179,15 @@ export function modifySignedUpCompetitionParticipant(competitionId, data) {
     routesBe.modifySignedUpCompetitionParticipant.url,
     {
       ...data,
+      competitionId,
+    },
+  );
+}
+
+export function deleteSignedUpCompetitionParticipant(competitionId) {
+  return post<IDeleteSignedUpCompetitionParticipantReq, void>(
+    routesBe.deleteSignedUpCompetitionParticipant.url,
+    {
       competitionId,
     },
   );
@@ -417,8 +427,8 @@ export function endCompetition(competitionId) {
 
 export function cancelEndCompetition(competitionId) {
   return post<ICancelEndCompetitionReq, void>(routesBe.cancelEndCompetition.url, {
-    competitionId
-  })
+    competitionId,
+  });
 }
 
 export function getSpGenshinExplorationUnlockRecords(competitionId) {

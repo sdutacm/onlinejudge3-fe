@@ -94,7 +94,7 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
             );
           }
           switch (item.component) {
-            case 'input':
+            case 'input': {
               return (
                 <Form.Item key={item.field} label={item.name}>
                   {getFieldDecorator(item.field, {
@@ -109,7 +109,8 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   )}
                 </Form.Item>
               );
-            case 'textarea':
+            }
+            case 'textarea': {
               return (
                 <Form.Item key={item.field} label={item.name}>
                   {getFieldDecorator(item.field, {
@@ -124,7 +125,8 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   )}
                 </Form.Item>
               );
-            case 'select':
+            }
+            case 'select': {
               const useCustomMode = item.options.some((i) => !!i.icon);
               return (
                 <Form.Item key={item.field} label={item.name}>
@@ -140,7 +142,14 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                     >
                       {item.options.map((opt) =>
                         useCustomMode ? (
-                          <Select.Option key={`${opt.value}`} value={`${opt.value}`} label={`${opt.name}`}>{opt.icon}{opt.name}</Select.Option>
+                          <Select.Option
+                            key={`${opt.value}`}
+                            value={`${opt.value}`}
+                            label={`${opt.name}`}
+                          >
+                            {opt.icon}
+                            {opt.name}
+                          </Select.Option>
                         ) : (
                           <Select.Option key={`${opt.value}`}>{opt.name}</Select.Option>
                         ),
@@ -149,7 +158,8 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   )}
                 </Form.Item>
               );
-            case 'checkbox':
+            }
+            case 'checkbox': {
               return (
                 <Form.Item key={item.field}>
                   {getFieldDecorator(item.field, {
@@ -158,7 +168,8 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   })(<Checkbox>{item.name}</Checkbox>)}
                 </Form.Item>
               );
-            case 'datetime':
+            }
+            case 'datetime': {
               return (
                 <Form.Item key={item.field} label={item.name}>
                   {getFieldDecorator(item.field, {
@@ -177,7 +188,8 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   )}
                 </Form.Item>
               );
-            case 'richtext':
+            }
+            case 'richtext': {
               const rules = [...(item.rules || [])];
               // @ts-ignore
               let requiredRuleIndex = rules.findIndex((r) => r.required === true);
@@ -211,8 +223,20 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                   )}
                 </Form.Item>
               );
+            }
+            default: {
+              return item.field ? (
+                <Form.Item key={item.field} label={item.name}>
+                  {getFieldDecorator(item.field, {
+                    rules: item.rules,
+                    initialValue: initialValues[item.field] || item.initialValue,
+                  })(item.component)}
+                </Form.Item>
+              ) : (
+                item.component
+              );
+            }
           }
-          return null;
         })}
       </Form>
     );

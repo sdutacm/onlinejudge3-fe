@@ -17,7 +17,7 @@ import { urlf } from '@/utils/format';
 import { formatCompetitionUserSeatId } from '@/utils/competition';
 import tracker from '@/utils/tracker';
 import msg from '@/utils/msg';
-import { aoa2Excel } from '@/utils/misc';
+import { aoa2Excel, collectObjectKeysAsPaths } from '@/utils/misc';
 import moment from 'moment';
 import { get as safeGet } from 'lodash-es';
 import ImportCompetitionUserModal from '@/components/ImportCompetitionUserModal';
@@ -230,6 +230,15 @@ class CompetitionUserManagement extends React.Component<Props, State> {
     try {
       const users = await this.fetchAllUsers();
       console.log('users', users);
+      // collect all possible fields from `user.info` (including nested fields)
+      const infoFields = new Set<string>();
+      users.forEach((user) => {
+        collectObjectKeysAsPaths(user.info).forEach((field) => {
+          infoFields.add(field);
+        });
+      });
+      console.log('collected info fields', Array.from(infoFields));
+
       const fields = [
         'userId',
         'role',
@@ -239,22 +248,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
         'seatNo',
         'banned',
         'unofficialParticipation',
-        'info.nickname',
-        'info.subname',
-        'info.realName',
-        'info.organization',
-        'info.company',
-        'info.studentNo',
-        'info.school',
-        'info.college',
-        'info.major',
-        'info.class',
-        'info.tel',
-        'info.qq',
-        'info.weChat',
-        'info.clothing',
-        'info.slogan',
-        'info.group',
+        ...Array.from(infoFields).map((field) => `info.${field}`),
       ];
       const aoa: any[][] = [fields];
       users.forEach((user) => {

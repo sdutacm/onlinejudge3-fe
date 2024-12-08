@@ -1,5 +1,6 @@
 import XLSX from 'xlsx';
 import Cookies from 'js-cookie';
+import { forEach, isObject } from 'lodash';
 
 export interface TimeFlag {
   _t: number; // now time
@@ -218,4 +219,23 @@ export function replaceString(str: string, sourceString: string[], targetString:
     result = result.replace(regex, targetString);
   });
   return result;
+}
+
+export function collectObjectKeysAsPaths(obj, parentKey = '') {
+  let keys: string[] = [];
+
+  forEach(obj, (value, key) => {
+    const fullKey = parentKey ? `${parentKey}.${key}` : key;
+    if (isObject(value) && !Array.isArray(value)) {
+      keys = keys.concat(collectObjectKeysAsPaths(value, fullKey));
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        keys = keys.concat(collectObjectKeysAsPaths(item, `${fullKey}.${index}`));
+      });
+    } else {
+      keys.push(fullKey);
+    }
+  });
+
+  return keys;
 }

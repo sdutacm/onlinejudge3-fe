@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Card, Table, Tooltip } from 'antd';
+import { Card, Table, Tooltip, Tag } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
@@ -17,11 +17,13 @@ import markdownit from 'markdown-it';
 
 const md = markdownit().disable('image');
 // Remember the old renderer if overridden, or proxy to the default renderer.
-const defaultRender = md.renderer.rules.link_open || function (tokens, idx, options, env, self) {
-  return self.renderToken(tokens, idx, options);
-};
+const defaultRender =
+  md.renderer.rules.link_open ||
+  function(tokens, idx, options, env, self) {
+    return self.renderToken(tokens, idx, options);
+  };
 
-md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
   // Add a new `target` attribute, or replace the value of the existing one.
   tokens[idx].attrSet('target', '_blank');
 
@@ -77,15 +79,42 @@ class CompetitionParticipants extends React.Component<Props, State> {
     }
   };
 
-  renderParticipant = (record: ICompetitionUser) => {
+  renderUnofficialMark = (record: ICompetitionUser) => {
+    if (record.unofficialParticipation) {
+      return (
+        <Tooltip title="Unofficial Participation">
+          <Tag>＊</Tag>
+        </Tooltip>
+      );
+    }
+    return null;
+  };
+
+  renderPersonalParticipant = (record: ICompetitionUser) => {
     return (
       <div>
-        <p className="competition-participant-name">
+        <div className="competition-participant-name">
+          {this.renderUnofficialMark(record)}
           {record.info.nickname}
           <span className="competition-participant-name-secondary text-secondary">
             ({record.info.class} {record.info.realName})
           </span>
-        </p>
+        </div>
+        {!!record.info.slogan && this.renderSlogan(record.info.slogan)}
+      </div>
+    );
+  };
+
+  renderTeamParticipant = (record: ICompetitionUser) => {
+    return (
+      <div>
+        <div className="competition-participant-name">
+          {this.renderUnofficialMark(record)}
+          {record.info.nickname}
+          <span className="competition-participant-name-secondary text-secondary">
+            ({record.info.members.map((m) => `${m.class} ${m.realName}`).join(' / ')})
+          </span>
+        </div>
         {!!record.info.slogan && this.renderSlogan(record.info.slogan)}
       </div>
     );
@@ -162,6 +191,7 @@ class CompetitionParticipants extends React.Component<Props, State> {
     if (!detail?.competitionId) {
       return <NotFound />;
     }
+    const isTeam = detail.isTeam;
 
     return (
       <PageAnimation>
@@ -181,7 +211,9 @@ class CompetitionParticipants extends React.Component<Props, State> {
                 render={(text, record: ICompetitionUser) =>
                   this.isGenshin
                     ? this.renderGenshinParticipant(record)
-                    : this.renderParticipant(record)
+                    : isTeam
+                    ? this.renderTeamParticipant(record)
+                    : this.renderPersonalParticipant(record)
                 }
               />
             </Table>

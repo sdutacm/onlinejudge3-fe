@@ -447,6 +447,9 @@ export default {
     *modifySignedUpCompetitionParticipant({ payload: { id, data } }, { call }) {
       return yield call(service.modifySignedUpCompetitionParticipant, id, data);
     },
+    *deleteSignedUpCompetitionParticipant({ payload: { id } }, { call }) {
+      return yield call(service.deleteSignedUpCompetitionParticipant, id);
+    },
     *getAllCompetitionUsers({ payload: { id } }, { call, put }) {
       const ret: IApiResponse = yield call(service.getCompetitionUsers, id);
       if (ret.success) {

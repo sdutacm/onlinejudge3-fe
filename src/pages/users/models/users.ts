@@ -7,7 +7,7 @@ import { formatListQuery } from '@/utils/format';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { Results } from '@/configs/results';
 import * as groupService from '../../groups/services/groups';
-import { IGetSelfAchievedAchievementsResp, IGetSelfJoinedTeamsResp, IGetUserMembersResp } from '@/common/contracts/user';
+import { IGetSelfAchievedAchievementsResp, IGetSelfJoinedTeamsResp, IGetUserMembersResp, IGetSelfOfficialMembersResp } from '@/common/contracts/user';
 import { EUserType } from '@/common/enums';
 
 const initialState = {
@@ -24,6 +24,7 @@ const initialState = {
   },
   achievedAchievements: [],
   members: {},
+  selfOfficialMembers: [],
   selfJoinedTeams: [],
 };
 
@@ -67,6 +68,12 @@ export default {
     },
     setMembers(state, { payload: { id, data } }) {
       state.members[id] = [...data];
+    },
+    setSelfOfficialMembers(state, { payload: data }) {
+      state.selfOfficialMembers = [...data];
+    },
+    clearSelfOfficialMembers(state) {
+      state.selfOfficialMembers = [];
     },
     setSelfJoinedTeams(state, { payload: data }) {
       state.selfJoinedTeams = [...data];
@@ -258,6 +265,18 @@ export default {
     },
     *removeMember({ payload: { memberUserId } }, { call }) {
       return yield call(service.removeUserMember, memberUserId);
+    },
+    *getSelfOfficialMembers(_, { call, put }) {
+      const ret: IApiResponse<IGetSelfOfficialMembersResp> = yield call(
+        service.getSelfOfficialMembers,
+      );
+      if (ret.success) {
+        yield put({
+          type: 'setSelfOfficialMembers',
+          payload: ret.data.rows,
+        });
+      }
+      return ret;
     },
     *getSelfJoinedTeams(_, { call, put }) {
       const ret: IApiResponse<IGetSelfJoinedTeamsResp> = yield call(

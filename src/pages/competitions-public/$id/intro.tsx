@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Button, Row, Col, Card } from 'antd';
+import { Divider, Button, Row, Col, Card, Popconfirm } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { ReduxProps, RouteProps } from '@/@types/props';
@@ -17,7 +17,7 @@ import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import msg from '@/utils/msg';
 import moment from 'moment';
-import { ECompetitionUserStatus } from '@/common/enums';
+import { ECompetitionUserStatus, EUserType } from '@/common/enums';
 import { Codes } from '@/common/codes';
 // import SdutpcLogo from '../../../assets/images/sdutpc_logo_shadow.png';
 import GeneralFormModal from '@/components/GeneralFormModal';
@@ -30,6 +30,8 @@ import TimeStatusBadge from '@/components/TimeStatusBadge';
 import PageLoading from '@/components/PageLoading';
 import { genshinCharacters } from '@/configs/genshin';
 import { simpleFilterHTML } from '@/utils/filter';
+import { get as safeGet } from 'lodash-es';
+import UserBar from '@/components/UserBar';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -45,6 +47,8 @@ export interface Props extends ReduxProps, RouteProps {
   session: ISessionStatus;
   detail: ICompetition;
   settings: ICompetitionSettings;
+  selfOfficialMembers: IUserMember[];
+  deleteSignedUpCompetitionParticipantLoading: boolean;
 }
 
 interface State {
@@ -120,12 +124,12 @@ class CompetitionIntro extends React.Component<Props, State> {
     }
   }
 
-  getSelfParticipantFormItems = (data?: ICompetitionSelfParticipantForm) => {
+  getPersonalSelfParticipantFormItems = (data?: ICompetitionSelfParticipantForm) => {
     return [
       {
         name: 'Nickname (VERY IMPORTANT)',
         field: 'nickname',
-        placeholder: 'Used to display in the ranklist and ceremonies',
+        placeholder: 'Used in the ranklist and ceremonies',
         component: 'input',
         initialValue: data?.info?.nickname || '',
         rules: [
@@ -135,7 +139,7 @@ class CompetitionIntro extends React.Component<Props, State> {
       },
       {
         name: 'Unofficial Participation',
-        field: 'unofficial',
+        field: 'unofficialParticipation',
         component: 'select',
         initialValue: String(data?.unofficialParticipation || false),
         options: [
@@ -151,12 +155,12 @@ class CompetitionIntro extends React.Component<Props, State> {
         rules: [{ required: true, message: 'Please input real name' }],
       },
       {
-        name: 'Student Number',
+        name: 'Student No.',
         field: 'studentNo',
         placeholder: 'e.g., 21110501000',
         component: 'input',
         initialValue: data?.info?.studentNo || '',
-        rules: [{ required: true, message: 'Please input Student Number' }],
+        rules: [{ required: true, message: 'Please input Student No.' }],
       },
       {
         name: 'School',
@@ -219,11 +223,105 @@ class CompetitionIntro extends React.Component<Props, State> {
     ];
   };
 
+  getTeamSelfParticipantFormItems = (data?: ICompetitionSelfParticipantForm) => {
+    const { selfOfficialMembers } = this.props;
+    const memberFields = selfOfficialMembers.map((m, index) => [
+      {
+        name: `Member ${index + 1}`,
+        component: (
+          <div key={`member.${index}._static`} style={{ marginTop: '32px' }}>
+            <div>
+              <span className="text-bold">Member #{index + 1}</span>
+              <UserBar user={m} className="ml-md" tabindex={-1} />
+            </div>
+            <Divider className="mt-md mb-md-lg" />
+          </div>
+        ),
+      },
+      {
+        name: 'Real Name',
+        field: `members.${index}.realName`,
+        component: 'input',
+        initialValue: data?.info?.members?.[index]?.realName || '',
+        rules: [{ required: true, message: 'Please input real name' }],
+      },
+      {
+        name: 'Student No.',
+        field: `members.${index}.studentNo`,
+        placeholder: 'e.g., 21110501000',
+        component: 'input',
+        initialValue: data?.info?.members?.[index]?.studentNo || '',
+        rules: [{ required: true, message: 'Please input Student No.' }],
+      },
+      {
+        name: 'Class',
+        field: `members.${index}.class`,
+        placeholder: 'e.g., 计科2101',
+        component: 'input',
+        initialValue: data?.info?.members?.[index]?.class || '',
+        rules: [{ required: true, message: 'Please input class' }],
+      },
+    ]);
+
+    return [
+      {
+        name: 'Nickname (VERY IMPORTANT)',
+        field: 'nickname',
+        placeholder: 'Used in the ranklist and ceremonies',
+        component: 'input',
+        initialValue: data?.info?.nickname || '',
+        rules: [
+          { required: true, message: 'Please input nickname' },
+          { max: 10, message: 'Nickname cannot be longer than 10 characters' },
+        ],
+      },
+      {
+        name: 'Unofficial Participation',
+        field: 'unofficialParticipation',
+        component: 'select',
+        initialValue: String(data?.unofficialParticipation || false),
+        options: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
+      },
+      {
+        name: 'Organization',
+        field: 'organization',
+        placeholder: 'e.g., 山东理工大学',
+        component: 'input',
+        initialValue: data?.info?.organization || '',
+        rules: [{ required: true, message: 'Please input organization' }],
+      },
+      {
+        name: 'Team Contact Tel',
+        field: 'tel',
+        placeholder: 'e.g., 13512345678',
+        component: 'input',
+        initialValue: data?.info?.tel || '',
+      },
+      {
+        name: 'Team Contact QQ',
+        field: 'qq',
+        component: 'input',
+        initialValue: data?.info?.qq || '',
+      },
+      {
+        name: 'Slogan (optional)',
+        field: 'slogan',
+        placeholder: '起个响亮的参赛宣言',
+        component: 'input',
+        initialValue: data?.info?.slogan || '',
+      },
+      ...memberFields.flat(),
+    ];
+  };
+
   initForm = (configurableFormItems, data?: ICompetitionSelfParticipantForm) => {
     const formItems = configurableFormItems.map((item) => {
       const { field, initialValue } = item;
       const newItem = { ...item };
-      newItem.initialValue = data?.info?.[field] ?? initialValue;
+      newItem.initialValue = safeGet(data?.info, field) ?? initialValue;
       if (item.component === 'select' && item.xOptionsAppend === 'genshin-characters') {
         newItem.options = [
           ...item.options,
@@ -294,6 +392,25 @@ class CompetitionIntro extends React.Component<Props, State> {
     router.push(urlf(pages.competitions.home, { param: { id: this.props.id } }));
   };
 
+  handleCancelSignUp = async () => {
+    const { id, dispatch, deleteSignedUpCompetitionParticipantLoading } = this.props;
+    if (deleteSignedUpCompetitionParticipantLoading) {
+      return;
+    }
+    dispatch({
+      type: 'competitions/deleteSignedUpCompetitionParticipant',
+      payload: {
+        id,
+      },
+    }).then((ret) => {
+      msg.auto(ret);
+      if (ret.success) {
+        msg.success('Cancelled sign-up');
+        this.fetch(id, dispatch);
+      }
+    });
+  };
+
   renderSignUpStatus = () => {
     const { text, level } = this.getSignUpStatus();
     const words = text.split(' ');
@@ -315,7 +432,7 @@ class CompetitionIntro extends React.Component<Props, State> {
   };
 
   renderSignUpAction = () => {
-    const { id, session, detail } = this.props;
+    const { id, session, detail, selfOfficialMembers } = this.props;
     const { selfParticipant, cannotSignUpTips } = this.state;
     if (this.isSignUpEnded()) {
       return <Button disabled>Signing Up: Ended</Button>;
@@ -326,10 +443,32 @@ class CompetitionIntro extends React.Component<Props, State> {
     if (!session.loggedIn) {
       return <Button disabled>Login to Sign Up</Button>;
     }
-    const formItems =
-      this.isGenshin && detail.spConfig.memberInfoFields
-        ? this.initForm(detail.spConfig.memberInfoFields, selfParticipant)
-        : this.getSelfParticipantFormItems();
+    const isTeam = detail.isTeam;
+    const accountType = session.user.type;
+    const spConfig = detail.spConfig || {};
+    const teamConfig = spConfig.teamConfig;
+    if (isTeam) {
+      if (accountType !== EUserType.team) {
+        return <Button disabled>Only Team Account Can Sign Up</Button>;
+      }
+      const minMemberCount = Math.max(+teamConfig?.minMemberCount || 1, 1);
+      const maxMemberCount = Math.max(+teamConfig?.maxMemberCount || Infinity, minMemberCount);
+      if (selfOfficialMembers.length === 0 || selfOfficialMembers.length < minMemberCount) {
+        return <Button disabled>{`At least ${minMemberCount} member(s) required in team`}</Button>;
+      }
+      if (selfOfficialMembers.length > maxMemberCount) {
+        return <Button disabled>{`At most ${maxMemberCount} member(s) allowed in team`}</Button>;
+      }
+    }
+    if (!isTeam && accountType === EUserType.team) {
+      return <Button disabled>Only Personal Account Can Sign Up</Button>;
+    }
+
+    const formItems = detail.spConfig.memberInfoFields
+      ? this.initForm(detail.spConfig.memberInfoFields, selfParticipant)
+      : detail.isTeam
+      ? this.getTeamSelfParticipantFormItems(selfParticipant)
+      : this.getPersonalSelfParticipantFormItems(selfParticipant);
     if (!selfParticipant) {
       if (cannotSignUpTips) {
         return <p className="text-secondary">{cannotSignUpTips}</p>;
@@ -344,7 +483,7 @@ class CompetitionIntro extends React.Component<Props, State> {
           submit={(dispatch: ReduxProps['dispatch'], values) => {
             const data = {
               competitionId: id,
-              unofficialParticipation: false,
+              unofficialParticipation: values.unofficialParticipation === 'true',
               info: { ...values },
             };
             console.log('data', data);
@@ -388,7 +527,7 @@ class CompetitionIntro extends React.Component<Props, State> {
             submit={(dispatch: ReduxProps['dispatch'], values) => {
               const data = {
                 competitionId: id,
-                unofficialParticipation: false,
+                unofficialParticipation: values.unofficialParticipation === 'true',
                 info: { ...values },
               };
               console.log('data', data);
@@ -446,6 +585,7 @@ class CompetitionIntro extends React.Component<Props, State> {
 
   render() {
     const { loading, detail, settings, id, session } = this.props;
+    const { selfParticipant } = this.state;
     if (loading) {
       return <PageLoading />;
     }
@@ -461,6 +601,12 @@ class CompetitionIntro extends React.Component<Props, State> {
       settings.allowedAuthMethods.includes('session') && settings.allowedAuthMethods.length === 1;
     // near start time 2h
     const nearStartTime = startTime - currentTime < 2 * 60 * 60 * 1000;
+    const contestNotStarted = timeStatus === 'Pending';
+    const signUpCancelable =
+      settings.allowedJoinMethods.includes('register') &&
+      this.inSignUpRange() &&
+      contestNotStarted &&
+      selfParticipant;
 
     return (
       <PageAnimation>
@@ -515,6 +661,20 @@ class CompetitionIntro extends React.Component<Props, State> {
                   <Button>👉 View Participants</Button>
                 </Link>
               </div>
+              {signUpCancelable && (
+                <div className="text-center" style={{ marginTop: '30px' }}>
+                  <p className="text-danger text-bold mb-md">
+                    {'{'}Danger Area{'}'}
+                  </p>
+                  <Popconfirm
+                    title="Are you sure to cancel your sign-up?"
+                    placement="bottom"
+                    onConfirm={this.handleCancelSignUp}
+                  >
+                    <Button type="danger">Cancel Sign-Up</Button>
+                  </Popconfirm>
+                </div>
+              )}
             </div>
           </div>
         </PageTitle>
@@ -536,7 +696,11 @@ function mapStateToProps(state) {
       !!state.loading.effects['competitions/getSettings'],
     detail,
     settings,
+    selfOfficialMembers: state.users.selfOfficialMembers,
     theme,
+    deleteSignedUpCompetitionParticipantLoading: !!state.loading.effects[
+      'competitions/deleteSignedUpCompetitionParticipant'
+    ],
   };
 }
 

@@ -26,6 +26,7 @@ import {
   IRemoveUserMemberReq,
   IConfirmJoinTeamReq,
   IGetSelfJoinedTeamsResp,
+  IGetSelfOfficialMembersResp,
 } from '@/common/contracts/user';
 
 export function register(data) {
@@ -118,6 +119,10 @@ export function receiveAchievement(achievementKey) {
   return post<IReceiveAchievementReq, void>(routesBe.receiveAchievement.url, {
     achievementKey,
   });
+}
+
+export function getSelfOfficialMembers() {
+  return post<void, IGetSelfOfficialMembersResp>(routesBe.getSelfOfficialMembers.url);
 }
 
 export function getUserMembers(userId) {

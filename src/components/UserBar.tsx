@@ -17,6 +17,7 @@ export interface Props {
   showAsText?: boolean;
   showRating?: boolean;
   useTooltip?: boolean;
+  tabindex?: number;
   nameFormat?: (user: IUser) => string;
 }
 
@@ -29,6 +30,7 @@ const UserBar: React.FC<Props> = ({
   showAsText = false,
   showRating = false,
   useTooltip = false,
+  tabindex,
   nameFormat,
   className,
 }) => {
@@ -59,13 +61,18 @@ const UserBar: React.FC<Props> = ({
   if (isContestUser || showAsText) {
     return inner;
   }
+  const extraAttrs: any = {};
+  if (tabindex) {
+    extraAttrs.tabIndex = tabindex;
+  }
   if (disableJump) {
-    return <a>{inner}</a>;
+    return <a {...extraAttrs}>{inner}</a>;
   }
   return (
     <Link
       to={urlf(pages.users.detail, { param: { id: user.userId } })}
       onClick={(e) => e.stopPropagation()}
+      {...extraAttrs}
     >
       {useTooltip ? <Tooltip title={nameFormat?.(user) ?? user.nickname}>{inner}</Tooltip> : inner}
     </Link>

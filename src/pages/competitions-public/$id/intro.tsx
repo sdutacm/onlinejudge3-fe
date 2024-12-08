@@ -125,7 +125,7 @@ class CompetitionIntro extends React.Component<Props, State> {
       {
         name: 'Nickname (VERY IMPORTANT)',
         field: 'nickname',
-        placeholder: '起个有意思的昵称，将会在比赛和颁奖仪式展示',
+        placeholder: 'Used to display in the ranklist and ceremonies',
         component: 'input',
         initialValue: data?.info?.nickname || '',
         rules: [
@@ -133,16 +133,16 @@ class CompetitionIntro extends React.Component<Props, State> {
           { max: 10, message: 'Nickname cannot be longer than 10 characters' },
         ],
       },
-      // {
-      //   name: 'Unofficial Participation',
-      //   field: 'unofficial',
-      //   component: 'select',
-      //   initialValue: String(data?.unofficialParticipation || false),
-      //   options: [
-      //     { name: 'Yes', value: true },
-      //     { name: 'No', value: false },
-      //   ],
-      // },
+      {
+        name: 'Unofficial Participation',
+        field: 'unofficial',
+        component: 'select',
+        initialValue: String(data?.unofficialParticipation || false),
+        options: [
+          { name: 'Yes', value: true },
+          { name: 'No', value: false },
+        ],
+      },
       {
         name: 'Real Name',
         field: 'realName',
@@ -199,16 +199,16 @@ class CompetitionIntro extends React.Component<Props, State> {
         component: 'input',
         initialValue: data?.info?.qq || '',
       },
-      {
-        name: 'Clothing Size',
-        field: 'clothing',
-        component: 'select',
-        initialValue: data?.info?.clothing || '',
-        options: CLOTHING_SIZES.map((item) => ({
-          value: item,
-          name: item,
-        })),
-      },
+      // {
+      //   name: 'Clothing Size',
+      //   field: 'clothing',
+      //   component: 'select',
+      //   initialValue: data?.info?.clothing || '',
+      //   options: CLOTHING_SIZES.map((item) => ({
+      //     value: item,
+      //     name: item,
+      //   })),
+      // },
       {
         name: 'Slogan (optional)',
         field: 'slogan',

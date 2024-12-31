@@ -1,6 +1,6 @@
 const constants = {
   siteName: 'SDUT OJ',
-  siteTitle: 'SDUT OnlineJudge',
+  siteTitle: 'SDUT Online Judge',
   accessTokenCookieName: 'access_token_openoj',
   imageDirPrefix: `${process.env.MEDIA_URL}/image/`,
   avatarUrlPrefix: `${process.env.MEDIA_URL}/image/avatars/`,

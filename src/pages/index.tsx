@@ -192,6 +192,21 @@ class Index extends React.Component<Props, State> {
               </Col>
             )}
 
+            <Col xs={24} className="mt-lg">
+              <Alert
+                message="OJ 2024 年度报告现已上线！"
+                description={
+                  <ExtLink
+                    href="/onlinejudge3/annual-report-2024/?from=sdutoj"
+                  >
+                    查看专属报告
+                  </ExtLink>
+                }
+                type="info"
+                showIcon
+              />
+            </Col>
+
             {/* <Col xs={24} className="mt-lg">
               <Alert
                 message="限时推广"
@@ -225,10 +240,7 @@ class Index extends React.Component<Props, State> {
                 description={
                   <span>
                     欢迎使用轻量的全新代码剪贴分享工具
-                    <ExtLink
-                      href="https://paste.then.ac/?from=sdutoj"
-                      className="ml-sm-md"
-                    >
+                    <ExtLink href="https://paste.then.ac/?from=sdutoj" className="ml-sm-md">
                       paste.then.ac
                     </ExtLink>{' '}
                   </span>

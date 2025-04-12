@@ -192,7 +192,7 @@ class Index extends React.Component<Props, State> {
               </Col>
             )}
 
-            <Col xs={24} className="mt-lg">
+            {/* <Col xs={24} className="mt-lg">
               <Alert
                 message="OJ 2024 年度报告现已上线！"
                 description={
@@ -205,7 +205,7 @@ class Index extends React.Component<Props, State> {
                 type="info"
                 showIcon
               />
-            </Col>
+            </Col> */}
 
             {/* <Col xs={24} className="mt-lg">
               <Alert

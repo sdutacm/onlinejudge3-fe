@@ -174,7 +174,7 @@ export default {
       return detailRet;
     },
     *getProblemDataFiles({ payload: { id } }, { call, put }) {
-      const ret: IApiResponse<any> = yield call(service.getJudgerDataFile, `${id}`);
+      const ret: IApiResponse<any> = yield call(service.getJudgerDataFile, `${id}/`);
       if (ret.success) {
         yield put({
           type: 'setProblemDataFiles',

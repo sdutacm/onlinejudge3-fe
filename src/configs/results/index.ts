@@ -25,6 +25,7 @@ export function isDeterminedResult(result: number) {
     Results.CE,
     Results.PE,
     Results.SE,
+    Results.NLF,
     Results.V_Frozen,
   ].includes(result);
 }

@@ -72,6 +72,13 @@ const resultsMap = {
     shortName: 'JG',
     fullName: 'Judging',
   },
+  [Results.NLF]: {
+    shortName: 'NLF',
+    fullName: 'Grand Nullified',
+    normalColor: 'green',
+    colorfulColor: 'green',
+    description: 'All administrators and competition principals have been nullified by this solution',
+  },
 };
 
 export default resultsMap;

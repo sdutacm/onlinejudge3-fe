@@ -28,7 +28,7 @@ export function isFinishedResult(result: Results): boolean {
 }
 
 export function isIgnoredResult(result: Results): boolean {
-  return result === Results.CE || result === Results.SE;
+  return result === Results.CE || result === Results.SE || result === Results.NLF;
 }
 
 export function isAcceptedResult(result: Results): boolean {

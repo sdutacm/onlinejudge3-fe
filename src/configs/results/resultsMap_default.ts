@@ -72,6 +72,13 @@ const resultsMap = {
     shortName: 'JG',
     fullName: 'Judging',
   },
+  [Results.NLF]: {
+    shortName: 'NLF',
+    fullName: 'Nullified',
+    normalColor: 'red',
+    colorfulColor: 'gray',
+    description: 'This solution has been nullified by administrator or competition principal',
+  },
   [Results.V_Frozen]: {
     shortName: '?',
     fullName: 'Frozen',

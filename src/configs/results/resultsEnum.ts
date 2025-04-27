@@ -10,6 +10,7 @@ enum Results {
   PE = 8,
   SE = 11,
   JG = 12,
+  NLF = 13,
   RPD = -1,
   V_Frozen = -100,
 }

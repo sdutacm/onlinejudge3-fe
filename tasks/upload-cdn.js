@@ -119,7 +119,10 @@ fastListFolder(localFolder, function(err, list) {
     files = files.filter((file) => file.Key !== indexFile.Key);
     files.push(indexFile);
   }
-  console.log('to upload files:', files);
+  console.log('to upload files:');
+  files.forEach(function(file) {
+    console.log(file.FilePath);
+  });
   cos.uploadFiles(
     {
       files: files,

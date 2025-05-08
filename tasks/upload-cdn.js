@@ -11,6 +11,7 @@ const Async = require('cos-nodejs-sdk-v5/sdk/async');
 const cos = new COS({
   SecretId: process.env.COS_SECRET_ID,
   SecretKey: process.env.COS_SECRET_KEY,
+  Domain: process.env.COS_DOMAIN,
 });
 
 const Bucket = process.env.COS_BUCKET;
@@ -136,10 +137,14 @@ fastListFolder(localFolder, function(err, list) {
         console.log('progress: ' + percent + '%; speed: ' + speed + 'Mb/s');
       },
       onFileFinish: function(err, data, options) {
-        console.log(options.Key + ' upload ' + (err ? 'failed' : 'success'));
         if (err) {
-          // 有文件上传失败时不会进入到最终的回调 err，只能在此直接退出
-          process.exit(1);
+          console.log(options.Key + ' upload failed:', err);
+        } else {
+          console.log(options.Key + ' upload success');
+        }
+        if (err) {
+          // // 有文件上传失败时不会进入到最终的回调 err，只能在此直接退出
+          // process.exit(1);
         }
       },
     },

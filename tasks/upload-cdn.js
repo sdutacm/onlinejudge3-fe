@@ -105,7 +105,7 @@ fastListFolder(localFolder, function(err, list) {
   let files = list.map(function(file) {
     let filename = pathLib.relative(localFolder, file.path).replace(/\\/g, '/');
     // if (filename && file.isDir && !filename.endsWith('/')) filename += '/';
-    if (filename?.isDir) {
+    if (file.isDir) {
       return null;
     }
     const Key = remotePrefix + filename;

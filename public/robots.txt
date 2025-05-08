@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://acm.sdut.edu.cn/onlinejudge3/sitemap.xml
+Sitemap: https://oj.sdutacm.cn/onlinejudge3/sitemap.xml

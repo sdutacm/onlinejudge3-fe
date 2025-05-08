@@ -102,7 +102,7 @@ const fastListFolder = function(options, callback) {
 
 fastListFolder(localFolder, function(err, list) {
   if (err) return console.error(err);
-  const files = list.map(function(file) {
+  let files = list.map(function(file) {
     let filename = pathLib.relative(localFolder, file.path).replace(/\\/g, '/');
     if (filename && file.isDir && !filename.endsWith('/')) filename += '/';
     const Key = remotePrefix + filename;
@@ -113,6 +113,13 @@ fastListFolder(localFolder, function(err, list) {
       FilePath: file.path,
     };
   });
+  // 移动 index.html 到最后上传
+  const indexFile = files.find((file) => file.Key.endsWith('index.html'));
+  if (indexFile) {
+    files = files.filter((file) => file.Key !== indexFile.Key);
+    files.push(indexFile);
+  }
+  console.log('to upload files:', files);
   cos.uploadFiles(
     {
       files: files,

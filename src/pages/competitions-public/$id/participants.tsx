@@ -125,7 +125,7 @@ class CompetitionParticipants extends React.Component<Props, State> {
           {this.renderUnofficialMark(record)}
           {record.info.nickname}
           <span className="competition-participant-name-secondary text-secondary">
-            ({this.computeSubname(record) || `${record.info.class} ${record.info.realName}`})
+            ({this.computeSubname(record) || `${record.info.class || ''} ${record.info.realName || ''}`})
           </span>
         </div>
         {!!record.info.slogan && this.renderSlogan(record.info.slogan)}

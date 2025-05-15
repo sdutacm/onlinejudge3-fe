@@ -222,7 +222,7 @@ class CompetitionBalloon extends React.Component<Props, State> {
                   title="Participant"
                   key="Participant"
                   render={(text, record: IBalloon) => (
-                    <span>{record.subname || record.nickname}</span>
+                    <span>{record.nickname}{record.subname ? ` (${record.subname})` : ''}</span>
                   )}
                 />
                 <Table.Column

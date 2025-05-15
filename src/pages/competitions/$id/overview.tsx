@@ -1430,7 +1430,7 @@ class CompetitionOverview extends React.Component<Props, State> {
           <div className="content-view center-view">
             <div className="text-center" style={{ marginBottom: '30px' }}>
               <div className="mb-lg">Confirm your info to enter competition</div>
-              <h1>Logged In as: {selfUserDetail.info.subname || selfUserDetail.info.nickname}</h1>
+              <h1>Logged In as: {selfUserDetail.info.nickname}{selfUserDetail.info.subname ? ` (${selfUserDetail.info.subname})` : ''}</h1>
             </div>
             <div className="center-form">
               <Button

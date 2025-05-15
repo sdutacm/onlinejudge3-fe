@@ -103,7 +103,7 @@ class ReceiveBalloonModal extends React.Component<Props, State> {
             <div className="mt-lg">
               <p className="mb-sm">{formatCompetitionUserSeatId(data)}</p>
               <p className="mb-md" style={{ fontSize: '18px' }}>
-                {data.subname || data.nickname}
+                {data.nickname}{data.subname ? ` (${data.subname})` : ''}
               </p>
             </div>
           </div>

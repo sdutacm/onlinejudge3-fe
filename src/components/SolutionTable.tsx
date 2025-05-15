@@ -73,12 +73,15 @@ class SolutionTable extends React.Component<Props, State> {
   onJudgeStatus = async (e) => {
     const status = e.detail as IJudgeStatus;
     console.log(status);
-    this.setState({
-      judgeStatusMap: {
-        ...this.state.judgeStatusMap,
-        [status.solutionId]: status,
-      },
-    });
+    const prevStatus = this.state.judgeStatusMap[status.solutionId];
+    if (!prevStatus || isFinishedResult(status.result) || status.current >= prevStatus.current) {
+      this.setState({
+        judgeStatusMap: {
+          ...this.state.judgeStatusMap,
+          [status.solutionId]: status,
+        },
+      });
+    }
     if (isFinishedResult(status.result)) {
       const { data } = await this.props.dispatch({
         type: 'solutions/getListByIds',
@@ -396,7 +399,7 @@ class SolutionTable extends React.Component<Props, State> {
                   ? urlf(pages.competitions.solutionDetail, {
                       param: { id: competitionId, sid: record.solutionId },
                     })
-                  :urlf(pages.solutions.detail, { param: { id: record.solutionId } });
+                  : urlf(pages.solutions.detail, { param: { id: record.solutionId } });
                 return (
                   <Link
                     to={solutionDetailUrl}

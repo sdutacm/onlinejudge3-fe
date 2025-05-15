@@ -14,6 +14,7 @@ import PageLoading from '@/components/PageLoading';
 import NotFound from '@/pages/404';
 import { genshinCharacters } from '@/configs/genshin';
 import markdownit from 'markdown-it';
+import PageTitle from '@/components/PageTitle';
 
 const md = markdownit().disable('image');
 // Remember the old renderer if overridden, or proxy to the default renderer.
@@ -64,6 +65,33 @@ class CompetitionParticipants extends React.Component<Props, State> {
     return this.props?.detail?.spConfig?.preset === 'genshin';
   }
 
+  computeSubname = (user: ICompetitionUser): string => {
+    if (user.info.subname) {
+      return user.info.subname;
+    }
+    const subnameExpr = this.props?.detail?.spConfig?.subnameExpr || null;
+    if (!subnameExpr) {
+      return '';
+    }
+    try {
+      const expr = subnameExpr
+        .replace(/\$userId/g, user.userId.toString())
+        .replace(/\$unofficialParticipation/g, user.unofficialParticipation?.toString())
+        .replace(/\$fieldShortName/g, user.fieldShortName?.toString())
+        .replace(/\$seatNo/g, user.seatNo?.toString())
+        .replace(/\$info\.([a-zA-Z][a-zA-Z0-9]*)/g, `\${${JSON.stringify(user.info || {})}.$1}`);
+      console.log('compiled subname expression:', `\`${expr}\``);
+      // eslint-disable-next-line no-eval
+      const result = eval(`\`${expr}\``);
+      if (typeof result === 'string') {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error evaluating subname expression:', subnameExpr, user, e);
+    }
+    return '';
+  };
+
   fetch = async (props?: Props) => {
     const { id, dispatch } = props || this.props;
     const res = await dispatch({
@@ -97,7 +125,7 @@ class CompetitionParticipants extends React.Component<Props, State> {
           {this.renderUnofficialMark(record)}
           {record.info.nickname}
           <span className="competition-participant-name-secondary text-secondary">
-            ({record.info.class} {record.info.realName})
+            ({this.computeSubname(record) || `${record.info.class} ${record.info.realName}`})
           </span>
         </div>
         {!!record.info.slogan && this.renderSlogan(record.info.slogan)}
@@ -195,30 +223,32 @@ class CompetitionParticipants extends React.Component<Props, State> {
 
     return (
       <PageAnimation>
-        <div className="content-view">
-          <Card bordered={false} className="list-card">
-            <Table
-              dataSource={participants}
-              rowKey="userId"
-              loading={loading}
-              pagination={false}
-              className="responsive-table no-header-table listlike-table competition-participant-list"
-            >
-              <Table.Column
-                title="Info"
-                key="Info"
-                className="competition-participant-item"
-                render={(text, record: ICompetitionUser) =>
-                  this.isGenshin
-                    ? this.renderGenshinParticipant(record)
-                    : isTeam
-                    ? this.renderTeamParticipant(record)
-                    : this.renderPersonalParticipant(record)
-                }
-              />
-            </Table>
-          </Card>
-        </div>
+        <PageTitle title={`Participants of ${detail.title}`} loading={loading}>
+          <div className="content-view">
+            <Card bordered={false} className="list-card">
+              <Table
+                dataSource={participants}
+                rowKey="userId"
+                loading={loading}
+                pagination={false}
+                className="responsive-table no-header-table listlike-table competition-participant-list"
+              >
+                <Table.Column
+                  title="Info"
+                  key="Info"
+                  className="competition-participant-item"
+                  render={(text, record: ICompetitionUser) =>
+                    this.isGenshin
+                      ? this.renderGenshinParticipant(record)
+                      : isTeam
+                      ? this.renderTeamParticipant(record)
+                      : this.renderPersonalParticipant(record)
+                  }
+                />
+              </Table>
+            </Card>
+          </div>
+        </PageTitle>
       </PageAnimation>
     );
   }

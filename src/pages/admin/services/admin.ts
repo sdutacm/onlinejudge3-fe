@@ -359,6 +359,7 @@ export function uploadJudgerData(data) {
     headers: {
       'Content-Type': 'multipart/form-data;charset=UTF-8',
     },
+    timeout: 5 * 60 * 1000,
   });
 }
 

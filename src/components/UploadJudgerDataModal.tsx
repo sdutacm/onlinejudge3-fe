@@ -44,7 +44,7 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
         { name: 'ZIP', type: 'application/zip-compressed' },
         { name: 'ZIP', type: 'application/x-zip-compressed' },
       ],
-      500,
+      256,
     )(file);
     if (!valid) {
       console.log('Invalid file type or size');
@@ -220,7 +220,7 @@ class UploadJudgerDataModal extends React.Component<Props, State> {
             <p>DO NOT use Windows Notepad and other CRLF mode editors to edit file.</p>
             <p>
               The maximum number of test cases is <strong>100</strong>, and the maximum archive size
-              is <strong>500 MiB</strong>.
+              is <strong>256 MiB</strong>.
             </p>
             {dataUsingGit && (
               <>

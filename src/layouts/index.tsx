@@ -402,6 +402,11 @@ class Index extends React.Component<Props, State> {
               <Col xs={24} md={8} className="mb-md-lg">
                 <h3>Our Apps</h3>
                 <p>
+                  <ExtLink className="normal-text-link" href="https://oj.sdutacm.cn/oj-competition-side-client/?from=sdutoj">
+                    Competition Side Client
+                  </ExtLink>
+                </p>
+                <p>
                   <ExtLink className="normal-text-link" href="https://stepbystep.sdutacm.cn/">
                     StepByStep
                   </ExtLink>
@@ -417,11 +422,6 @@ class Index extends React.Component<Props, State> {
                     href="https://acm.sdut.edu.cn/sdutacm_files/recent_contests_crx.html"
                   >
                     Recent Contests
-                  </ExtLink>
-                </p>
-                <p>
-                  <ExtLink className="normal-text-link" href="http://suyu.red/">
-                    Typing System
                   </ExtLink>
                 </p>
               </Col>

@@ -134,7 +134,7 @@ class CompetitionIntro extends React.Component<Props, State> {
         initialValue: data?.info?.nickname || '',
         rules: [
           { required: true, message: 'Please input nickname' },
-          { max: 10, message: 'Nickname cannot be longer than 10 characters' },
+          { max: 12, message: 'Nickname cannot be longer than 12 characters' },
         ],
       },
       {
@@ -272,7 +272,7 @@ class CompetitionIntro extends React.Component<Props, State> {
         initialValue: data?.info?.nickname || '',
         rules: [
           { required: true, message: 'Please input nickname' },
-          { max: 10, message: 'Nickname cannot be longer than 10 characters' },
+          { max: 12, message: 'Nickname cannot be longer than 12 characters' },
         ],
       },
       {

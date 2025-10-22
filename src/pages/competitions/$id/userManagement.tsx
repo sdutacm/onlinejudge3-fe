@@ -191,7 +191,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
           initialValue: '',
           rules: [
             { required: true, message: 'Please input nickname' },
-            { max: 10, message: 'Nickname cannot be longer than 10 characters' },
+            { max: 12, message: 'Nickname cannot be longer than 12 characters' },
           ],
         },
       );

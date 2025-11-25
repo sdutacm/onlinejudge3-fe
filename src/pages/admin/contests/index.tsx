@@ -243,8 +243,8 @@ class AdminContestList extends React.Component<Props, State> {
         <Row gutter={16} className="list-view">
           <Col xs={24} className="mb-lg">
             <Alert
-              message="Contests is deprecated"
-              description="Use Competitions for any formal competition or registration. This module should only be used to open reproduction or internal testing."
+              message="Contest is deprecated"
+              description="Use Competition for any formal competition or registration. This module should only be used to open reproduction or internal testing."
               type="info"
               showIcon
             />

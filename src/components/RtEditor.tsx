@@ -60,9 +60,24 @@ class RtEditor extends React.Component<Props, State> {
   componentDidMount() {
     // @ts-ignore
     const fieldName: string = this.props.id; // from antd form
-    this.props.form.setFieldsValue({
-      [fieldName]: BraftEditor.createEditorState(this.props.value || null),
-    });
+    if (!this.props.value || typeof this.props.value === 'string') {
+      this.props.form.setFieldsValue({
+        [fieldName]: BraftEditor.createEditorState(this.props.value || null),
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    // @ts-ignore
+    const fieldName: string = this.props.id;
+    if (
+      nextProps.value !== this.props.value &&
+      (!nextProps.value || typeof nextProps.value === 'string')
+    ) {
+      this.props.form.setFieldsValue({
+        [fieldName]: BraftEditor.createEditorState(nextProps.value || null),
+      });
+    }
   }
 
   handleUploadMediaChange = (info) => {

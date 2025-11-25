@@ -53,19 +53,29 @@ class GeneralFormModal extends React.Component<IGeneralFormModalProps, State> {
     form.validateFields((err, values) => {
       if (!err) {
         // console.log('form ok', values);
-        submit(dispatch, { ...values, ...hiddenValues })?.then((ret) => {
-          autoMsg && msg.auto(ret);
-          if (ret.success) {
-            onSuccess?.(dispatch, ret);
-            this.handleHideModel();
-            setTimeout(() => {
-              onSuccessModalClosed?.(dispatch, ret);
-              form.resetFields();
-            }, constants.modalAnimationDurationFade);
-          } else {
-            onFail?.(dispatch, ret);
-          }
-        });
+        try {
+          submit(dispatch, { ...values, ...hiddenValues })
+            ?.then((ret) => {
+              autoMsg && msg.auto(ret);
+              if (ret.success) {
+                onSuccess?.(dispatch, ret);
+                this.handleHideModel();
+                setTimeout(() => {
+                  onSuccessModalClosed?.(dispatch, ret);
+                  form.resetFields();
+                }, constants.modalAnimationDurationFade);
+              } else {
+                onFail?.(dispatch, ret);
+              }
+            })
+            ?.catch((e) => {
+              console.log('form submit error:', e);
+              msg.error(e.message);
+            });
+        } catch (e) {
+          console.error('form submit error:', e);
+          msg.error(e.message);
+        }
       }
     });
   };

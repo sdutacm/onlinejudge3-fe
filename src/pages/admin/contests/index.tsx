@@ -8,7 +8,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import router from 'umi/router';
 import tracker from '@/utils/tracker';
-import { Row, Col, Card, Table, Pagination, Button, Icon } from 'antd';
+import { Row, Col, Card, Table, Pagination, Button, Icon, Alert } from 'antd';
 import limits from '@/configs/limits';
 import FilterCard from '@/components/FilterCard';
 import constants from '@/configs/constants';
@@ -241,6 +241,14 @@ class AdminContestList extends React.Component<Props, State> {
     return (
       <PageAnimation>
         <Row gutter={16} className="list-view">
+          <Col xs={24} className="mb-lg">
+            <Alert
+              message="Contests is deprecated"
+              description="Use Competitions for any formal competition or registration. This module should only be used to open reproduction or internal testing."
+              type="info"
+              showIcon
+            />
+          </Col>
           <Col xs={24} md={18} xxl={20}>
             <Card bordered={false} className="list-card">
               <Table

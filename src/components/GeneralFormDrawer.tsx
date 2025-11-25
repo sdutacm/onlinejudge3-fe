@@ -63,19 +63,29 @@ class GeneralFormDrawer extends React.Component<IGeneralFormDrawerProps, State> 
           }
         }
         // console.log('form ok', values);
-        submit(dispatch, { ...values, ...hiddenValues })?.then((ret) => {
-          autoMsg && msg.auto(ret);
-          if (ret.success) {
-            onSuccess?.(dispatch, ret);
-            this.handleHideDrawer();
-            setTimeout(() => {
-              onSuccessAndClosed?.(dispatch, ret);
-              form.resetFields();
-            }, constants.drawerAnimationDuration);
-          } else {
-            onFail?.(dispatch, ret);
-          }
-        });
+        try {
+          submit(dispatch, { ...values, ...hiddenValues })
+            ?.then((ret) => {
+              autoMsg && msg.auto(ret);
+              if (ret.success) {
+                onSuccess?.(dispatch, ret);
+                this.handleHideDrawer();
+                setTimeout(() => {
+                  onSuccessAndClosed?.(dispatch, ret);
+                  form.resetFields();
+                }, constants.drawerAnimationDuration);
+              } else {
+                onFail?.(dispatch, ret);
+              }
+            })
+            ?.catch((e) => {
+              console.log('form submit error:', e);
+              msg.error(e.message);
+            });
+        } catch (e) {
+          console.error('form submit error:', e);
+          msg.error(e.message);
+        }
       }
     });
   };

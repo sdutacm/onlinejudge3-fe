@@ -285,7 +285,7 @@ class Ranklist extends React.Component<Props, State> {
             align="right"
             width={width.rank}
             fixed={canFixLeft}
-            render={(text, record: IRanklistRow) => <div>{record.rank}</div>}
+            render={(text, record: IRanklistRow) => <div>{record.rank !== null ? record.rank : '＊'}</div>}
           />
           <Table.Column
             title="User"

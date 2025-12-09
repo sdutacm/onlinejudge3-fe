@@ -253,7 +253,9 @@ class Ranklist extends React.Component<Props, State> {
         }
       }
     }
-    const hasRatingDelta = !!safeGet(ranklist, [0, 'user', 'newRating'], 0);
+    const hasRatingDelta = ranklist.some((row) => {
+      return row.user && row.user.newRating;
+    });
 
     return (
       <div>
@@ -285,7 +287,9 @@ class Ranklist extends React.Component<Props, State> {
             align="right"
             width={width.rank}
             fixed={canFixLeft}
-            render={(text, record: IRanklistRow) => <div>{record.rank !== null ? record.rank : '＊'}</div>}
+            render={(text, record: IRanklistRow) => (
+              <div>{record.rank !== null ? record.rank : '＊'}</div>
+            )}
           />
           <Table.Column
             title="User"

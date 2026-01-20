@@ -127,7 +127,7 @@ class ProblemContent extends React.Component<Props, State> {
     const titlePrefix =
       typeof problemAlias === 'string'
         ? `${problemAlias} - `
-        : problemIndex && Number.isInteger(problemIndex)
+        : Number.isInteger(problemIndex) && problemIndex >= 0
         ? `${numberToAlphabet(problemIndex)} - `
         : null;
 

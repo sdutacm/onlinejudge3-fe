@@ -1,6 +1,6 @@
 const constants = {
-  siteName: 'SDUT OJ',
-  siteTitle: 'SDUT Online Judge',
+  siteName: '沙梨 OJ',
+  siteTitle: 'Genshin ver. (Powered by uuk OJ)',
   githubUrl: 'https://github.com/sdutacm/onlinejudge3',
   contactEmail: 'sdutacm@163.com',
   serviceStatusUrl: 'https://service-status.sdutacm.cn',

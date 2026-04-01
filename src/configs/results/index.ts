@@ -1,5 +1,5 @@
-// import resMap from './resultsMap_default';
-import resMap from './resultsMap_april_fools';
+import resMap from './resultsMap_default';
+// import resMap from './resultsMap_april_fools';
 import resEnum from './resultsEnum';
 
 export const resultsMap = resMap;

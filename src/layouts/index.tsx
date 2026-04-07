@@ -452,7 +452,7 @@ class Index extends React.Component<Props, State> {
             )}
           </Row>
           <p className="mt-lg" style={{ fontWeight: 600 }}>
-            © 2008-{moment().format('YYYY')} Nagori Yuuuki. All Rights Reserved.
+            © 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.
           </p>
           {/* <div> */}
           {/* <a>API</a> */}

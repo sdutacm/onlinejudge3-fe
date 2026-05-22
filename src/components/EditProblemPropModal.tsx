@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Input, Select, Modal } from 'antd';
+import { Form, Select, Modal } from 'antd';
 import { FormProps, ReduxProps, RouteProps } from '@/@types/props';
 import msg from '@/utils/msg';
+import AiCornerBadge from '@/components/AiCornerBadge';
 
 export interface Props extends ReduxProps, RouteProps, FormProps {
   data: IProblem;
@@ -12,6 +13,13 @@ export interface Props extends ReduxProps, RouteProps, FormProps {
 interface State {
   visible: boolean;
 }
+
+type ProblemTagPayload = {
+  tagId: number;
+  hidden?: boolean;
+  isAigc?: boolean;
+  aiAuthor?: string;
+};
 
 class EditProblemPropModal extends React.Component<Props, State> {
   private difficulty = [
@@ -41,16 +49,77 @@ class EditProblemPropModal extends React.Component<Props, State> {
     });
   }
 
+  getTagFieldValue = (tag: { tagId: number; hidden?: boolean; isAigc?: boolean; aiAuthor?: string }): string => {
+    return JSON.stringify(tag);
+  };
+
+  parseTagFieldValue = (value: string): Partial<ITag> & { tagId: number } => {
+    try {
+      const tag = JSON.parse(value);
+      return {
+        ...tag,
+        tagId: Number(tag.tagId),
+      };
+    } catch (e) {
+      return {
+        tagId: Number(value),
+      };
+    }
+  };
+
+  getFilteredTagPayload = (tag: Partial<ITag> & { tagId: number }): ProblemTagPayload => {
+    const payload: ProblemTagPayload = {
+      tagId: Number(tag.tagId),
+    };
+    if (tag.hidden !== undefined) {
+      payload.hidden = tag.hidden;
+    }
+    if (tag.isAigc !== undefined) {
+      payload.isAigc = tag.isAigc;
+    }
+    if (tag.aiAuthor !== undefined) {
+      payload.aiAuthor = tag.aiAuthor;
+    }
+    return payload;
+  };
+
+  getExistingTag = (tagId: number): ITag | undefined => {
+    return (this.props.data.tags || []).find(tag => tag.tagId === tagId);
+  };
+
+  getTagForDisplay = (tag: ITag): ITag => {
+    const existingTag = this.getExistingTag(tag.tagId);
+    return existingTag ? { ...tag, ...existingTag } : tag;
+  };
+
+  getTagOptions = (): ITag[] => {
+    const { data, tagList } = this.props;
+    const listedTagIds = tagList.rows.map(tag => tag.tagId);
+    const missingSelectedTags = (data.tags || []).filter(tag => !listedTagIds.includes(tag.tagId));
+    return [...tagList.rows, ...missingSelectedTags];
+  };
+
+  getTagsPayload = (tagValues: string[]): ProblemTagPayload[] => {
+    return tagValues.map(value => this.getFilteredTagPayload(this.parseTagFieldValue(value)));
+  };
+
+  renderTagLabel = (tag: ITag): React.ReactNode => (
+    <span className="problem-tag-select-label">
+      <span>{`${tag.nameEn} / ${tag.nameZhHans}`}</span>
+      {tag.isAigc && <AiCornerBadge className="ai-corner-badge-inline" />}
+    </span>
+  );
+
   handleOk = () => {
     const { dispatch, data: { problemId } } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.difficulty = Number(values.difficulty);
-        values.tagIds = values.tagIds.map(v => Number(v));
+        const tags = this.getTagsPayload(values.tags || []);
         Promise.all([
           dispatch({
             type: 'problems/modifyProblemTags',
-            payload: { id: problemId, tagIds: values.tagIds },
+            payload: { id: problemId, tags },
           }),
           dispatch({
             type: 'problems/modifyProblemDifficulty',
@@ -87,8 +156,9 @@ class EditProblemPropModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { children, loading, form, data, tagList } = this.props;
+    const { children, loading, form, data } = this.props;
     const { getFieldDecorator } = form;
+    const tagOptions = this.getTagOptions();
 
     return (
       <>
@@ -114,11 +184,31 @@ class EditProblemPropModal extends React.Component<Props, State> {
             </Form.Item>
 
             <Form.Item label="Tags">
-              {getFieldDecorator('tagIds', {
-                initialValue: data.tags.map(tag => tag.tagId.toString()),
+              {getFieldDecorator('tags', {
+                initialValue: (data.tags || []).map(tag => this.getTagFieldValue({ ...tag })),
               })(
-                <Select mode="multiple" placeholder="Select problem tags" optionFilterProp="children">
-                  {tagList.rows.map(tag => (<Select.Option key={tag.tagId.toString()}>{tag.nameEn} / {tag.nameZhHans}</Select.Option>))}
+                <Select
+                  mode="multiple"
+                  placeholder="Select problem tags"
+                  optionFilterProp="title"
+                  optionLabelProp="label"
+                >
+                  {tagOptions.map(tag => {
+                    const tagForDisplay = this.getTagForDisplay(tag);
+                    const title = `${tag.nameEn} / ${tag.nameZhHans}`;
+                    return (
+                      <Select.Option
+                        key={tag.tagId.toString()}
+                        value={this.getTagFieldValue(
+                          this.getExistingTag(tag.tagId) || { tagId: tag.tagId },
+                        )}
+                        title={title}
+                        label={this.renderTagLabel(tagForDisplay)}
+                      >
+                        {this.renderTagLabel(tagForDisplay)}
+                      </Select.Option>
+                    );
+                  })}
                 </Select>
               )}
             </Form.Item>

@@ -148,7 +148,12 @@ class ProblemContent extends React.Component<Props, State> {
           className="text-center"
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
-          <ProblemDifficulty difficulty={data.difficulty} className="mr-md-lg" />
+          <ProblemDifficulty
+            difficulty={data.difficulty}
+            difficultyAigc={data.difficultyAigc}
+            difficultyAiAuthor={data.difficultyAiAuthor}
+            className="mr-md-lg"
+          />
           <span>
             {titlePrefix}
             <span style={this.getFontStyle()}>{data.title}</span>

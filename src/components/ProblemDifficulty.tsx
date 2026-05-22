@@ -3,9 +3,13 @@ import { connect } from 'dva';
 import { Badge, Popover } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
 import tracker from '@/utils/tracker';
+import AiCornerBadge from '@/components/AiCornerBadge';
+import AiGeneratedInfo from '@/components/AiGeneratedInfo';
 
 export interface Props extends ReduxProps, RouteProps {
   difficulty: number;
+  difficultyAigc?: number;
+  difficultyAiAuthor?: string;
   color: ISettings['color'];
   className?: string;
   style?: React.CSSProperties;
@@ -37,15 +41,27 @@ class ProblemDifficulty extends React.Component<Props, State> {
   }
 
   render() {
-    const { difficulty, color, className = '', style } = this.props;
-    if (!difficulty) {
+    const { difficulty, difficultyAigc, difficultyAiAuthor, className = '', style } = this.props;
+    const manualDifficulty = Number(difficulty) || 0;
+    const aiDifficulty = Number(difficultyAigc) || 0;
+    const toUseDifficulty = manualDifficulty || aiDifficulty;
+    const useAiDifficulty = !manualDifficulty && !!aiDifficulty;
+
+    if (!toUseDifficulty) {
       return null;
     }
+
+    const popoverContent = useAiDifficulty ? (
+      <div>
+        <div>{difficultyPrompt[toUseDifficulty]}</div>
+        <AiGeneratedInfo aiAuthor={difficultyAiAuthor} />
+      </div>
+    ) : difficultyPrompt[toUseDifficulty];
 
     return (
       <Popover
         title="Difficulty"
-        content={difficultyPrompt[difficulty]}
+        content={popoverContent}
         onVisibleChange={(visible) => {
           if (visible) {
             tracker.event({
@@ -55,12 +71,10 @@ class ProblemDifficulty extends React.Component<Props, State> {
           }
         }}
       >
-        <Badge
-          count={difficulty}
-          title={`Difficulty: Lv.${difficulty}`}
-          className={'problem-difficulty user-select-none ' + className}
-          style={style}
-        />
+        <span className={'problem-difficulty user-select-none ' + className} style={style}>
+          <Badge count={toUseDifficulty} title={`Difficulty: Lv.${toUseDifficulty}`} />
+          {useAiDifficulty && <AiCornerBadge />}
+        </span>
       </Popover>
     );
   }

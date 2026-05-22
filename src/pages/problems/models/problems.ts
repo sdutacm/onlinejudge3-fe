@@ -112,8 +112,8 @@ export default {
       }
       return ret;
     },
-    *modifyProblemTags({ payload: { id, tagIds } }, { call }) {
-      return yield call(service.setProblemTags, id, { tagIds });
+    *modifyProblemTags({ payload: { id, tags } }, { call }) {
+      return yield call(service.setProblemTags, id, { tags });
     },
     *modifyProblemDifficulty({ payload: { id, difficulty } }, { call }) {
       return yield call(service.setProblemDifficulty, id, { difficulty });

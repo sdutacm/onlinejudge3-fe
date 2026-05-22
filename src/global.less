@@ -972,6 +972,83 @@ ul {
   line-height: 2em;
 }
 
+.ai-corner-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  z-index: 20;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.ai-generated-info {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  color: @text-color-secondary;
+  font-size: 12px;
+  line-height: 1.4;
+
+  .ai-generated-info-icon {
+    margin: 0 4px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      vertical-align: -2px;
+    }
+  }
+}
+
+.problem-tag-display,
+.problem-difficulty {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+
+.problem-tag-display {
+  margin-right: 8px;
+
+  .ant-tag {
+    margin-right: 0;
+  }
+
+  .ai-corner-badge {
+    top: -4px;
+    right: -6px;
+  }
+}
+
+.problem-difficulty {
+  .ai-corner-badge {
+    z-index: 30;
+  }
+}
+
+.problem-content .problem-difficulty {
+  .ai-corner-badge {
+    top: 0;
+  }
+}
+
+.problem-tag-select-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ai-corner-badge-inline {
+  position: static;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: -2px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.16));
+}
+
 .td-icon {
   width: 3em;
 }

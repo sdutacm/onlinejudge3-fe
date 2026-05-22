@@ -8,8 +8,9 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import PageAnimation from '@/components/PageAnimation';
 import router from 'umi/router';
 import tracker from '@/utils/tracker';
-import { Row, Col, Card, Table, Popover, Tag, Pagination, Button } from 'antd';
+import { Row, Col, Card, Table, Tag, Pagination, Button } from 'antd';
 import ProblemDifficulty from '@/components/ProblemDifficulty';
+import ProblemTag, { ProblemTagPopover } from '@/components/ProblemTag';
 import limits from '@/configs/limits';
 import FilterCard from '@/components/FilterCard';
 import constants from '@/configs/constants';
@@ -265,7 +266,11 @@ class AdminProblemList extends React.Component<Props, State> {
                   width={48}
                   className="text-right"
                   render={(text, record: IProblem) => (
-                    <ProblemDifficulty difficulty={record.difficulty} />
+                    <ProblemDifficulty
+                      difficulty={record.difficulty}
+                      difficultyAigc={record.difficultyAigc}
+                      difficultyAiAuthor={record.difficultyAiAuthor}
+                    />
                   )}
                 />
                 <Table.Column
@@ -287,12 +292,9 @@ class AdminProblemList extends React.Component<Props, State> {
                       {record.tags.length ? (
                         <div className="float-right">
                           {record.tags.map((tag) => (
-                            <Popover
-                              key={tag.tagId}
-                              content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
-                            >
-                              <Tag>{tag.nameEn}</Tag>
-                            </Popover>
+                            <ProblemTagPopover key={tag.tagId} tag={tag}>
+                              <ProblemTag tag={tag} />
+                            </ProblemTagPopover>
                           ))}
                         </div>
                       ) : (

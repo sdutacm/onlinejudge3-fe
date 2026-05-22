@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Skeleton, Button, Affix, Tag, Icon, Popover, Form, Tooltip } from 'antd';
+import { Row, Col, Card, Skeleton, Button, Affix, Icon, Form, Tooltip } from 'antd';
 import Link from 'umi/link';
 import pages from '@/configs/pages';
 import { numberToAlphabet, urlf } from '@/utils/format';
@@ -20,6 +20,7 @@ import tracker from '@/utils/tracker';
 import { connect } from 'dva';
 import { ContestTimeStatus } from '@/utils/getSetTimeStatus';
 import { EPerm } from '@/common/configs/perm.config';
+import ProblemTag, { ProblemTagPopover } from '@/components/ProblemTag';
 
 export interface Props extends RouteProps {
   loading: boolean;
@@ -271,10 +272,7 @@ const ProblemDetailPage: React.FC<Props> = ({
               <Form.Item label="Tags">
                 <div className="tags">
                   {data.tags.map((tag) => (
-                    <Popover
-                      key={tag.tagId}
-                      content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
-                    >
+                    <ProblemTagPopover key={tag.tagId} tag={tag}>
                       <Link
                         to={urlf(pages.problems.index, { query: { tagIds: tag.tagId } })}
                         onClick={() => {
@@ -284,9 +282,9 @@ const ProblemDetailPage: React.FC<Props> = ({
                           });
                         }}
                       >
-                        <Tag>{tag.nameEn}</Tag>
+                        <ProblemTag tag={tag} />
                       </Link>
-                    </Popover>
+                    </ProblemTagPopover>
                   ))}
                 </div>
               </Form.Item>

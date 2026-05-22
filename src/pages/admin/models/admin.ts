@@ -204,8 +204,8 @@ export default {
     *updateProblemDetail({ payload: { id, data } }, { call }) {
       return yield call(service.updateProblemDetail, id, data);
     },
-    *setProblemTags({ payload: { id, tagIds } }, { call }) {
-      return yield call(service.setProblemTags, id, { tagIds });
+    *setProblemTags({ payload: { id, tags } }, { call }) {
+      return yield call(service.setProblemTags, id, { tags });
     },
     *getTagList(action, { call, put }) {
       const ret: IApiResponse<IFullList<ITag>> = yield call(service.getTagList);

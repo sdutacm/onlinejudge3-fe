@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Pagination, Form, Row, Col, Card, Tag, Popover } from 'antd';
+import { Table, Pagination, Form, Row, Col, Card, Tag } from 'antd';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import limits from '@/configs/limits';
@@ -19,6 +19,7 @@ import SolutionResultStats from '@/components/SolutionResultStats';
 import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import ProblemDifficulty from '@/components/ProblemDifficulty';
+import ProblemTag, { ProblemTagPopover } from '@/components/ProblemTag';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -164,7 +165,11 @@ class ProblemList extends React.Component<Props, State> {
                   width={48}
                   className="text-right"
                   render={(text, record: IProblem) => (
-                    <ProblemDifficulty difficulty={record.difficulty} />
+                    <ProblemDifficulty
+                      difficulty={record.difficulty}
+                      difficultyAigc={record.difficultyAigc}
+                      difficultyAiAuthor={record.difficultyAiAuthor}
+                    />
                   )}
                 />
                 <Table.Column
@@ -204,14 +209,11 @@ class ProblemList extends React.Component<Props, State> {
                         {record.tags.length ? (
                           <div className="float-right">
                             {record.tags.map((tag) => (
-                              <Popover
-                                key={tag.tagId}
-                                content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
-                              >
+                              <ProblemTagPopover key={tag.tagId} tag={tag}>
                                 <a onClick={() => this.toggleTag(tag.tagId, true)}>
-                                  <Tag>{tag.nameEn}</Tag>
+                                  <ProblemTag tag={tag} />
                                 </a>
-                              </Popover>
+                              </ProblemTagPopover>
                             ))}
                           </div>
                         ) : (
@@ -268,14 +270,11 @@ class ProblemList extends React.Component<Props, State> {
                 <Form.Item label="Tags">
                   <div className="tags">
                     {tagList.rows.map((tag) => (
-                      <Popover
-                        key={tag.tagId}
-                        content={`${tag.nameEn} / ${tag.nameZhHans} / ${tag.nameZhHant}`}
-                      >
+                      <ProblemTagPopover key={tag.tagId} tag={tag}>
                         <a onClick={() => this.toggleTag(tag.tagId)}>
-                          <Tag color={~tagIds.indexOf(tag.tagId) ? 'blue' : null}>{tag.nameEn}</Tag>
+                          <ProblemTag tag={tag} color={~tagIds.indexOf(tag.tagId) ? 'blue' : null} />
                         </a>
-                      </Popover>
+                      </ProblemTagPopover>
                     ))}
                   </div>
                 </Form.Item>

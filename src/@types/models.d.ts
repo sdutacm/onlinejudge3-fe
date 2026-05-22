@@ -155,6 +155,8 @@ interface IProblem {
   timeLimit?: number;
   memoryLimit?: number;
   difficulty: number;
+  difficultyAigc?: number;
+  difficultyAiAuthor?: string;
   accepted?: number;
   submitted?: number;
   display: boolean;
@@ -209,6 +211,16 @@ interface ISolution {
     contestId: number;
     title: string;
     type: number;
+  };
+  competition?: {
+    competitionId: number;
+    title: string;
+    startAt: string;
+    endAt: string;
+    rule: string;
+    isRating: boolean;
+    isTeam: string;
+    ended: boolean;
   };
   result: number;
   time: number;
@@ -342,6 +354,8 @@ interface ITag {
   nameZhHant: string;
   createdAt: ITimestamp;
   hidden: boolean;
+  isAigc?: boolean;
+  aiAuthor?: string;
 }
 
 interface IMessage {

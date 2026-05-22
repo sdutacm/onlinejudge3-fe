@@ -21,6 +21,7 @@ import { aoa2Excel, collectObjectKeysAsPaths } from '@/utils/misc';
 import moment from 'moment';
 import { get as safeGet } from 'lodash-es';
 import ImportCompetitionUserModal from '@/components/ImportCompetitionUserModal';
+import CompetitionUserInfo from './CompetitionUserInfo';
 
 const contestUserRoleOptions = [
   {
@@ -329,11 +330,12 @@ class CompetitionUserManagement extends React.Component<Props, State> {
                   rowKey="userId"
                   loading={loading}
                   pagination={false}
-                  className="responsive-table"
+                  className="responsive-table competition-user-management-table"
                 >
                   <Table.Column
                     title=""
                     key="unofficial"
+                    width={40}
                     render={(text, user: ICompetitionUser) => {
                       if (user.unofficialParticipation) {
                         return '*';
@@ -345,6 +347,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
                   <Table.Column
                     title="UID"
                     key="UID"
+                    width={96}
                     render={(text, record: ICompetitionUser) => (
                       <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
                         {record.userId}
@@ -354,14 +357,15 @@ class CompetitionUserManagement extends React.Component<Props, State> {
                   <Table.Column
                     title="Info"
                     key="Info"
-                    render={(text, record: ICompetitionUser) => {
-                      const infoStr = JSON.stringify(record.info || {}, null, 2);
-                      return <pre>{infoStr}</pre>;
-                    }}
+                    className="competition-user-info-cell"
+                    render={(text, record: ICompetitionUser) => (
+                      <CompetitionUserInfo user={record} />
+                    )}
                   />
                   <Table.Column
                     title="Seat ID"
                     key="Seat ID"
+                    width={110}
                     render={(text, record: ICompetitionUser) => (
                       <span>{formatCompetitionUserSeatId(record)}</span>
                     )}
@@ -370,6 +374,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
                     title="Status"
                     key="status"
                     className="nowrap"
+                    width={170}
                     render={(text, user: ICompetitionUser) => {
                       let statusStr = '';
                       switch (user.status) {
@@ -409,6 +414,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
                     title=""
                     key="actions"
                     className="nowrap"
+                    width={48}
                     render={(text, user: ICompetitionUser) => {
                       return (
                         <span key="edit" className="nowrap">

@@ -2354,6 +2354,67 @@ a {
   }
 }
 
+.competition-user-management-table {
+  .ant-table table {
+    table-layout: fixed;
+  }
+
+  .competition-user-info-cell {
+    min-width: 0;
+  }
+
+  .competition-user-info-trigger {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    cursor: auto;
+    user-select: text;
+  }
+
+  .competition-user-info-title {
+    font-weight: 500;
+  }
+
+  .competition-user-info-meta,
+  .competition-user-info-slogan {
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+}
+
+.competition-user-info-popover {
+  width: 420px;
+  max-width: calc(100vw - 32px);
+
+  .ant-popover-inner-content {
+    max-height: 420px;
+    overflow-y: auto;
+  }
+
+  .competition-user-info-popover-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 4px 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid fade(#000, 6%);
+    }
+  }
+
+  .competition-user-info-popover-label {
+    flex: 0 0 104px;
+    margin-right: 12px;
+    font-size: 12px;
+  }
+
+  .competition-user-info-popover-value {
+    flex: 1;
+    min-width: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
 // competition for sdutpc
 .competition-theme-sdutpc {
   &.competition-intro {

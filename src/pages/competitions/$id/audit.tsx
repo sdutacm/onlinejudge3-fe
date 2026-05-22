@@ -16,6 +16,7 @@ import PageAnimation from '@/components/PageAnimation';
 import GeneralFormModal from '@/components/GeneralFormModal';
 import { urlf } from '@/utils/format';
 import Link from 'umi/link';
+import CompetitionUserInfo from './CompetitionUserInfo';
 
 export interface Props extends ReduxProps, RouteProps {
   id: number;
@@ -182,11 +183,12 @@ class CompetitionAudit extends React.Component<Props, State> {
                 rowKey="userId"
                 loading={loading}
                 pagination={false}
-                className="responsive-table listlike-table"
+                className="responsive-table listlike-table competition-user-management-table"
               >
                 <Table.Column
                   title="UID"
                   key="UID"
+                  width={96}
                   render={(text, record: ICompetitionUser) => (
                     <Link to={urlf(pages.users.detail, { param: { id: record.userId } })}>
                       {record.userId}
@@ -196,14 +198,13 @@ class CompetitionAudit extends React.Component<Props, State> {
                 <Table.Column
                   title="Info"
                   key="Info"
-                  render={(text, record: ICompetitionUser) => {
-                    const infoStr = JSON.stringify(record.info || {}, null, 2);
-                    return <pre>{infoStr}</pre>;
-                  }}
+                  className="competition-user-info-cell"
+                  render={(text, record: ICompetitionUser) => <CompetitionUserInfo user={record} />}
                 />
                 <Table.Column
                   title="Action"
                   key="Action"
+                  width={120}
                   render={(text, record: ICompetitionUser) => (
                     <span>
                       <GeneralFormModal

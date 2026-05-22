@@ -23,6 +23,7 @@ export interface Props extends ReduxProps {
   data: ISolution;
   changeSharedLoading: boolean;
   session: ISessionStatus;
+  globalSession?: ISessionStatus;
   contestId?: number;
   competitionId?: number;
   problemList?: any[];
@@ -340,7 +341,17 @@ class SolutionDetailPage extends React.Component<Props, State> {
   };
 
   render() {
-    const { loading, data, dispatch, contestId, competitionId, problemList, rating } = this.props;
+    const {
+      loading,
+      data,
+      dispatch,
+      session,
+      globalSession,
+      contestId,
+      competitionId,
+      problemList,
+      rating,
+    } = this.props;
     if (!loading && !data.solutionId) {
       return <NotFound />;
     }
@@ -358,6 +369,8 @@ class SolutionDetailPage extends React.Component<Props, State> {
                 contestId={contestId}
                 competitionId={competitionId}
                 problemList={problemList}
+                session={session}
+                globalSession={globalSession}
                 rating={rating}
               />
             </Card>

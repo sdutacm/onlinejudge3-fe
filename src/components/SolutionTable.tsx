@@ -10,7 +10,7 @@ import ResultBar from '@/components/ResultBar';
 import { langsMap } from '@/configs/solutionLanguages';
 import TimeBar from '@/components/TimeBar';
 import limits from '@/configs/limits';
-import { Table, Icon } from 'antd';
+import { Table, Icon, Popconfirm } from 'antd';
 import classNames from 'classnames';
 import { Results } from '@/configs/results';
 import { ContestTypes } from '@/configs/contestTypes';
@@ -20,6 +20,9 @@ import { isFinishedResult } from '@/utils/judger';
 import IdBasedPagination from './IdBasedPagination';
 import { EPerm } from '@/common/configs/perm.config';
 import { getSocket } from '@/utils/socket';
+import { checkCompetitionUserRole } from '@/common/utils/competition';
+import { ECompetitionUserRole } from '@/common/enums';
+import msg from '@/utils/msg';
 
 export interface Props extends ReduxProps, RouteProps {
   loading: boolean;
@@ -29,7 +32,8 @@ export interface Props extends ReduxProps, RouteProps {
   contestId?: number;
   competitionId?: number;
   problemList?: any[];
-  session?: ISessionStatus;
+  session?: ISessionStatus | ICompetitionSessionStatus;
+  globalSession?: ISessionStatus;
   rating?: boolean;
   showId?: boolean;
 }
@@ -38,6 +42,7 @@ interface State {
   timer: number;
   updateItv: number;
   judgeStatusMap: Record<number, IJudgeStatus>;
+  rejudgingSolutionIds: number[];
 }
 
 class SolutionTable extends React.Component<Props, State> {
@@ -47,6 +52,7 @@ class SolutionTable extends React.Component<Props, State> {
       timer: 0,
       updateItv: 2000,
       judgeStatusMap: {},
+      rejudgingSolutionIds: [],
     };
   }
 
@@ -227,18 +233,94 @@ class SolutionTable extends React.Component<Props, State> {
   };
 
   canViewDetail = (solution: ISolution) => {
-    const { isDetail, session } = this.props;
+    const { isDetail, session, globalSession } = this.props;
     if (isDetail || !session || !session.loggedIn) {
       return false;
     }
+    const permissionSession = globalSession || (session as ISessionStatus | undefined);
     if (
       solution.shared ||
       solution.user.userId === session.user.userId ||
-      checkPerms(session, EPerm.ReadSolution)
+      (permissionSession?.loggedIn && checkPerms(permissionSession, EPerm.ReadSolution))
     ) {
       return true;
     }
     return false;
+  };
+
+  canRejudge = () => {
+    const { session, globalSession, competitionId } = this.props;
+    const permissionSession = globalSession || (session as ISessionStatus | undefined);
+    if (permissionSession?.loggedIn && checkPerms(permissionSession, EPerm.RejudgeSolution)) {
+      return true;
+    }
+    const competitionUserRole = (session?.user as { role?: ECompetitionUserRole } | undefined)
+      ?.role;
+    if (
+      competitionId &&
+      session?.loggedIn &&
+      competitionUserRole !== undefined &&
+      checkCompetitionUserRole(
+        [ECompetitionUserRole.admin, ECompetitionUserRole.principal, ECompetitionUserRole.judge],
+        competitionUserRole,
+      )
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  isRejudging = (solutionId: number) => this.state.rejudgingSolutionIds.includes(solutionId);
+
+  setRejudging = (solutionId: number, rejudging: boolean) => {
+    this.setState(({ rejudgingSolutionIds }) => ({
+      rejudgingSolutionIds: rejudging
+        ? [...rejudgingSolutionIds, solutionId]
+        : rejudgingSolutionIds.filter((id) => id !== solutionId),
+    }));
+  };
+
+  stopEventPropagation = (e?: React.SyntheticEvent<any>) => {
+    e?.stopPropagation();
+  };
+
+  wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  handleRejudge = (solution: ISolution) => async (e?: React.MouseEvent<any>) => {
+    this.stopEventPropagation(e);
+    const { solutionId } = solution;
+    if (!this.canRejudge() || !solutionId || this.isRejudging(solutionId)) {
+      return;
+    }
+    this.setRejudging(solutionId, true);
+    try {
+      const ret = await this.props.dispatch({
+        type: 'solutions/rejudgeSolution',
+        payload: {
+          solutionId,
+        },
+      });
+      if (ret?.success) {
+        const rejudgedCount = ret.data?.rejudgedCount || 0;
+        if (rejudgedCount <= 0) {
+          msg.error('Cannot rejudge this solution');
+          return;
+        }
+        msg.success('Rejudged, check it later');
+        await this.wait(1000);
+        await this.props.dispatch({
+          type: 'solutions/getListByIds',
+          payload: {
+            type: this.props.isDetail ? 'detail' : 'list',
+            solutionIds: [solutionId],
+          },
+        });
+      } else {
+        msg.auto(ret);
+      }
+    } finally {
+      this.setRejudging(solutionId, false);
+    }
   };
 
   render() {
@@ -254,6 +336,8 @@ class SolutionTable extends React.Component<Props, State> {
       rating,
       showId,
     } = this.props;
+
+    const canRejudge = this.canRejudge();
     return (
       <>
         <Table
@@ -385,6 +469,37 @@ class SolutionTable extends React.Component<Props, State> {
               <TimeBar time={new Date(record.createdAt).getTime()} />
             )}
           />
+          {canRejudge && (
+            <Table.Column
+              title=""
+              key="CanRejudge"
+              className="float-btn"
+              render={(text, record: ISolution) => {
+                const rejudging = this.isRejudging(record.solutionId);
+                return (
+                  <Popconfirm
+                    title="Rejudge this solution?"
+                    placement="left"
+                    okText="Rejudge"
+                    cancelText="Cancel"
+                    disabled={rejudging}
+                    onConfirm={this.handleRejudge(record)}
+                    onCancel={this.stopEventPropagation}
+                  >
+                    <a
+                      className={classNames('show mr-md', { 'text-disabled': rejudging })}
+                      title={rejudging ? 'Rejudging' : 'Rejudge'}
+                      onClick={this.stopEventPropagation}
+                      onMouseDown={this.stopEventPropagation}
+                      onTouchStart={this.stopEventPropagation}
+                    >
+                      <Icon type="reload" theme="outlined" spin={rejudging} />
+                    </a>
+                  </Popconfirm>
+                );
+              }}
+            />
+          )}
           {!isDetail && (
             <Table.Column
               title=""

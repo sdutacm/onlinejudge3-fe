@@ -11,6 +11,7 @@ import { ContestModes } from '@/configs/contestModes';
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
+  globalSession: ISessionStatus;
   detailLoading: boolean;
   detail: IContest;
   problems: IFullList<IProblem>;
@@ -60,6 +61,7 @@ class ContestSolutionDetail extends React.Component<Props, State> {
     const {
       id,
       session,
+      globalSession,
       detailLoading,
       detail,
       problems: { rows: problemRows },
@@ -84,6 +86,7 @@ class ContestSolutionDetail extends React.Component<Props, State> {
       loading={loading}
       data={data}
       session={session}
+      globalSession={globalSession}
       changeSharedLoading={changeSharedLoading}
       dispatch={dispatch}
       contestId={id}
@@ -98,6 +101,7 @@ function mapStateToProps(state) {
   return {
     id,
     session: state.contests.session[id],
+    globalSession: state.session,
     detailLoading: state.loading.effects['contests/getDetail'],
     detail: state.contests.detail[id],
     problemsLoading: state.loading.effects['contests/getProblems'],

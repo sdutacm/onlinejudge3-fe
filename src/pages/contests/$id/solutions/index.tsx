@@ -24,6 +24,7 @@ import ProblemTitle from '@/components/ProblemTitle';
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
+  globalSession: ISessionStatus;
   detailLoading: boolean;
   detail: IContest;
   problems: IFullList<IProblem>;
@@ -103,6 +104,7 @@ class ContestSolutions extends React.Component<Props, State> {
     const {
       id,
       session,
+      globalSession,
       detailLoading,
       detail,
       problems: { rows: problemRows },
@@ -136,6 +138,7 @@ class ContestSolutions extends React.Component<Props, State> {
                   contestId={id}
                   problemList={problemList}
                   session={session}
+                  globalSession={globalSession}
                   rating={detail.mode === ContestModes.Rating}
                   showId={proMode}
                 />
@@ -226,6 +229,7 @@ function mapStateToProps(state) {
   return {
     id,
     session: state.contests.session[id],
+    globalSession: state.session,
     detailLoading: state.loading.effects['contests/getDetail'],
     detail: state.contests.detail[id],
     problemsLoading: state.loading.effects['contests/getProblems'],

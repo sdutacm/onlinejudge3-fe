@@ -11,6 +11,7 @@ import { ICompetition } from '@/common/interfaces/competition';
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   session: ISessionStatus;
+  globalSession: ISessionStatus;
   detailLoading: boolean;
   detail: ICompetition;
   problems: IFullList<IProblem>;
@@ -60,6 +61,7 @@ class CompetitionSolutionDetail extends React.Component<Props, State> {
     const {
       id,
       session,
+      globalSession,
       detailLoading,
       detail,
       problems: { rows: problemRows },
@@ -85,6 +87,7 @@ class CompetitionSolutionDetail extends React.Component<Props, State> {
       loading={loading}
       data={data}
       session={session}
+      globalSession={globalSession}
       changeSharedLoading={changeSharedLoading}
       dispatch={dispatch}
       competitionId={id}
@@ -99,6 +102,7 @@ function mapStateToProps(state) {
   return {
     id,
     session: state.competitions.session[id],
+    globalSession: state.session,
     detailLoading: state.loading.effects['competitions/getDetail'],
     detail: state.competitions.detail[id],
     problemsLoading: state.loading.effects['competitions/getProblems'],

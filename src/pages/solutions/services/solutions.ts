@@ -12,6 +12,7 @@ import {
   IBatchGetSolutionDetailReq,
   IBatchGetSolutionDetailResp,
   IRejudgeSolutionReq,
+  IRejudgeSolutionResp,
 } from '@/common/contracts/solution';
 import { IGetLanguageConfigResp } from '@/common/contracts/judger';
 
@@ -66,7 +67,7 @@ export function getLanguageConfig() {
 }
 
 export function rejudgeSolution(data) {
-  return post<IRejudgeSolutionReq, void>(routesBe.rejudgeSolution.url, {
+  return post<IRejudgeSolutionReq, IRejudgeSolutionResp>(routesBe.rejudgeSolution.url, {
     ...data,
   });
 }

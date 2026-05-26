@@ -3,7 +3,7 @@ import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
 import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/format';
+import { formatListQuery } from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 import {
   ICompetition,

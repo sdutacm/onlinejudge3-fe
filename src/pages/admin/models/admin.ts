@@ -1,7 +1,7 @@
 import * as service from '../services/admin';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
-import { formatListQuery } from '@/utils/format';
+import { formatListQuery } from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 
 const initialState = {

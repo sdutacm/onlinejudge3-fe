@@ -36,13 +36,13 @@ gulp.task('watch-dup-dark-antd', function () {
     .pipe(gulp.dest(dupDarkAntdDest));
 });
 
-gulp.task('npm-run-start', async () => run('npm start')());
+gulp.task('pnpm-run-start', async () => run('pnpm run start')());
 
 gulp.task('dev', gulp.parallel(
   'copy-dup-dark-less',
   'watch-dup-dark-less',
   'watch-dup-dark-antd',
-  'npm-run-start',
+  'pnpm-run-start',
 ));
 
 gulp.task('dup-less', gulp.series(

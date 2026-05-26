@@ -1,0 +1,8 @@
+overrides:
+  h2x-parse@1.1.1>jsdom: 19.0.0
+
+allowBuilds:
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  fsevents: true

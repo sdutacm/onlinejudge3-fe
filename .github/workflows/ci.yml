@@ -1,5 +1,6 @@
 name: Build and Upload to CDN
 on:
+  pull_request:
   push:
     branches:
       - master
@@ -7,7 +8,46 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.2.2 --activate
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - run: pnpm run build
+
+      - run: pnpm run check:dva-models
+
+      - run: pnpm run build:competition-side
+
+      - run: pnpm run check:built-assets
+
+      - run: pnpm run e2e:built
+
+      - run: pnpm run e2e:smoke
+
   build-and-upload-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     env:
       COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
       COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
@@ -21,38 +61,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'true'
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.2.2 --activate
 
       - name: Install Dependencies
-        run: npm ci --registry=https://registry.npmjs.org
+        run: pnpm install --frozen-lockfile
 
-      - run: npm run build:cdn
+      - run: pnpm run build:cdn
+
   build-and-upload-release-cs:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     env:
       COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
       COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
@@ -66,34 +97,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'true'
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Cache node modules
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ~/.npm
-          key: ${{ runner.os }}-build-cs-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-cs-build-${{ env.cache-name }}-
-            ${{ runner.os }}-cs-build-
-            ${{ runner.os }}-cs-
-
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.2.2 --activate
 
       - name: Install Dependencies
-        run: npm ci --registry=https://registry.npmjs.org
+        run: pnpm install --frozen-lockfile
 
-      - run: npm run build:competition-side:cdn
+      - run: pnpm run build:competition-side:cdn

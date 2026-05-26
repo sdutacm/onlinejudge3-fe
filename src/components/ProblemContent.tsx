@@ -8,10 +8,11 @@ import AutoLaTeX from 'react-autolatex';
 import ProblemDifficulty from './ProblemDifficulty';
 import { IProblemSpConfig } from '@/common/interfaces/problem';
 import { loadCustomFont, getCustomFontStyleForReact } from '@/utils/customFont';
-import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
 import { simpleFilterHTML } from '@/utils/filter';
+
+const ReactPlayer = React.lazy(() => import('react-player/file'));
 
 export interface Props {
   loading: boolean;
@@ -218,13 +219,15 @@ class ProblemContent extends React.Component<Props, State> {
         )}
 
         {!!toUseOnEnteredAudioUrl && (
-          <ReactPlayer
-            url={toUseOnEnteredAudioUrl}
-            playing={this.state.audioPlaying}
-            onReady={this.handleAudioReady}
-            onError={console.error}
-            style={{ display: 'none' }}
-          />
+          <React.Suspense fallback={null}>
+            <ReactPlayer
+              url={toUseOnEnteredAudioUrl}
+              playing={this.state.audioPlaying}
+              onReady={this.handleAudioReady}
+              onError={console.error}
+              style={{ display: 'none' }}
+            />
+          </React.Suspense>
         )}
       </div>
     );

@@ -11,6 +11,10 @@
 
 @high-text-color: fade(#fff, 75%);
 
+--oj-primary-color: @primary-color;
+--oj-primary-color-subtle: fade(@primary-color, 12%);
+--oj-primary-color-spinner-track: fade(@primary-color, 18%);
+
 //@import 'variables_dark';
 
 h1,
@@ -123,6 +127,11 @@ a {
 
 .ant-layout-footer {
   background-color: darken(@bg-color, 4%);
+  color: fade(@font-color, 85%);
+
+  .normal-text-link {
+    color: inherit;
+  }
 }
 
 // .ant-modal {

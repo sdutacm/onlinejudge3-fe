@@ -1,5 +1,4 @@
 import React from 'react';
-import { Spin } from 'antd';
 import constants from '@/configs/constants';
 import PageTitle from '@/components/PageTitle';
 
@@ -9,8 +8,14 @@ export interface Props {
 
 const PageLoading: React.FC<Props> = ({ delay = false }) => (
   <PageTitle title={null} loading={true}>
-    <div className="center-view">
-      <Spin delay={delay ? constants.indicatorDisplayDelay : undefined} />
+    <div>
+      <div className="route-loading-bar" />
+      <div className="center-view">
+        <div
+          className="route-loading-spinner"
+          style={{ animationDelay: delay ? `${constants.indicatorDisplayDelay}ms` : undefined }}
+        />
+      </div>
     </div>
   </PageTitle>
 );

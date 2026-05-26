@@ -1,6 +1,6 @@
 import * as service from '../services/groups';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
-import { formatListQuery } from '@/utils/format';
+import { formatListQuery } from '@/utils/listQuery';
 import { isEqual } from 'lodash-es';
 import pages from '@/configs/pages';
 import { requestEffect } from '@/utils/effectInterceptor';

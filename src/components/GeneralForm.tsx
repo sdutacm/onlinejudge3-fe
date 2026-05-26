@@ -3,7 +3,13 @@ import { Form, Input, Select, Checkbox, DatePicker } from 'antd';
 import { FormProps, ReduxProps } from '@/@types/props';
 import moment from 'moment';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import RtEditor from './RtEditor';
+
+const RtEditor = React.lazy(() => import('./RtEditor'));
+const LazyRtEditor = (props) => (
+  <React.Suspense fallback={null}>
+    <RtEditor {...props} />
+  </React.Suspense>
+);
 
 export interface IGeneralFormItem {
   name: string;
@@ -213,7 +219,7 @@ class GeneralForm extends React.Component<IGeneralFormProps, State> {
                     rules,
                     initialValue: initialValues[item.field] || item.initialValue,
                   })(
-                    <RtEditor
+                    <LazyRtEditor
                       form={form}
                       disabled={item.disabled}
                       contentStyle={item.contentStyle}

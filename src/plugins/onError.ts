@@ -1,6 +1,36 @@
-import { message } from 'antd';
 import constants from '../configs/constants';
 import tracker from '@/utils/tracker';
+
+function showError(msg: string) {
+  if (typeof document === 'undefined') {
+    console.error(msg);
+    return;
+  }
+  const toast = document.createElement('div');
+  toast.textContent = msg;
+  toast.style.cssText = [
+    'position:fixed',
+    'top:24px',
+    'left:50%',
+    'z-index:10001',
+    'max-width:80vw',
+    'transform:translateX(-50%)',
+    'padding:8px 16px',
+    'border-radius:4px',
+    'box-shadow:0 4px 12px rgba(0,0,0,.15)',
+    'background:#fff1f0',
+    'border:1px solid #ffa39e',
+    'color:#a8071a',
+    'font-size:14px',
+    'line-height:22px',
+  ].join(';');
+  document.body.appendChild(toast);
+  window.setTimeout(() => {
+    if (toast.parentNode) {
+      toast.parentNode.removeChild(toast);
+    }
+  }, constants.msgDuration.error * 1000);
+}
 
 export default {
   onError(e) {
@@ -30,9 +60,9 @@ export default {
         default:
           msg = `${e.message} (${e.apiName})`;
       }
-      message.error(msg, constants.msgDuration.error);
+      showError(msg);
     } catch (err) {
-      message.error('Unknown error', constants.msgDuration.error);
+      showError('Unknown error');
     }
 
     if (shouldReport) {

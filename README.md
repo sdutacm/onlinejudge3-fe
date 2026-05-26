@@ -6,7 +6,8 @@
 
 依赖以下组件：
 
-- Node.js（推荐使用 14.x，高版本无法确保依赖可以运行）
+- Node.js 24.x（以 `.node-version` 为准）
+- pnpm 11.2.2（通过 Corepack 固定）
 
 前端框架和组件库：
 - React
@@ -17,7 +18,12 @@
 
 ### 0. 先决条件
 
-- Node.js 16+
+- Node.js 24.x
+- Corepack 已启用，并准备好 pnpm 11.2.2：
+  ```bash
+  corepack enable
+  corepack prepare pnpm@11.2.2 --activate
+  ```
 - 启动 `onlinejudge3-be` 后端开发服务
 
 ### 1. 配置环境与代理
@@ -43,7 +49,7 @@ oj3.local 127.0.0.1:8102
 
 ```bash
 git submodule init && git submodule update
-npm i
+pnpm install
 ```
 
 ### 3. 启动本地开发服务
@@ -51,12 +57,12 @@ npm i
 启动前端本地开发服务：
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 【可选】启动竞赛端（为 *CPC 竞赛设计的精简版 OJ）开发服务：
 ```bash
-COMPETITION_SIDE=1 npm run dev
+pnpm run dev:competition-side
 ```
 
 访问 `http://oj3.local/`。
@@ -67,12 +73,12 @@ COMPETITION_SIDE=1 npm run dev
 
 构建：
 ```bash
-npm run build
+pnpm run build
 ```
 
 【可选】构建竞赛端：
 ```bash
-npm run build:competition-side
+pnpm run build:competition-side
 ```
 
 ## 开发指导

@@ -18,7 +18,6 @@ import { get as safeGet } from 'lodash-es';
 import tracker from '@/utils/tracker';
 import contestUserStatus, { ContestUserStatus } from '@/configs/contestUserStatus';
 import ImportContestUserModal from './ImportContestUserModal';
-import { aoa2Excel } from '@/utils/misc';
 import moment from 'moment';
 import { EPerm } from '@/common/configs/perm.config';
 
@@ -176,6 +175,7 @@ class ContestUserList extends React.Component<Props, State> {
         aoa.push(row);
       });
       console.log(aoa);
+      const { aoa2Excel } = await import('@/utils/excel');
       aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} contest_users_${id}.xlsx`);
     } finally {
       this.setState({

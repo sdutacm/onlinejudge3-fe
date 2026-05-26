@@ -1,6 +1,6 @@
 import { get, post } from '@/utils/request';
 import { routesBe } from '@/common/routes';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import {
   ILoginReq,
   ILoginResp,

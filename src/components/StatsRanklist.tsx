@@ -9,8 +9,6 @@ import { withRouter } from 'react-router';
 import { RouteProps } from '@/@types/props';
 import UserBar from './UserBar';
 import moment from 'moment';
-import { workbook2Excel } from '@/utils/misc';
-import XLSX from 'xlsx';
 import { memoize } from '@/utils/decorators';
 import tracker from '@/utils/tracker';
 import { isEqual, pick } from 'lodash-es';
@@ -102,7 +100,7 @@ class StatsRanklist extends React.Component<Props, State> {
     return '';
   };
 
-  handleExport = () => {
+  handleExport = async () => {
     const {
       id,
       title,
@@ -133,6 +131,10 @@ class StatsRanklist extends React.Component<Props, State> {
       })),
     ];
     try {
+      const [{ default: XLSX }, { workbook2Excel }] = await Promise.all([
+        import('xlsx'),
+        import('@/utils/excel'),
+      ]);
       let until: moment.Moment | null = moment(uaspUpdatedAt);
       if (selectedEndAt?.isBefore(uaspUpdatedAt)) {
         until = selectedEndAt;

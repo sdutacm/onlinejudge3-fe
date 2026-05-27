@@ -266,7 +266,7 @@ const ProblemDetailPage: React.FC<Props> = ({
             </table>
           </Skeleton>
         </Card>
-        {!competitionId && !loading && data.tags && !!data.tags.length && (
+        {!contestId && !competitionId && !loading && data.tags && !!data.tags.length && (
           <Card bordered={false}>
             <Form layout="vertical" hideRequiredMark={true} className={gStyles.cardForm}>
               <Form.Item label="Tags">
@@ -325,6 +325,7 @@ const ProblemDetailPage: React.FC<Props> = ({
                 data={data}
                 problemIndex={problemIndex}
                 problemAlias={problemAlias}
+                hideDifficulty={!!contestId || !!competitionId}
               />
             </Card>
           </PageAnimation>

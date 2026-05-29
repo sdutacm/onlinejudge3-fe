@@ -21,7 +21,7 @@ const competitionUserInfoLabelMap = {
   group: 'Group',
 };
 
-const competitionUserInfoIdentityFields = ['school', 'class', 'realName', 'studentNo'];
+const competitionUserInfoIdentityFields = ['organization', 'school', 'class', 'realName', 'studentNo'];
 const competitionUserInfoContactFields = ['tel', 'qq', 'weChat', 'clothing'];
 
 interface CompetitionUserInfoEntry {

@@ -17,7 +17,7 @@ class AchievementToast extends React.Component<IAchievementToastProps> {
   componentDidMount() {
     const sound = new Howl({
       src: [`${process.env.PUBLIC_PATH}assets/audio/achievement-toast.mp3`],
-      volume: 0.5,
+      volume: 0.36,
     });
     setTimeout(() => sound.play(), 200);
   }

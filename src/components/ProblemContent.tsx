@@ -19,6 +19,7 @@ export interface Props {
   data: IProblem;
   problemIndex?: number;
   problemAlias?: string;
+  hideDifficulty?: boolean;
 }
 
 export interface State {
@@ -26,6 +27,10 @@ export interface State {
 }
 
 class ProblemContent extends React.Component<Props, State> {
+  static defaultProps: Partial<Props> = {
+    hideDifficulty: false,
+  };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -149,12 +154,14 @@ class ProblemContent extends React.Component<Props, State> {
           className="text-center"
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
-          <ProblemDifficulty
-            difficulty={data.difficulty}
-            difficultyAigc={data.difficultyAigc}
-            difficultyAiAuthor={data.difficultyAiAuthor}
-            className="mr-md-lg"
-          />
+          {!this.props.hideDifficulty && (
+            <ProblemDifficulty
+              difficulty={data.difficulty}
+              difficultyAigc={data.difficultyAigc}
+              difficultyAiAuthor={data.difficultyAiAuthor}
+              className="mr-md-lg"
+            />
+          )}
           <span>
             {titlePrefix}
             <span style={this.getFontStyle()}>{data.title}</span>

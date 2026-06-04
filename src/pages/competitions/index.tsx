@@ -39,7 +39,7 @@ class CompetitionList extends React.Component<Props, State> {
   };
 
   // canRegister = (registerStartAt: Date, registerEndAt: Date) => {
-  //   const serverTime = Date.now() - ((window as any)._t_diff || 0);
+  //   const serverTime = Date.now() - ((typeof window !== 'undefined' ? (window as any)._t_diff : 0) || 0);
   //   return (
   //     this.props.session.loggedIn &&
   //     registerStartAt.getTime() <= serverTime &&
@@ -54,7 +54,7 @@ class CompetitionList extends React.Component<Props, State> {
       location: { query },
       proMode,
     } = this.props;
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const serverTime = Date.now() - ((typeof window !== 'undefined' ? (window as any)._t_diff : 0) || 0);
     return (
       <PageAnimation>
         <Row gutter={16} className="list-view">
@@ -151,4 +151,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CompetitionList);
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+
+// SSR: prefetch the public competition list (honoring query).
+export default withSSRPrefetch(connect(mapStateToProps)(CompetitionList), (ctx) =>
+  ctx.store.dispatch({ type: 'competitions/getList', payload: getSSRQuery(ctx) }),
+);

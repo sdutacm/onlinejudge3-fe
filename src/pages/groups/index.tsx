@@ -282,4 +282,14 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(GroupIndex);
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+
+// SSR: prefetch the public group search list. The "my" tab is user-specific, so
+// it is left for the client.
+export default withSSRPrefetch(connect(mapStateToProps)(GroupIndex), (ctx) => {
+  const query = getSSRQuery(ctx);
+  if (query.category === 'my') {
+    return undefined;
+  }
+  return ctx.store.dispatch({ type: 'groups/searchList', payload: query });
+});

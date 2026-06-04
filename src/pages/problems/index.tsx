@@ -20,6 +20,7 @@ import PageAnimation from '@/components/PageAnimation';
 import tracker from '@/utils/tracker';
 import ProblemDifficulty from '@/components/ProblemDifficulty';
 import ProblemTag, { ProblemTagPopover } from '@/components/ProblemTag';
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -296,4 +297,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ProblemList);
+// SSR: prefetch the public problem list (honoring query) and the tag list.
+// User-specific solve stats keep loading on the client.
+export default withSSRPrefetch(connect(mapStateToProps)(ProblemList), [
+  (ctx) => ctx.store.dispatch({ type: 'problems/getList', payload: getSSRQuery(ctx) }),
+  (ctx) => ctx.store.dispatch({ type: 'problems/getTagList' }),
+]);

@@ -17,6 +17,7 @@ import SdutpcLogoSvg from '../assets/images/sdutpc_logo.svg';
 import AzurSeriesLogoSvg from '../assets/images/azur-series-logo-full.svg';
 import ExtLink from '@/components/ExtLink';
 import { ICompetition } from '@/common/interfaces/competition';
+import { withSSRPrefetch } from '@/utils/ssr';
 
 const TOP_NUM = 5;
 let cachedState = {
@@ -36,6 +37,9 @@ interface Props extends ReduxProps, RouteProps {
   };
   userACRankloading: boolean;
   recentCompetitionsLoading: boolean;
+  // Provided by SSR getInitialProps so the recent-competitions list (held in
+  // local state) renders on the server and matches the first client render.
+  recentCompetitions?: IList<ICompetition>;
 }
 
 interface State {
@@ -47,6 +51,8 @@ class Index extends React.Component<Props, State> {
     super(props);
     this.state = {
       ...cachedState,
+      // Seed from SSR-provided props so server markup and first client render agree.
+      ...(props.recentCompetitions ? { recentCompetitions: props.recentCompetitions } : {}),
     };
   }
 
@@ -73,7 +79,7 @@ class Index extends React.Component<Props, State> {
   render() {
     const { userACRank, userACRankloading, recentCompetitionsLoading } = this.props;
     const { recentCompetitions } = this.state;
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const serverTime = Date.now() - ((typeof window !== 'undefined' ? (window as any)._t_diff : 0) || 0);
     return (
       <PageAnimation>
         <PageTitle title={null}>
@@ -417,4 +423,14 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Index);
+// SSR: the recent-competitions list is fetched into local state on the client,
+// so prefetch it here and expose it as a prop (see Props.recentCompetitions).
+export default withSSRPrefetch(connect(mapStateToProps)(Index), [], {
+  getProps: async (ctx) => {
+    const ret = await ctx.store.dispatch({
+      type: 'competitions/getListData',
+      payload: { limit: 3 },
+    });
+    return { recentCompetitions: ret && ret.success ? ret.data : undefined };
+  },
+});

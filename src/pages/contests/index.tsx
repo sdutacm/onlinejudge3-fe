@@ -98,7 +98,7 @@ class ContestList extends React.Component<Props, State> {
   };
 
   canRegister = (registerStartAt: Date, registerEndAt: Date) => {
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const serverTime = Date.now() - ((typeof window !== 'undefined' ? (window as any)._t_diff : 0) || 0);
     return (
       this.props.session.loggedIn &&
       registerStartAt.getTime() <= serverTime &&
@@ -385,7 +385,7 @@ class ContestList extends React.Component<Props, State> {
       session,
       proMode,
     } = this.props;
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const serverTime = Date.now() - ((typeof window !== 'undefined' ? (window as any)._t_diff : 0) || 0);
     return (
       <PageAnimation>
         <PageTitle title={this.categoryName}>
@@ -622,4 +622,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ContestList);
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+
+// SSR: prefetch the public contest list (honoring query).
+export default withSSRPrefetch(connect(mapStateToProps)(ContestList), (ctx) =>
+  ctx.store.dispatch({ type: 'contests/getList', payload: getSSRQuery(ctx) }),
+);

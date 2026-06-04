@@ -1,9 +1,13 @@
 import ReactGA from 'react-ga';
 
 // 填入你的 Google Analytics ID
-ReactGA.initialize('UA-91335628-7', {
-  titleCase: false,
-});
+// GA touches window/document, so only initialize in the browser — this module is
+// imported by many pages and would otherwise crash server-side rendering.
+if (typeof window !== 'undefined') {
+  ReactGA.initialize('UA-91335628-7', {
+    titleCase: false,
+  });
+}
 
 let tracker = ReactGA;
 if (process.env.NODE_ENV === 'development') {

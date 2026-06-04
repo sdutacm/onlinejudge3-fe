@@ -704,4 +704,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CompetitionIntro);
+import { withSSRPrefetch } from '@/utils/ssr';
+
+// SSR: public competition intro — prefetch detail + settings.
+export default withSSRPrefetch(connect(mapStateToProps)(CompetitionIntro), [
+  (ctx) =>
+    ctx.store.dispatch({ type: 'competitions/getDetail', payload: { id: +ctx.match.params.id } }),
+  (ctx) =>
+    ctx.store.dispatch({ type: 'competitions/getSettings', payload: { id: +ctx.match.params.id } }),
+]);

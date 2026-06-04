@@ -169,4 +169,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Standings);
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+
+// SSR: prefetch the public user list/standings (honoring query).
+export default withSSRPrefetch(connect(mapStateToProps)(Standings), (ctx) =>
+  ctx.store.dispatch({ type: 'users/getList', payload: getSSRQuery(ctx) }),
+);

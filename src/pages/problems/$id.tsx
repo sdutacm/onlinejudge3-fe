@@ -4,6 +4,7 @@ import { ReduxProps, RouteProps } from '@/@types/props';
 import ProblemDetailPage from '@/components/ProblemDetailPage';
 import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
+import { withSSRPrefetch } from '@/utils/ssr';
 
 export interface Props extends ReduxProps, RouteProps {
   data: ITypeObject<IProblem>;
@@ -54,4 +55,11 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ProblemDetail);
+// SSR: prefetch the public problem detail. Session-gated extras (favorites,
+// solve status) keep loading on the client via the existing subscription.
+export default withSSRPrefetch(connect(mapStateToProps)(ProblemDetail), (ctx) =>
+  ctx.store.dispatch({
+    type: 'problems/getDetail',
+    payload: { id: +(ctx.match.params.id as any) },
+  }),
+);

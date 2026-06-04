@@ -4,7 +4,16 @@ import { Action, Dispatch } from '@/@types/props';
 
 const EI_DEBUG = false;
 
+// dva runs every model's subscription `setup` on the server too (per-request
+// app.start()), so these window-backed helpers must be inert during SSR. The
+// server prefetches via getInitialProps and dispatches effects directly, so no
+// interception is needed there.
+const isServer = typeof window === 'undefined';
+
 export function initInterceptor() {
+  if (isServer) {
+    return;
+  }
   if ((window as any)._pendingEffectsInited) {
     return;
   }
@@ -15,10 +24,17 @@ export function initInterceptor() {
 }
 
 export function startInterception() {
+  if (isServer) {
+    return;
+  }
   (window as any)._sessionLoading = true;
 }
 
 export function requestEffect(dispatch: Dispatch<Action>, action: Action) {
+  if (isServer) {
+    dispatch(action);
+    return;
+  }
   if (!(window as any)._pendingEffectsInited) {
     EI_DEBUG && console.log('[requestEffect] init');
     initInterceptor();
@@ -34,6 +50,9 @@ export function requestEffect(dispatch: Dispatch<Action>, action: Action) {
 }
 
 export function endInterception() {
+  if (isServer) {
+    return;
+  }
   EI_DEBUG && console.log('[endInterception]', (window as any)._pendingEffects);
   (window as any)._pendingEffects.forEach(({ dispatch, action }) => dispatch(action));
   (window as any)._pendingEffects = [];

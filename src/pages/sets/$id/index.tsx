@@ -249,4 +249,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(SetDetail);
+import { withSSRPrefetch } from '@/utils/ssr';
+
+// SSR: prefetch the public set detail (user solve stats stay client-side).
+export default withSSRPrefetch(connect(mapStateToProps)(SetDetail), (ctx) =>
+  ctx.store.dispatch({ type: 'sets/getDetail', payload: { id: +ctx.match.params.id } }),
+);

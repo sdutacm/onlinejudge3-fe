@@ -4,9 +4,19 @@ import { UploadFile } from 'antd/lib/upload/interface';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import msg from '@/utils/msg';
 import { validateFile } from '@/utils/validate';
-import BraftEditor from 'braft-editor';
-import { ContentUtils } from 'braft-utils';
 import 'braft-editor/dist/index.css';
+// braft-editor is a browser-only UMD that references `window` at module eval, so
+// importing it on the server crashes SSR. RtEditor is reachable from many page
+// chunks (GeneralForm → GeneralFormModal), so we load braft lazily in the browser
+// only and render nothing on the server (a rich-text editor isn't part of SSR).
+let BraftEditor: any = null;
+let ContentUtils: any = null;
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line global-require
+  BraftEditor = require('braft-editor').default || require('braft-editor');
+  // eslint-disable-next-line global-require
+  ContentUtils = require('braft-utils').ContentUtils;
+}
 import api from '@/configs/apis';
 import constants from '@/configs/constants';
 import tracker from '@/utils/tracker';
@@ -38,7 +48,7 @@ class RtEditor extends React.Component<Props, State> {
     uploadOption: {},
   };
 
-  static genEmptyContent = () => BraftEditor.createEditorState(null);
+  static genEmptyContent = () => (BraftEditor ? BraftEditor.createEditorState(null) : null);
 
   private validateMedia = validateFile(
     [
@@ -112,6 +122,10 @@ class RtEditor extends React.Component<Props, State> {
   };
 
   render() {
+    // braft is client-only; on the server (or before it loads) render nothing.
+    if (!BraftEditor) {
+      return null;
+    }
     const uploadUrl =
       this.props.uploadTarget === 'asset'
         ? `${api.base}${routesBe.uploadAsset.url}`

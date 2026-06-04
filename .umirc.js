@@ -36,9 +36,25 @@ const buildConfig = {
 const usingBuildConfig = buildConfig[buildTarget];
 const usingPublicPath = usingBuildConfig.publicPath;
 
+// SSR is opt-in at build time so the default CSR dev/build pipeline stays
+// untouched. Enable with `OJ3_SSR=1` (see `build:ssr` / server/ tooling).
+const enableSSR = process.env.OJ3_SSR === '1';
+enableSSR && console.log('Using SSR build (umi.server.js will be emitted)');
+
 export default {
   ...usingBuildConfig,
   hash: true,
+  ...(enableSSR
+    ? {
+        ssr: {
+          // renderToString — simplest, lets us wrap/cache the full HTML string.
+          mode: 'string',
+          // Keep `umi dev` as pure CSR; SSR is exercised through the prod-style
+          // Koa server (server/). Avoids disrupting the existing dev workflow.
+          devServerRender: false,
+        },
+      }
+    : {}),
   define: {
     'process.env.COMPETITION_SIDE': process.env.COMPETITION_SIDE === '1' ? '1' : '',
     'process.env.BASE': usingBuildConfig.base || '/',

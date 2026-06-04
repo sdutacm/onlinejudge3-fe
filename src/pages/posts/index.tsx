@@ -117,4 +117,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(PostList);
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+
+// SSR: prefetch the public post list (honoring query).
+export default withSSRPrefetch(connect(mapStateToProps)(PostList), (ctx) =>
+  ctx.store.dispatch({ type: 'posts/getList', payload: getSSRQuery(ctx) }),
+);

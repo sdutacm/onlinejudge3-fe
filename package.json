@@ -13,6 +13,13 @@
     "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider BROWSER=none umi dev",
     "dup-less": "gulp dup-less",
     "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider umi build",
+    "build:ssr": "cross-env NODE_OPTIONS=--openssl-legacy-provider OJ3_SSR=1 umi build",
+    "build:ssr:competition-side": "cross-env NODE_OPTIONS=--openssl-legacy-provider OJ3_SSR=1 COMPETITION_SIDE=1 OJ3_BUILD4=release_competition_side umi build",
+    "serve:ssr": "node server/index.js",
+    "start:ssr": "pm2 start ecosystem.config.js",
+    "reload:ssr": "pm2 reload ecosystem.config.js",
+    "stop:ssr": "pm2 stop ecosystem.config.js",
+    "test:ssr": "node --test tests/ssr/*.test.js",
     "build:cdn": "pnpm run build && node tasks/upload-cdn.js",
     "build:competition-side": "cross-env NODE_OPTIONS=--openssl-legacy-provider COMPETITION_SIDE=1 OJ3_BUILD4=release_competition_side umi build",
     "build:competition-side:cdn": "pnpm run build:competition-side && cross-env COMPETITION_SIDE=1 node tasks/upload-cdn.js onlinejudge3_cs",
@@ -59,6 +66,9 @@
     "js-cookie": "2.2.1",
     "jscookie": "1.1.0",
     "katex": "0.16.9",
+    "koa": "3.2.1",
+    "koa-mount": "4.2.0",
+    "koa-static": "5.0.0",
     "lodash-es": "4.17.21",
     "lodash.throttle": "4.1.1",
     "markdown-it": "13.0.2",
@@ -81,6 +91,7 @@
     "react-syntax-highlighter": "9.0.1",
     "react-toastify": "8.2.0",
     "react-tooltip": "3.11.6",
+    "reflect-metadata": "0.2.2",
     "short-number": "1.0.7",
     "socket.io-client": "2.4.0",
     "url-assembler": "1.2.10",
@@ -115,9 +126,13 @@
     "gulp-run-command": "0.0.10",
     "gulp-watch": "5.0.1",
     "npm-run-all": "4.1.5",
+    "pm2": "7.0.1",
     "prettier": "1.19.1",
     "roadhog-api-doc": "1.1.2",
     "typescript": "4.9.5",
     "umi": "3.5.43"
+  },
+  "optionalDependencies": {
+    "ioredis": "5.11.0"
   }
 }

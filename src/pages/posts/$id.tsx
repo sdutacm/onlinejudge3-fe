@@ -63,4 +63,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(PostDetail);
+import { withSSRPrefetch } from '@/utils/ssr';
+
+// SSR: prefetch the public post detail.
+export default withSSRPrefetch(connect(mapStateToProps)(PostDetail), (ctx) =>
+  ctx.store.dispatch({ type: 'posts/getDetail', payload: { id: +ctx.match.params.id } }),
+);

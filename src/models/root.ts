@@ -16,6 +16,11 @@ export default {
   },
   subscriptions: {
     setup() {
+      // dva starts the app (and runs subscriptions) on the server too; this one
+      // is a browser-only scroll/route-commit listener.
+      if (typeof window === 'undefined') {
+        return;
+      }
       const handleRouteCommit = (event: Event) => {
         const { action, location } = (event as CustomEvent<RouteCommitEventDetail>).detail || {};
         if (!location) {

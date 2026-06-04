@@ -11,3 +11,7 @@ yarn.lock
 /onlinejudge3_barkalways
 /onlinejudge3_test
 /onlinejudge3_cs
+.pnpm-store
+.pnpm-debug.log
+.planning
+/logs

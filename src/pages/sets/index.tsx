@@ -120,4 +120,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(SetList);
+import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+
+// SSR: prefetch the public set list (honoring query).
+export default withSSRPrefetch(connect(mapStateToProps)(SetList), (ctx) =>
+  ctx.store.dispatch({ type: 'sets/getList', payload: getSSRQuery(ctx) }),
+);

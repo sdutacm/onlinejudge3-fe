@@ -936,4 +936,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(GroupDetail);
+import { withSSRPrefetch } from '@/utils/ssr';
+
+// SSR: prefetch the public group detail + members.
+export default withSSRPrefetch(connect(mapStateToProps)(GroupDetail), [
+  (ctx) => ctx.store.dispatch({ type: 'groups/getDetail', payload: { id: +ctx.match.params.id } }),
+  (ctx) => ctx.store.dispatch({ type: 'groups/getMembers', payload: { id: +ctx.match.params.id } }),
+]);

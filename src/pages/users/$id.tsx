@@ -943,4 +943,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(UserDetail);
+import { withSSRPrefetch } from '@/utils/ssr';
+
+// SSR: prefetch the public user detail.
+export default withSSRPrefetch(connect(mapStateToProps)(UserDetail), (ctx) =>
+  ctx.store.dispatch({ type: 'users/getDetail', payload: { id: +ctx.match.params.id } }),
+);

@@ -56,7 +56,11 @@ class Index extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      sessionLoaded: false,
+      // Render real page content (not <PageLoading/>) during SSR and on the
+      // first SSR-hydration render, so server markup matches the client. Plain
+      // CSR keeps the original "wait for session" behavior.
+      sessionLoaded:
+        typeof window === 'undefined' || !!(window as any).g_useSSR,
       error: null,
       errorStack: '',
       bgCheckSessionTimer: 0,

@@ -4,10 +4,14 @@ import api from '@/configs/apis';
 import { isBot } from '@/utils/userAgent';
 import Cookies from 'js-cookie';
 import { RequestError } from '@/lib/global/error';
+import { getSSRRequestContext, isServerRuntime } from '@/utils/ssrRequestContext';
 
 function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
+  // On the server `api.base` is a host-less path; pull the absolute upstream
+  // base (and any forwarded headers) from the current SSR request context.
+  const ssrCtx = isServerRuntime ? getSSRRequestContext() : undefined;
   const axiosInstance: AxiosInstance = axios.create({
-    baseURL: api.base,
+    baseURL: (ssrCtx && ssrCtx.apiBaseURL) || api.base,
     timeout: constants.requestTimeout,
     validateStatus: null,
     ...options,
@@ -20,6 +24,45 @@ function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
     return config;
   });
   return axiosInstance;
+}
+
+/**
+ * Resolve the headers for a request, isomorphically.
+ * - Browser: csrf token comes from the `csrfToken` cookie via js-cookie.
+ * - Server: forward the incoming `Cookie` header and derive the csrf token from
+ *   it (best-effort; anonymous first-paint requests may have none).
+ */
+function buildHeaders(options: AxiosRequestConfig): Record<string, string> {
+  const headers: Record<string, string> = { ...(options.headers as any) };
+  const method = (options.method || '').toLowerCase();
+  const mutating = ['post', 'put', 'patch', 'delete'].includes(method);
+  if (isServerRuntime) {
+    const ssrCtx = getSSRRequestContext();
+    if (ssrCtx) {
+      if (ssrCtx.cookie) {
+        headers['cookie'] = ssrCtx.cookie;
+      }
+      if (ssrCtx.headers) {
+        Object.assign(headers, ssrCtx.headers);
+      }
+      if (mutating && ssrCtx.cookie) {
+        const match = /(?:^|;\s*)csrfToken=([^;]+)/.exec(ssrCtx.cookie);
+        if (match) {
+          headers['x-csrf-token'] = decodeURIComponent(match[1]);
+        }
+      }
+    }
+  } else if (mutating) {
+    headers['x-csrf-token'] = Cookies.get('csrfToken');
+  }
+  return headers;
+}
+
+function recordTimeDiff(response: AxiosResponse) {
+  if (isServerRuntime) {
+    return;
+  }
+  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
 }
 
 function checkStatus(response: AxiosResponse) {
@@ -43,18 +86,14 @@ async function request(
   initOptions: AxiosRequestConfig = {},
 ): Promise<IApiResponse<any>> {
   const axiosInstance = initAxios(initOptions);
-  const headers = { ...options.headers };
-  const method = (options.method || '').toLowerCase();
-  if (['post', 'put', 'patch', 'delete'].includes(method)) {
-    headers['x-csrf-token'] = Cookies.get('csrfToken');
-  }
+  const headers = buildHeaders(options);
   const response = await axiosInstance({
     url,
     ...options,
     headers,
   });
   checkStatus(response);
-  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
+  recordTimeDiff(response);
   return response.data;
 }
 
@@ -71,18 +110,14 @@ export async function originalRequest(
   initOptions: AxiosRequestConfig = {},
 ): Promise<AxiosResponse<any>> {
   const axiosInstance = initAxios(initOptions);
-  const headers = { ...options.headers };
-  const method = (options.method || '').toLowerCase();
-  if (['post', 'put', 'patch', 'delete'].includes(method)) {
-    headers['x-csrf-token'] = Cookies.get('csrfToken');
-  }
+  const headers = buildHeaders(options);
   const response = await axiosInstance({
     url,
     ...options,
     headers,
   });
   checkStatus(response);
-  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
+  recordTimeDiff(response);
   return response;
 }
 

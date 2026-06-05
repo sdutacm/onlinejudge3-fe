@@ -1,6 +1,6 @@
 import * as service from '../services/messages';
 import { genTimeFlag, isStateExpired } from '@/utils/misc';
-import { formatListQuery } from '@/utils/format';
+import { formatListQuery } from '@/utils/listQuery';
 import { isEqual } from 'lodash-es';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';

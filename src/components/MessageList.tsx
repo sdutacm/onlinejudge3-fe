@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Collapse, Divider, Spin } from 'antd';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import pages from '@/configs/pages';
 import moment from 'moment';
 import msg from '@/utils/msg';

@@ -9,7 +9,11 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@@/*": ["src/.umi/*"],
+      "umi/link": ["src/compat/umiLink.ts"],
+      "umi/router": ["src/compat/umiRouter.ts"],
+      "umi/withRouter": ["src/compat/umiWithRouter.ts"]
     },
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,

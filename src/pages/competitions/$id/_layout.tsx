@@ -17,11 +17,12 @@ import { ICompetition } from '@/common/interfaces/competition';
 import NotFound from '@/pages/404';
 import { ECompetitionUserRole } from '@/common/enums';
 import { ICompetitionEvenData, CompetitionEvents, competitionEmitter } from '@/events/competition';
-import ReactPlayer from 'react-player/file';
 import { userActiveEmitter, UserActiveEvents } from '@/events/userActive';
 import { pickGenshinAudioUrlFromConf } from '@/utils/spGenshin';
 import { Howl } from 'howler';
 import staticUrls from '@/configs/staticUrls';
+
+const ReactPlayer = React.lazy(() => import('react-player/file'));
 
 const SP_GENSHIN_LAUNCHING_AUDIO_DURATION = 1 * 60 + 40;
 const SP_GENSHIN_LAUNCHING_AUDIO_PLAY_OFFSET = -2;
@@ -478,14 +479,16 @@ class CompetitionLayout extends React.Component<Props, State> {
         </Popover>
         {children}
         {!!this.state.audioUrl && (
-          <ReactPlayer
-            url={this.state.audioUrl}
-            playing={this.state.audioPlaying}
-            onReady={this.handleAudioReady}
-            onError={console.error}
-            onEnded={this.handleAudioEnded}
-            style={{ display: 'none' }}
-          />
+          <React.Suspense fallback={null}>
+            <ReactPlayer
+              url={this.state.audioUrl}
+              playing={this.state.audioPlaying}
+              onReady={this.handleAudioReady}
+              onError={console.error}
+              onEnded={this.handleAudioEnded}
+              style={{ display: 'none' }}
+            />
+          </React.Suspense>
         )}
       </ContestTimeStatusWatcher>
     );

@@ -16,7 +16,7 @@ import { groupJoinChannels, GroupJoinChannel } from '@/configs/groups';
 import { checkPerms } from '@/utils/permission';
 import msg from '@/utils/msg';
 import pages from '@/configs/pages';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import ImportGroupModal from '@/components/ImportGroupModal';
 import { EPerm } from '@/common/configs/perm.config';
 

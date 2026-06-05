@@ -13,11 +13,11 @@ import { Row, Col, Card, Button, Table, Icon, Popconfirm, Tabs, Tag } from 'antd
 import GeneralFormModal from '@/components/GeneralFormModal';
 import { ECompetitionUserStatus, ECompetitionUserRole } from '@/common/enums';
 import Link from 'umi/link';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import { formatCompetitionUserSeatId } from '@/utils/competition';
 import tracker from '@/utils/tracker';
 import msg from '@/utils/msg';
-import { aoa2Excel, collectObjectKeysAsPaths } from '@/utils/misc';
+import { collectObjectKeysAsPaths } from '@/utils/misc';
 import moment from 'moment';
 import { get as safeGet } from 'lodash-es';
 import ImportCompetitionUserModal from '@/components/ImportCompetitionUserModal';
@@ -263,6 +263,7 @@ class CompetitionUserManagement extends React.Component<Props, State> {
         aoa.push(row);
       });
       console.log('export competition users:', aoa);
+      const { aoa2Excel } = await import('@/utils/excel');
       aoa2Excel(aoa, `${moment().format('YYYY-MM-DD HH_mm_ss')} competition_users_${id}.xlsx`);
     } finally {
       this.setState({

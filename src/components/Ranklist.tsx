@@ -13,7 +13,6 @@ import { get as safeGet } from 'lodash-es';
 import { getRatingLevel } from '@/utils/rating';
 import tracker from '@/utils/tracker';
 import moment from 'moment';
-import { aoa2Excel } from '@/utils/misc';
 import { ICompetition } from '@/common/interfaces/competition';
 
 const cached = {
@@ -171,6 +170,7 @@ class Ranklist extends React.Component<Props, State> {
         aoa.push(row);
       });
       console.log(aoa);
+      const { aoa2Excel } = await import('@/utils/excel');
       aoa2Excel(
         aoa,
         `${moment().format('YYYY-MM-DD HH_mm_ss')} ${

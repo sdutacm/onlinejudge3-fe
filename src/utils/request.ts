@@ -4,6 +4,7 @@ import api from '@/configs/apis';
 import { isBot } from '@/utils/userAgent';
 import Cookies from 'js-cookie';
 import { RequestError } from '@/lib/global/error';
+import { Codes } from '@/common/codes';
 
 function initAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   const axiosInstance: AxiosInstance = axios.create({
@@ -30,6 +31,41 @@ function checkStatus(response: AxiosResponse) {
   throw new RequestError(`Request failed with status code ${response.status}`, response);
 }
 
+function updateTimeDiff(response: AxiosResponse) {
+  if (response.headers?.date) {
+    (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
+  }
+}
+
+function getFallbackCode(status: number) {
+  switch (status) {
+    case 401:
+      return Codes.GENERAL_NOT_LOGGED_IN;
+    case 403:
+      return Codes.GENERAL_NO_PERMISSION;
+    case 422:
+      return Codes.GENERAL_REQUEST_PARAMS_ERROR;
+    default:
+      return status >= 500 ? Codes.GENERAL_INTERNAL_SERVER_ERROR : Codes.GENERAL_UNKNOWN_ERROR;
+  }
+}
+
+function normalizeErrorResponse(response: AxiosResponse): IApiResponse<any> {
+  const fallbackCode = getFallbackCode(response.status);
+  const data = response.data;
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    return {
+      ...data,
+      success: false,
+      code: data.code ?? fallbackCode,
+    };
+  }
+  return {
+    success: false,
+    code: fallbackCode,
+  };
+}
+
 /**
  * Send a request and get API response
  * @param {string} url
@@ -53,8 +89,10 @@ async function request(
     ...options,
     headers,
   });
-  checkStatus(response);
-  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
+  updateTimeDiff(response);
+  if (response.status < 200 || response.status >= 300) {
+    return normalizeErrorResponse(response);
+  }
   return response.data;
 }
 
@@ -82,7 +120,7 @@ export async function originalRequest(
     headers,
   });
   checkStatus(response);
-  (window as any)._t_diff = Date.now() - new Date(response.headers.date).getTime();
+  updateTimeDiff(response);
   return response;
 }
 

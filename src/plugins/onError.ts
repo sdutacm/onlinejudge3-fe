@@ -1,38 +1,37 @@
-import { message } from 'antd';
-import constants from '../configs/constants';
 import tracker from '@/utils/tracker';
+import msg from '@/utils/msg';
 
 export default {
   onError(e) {
     let shouldReport = true;
     try {
-      const status = e.response.status;
-      let msg;
+      const status = e.response?.status;
+      let messageText;
       switch (status) {
         case 403: {
-          msg = `You are not allowed to view or operate (${e.apiName})`;
+          messageText = `You are not allowed to view or operate (${e.apiName})`;
           shouldReport = false;
           break;
         }
         case 422: {
           shouldReport = false;
-          const errorData = e.response.data?.data;
+          const errorData = e.response?.data?.data || e.response?.data;
           if (errorData?.msg) {
-            msg = `Invalid request: ${
+            messageText = `Invalid request: ${
               errorData.msg.length < 50 ? errorData.msg : errorData.msg.substr(0, 50) + '...'
             } (${e.apiName})`;
             console.error(`RequestParamsError: [${e.apiName}]`, JSON.stringify(errorData, null, 2));
           } else {
-            msg = 'Invalid request';
+            messageText = 'Invalid request';
           }
           break;
         }
         default:
-          msg = `${e.message} (${e.apiName})`;
+          messageText = e.apiName ? `${e.message} (${e.apiName})` : e.message;
       }
-      message.error(msg, constants.msgDuration.error);
+      msg.error(messageText || 'Unknown error');
     } catch (err) {
-      message.error('Unknown error', constants.msgDuration.error);
+      msg.error('Unknown error');
     }
 
     if (shouldReport) {

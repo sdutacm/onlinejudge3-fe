@@ -10,7 +10,7 @@ import { getPathParamId } from '@/utils/getPathParams';
 import pages from '@/configs/pages';
 import msg from '@/utils/msg';
 import router from 'umi/router';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import tracker from '@/utils/tracker';
 import { getCompetitionUserAvailablePages } from '@/utils/competition';
 import { ICompetition, ICompetitionSettings } from '@/common/interfaces/competition';

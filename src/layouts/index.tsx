@@ -11,7 +11,6 @@ import pages from '../configs/pages';
 import constants from '../configs/constants';
 import styles from './index.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import moment from 'moment';
 import { matchPath } from 'react-router';
 import classNames from 'classnames';
 import router from 'umi/router';
@@ -452,7 +451,7 @@ class Index extends React.Component<Props, State> {
             )}
           </Row>
           <p className="mt-lg" style={{ fontWeight: 600 }}>
-            © 2008-{moment().format('YYYY')} SDUTACM. All Rights Reserved.
+            © 2008-{new Date().getFullYear()} SDUTACM. All Rights Reserved.
           </p>
           {/* <div> */}
           {/* <a>API</a> */}

@@ -7,7 +7,7 @@ import constants from '@/configs/constants';
 import pages from '@/configs/pages';
 import gStyles from '../../general.less';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import { matchPath } from 'react-router';
 import router from 'umi/router';
 import setStatePromise from '@/utils/setStatePromise';

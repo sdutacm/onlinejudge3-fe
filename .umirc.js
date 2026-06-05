@@ -1,10 +1,13 @@
+const path = require('path');
+
 const buildTarget =
   (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
 console.log('Using build target:', buildTarget);
 console.log('Using COMPETITION_SIDE:', process.env.COMPETITION_SIDE === '1');
 process.env.CDN_URL && console.log('Using CDN_URL:', process.env.CDN_URL);
 process.env.MEDIA_URL && console.log('Using MEDIA_URL:', process.env.MEDIA_URL);
-process.env.CDN_RAW_URL_BEFORE_PROXY && console.log('Using CDN_RAW_URL_BEFORE_PROXY:', process.env.CDN_RAW_URL_BEFORE_PROXY);
+process.env.CDN_RAW_URL_BEFORE_PROXY &&
+  console.log('Using CDN_RAW_URL_BEFORE_PROXY:', process.env.CDN_RAW_URL_BEFORE_PROXY);
 process.env.CDN_PROXY && console.log('Using CDN_PROXY:', process.env.CDN_PROXY);
 
 const publicPathPrefix = process.env.CDN_URL || '';
@@ -34,6 +37,10 @@ const buildConfig = {
 
 const usingBuildConfig = buildConfig[buildTarget];
 const usingPublicPath = usingBuildConfig.publicPath;
+const antdPackageDir = path.dirname(require.resolve('antd/package.json'));
+const antdIconsV3PackageDir = path.dirname(
+  require.resolve('@ant-design/icons/package.json', { paths: [antdPackageDir] }),
+);
 
 export default {
   ...usingBuildConfig,
@@ -48,38 +55,33 @@ export default {
     'process.env.PUBLIC_PATH': process.env.NODE_ENV === 'production' ? usingPublicPath : '/',
     'process.env.DATA_USING_GIT': process.env.DATA_USING_GIT === '1',
   },
-  plugins: [
+  alias: {
+    'umi/link': '@/compat/umiLink',
+    'umi/router': '@/compat/umiRouter',
+    'umi/withRouter': '@/compat/umiWithRouter',
+  },
+  plugins: ['./src/plugins/legacyDynamicRoutes'],
+  dva: {
+    immer: true,
+  },
+  antd: {
+    disableBabelPluginImport: true,
+  },
+  extraBabelPlugins: [
     [
-      'umi-plugin-react',
+      require.resolve('@umijs/deps/compiled/babel/babel-plugin-import'),
       {
-        dva: {
-          immer: true,
-        },
-        antd: true,
-        routes: {
-          exclude: [/models\//, /services\//],
-        },
-        title: {
-          defaultTitle: 'SDUT OnlineJudge',
-          separator: '|',
-          format: '{current} {separator} {parent}',
-        },
-        dynamicImport: null,
-        chunks: [
-          'vendors',
-          'raincloud',
-          'ui',
-          'time-is-money',
-          'talk-is-cheap',
-          'mathematics-is-the-queen-of-the-sciences',
-          'ms-excel-suite-2022-customized-for-sdut_powered-by-ms-cn',
-          'draw-some-higher-dimensions-shapes',
-          'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
-          'umi',
-        ],
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: false,
       },
+      'antd-js-on-demand',
     ],
   ],
+  title: 'SDUT OnlineJudge',
+  dynamicImport: {
+    loading: '@/components/RouteChunkLoading',
+  },
   theme: {
     // 'primary-color': '#1e66d5', // dark
     'btn-border-radius-base': '100px',
@@ -106,24 +108,58 @@ export default {
       },
     },
   },
-  urlLoaderExcludes: [/\.svg$/],
   chainWebpack(config) {
+    config.resolve.alias.set(
+      '@umijs/plugin-request/lib/ui',
+      require.resolve('./src/compat/umiRequestUi.ts'),
+    );
+    config.resolve.alias.set(
+      '@ant-design/icons/lib/dist$',
+      require.resolve('./src/compat/antdIconDist.ts'),
+    );
+    // antd 3 imports @ant-design/icons/lib/dist, which this project aliases to a
+    // reduced export list. Keep those old icon subpaths resolving from antd's own
+    // @ant-design/icons@1.x dependency under pnpm's strict node_modules layout.
+    ['fill', 'outline', 'twotone'].forEach((theme) => {
+      config.resolve.alias.set(
+        `@ant-design/icons/lib/${theme}`,
+        path.join(antdIconsV3PackageDir, 'lib', theme),
+      );
+    });
+
+    config.module.rule('svg').issuer(/\.(css|less|sass|scss)$/);
     config.module
-      .rule('svg')
+      .rule('svg-component')
       .test(/\.svg(\?v=\d+\.\d+\.\d+)?$/)
-      .use([
-        {
-          loader: 'babel-loader',
-        },
-        {
-          loader: '@svgr/webpack',
-          options: {
-            babel: false,
-            icon: true,
-          },
-        },
-      ])
-      .loader(require.resolve('@svgr/webpack'));
+      .issuer(/\.(js|jsx|ts|tsx)$/)
+      .use('svgr')
+      .loader(require.resolve('@svgr/webpack'))
+      .options({
+        icon: true,
+      });
+
+    class MomentLocaleIgnorePlugin {
+      apply(compiler) {
+        const ignoreMomentLocales = (result) => {
+          if (!result) {
+            return result;
+          }
+          if (result.request === './locale' && /[\\/]moment$/.test(result.context)) {
+            return null;
+          }
+          return result;
+        };
+
+        compiler.hooks.normalModuleFactory.tap('MomentLocaleIgnorePlugin', (factory) => {
+          factory.hooks.beforeResolve.tap('MomentLocaleIgnorePlugin', ignoreMomentLocales);
+        });
+        compiler.hooks.contextModuleFactory.tap('MomentLocaleIgnorePlugin', (factory) => {
+          factory.hooks.beforeResolve.tap('MomentLocaleIgnorePlugin', ignoreMomentLocales);
+        });
+      }
+    }
+
+    config.plugin('moment-locale-ignore').use(MomentLocaleIgnorePlugin);
 
     config.optimization.splitChunks({
       // chunks: 'async',
@@ -135,17 +171,18 @@ export default {
       // automaticNameDelimiter: '.',
       // name: true,
       cacheGroups: {
-        vendors: {
-          name: 'vendors',
-          chunks: 'all',
-          test({ resource }) {
-            return /[\\/]node_modules[\\/]/.test(resource);
-          },
-          priority: 10,
+        default: {
+          chunks: 'async',
+          minChunks: 3,
+          minSize: 30000,
+          priority: -20,
+          reuseExistingChunk: true,
         },
+        defaultVendors: false,
+        vendors: false,
         raincloud: {
           name: 'raincloud',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|axios|lodash|immutable)[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -153,7 +190,7 @@ export default {
         },
         antd: {
           name: 'ui',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](@ant-design|antd)[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -161,7 +198,7 @@ export default {
         },
         moment: {
           name: 'time-is-money',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](moment)[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -169,15 +206,23 @@ export default {
         },
         highlight: {
           name: 'talk-is-cheap',
-          chunks: 'all',
-          test: /[\\/]node_modules[\\/](highlight\.js)[\\/]/,
+          chunks: 'async',
+          test: /[\\/]node_modules[\\/](react-syntax-highlighter|highlight\.js)[\\/]/,
+          minSize: 0,
+          minChunks: 1,
+          priority: 100,
+        },
+        markdown: {
+          name: 'markdown-renderer',
+          chunks: 'async',
+          test: /[\\/]node_modules[\\/](markdown-it|linkify-it|mdurl|uc\.micro)[\\/]/,
           minSize: 0,
           minChunks: 1,
           priority: 100,
         },
         katex: {
           name: 'mathematics-is-the-queen-of-the-sciences',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](katex)[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -185,7 +230,7 @@ export default {
         },
         xlsx: {
           name: 'ms-excel-suite-2022-customized-for-sdut_powered-by-ms-cn',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](xlsx)[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -193,7 +238,7 @@ export default {
         },
         highcharts: {
           name: 'draw-some-higher-dimensions-shapes',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](highcharts)[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -201,7 +246,7 @@ export default {
         },
         braftEditor: {
           name: 'of-all-that-has-been-written_i-love-only-that-which-was-written-in-blood',
-          chunks: 'all',
+          chunks: 'async',
           test: /[\\/]node_modules[\\/](braft(-|\w+)(\w*)|draft(-|\w+)(\w*))[\\/]/,
           minSize: 0,
           minChunks: 1,
@@ -216,67 +261,68 @@ export default {
       },
     });
 
-    config.plugin('error-handling-plugin').use(class ErrorHandlingPlugin {
-      apply(compiler) {
-        // 编译失败时的错误
-        compiler.hooks.failed.tap('ErrorHandlingPlugin', (error) => {
-          console.error('Compiler failed:', error);
-        });
-
-        // 编译阶段的错误
-        compiler.hooks.compilation.tap('ErrorHandlingPlugin', (compilation) => {
-          // 模块构建失败的错误
-          compilation.hooks.buildModule.tap('ErrorHandlingPlugin', (module) => {
-            // 可以在这里处理模块构建阶段的错误
+    config.plugin('error-handling-plugin').use(
+      class ErrorHandlingPlugin {
+        apply(compiler) {
+          // 编译失败时的错误
+          compiler.hooks.failed.tap('ErrorHandlingPlugin', (error) => {
+            console.error('Compiler failed:', error);
           });
 
-          // 优化阶段的错误
-          compilation.hooks.optimize.tap('ErrorHandlingPlugin', () => {
-            // 可以在这里处理优化阶段的错误
-          });
+          // 编译阶段的错误
+          compiler.hooks.compilation.tap('ErrorHandlingPlugin', (compilation) => {
+            // 模块构建失败的错误
+            compilation.hooks.buildModule.tap('ErrorHandlingPlugin', (module) => {
+              // 可以在这里处理模块构建阶段的错误
+            });
 
-          // 处理资源生成阶段的错误
-          compilation.hooks.afterSeal.tap('ErrorHandlingPlugin', () => {
-            // 可以在这里处理资源生成阶段的错误
-          });
+            // 优化阶段的错误
+            compilation.hooks.optimize.tap('ErrorHandlingPlugin', () => {
+              // 可以在这里处理优化阶段的错误
+            });
 
-          // 处理编译过程中的错误
-          compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
-            // 可以在这里处理优化资源后的错误
-          });
+            // 处理资源生成阶段的错误
+            compilation.hooks.afterSeal.tap('ErrorHandlingPlugin', () => {
+              // 可以在这里处理资源生成阶段的错误
+            });
 
-          // 处理编译过程中的警告
-          compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
-            compilation.warnings.forEach((warning) => {
-              // console.warn('Compilation warning:', warning);
+            // 处理编译过程中的错误
+            compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
+              // 可以在这里处理优化资源后的错误
+            });
+
+            // 处理编译过程中的警告
+            compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
+              compilation.warnings.forEach((warning) => {
+                // console.warn('Compilation warning:', warning);
+              });
+            });
+
+            // 处理编译过程中的错误
+            compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
+              compilation.errors.forEach((error) => {
+                console.error('Compilation error:', error);
+              });
             });
           });
 
-          // 处理编译过程中的错误
-          compilation.hooks.afterOptimizeAssets.tap('ErrorHandlingPlugin', (assets) => {
-            compilation.errors.forEach((error) => {
-              console.error('Compilation error:', error);
-            });
+          // 编译完成时的错误
+          compiler.hooks.done.tap('ErrorHandlingPlugin', (stats) => {
+            if (stats.hasErrors()) {
+              console.error('Compilation completed with errors:');
+              stats.toJson().errors.forEach((err) => {
+                console.error(err);
+              });
+            }
+            if (stats.hasWarnings()) {
+              // console.warn('Compilation completed with warnings:');
+              // stats.toJson().warnings.forEach((warning) => {
+              //   console.warn(warning);
+              // });
+            }
           });
-        });
-
-        // 编译完成时的错误
-        compiler.hooks.done.tap('ErrorHandlingPlugin', (stats) => {
-          if (stats.hasErrors()) {
-            console.error('Compilation completed with errors:');
-            stats.toJson().errors.forEach((err) => {
-              console.error(err);
-            });
-          }
-          if (stats.hasWarnings()) {
-            // console.warn('Compilation completed with warnings:');
-            // stats.toJson().warnings.forEach((warning) => {
-            //   console.warn(warning);
-            // });
-          }
-        });
-      }
-    });
-
+        }
+      },
+    );
   },
 };

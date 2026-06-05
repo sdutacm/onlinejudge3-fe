@@ -7,7 +7,7 @@ import tracker from '@/utils/tracker';
 import ExcelSelectParser from './ExcelSelectParser';
 import staticUrls from '@/configs/staticUrls';
 import router from 'umi/router';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import pages from '@/configs/pages';
 import constants from '@/configs/constants';
 

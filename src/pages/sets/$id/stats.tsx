@@ -8,7 +8,7 @@ import NotFound from '@/pages/404';
 import PageTitle from '@/components/PageTitle';
 import PageLoading from '@/components/PageLoading';
 import { Link } from 'react-router-dom';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import PageAnimation from '@/components/PageAnimation';
 import { checkPerms } from '@/utils/permission';
 import msg from '@/utils/msg';

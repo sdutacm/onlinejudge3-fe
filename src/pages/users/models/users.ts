@@ -3,7 +3,7 @@ import { matchPath } from 'react-router';
 import pages from '@/configs/pages';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
 import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/format';
+import { formatListQuery } from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { Results } from '@/configs/results';
 import * as groupService from '../../groups/services/groups';

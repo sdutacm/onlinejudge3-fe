@@ -1,7 +1,4 @@
 import React from 'react';
-import DocumentTitle from 'react-document-title';
-import { formatPageTitle } from '@/utils/format';
-import tracker from '@/utils/tracker';
 import { Popover, Icon } from 'antd';
 
 export interface Props {

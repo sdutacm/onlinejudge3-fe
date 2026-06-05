@@ -1,5 +1,5 @@
 import { get, post } from '@/utils/request';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import jscookie from 'jscookie';
 import md5 from 'md5';
 

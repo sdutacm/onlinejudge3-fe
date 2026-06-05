@@ -1,6 +1,6 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
-import { formatPageTitle } from '@/utils/format';
+import { formatPageTitle } from '@/utils/pageTitle';
 
 export interface Props {
   title: string | null;

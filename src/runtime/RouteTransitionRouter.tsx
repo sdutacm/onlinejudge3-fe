@@ -5,6 +5,7 @@ import { renderRoutes } from '@umijs/renderer-react';
 import type { IRoute } from '@umijs/renderer-react';
 import { beginRouteProgress, finishRouteProgress } from '@/runtime/routeProgress';
 import { emitRouteCommit } from '@/runtime/routeEvents';
+import RouteChunkLoading from '@/components/RouteChunkLoading';
 import {
   collectMatchedRoutePreloads,
   getMatchedRouteBranch,
@@ -22,6 +23,12 @@ interface CommitState {
   action: string;
   location: Location;
   seq: number;
+}
+
+interface TransitionErrorState {
+  action: string;
+  error: Error;
+  location: Location;
 }
 
 const DEFAULT_TITLE = 'SDUT OnlineJudge';
@@ -60,6 +67,7 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
     location: history.location,
     seq: 0,
   }));
+  const [transitionError, setTransitionError] = React.useState<TransitionErrorState | null>(null);
   const committedLocationRef = React.useRef(committedLocation);
   const transitionIdRef = React.useRef(0);
   const activeProgressTokenRef = React.useRef<unknown>(null);
@@ -85,6 +93,70 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
     }));
   }, []);
 
+  const startTransition = React.useCallback((location: Location, action: string) => {
+    const currentLocation = committedLocationRef.current;
+    const currentBranch = getMatchedRouteBranch(routes, currentLocation.pathname);
+    const nextBranch = getMatchedRouteBranch(routes, location.pathname);
+
+    transitionIdRef.current += 1;
+    const transitionId = transitionIdRef.current;
+    setTransitionError(null);
+    stopActiveProgress();
+
+    if (
+      isHashOnlyChange(currentLocation, location) ||
+      hasSameRouteBranch(currentBranch, nextBranch)
+    ) {
+      commitLocation(location, action);
+      return;
+    }
+
+    const { promise, taskCount } = collectMatchedRoutePreloads(routes, location.pathname);
+    if (!taskCount) {
+      commitLocation(location, action);
+      return;
+    }
+
+    const progressToken = { transitionId };
+    const progressTimer = window.setTimeout(() => {
+      if (transitionIdRef.current === transitionId) {
+        activeProgressTokenRef.current = progressToken;
+        beginRouteProgress(progressToken);
+      }
+    }, PROGRESS_DELAY);
+
+    promise.then(
+      () => {
+        if (transitionIdRef.current === transitionId) {
+          commitLocation(location, action);
+        }
+      },
+      (error) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[route-transition] route chunk preload failed', error);
+        }
+        if (transitionIdRef.current === transitionId) {
+          setTransitionError({
+            action,
+            error,
+            location,
+          });
+        }
+      },
+    ).finally(() => {
+      window.clearTimeout(progressTimer);
+      if (activeProgressTokenRef.current === progressToken) {
+        stopActiveProgress();
+      }
+    });
+  }, [commitLocation, routes, stopActiveProgress]);
+
+  const retryTransition = React.useCallback(() => {
+    if (transitionError) {
+      startTransition(transitionError.location, transitionError.action);
+    }
+  }, [startTransition, transitionError]);
+
   React.useEffect(() => {
     if (skipInitialCommitEventRef.current) {
       skipInitialCommitEventRef.current = false;
@@ -102,51 +174,7 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
 
     const unlisten = history.listen((location, action) => {
       emitRouteChange(plugin, routes, location, action);
-
-      const currentLocation = committedLocationRef.current;
-      const currentBranch = getMatchedRouteBranch(routes, currentLocation.pathname);
-      const nextBranch = getMatchedRouteBranch(routes, location.pathname);
-
-      transitionIdRef.current += 1;
-      const transitionId = transitionIdRef.current;
-      stopActiveProgress();
-
-      if (
-        isHashOnlyChange(currentLocation, location) ||
-        hasSameRouteBranch(currentBranch, nextBranch)
-      ) {
-        commitLocation(location, action);
-        return;
-      }
-
-      const { promise, taskCount } = collectMatchedRoutePreloads(routes, location.pathname);
-      if (!taskCount) {
-        commitLocation(location, action);
-        return;
-      }
-
-      const progressToken = { transitionId };
-      const progressTimer = window.setTimeout(() => {
-        if (transitionIdRef.current === transitionId) {
-          activeProgressTokenRef.current = progressToken;
-          beginRouteProgress(progressToken);
-        }
-      }, PROGRESS_DELAY);
-
-      promise.catch((error) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[route-transition] route chunk preload failed', error);
-        }
-      }).then(() => {
-        if (transitionIdRef.current === transitionId) {
-          commitLocation(location, action);
-        }
-      }).finally(() => {
-        window.clearTimeout(progressTimer);
-        if (activeProgressTokenRef.current === progressToken) {
-          stopActiveProgress();
-        }
-      });
+      startTransition(location, action);
     });
 
     return () => {
@@ -154,13 +182,22 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
       stopActiveProgress();
       unlisten();
     };
-  }, [commitLocation, history, plugin, routes, stopActiveProgress]);
+  }, [history, plugin, routes, startTransition, stopActiveProgress]);
 
   React.useEffect(() => installLinkIntentPrefetch(routes), [routes]);
 
   return (
-    <Router history={history}>
-      {renderRoutes({ routes, plugin }, { location: committedLocation })}
-    </Router>
+    <>
+      <Router history={history}>
+        {renderRoutes({ routes, plugin }, { location: committedLocation })}
+      </Router>
+      {transitionError && (
+        <RouteChunkLoading
+          error={transitionError.error}
+          isLoading={false}
+          retry={retryTransition}
+        />
+      )}
+    </>
   );
 }

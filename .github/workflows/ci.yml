@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - release/*
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -16,17 +17,18 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.2.2
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.2.2 --activate
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -65,17 +67,18 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.2.2
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.2.2 --activate
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -101,17 +104,18 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.2.2
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
-
-      - name: Setup pnpm
-        run: |
-          corepack enable
-          corepack prepare pnpm@11.2.2 --activate
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile

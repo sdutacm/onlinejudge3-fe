@@ -9,7 +9,7 @@ import router from 'umi/router';
 import limits from '@/configs/limits';
 import pages from '@/configs/pages';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import UserBar from '@/components/UserBar';

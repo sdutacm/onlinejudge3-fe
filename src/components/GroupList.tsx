@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'react-router-dom';
 import { Card, List, Icon } from 'antd';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import pages from '@/configs/pages';
 import { ReduxProps } from '@/@types/props';
 import AddFavorite from './AddFavorite';

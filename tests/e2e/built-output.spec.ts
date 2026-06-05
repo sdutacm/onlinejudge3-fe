@@ -139,6 +139,51 @@ test('built output keeps previous route visible while the next route chunk loads
   expectHealthyBuiltRoute(monitor, 'p__problems__index');
 });
 
+test('built output keeps previous route visible and retries when the next route chunk fails', async ({
+  page,
+}) => {
+  const monitor = await setupMockApi(page);
+  let shouldFailChunk = true;
+
+  await page.route(/\/onlinejudge3\/.*p__problems__index.*\.js(?:\?|$)/, async (route) => {
+    if (shouldFailChunk) {
+      shouldFailChunk = false;
+      await route.fulfill({
+        status: 404,
+        headers: {
+          'content-type': 'application/javascript',
+        },
+        body: '',
+      });
+      return;
+    }
+    await route.continue();
+  });
+
+  await page.goto('/onlinejudge3/');
+
+  await expect(page.getByRole('heading', { name: 'Recent Competitions' })).toBeVisible();
+
+  await page
+    .getByRole('link', { name: 'Problems' })
+    .first()
+    .evaluate((link: HTMLAnchorElement) => link.click());
+
+  await expect(page).toHaveURL(/\/onlinejudge3\/problems$/);
+  await expect(page.getByRole('heading', { name: 'Recent Competitions' })).toBeVisible();
+  await expect(page.getByRole('alert')).toContainText('Page resources failed to load.');
+  expect(monitor.scriptFailures.some((failure) => failure.includes('p__problems__index'))).toBe(
+    true,
+  );
+  expect(monitor.pageErrors).toEqual([]);
+
+  await page.getByRole('button', { name: 'Retry' }).click();
+
+  await expect(page.getByRole('link', { name: '1000 - A + B Problem' })).toBeVisible();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  expect(hasLoadedChunk(monitor, 'p__problems__index')).toBeTruthy();
+});
+
 test('dark built output route progress uses dark primary color', async ({ page }) => {
   const monitor = await setupMockApi(page, { theme: 'dark' });
   const chunkGate = deferred();

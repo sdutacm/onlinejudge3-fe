@@ -1,27 +1,11 @@
-import UrlAssembler from 'url-assembler';
 import { floor } from 'math-precision';
 import moment from 'moment';
 import constants from '@/configs/constants';
 
-export interface IUrlFArg {
-  param?: object;
-  query?: object;
-}
-
-/**
- * Format url
- * @param {string} url
- * @param {IUrlFArg} arg
- * @returns {string}
- */
-export function urlf(url: string, arg?: IUrlFArg): string {
-  let ret = new UrlAssembler(url);
-  if (arg) {
-    const { param, query } = arg;
-    ret = ret.param(param).query(query);
-  }
-  return ret.toString();
-}
+export type { IUrlFArg } from './url';
+export { urlf } from './url';
+export { formatListQuery } from './listQuery';
+export { formatPageTitle } from './pageTitle';
 
 /**
  * Format a/b to percentage string
@@ -48,25 +32,6 @@ export function formatPercentage(a: number, b: number, precision: number = 2): s
     return Math.pow(10, -prec) + '%';
   }
   return parseFloat(ratio).toFixed(prec) + '%';
-}
-
-/**
- * Format list query, and only reserve valid property
- * @param {IListQuery} query
- * @returns {IListQuery}
- */
-export function formatListQuery(query: IListQuery, ignorePagination = false): IListQuery {
-  const formattedQuery: IListQuery = ignorePagination ? { ...query } : {
-    ...query,
-    page: +query.page || 1,
-  };
-  query.limit && (formattedQuery.limit = +query.limit);
-  for (const q in formattedQuery) {
-    if (formattedQuery.hasOwnProperty(q) && !formattedQuery[q] && formattedQuery[q] !== false) {
-      delete formattedQuery[q];
-    }
-  }
-  return formattedQuery;
 }
 
 export function toLongTs(time: ITimestamp | string | Date): ITimestamp {
@@ -185,11 +150,4 @@ export function formatAvatarUrl(fileName, full = false): string {
     return `${constants.avatarUrlPrefix}${fileName}`;
   }
   return `${constants.avatarUrlPrefix}s_${fileName}`;
-}
-
-export function formatPageTitle(title: string | null, loading: boolean = false): string {
-  if (loading) {
-    return `</> | ${constants.siteTitle}`;
-  }
-  return title ? `${title} | ${constants.siteTitle}` : constants.siteTitle;
 }

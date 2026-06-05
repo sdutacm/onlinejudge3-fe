@@ -12,7 +12,7 @@ import { Codes } from '@/common/codes';
 import styles from './index.less';
 import msg from '@/utils/msg';
 import router from 'umi/router';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import tracker from '@/utils/tracker';
 
 interface IContestSessionState extends ISessionStatus {

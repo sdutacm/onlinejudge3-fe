@@ -1,8 +1,29 @@
 const fs = require('fs');
 const path = require('path');
+const childProcess = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const generatedDva = path.join(root, 'src/.umi/plugin-dva/dva.ts');
+
+function generateUmiTmpFiles() {
+  const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+  const result = childProcess.spawnSync(pnpmBin, ['exec', 'umi', 'generate', 'tmp'], {
+    cwd: root,
+    encoding: 'utf8',
+  });
+
+  if (result.error) {
+    return {
+      ok: false,
+      message: result.error.message,
+    };
+  }
+
+  return {
+    ok: result.status === 0,
+    message: [result.stdout, result.stderr].filter(Boolean).join('\n').trim(),
+  };
+}
 
 function walk(dir, predicate, files = []) {
   if (!fs.existsSync(dir)) {
@@ -33,9 +54,14 @@ const expectedNamespaces = [...globalModelFiles, ...pageModelFiles]
   .map(filePath => path.basename(filePath).replace(/\.[^.]+$/, ''))
   .sort();
 
+const generateResult = generateUmiTmpFiles();
+
 if (!fs.existsSync(generatedDva)) {
   console.error(`Missing generated dva runtime: ${path.relative(root, generatedDva)}`);
-  console.error('Run `npm run build` or `npm run start` before this check.');
+  console.error('Tried to generate Umi tmp files with `pnpm exec umi generate tmp` before this check.');
+  if (!generateResult.ok && generateResult.message) {
+    console.error(generateResult.message);
+  }
   process.exit(1);
 }
 

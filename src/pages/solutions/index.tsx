@@ -6,7 +6,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Row, Col, Card, Form, Switch } from 'antd';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import FilterCard from '@/components/FilterCard';
 import ToDetailCard from '@/components/ToDetailCard';
 import SolutionTable from '@/components/SolutionTable';

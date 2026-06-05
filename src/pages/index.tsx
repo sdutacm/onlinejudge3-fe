@@ -8,7 +8,7 @@ import constants from '@/configs/constants';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import moment from 'moment';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import classNames from 'classnames';
 import TimeStatusBadge from '@/components/TimeStatusBadge';
 import gStyles from '@/general.less';

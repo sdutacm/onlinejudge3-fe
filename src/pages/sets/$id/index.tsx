@@ -9,7 +9,7 @@ import PageTitle from '@/components/PageTitle';
 import PageLoading from '@/components/PageLoading';
 import { filterXSS as xss } from 'xss';
 import { Link } from 'react-router-dom';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import classNames from 'classnames';
 import PageAnimation from '@/components/PageAnimation';
 import { isSelf, checkPerms } from '@/utils/permission';

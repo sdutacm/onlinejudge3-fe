@@ -1,3 +1,5 @@
+const path = require('path');
+
 const buildTarget =
   (process.env.NODE_ENV === 'production' ? process.env.OJ3_BUILD4 : '') || 'release';
 console.log('Using build target:', buildTarget);
@@ -35,6 +37,10 @@ const buildConfig = {
 
 const usingBuildConfig = buildConfig[buildTarget];
 const usingPublicPath = usingBuildConfig.publicPath;
+const antdPackageDir = path.dirname(require.resolve('antd/package.json'));
+const antdIconsV3PackageDir = path.dirname(
+  require.resolve('@ant-design/icons/package.json', { paths: [antdPackageDir] }),
+);
 
 // SSR is opt-in at build time so the default CSR dev/build pipeline stays
 // untouched. Enable with `OJ3_SSR=1` (see `build:ssr` / server/ tooling).
@@ -127,6 +133,15 @@ export default {
       '@ant-design/icons/lib/dist$',
       require.resolve('./src/compat/antdIconDist.ts'),
     );
+    // antd 3 imports @ant-design/icons/lib/dist, which this project aliases to a
+    // reduced export list. Keep those old icon subpaths resolving from antd's own
+    // @ant-design/icons@1.x dependency under pnpm's strict node_modules layout.
+    ['fill', 'outline', 'twotone'].forEach((theme) => {
+      config.resolve.alias.set(
+        `@ant-design/icons/lib/${theme}`,
+        path.join(antdIconsV3PackageDir, 'lib', theme),
+      );
+    });
 
     config.module.rule('svg').issuer(/\.(css|less|sass|scss)$/);
     config.module

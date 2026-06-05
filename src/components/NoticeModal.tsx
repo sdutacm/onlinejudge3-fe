@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import tracker from '@/utils/tracker';
 import pkg from '../../package.json';
 import { ReduxProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 

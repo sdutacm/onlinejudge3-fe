@@ -13,7 +13,7 @@ import { Row, Col, Card, Button, Table, Icon, Popconfirm, Tabs, Tag } from 'antd
 import GeneralFormModal from '@/components/GeneralFormModal';
 import { ECompetitionUserStatus, ECompetitionUserRole } from '@/common/enums';
 import Link from 'umi/link';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import { formatCompetitionUserSeatId } from '@/utils/competition';
 import tracker from '@/utils/tracker';
 import msg from '@/utils/msg';

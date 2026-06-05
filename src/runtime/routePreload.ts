@@ -133,7 +133,8 @@ function findAnchor(target: EventTarget | null): HTMLAnchorElement | null {
   if (!(target instanceof Element)) {
     return null;
   }
-  return target.closest('a[href]');
+  const anchor = target.closest('a[href]');
+  return anchor instanceof HTMLAnchorElement ? anchor : null;
 }
 
 export function installLinkIntentPrefetch(routes: IRoute[]) {

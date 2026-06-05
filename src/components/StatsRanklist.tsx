@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Icon } from 'antd';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import { Link } from 'react-router-dom';
 import pages from '@/configs/pages';
 import limits from '@/configs/limits';

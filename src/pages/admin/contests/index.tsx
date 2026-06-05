@@ -15,7 +15,7 @@ import constants from '@/configs/constants';
 import GeneralFormDrawer from '@/components/GeneralFormDrawer';
 import msg from '@/utils/msg';
 import { Link } from 'react-router-dom';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import pages from '@/configs/pages';
 import { IGeneralFormItem } from '@/components/GeneralForm';
 import moment from 'moment';

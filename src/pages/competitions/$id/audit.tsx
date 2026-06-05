@@ -14,7 +14,7 @@ import { ECompetitionUserRole, ECompetitionUserStatus } from '@/common/enums';
 import { ICompetitionUser } from '@/common/interfaces/competition';
 import PageAnimation from '@/components/PageAnimation';
 import GeneralFormModal from '@/components/GeneralFormModal';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import Link from 'umi/link';
 import CompetitionUserInfo from './CompetitionUserInfo';
 

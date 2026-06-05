@@ -4,7 +4,7 @@ import pages from '@/configs/pages';
 import router from 'umi/router';
 import { Link } from 'react-router-dom';
 import { ReduxProps, RouteProps } from '@/@types/props';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import UserBar from '@/components/UserBar';
 import ResultBar from '@/components/ResultBar';
 import { langsMap } from '@/configs/solutionLanguages';

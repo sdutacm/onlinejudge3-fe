@@ -5,11 +5,12 @@ import moment from 'moment';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 
 const RtEditor = React.lazy(() => import('./RtEditor'));
-const LazyRtEditor = (props) => (
+const LazyRtEditor = React.forwardRef<any, any>((props, ref) => (
   <React.Suspense fallback={null}>
-    <RtEditor {...props} />
+    <RtEditor {...props} ref={ref} />
   </React.Suspense>
-);
+));
+LazyRtEditor.displayName = 'LazyRtEditor';
 
 export interface IGeneralFormItem {
   name: string;

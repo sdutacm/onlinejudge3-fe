@@ -15,7 +15,7 @@ import tracker from '@/utils/tracker';
 import Explanation from '@/components/Explanation';
 import { addPiece } from '@/utils/pasteThenAC';
 import ExtLink from './ExtLink';
-import { urlf } from '@/utils/format';
+import { urlf } from '@/utils/url';
 import pages from '@/configs/pages';
 
 export interface Props extends ReduxProps {

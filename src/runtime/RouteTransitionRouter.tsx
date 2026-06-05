@@ -3,6 +3,7 @@ import { ApplyPluginsType, Router } from 'umi';
 import type { History, Location } from 'history';
 import { renderRoutes } from '@umijs/renderer-react';
 import type { IRoute } from '@umijs/renderer-react';
+import { getRoutes } from '@@/core/routes';
 import { beginRouteProgress, finishRouteProgress } from '@/runtime/routeProgress';
 import { emitRouteCommit } from '@/runtime/routeEvents';
 import RouteChunkLoading from '@/components/RouteChunkLoading';
@@ -61,6 +62,7 @@ function isHashOnlyChange(current: Location, next: Location) {
 }
 
 export default function RouteTransitionRouter({ history, routes, plugin }: Props) {
+  const [activeRoutes, setActiveRoutes] = React.useState(() => routes);
   const [committedLocation, setCommittedLocation] = React.useState(() => history.location);
   const [commitState, setCommitState] = React.useState<CommitState>(() => ({
     action: 'POP',
@@ -68,10 +70,19 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
     seq: 0,
   }));
   const [transitionError, setTransitionError] = React.useState<TransitionErrorState | null>(null);
+  const activeRoutesRef = React.useRef(activeRoutes);
   const committedLocationRef = React.useRef(committedLocation);
   const transitionIdRef = React.useRef(0);
   const activeProgressTokenRef = React.useRef<unknown>(null);
   const skipInitialCommitEventRef = React.useRef(true);
+
+  React.useEffect(() => {
+    setActiveRoutes(routes);
+  }, [routes]);
+
+  React.useEffect(() => {
+    activeRoutesRef.current = activeRoutes;
+  }, [activeRoutes]);
 
   React.useEffect(() => {
     committedLocationRef.current = committedLocation;
@@ -93,10 +104,14 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
     }));
   }, []);
 
-  const startTransition = React.useCallback((location: Location, action: string) => {
+  const startTransition = React.useCallback((
+    location: Location,
+    action: string,
+    transitionRoutes = activeRoutesRef.current,
+  ) => {
     const currentLocation = committedLocationRef.current;
-    const currentBranch = getMatchedRouteBranch(routes, currentLocation.pathname);
-    const nextBranch = getMatchedRouteBranch(routes, location.pathname);
+    const currentBranch = getMatchedRouteBranch(transitionRoutes, currentLocation.pathname);
+    const nextBranch = getMatchedRouteBranch(transitionRoutes, location.pathname);
 
     transitionIdRef.current += 1;
     const transitionId = transitionIdRef.current;
@@ -111,7 +126,10 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
       return;
     }
 
-    const { promise, taskCount } = collectMatchedRoutePreloads(routes, location.pathname);
+    const { promise, taskCount } = collectMatchedRoutePreloads(
+      transitionRoutes,
+      location.pathname,
+    );
     if (!taskCount) {
       commitLocation(location, action);
       return;
@@ -149,11 +167,14 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
         stopActiveProgress();
       }
     });
-  }, [commitLocation, routes, stopActiveProgress]);
+  }, [commitLocation, stopActiveProgress]);
 
   const retryTransition = React.useCallback(() => {
     if (transitionError) {
-      startTransition(transitionError.location, transitionError.action);
+      const nextRoutes = getRoutes();
+      activeRoutesRef.current = nextRoutes;
+      setActiveRoutes(nextRoutes);
+      startTransition(transitionError.location, transitionError.action, nextRoutes);
     }
   }, [startTransition, transitionError]);
 
@@ -170,11 +191,12 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
   }, [commitState]);
 
   React.useEffect(() => {
-    emitRouteChange(plugin, routes, history.location, 'POP', true);
+    emitRouteChange(plugin, activeRoutesRef.current, history.location, 'POP', true);
 
     const unlisten = history.listen((location, action) => {
-      emitRouteChange(plugin, routes, location, action);
-      startTransition(location, action);
+      const nextRoutes = activeRoutesRef.current;
+      emitRouteChange(plugin, nextRoutes, location, action);
+      startTransition(location, action, nextRoutes);
     });
 
     return () => {
@@ -182,14 +204,14 @@ export default function RouteTransitionRouter({ history, routes, plugin }: Props
       stopActiveProgress();
       unlisten();
     };
-  }, [history, plugin, routes, startTransition, stopActiveProgress]);
+  }, [history, plugin, startTransition, stopActiveProgress]);
 
-  React.useEffect(() => installLinkIntentPrefetch(routes), [routes]);
+  React.useEffect(() => installLinkIntentPrefetch(activeRoutes), [activeRoutes]);
 
   return (
     <>
       <Router history={history}>
-        {renderRoutes({ routes, plugin }, { location: committedLocation })}
+        {renderRoutes({ routes: activeRoutes, plugin }, { location: committedLocation })}
       </Router>
       {transitionError && (
         <RouteChunkLoading

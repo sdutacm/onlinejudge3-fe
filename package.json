@@ -1,6 +1,6 @@
 {
   "name": "onlinejudge3-fe",
-  "version": "3.7.3",
+  "version": "3.7.4",
   "description": "",
   "packageManager": "pnpm@11.2.2",
   "engines": {

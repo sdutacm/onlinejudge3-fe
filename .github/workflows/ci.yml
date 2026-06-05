@@ -49,7 +49,8 @@ jobs:
       - run: pnpm run e2e:smoke
 
   build-and-upload-release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: validate
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release/'))
     env:
       COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
       COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
@@ -86,7 +87,8 @@ jobs:
       - run: pnpm run build:cdn
 
   build-and-upload-release-cs:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: validate
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/release/'))
     env:
       COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
       COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}

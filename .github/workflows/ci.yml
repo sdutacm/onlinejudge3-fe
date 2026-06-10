@@ -84,7 +84,39 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - run: pnpm run build:cdn
+      - name: Build SSR bundle
+        run: pnpm run build:ssr
+
+      - name: Upload frontend artifacts to CDN
+        run: node tasks/upload-cdn.js
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract SSR Docker metadata
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/onlinejudge3-ssr
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=sha,format=short
+
+      - name: Build and push SSR Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.ssr
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
 
   build-and-upload-release-cs:
     needs: validate

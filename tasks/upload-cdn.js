@@ -30,6 +30,11 @@ const publicDir = process.argv[2] || 'onlinejudge3';
 const cosTargetBase = process.env.COS_TARGET_BASE || ''; // should end with /
 const localFolder = pathLib.join('.', publicDir);
 const remotePrefix = `${cosTargetBase}${publicDir}/`;
+const SERVER_ONLY_FILES = [
+  /^umi\.server\.js$/,
+  /^umi\.server\.d\.ts$/,
+  /^asset-manifest\.json$/,
+];
 
 function delay(ms) {
   if (!ms) return Promise.resolve();
@@ -104,8 +109,8 @@ async function listLocalFiles(rootPath) {
 }
 
 function buildUploadFiles(localFiles) {
-  return localFiles.map(function(file) {
-    const filename = pathLib.relative(localFolder, file.path).replace(/\\/g, '/');
+  return localFiles.filter(isUploadableFile).map(function(file) {
+    const filename = getLocalFilename(file);
     return {
       Bucket,
       Region,
@@ -114,6 +119,15 @@ function buildUploadFiles(localFiles) {
       Size: file.size,
     };
   });
+}
+
+function getLocalFilename(file) {
+  return pathLib.relative(localFolder, file.path).replace(/\\/g, '/');
+}
+
+function isUploadableFile(file) {
+  const filename = getLocalFilename(file);
+  return !SERVER_ONLY_FILES.some((re) => re.test(filename));
 }
 
 function splitIndexFile(files) {

@@ -1,0 +1,31 @@
+services:
+  onlinejudge3-ssr:
+    image: "${DOCKERHUB_USERNAME:?set DOCKERHUB_USERNAME}/onlinejudge3-ssr:${SSR_IMAGE_TAG:-latest}"
+    restart: unless-stopped
+    ports:
+      - "${SSR_PUBLISHED_PORT:-8102}:${SSR_PORT:-8102}"
+    environment:
+      NODE_ENV: "production"
+      NODE_WORKERS: "${NODE_WORKERS:-1}"
+      SSR_HOST: "0.0.0.0"
+      SSR_PORT: "${SSR_PORT:-8102}"
+      OJ3_BASE: "${OJ3_BASE:-/onlinejudge3/}"
+      OJ3_OUTPUT_DIR: "${OJ3_OUTPUT_DIR:-/app/onlinejudge3}"
+      SSR_API_BASE_URL: "${SSR_API_BASE_URL:?set SSR_API_BASE_URL}"
+      SSR_CACHE: "${SSR_CACHE:-off}"
+      SSR_CACHE_TTL_MS: "${SSR_CACHE_TTL_MS:-60000}"
+      SSR_CACHE_MAX: "${SSR_CACHE_MAX:-500}"
+      SSR_CACHE_REDIS_URL: "${SSR_CACHE_REDIS_URL:-redis://redis:6379}"
+      SSR_CACHE_PREFIX: "${SSR_CACHE_PREFIX:-oj3:ssr:}"
+      SSR_RENDER_TIMEOUT_MS: "${SSR_RENDER_TIMEOUT_MS:-5000}"
+      SSR_STATIC_MAXAGE_MS: "${SSR_STATIC_MAXAGE_MS:-86400000}"
+      SSR_LOG_LEVEL: "${SSR_LOG_LEVEL:-info}"
+      SSR_FORWARD_COOKIES: "${SSR_FORWARD_COOKIES:-0}"
+      SSR_SESSION_COOKIE_NAMES: "${SSR_SESSION_COOKIE_NAMES:-EGG_SESS,koa.sess,connect.sid,ssid,sid,SESSION}"
+      SSR_MAX_MEMORY: "${SSR_MAX_MEMORY:-512M}"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    profiles:
+      - redis

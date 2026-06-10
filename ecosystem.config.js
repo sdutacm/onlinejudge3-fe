@@ -2,8 +2,9 @@
  * pm2 deployment config for the SSR server.
  *
  * Multi-worker on a single machine via cluster mode (pm2 load-balances across
- * workers on the same port). Tune worker count with the SSR_WORKERS env var
- * (e.g. `SSR_WORKERS=4 pm2 start ecosystem.config.js`); defaults to one per CPU.
+ * workers on the same port). Tune worker count with the NODE_WORKERS env var
+ * (e.g. `NODE_WORKERS=4 pm2 start ecosystem.config.js`); defaults to 1 for
+ * container-friendly foreground runs. SSR_WORKERS is kept as a legacy alias.
  *
  * Usage:
  *   OJ3_SSR=1 pnpm build:ssr           # produce dist incl. umi.server.js
@@ -17,14 +18,14 @@ module.exports = {
       name: 'oj3-ssr',
       script: 'server/index.js',
       exec_mode: 'cluster',
-      instances: process.env.SSR_WORKERS || 'max',
+      instances: process.env.NODE_WORKERS || process.env.SSR_WORKERS || 1,
       // Match the build toolchain's OpenSSL setting; harmless if unneeded.
       node_args: '--openssl-legacy-provider',
       max_memory_restart: process.env.SSR_MAX_MEMORY || '512M',
       merge_logs: true,
       time: true,
-      out_file: 'logs/ssr-out.log',
-      error_file: 'logs/ssr-err.log',
+      out_file: process.env.PM2_OUT_FILE || 'logs/ssr-out.log',
+      error_file: process.env.PM2_ERROR_FILE || 'logs/ssr-err.log',
       env: {
         NODE_ENV: 'production',
         SSR_PORT: process.env.SSR_PORT || 8102,

@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+
+FROM node:24-bookworm-slim AS deps
+
+WORKDIR /app
+
+ENV PNPM_HOME=/pnpm
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+RUN corepack enable && corepack prepare pnpm@11.2.2 --activate
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+RUN pnpm install --prod --frozen-lockfile
+
+FROM node:24-bookworm-slim AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NODE_WORKERS=1
+ENV SSR_HOST=0.0.0.0
+ENV SSR_PORT=8102
+ENV OJ3_BASE=/onlinejudge3/
+ENV OJ3_OUTPUT_DIR=/app/onlinejudge3
+ENV SSR_CACHE=off
+ENV PM2_OUT_FILE=/dev/stdout
+ENV PM2_ERROR_FILE=/dev/stderr
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json ecosystem.config.js ./
+COPY server ./server
+COPY src/configs/ssr.js ./src/configs/ssr.js
+COPY onlinejudge3 ./onlinejudge3
+
+RUN mkdir -p logs
+
+EXPOSE 8102
+
+CMD ["./node_modules/.bin/pm2-runtime", "start", "ecosystem.config.js", "--only", "oj3-ssr"]

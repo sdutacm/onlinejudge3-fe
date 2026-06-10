@@ -1,0 +1,14 @@
+.git
+.github
+.umi
+.umi-production
+.DS_Store
+node_modules
+logs
+coverage
+playwright-report
+test-results
+*.log
+npm-debug.log*
+pnpm-debug.log*
+onlinejudge3_cs

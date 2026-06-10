@@ -116,6 +116,9 @@ importers:
       nprogress:
         specifier: 0.2.0
         version: 0.2.0
+      pm2:
+        specifier: 7.0.1
+        version: 7.0.1
       promise-queue:
         specifier: 2.2.5
         version: 2.2.5
@@ -258,9 +261,6 @@ importers:
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
-      pm2:
-        specifier: 7.0.1
-        version: 7.0.1
       prettier:
         specifier: 1.19.1
         version: 1.19.1

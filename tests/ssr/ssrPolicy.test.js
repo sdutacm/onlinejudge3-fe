@@ -16,7 +16,6 @@ test('home and public list/detail pages are SSR-enabled', () => {
     '/users/42',
     '/sets',
     '/sets/7',
-    '/sets/7/stats',
     '/groups',
     '/groups/3',
   ]) {
@@ -59,6 +58,7 @@ test('permission-gated / user-specific / realtime modules are CSR-only', () => {
     '/favorites',
     '/messages',
     '/notes',
+    '/sets/7/stats',
     '/stats/judge',
     '/beta',
     '/OJBK',

@@ -1,8 +1,11 @@
 import * as service from '../services/contests';
 import pages from '@/configs/pages';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
-import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/listQuery';
+import {
+  formatListQuery,
+  hasFreshListDataForQuery,
+  normalizeContestListQuery,
+} from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 import { matchPath } from 'react-router';
 
@@ -117,16 +120,9 @@ export default {
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
-      const formattedQuery: IListQuery = {
-        ...formatListQuery(query),
-        order: [['contestId', 'DESC']],
-      };
-      formattedQuery.contestId && (formattedQuery.contestId = +formattedQuery.contestId);
-      formattedQuery.type && (formattedQuery.type = +formattedQuery.type);
-      formattedQuery.category && (formattedQuery.category = +formattedQuery.category);
-      formattedQuery.mode && (formattedQuery.mode = +formattedQuery.mode);
+      const formattedQuery = normalizeContestListQuery(query);
       const savedState = yield select((state) => state.contests.list);
-      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+      if (hasFreshListDataForQuery(savedState, formattedQuery)) {
         return;
       }
       const ret: IApiResponse<IList<IContest>> = yield call(service.getList, formattedQuery);
@@ -142,15 +138,7 @@ export default {
       return ret;
     },
     *getListData({ payload: query }, { call, put, select }) {
-      const formattedQuery: IListQuery = {
-        order: [['contestId', 'DESC']],
-        ...formatListQuery(query),
-      };
-      formattedQuery.contestId && (formattedQuery.contestId = +formattedQuery.contestId);
-      formattedQuery.type && (formattedQuery.type = +formattedQuery.type);
-      formattedQuery.category && (formattedQuery.category = +formattedQuery.category);
-      formattedQuery.mode && (formattedQuery.mode = +formattedQuery.mode);
-      const savedState = yield select((state) => state.contests.list);
+      const formattedQuery = normalizeContestListQuery(query);
       const ret: IApiResponse<IList<IContest>> = yield call(service.getList, formattedQuery);
       return ret;
     },

@@ -32,6 +32,7 @@ import { genshinCharacters } from '@/configs/genshin';
 import { simpleFilterHTML } from '@/utils/filter';
 import { get as safeGet } from 'lodash-es';
 import UserBar from '@/components/UserBar';
+import { getCurrentTime } from '@/utils/currentTime';
 
 const CLOTHING_SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 
@@ -344,13 +345,13 @@ class CompetitionIntro extends React.Component<Props, State> {
   inSignUpRange = () => {
     const registerStartAt = new Date(this.props.detail.registerStartAt);
     const registerEndAt = new Date(this.props.detail.registerEndAt);
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const serverTime = getCurrentTime();
     return registerStartAt.getTime() <= serverTime && serverTime < registerEndAt.getTime();
   };
 
   isSignUpEnded = () => {
     const registerEndAt = new Date(this.props.detail.registerEndAt);
-    const serverTime = Date.now() - ((window as any)._t_diff || 0);
+    const serverTime = getCurrentTime();
     return serverTime >= registerEndAt.getTime();
   };
 
@@ -593,7 +594,7 @@ class CompetitionIntro extends React.Component<Props, State> {
       return <NotFound />;
     }
 
-    const currentTime = Date.now() - ((window as any)._t_diff || 0);
+    const currentTime = getCurrentTime();
     const startTime = toLongTs(detail.startAt);
     const endTime = toLongTs(detail.endAt);
     const timeStatus = getSetTimeStatus(startTime, endTime, currentTime);

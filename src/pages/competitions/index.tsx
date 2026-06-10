@@ -144,14 +144,21 @@ class CompetitionList extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
+  const data = state.competitions.list;
+  const expectedQuery = normalizeCompetitionListQuery(state.routing.location.query || {});
   return {
-    loading: !!state.loading.effects['competitions/getList'],
-    data: state.competitions.list,
+    loading: shouldShowListLoadingForQuery(
+      !!state.loading.effects['competitions/getList'],
+      data,
+      expectedQuery,
+    ),
+    data,
     proMode: !!state.settings.proMode,
   };
 }
 
 import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+import { normalizeCompetitionListQuery, shouldShowListLoadingForQuery } from '@/utils/listQuery';
 
 // SSR: prefetch the public competition list (honoring query).
 export default withSSRPrefetch(connect(mapStateToProps)(CompetitionList), (ctx) =>

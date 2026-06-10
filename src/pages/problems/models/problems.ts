@@ -2,8 +2,7 @@ import * as service from '../services/problems';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
-import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/listQuery';
+import { hasFreshListDataForQuery, normalizeProblemListQuery } from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 
 const initialState = {
@@ -48,20 +47,9 @@ export default {
   },
   effects: {
     *getList({ payload: q }, { call, put, select }) {
-      const query = { ...q };
-      if (query.author) {
-        query.authors = [query.author];
-        delete query.author;
-      }
-      if (query.tagIds && typeof query.tagIds === 'string') {
-        query.tagIds = [query.tagIds];
-      }
-      if (query.tagIds && Array.isArray(query.tagIds)) {
-        query.tagIds = query.tagIds.map(tagId => +tagId);
-      }
-      const formattedQuery = formatListQuery(query);
+      const formattedQuery = normalizeProblemListQuery(q);
       const savedState = yield select((state) => state.problems.list);
-      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+      if (hasFreshListDataForQuery(savedState, formattedQuery)) {
         return;
       }
       const ret: IApiResponse<IList<IProblem>> = yield call(service.getList, formattedQuery);

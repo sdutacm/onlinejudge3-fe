@@ -35,6 +35,7 @@ var SSR_DENY_PATTERNS = [
   /^\/favorites(\/|$)/, // favorites (user-specific)
   /^\/messages(\/|$)/, // messages (user-specific)
   /^\/notes(\/|$)/, // notes (user-specific)
+  /^\/sets\/[^/]+\/stats(\/|$)/, // set stats depends on viewer-specific groups/favorites
   /^\/stats(\/|$)/, // realtime stats
   /^\/beta(\/|$)/, // experimental
   /^\/OJBK(\/|$)/, // internal

@@ -18,11 +18,13 @@
   <![endif]-->
 
   <!--
-    The mount node must be exactly `<div id="root"></div>` so umi's SSR
-    handleHTML can inject the rendered markup into it. The initial loading
-    spinner lives as a sibling overlay and is auto-hidden via CSS the moment
-    #root has content (SSR markup, or after the client mounts) — so both CSR
-    and SSR keep the loading UX without blocking the mount point.
+    Keep the #root mount node below as the first and only exact SSR mount
+    marker in this template. Umi's SSR handleHTML replaces the first matching
+    marker string, so repeating it in comments would inject markup into the
+    comment instead of the real mount point. The initial loading spinner lives
+    as a sibling overlay and is auto-hidden via CSS the moment #root has
+    content (SSR markup, or after the client mounts) — so both CSR and SSR keep
+    the loading UX without blocking the mount point.
   -->
   <div id="root"></div>
   <div id="g-initial-loading" class="--g-center">

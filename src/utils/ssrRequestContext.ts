@@ -13,7 +13,7 @@
  */
 
 export interface SSRRequestContext {
-  /** Absolute API base URL the server should call, e.g. `http://127.0.0.1:7001/onlinejudge3/api`. */
+  /** Absolute API base URL the server should call, e.g. `http://127.0.0.1:7001`. */
   apiBaseURL?: string;
   /** Raw `Cookie` header forwarded from the incoming request (for session/csrf). */
   cookie?: string;

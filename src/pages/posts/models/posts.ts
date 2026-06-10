@@ -2,8 +2,7 @@ import * as service from '../services/posts';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
-import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/listQuery';
+import { hasFreshListDataForQuery, normalizePostListQuery } from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 
 function genInitialState() {
@@ -46,12 +45,9 @@ export default {
   },
   effects: {
     * getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = {
-        ...formatListQuery(query),
-        order: [['postId', 'DESC']],
-      };
+      const formattedQuery = normalizePostListQuery(query);
       const savedState = yield select(state => state.posts.list);
-      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+      if (hasFreshListDataForQuery(savedState, formattedQuery)) {
         return;
       }
       const ret: IApiResponse<IList<IPost> > = yield call(service.getList, formattedQuery);

@@ -162,14 +162,21 @@ class Standings extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
+  const data = state.users.list;
+  const expectedQuery = normalizeUserListQuery(state.routing.location.query || {});
   return {
-    loading: !!state.loading.effects['users/getList'],
-    data: state.users.list,
+    loading: shouldShowListLoadingForQuery(
+      !!state.loading.effects['users/getList'],
+      data,
+      expectedQuery,
+    ),
+    data,
     proMode: !!state.settings.proMode,
   };
 }
 
 import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+import { normalizeUserListQuery, shouldShowListLoadingForQuery } from '@/utils/listQuery';
 
 // SSR: prefetch the public user list/standings (honoring query).
 export default withSSRPrefetch(connect(mapStateToProps)(Standings), (ctx) =>

@@ -145,272 +145,285 @@ class NavMenu extends React.Component<Props, State> {
     }
     const from = location.query.from;
     const isTeam = session.loggedIn && session.user.type === EUserType.team;
+    const navClassName = (extraClassName?: string) =>
+      [className, extraClassName].filter(Boolean).join(' ');
+    const hasBackToSetItem = !!(
+      from &&
+      activeLinkKey !== pages.sets.index &&
+      !activeLinkKey.startsWith(pages.contests.index)
+    );
 
-    return (
-      <Menu
-        mode={mobileVersion ? 'vertical' : 'horizontal'}
-        selectedKeys={[`${activeLinkKey}`]}
-        className={className}
+    const mainMenuItems = [
+      hasBackToSetItem && (
+        <Menu.Item key={from}>
+          <Link to={from} onClick={onLinkClick}>
+            <Icon type="left" /> Set
+          </Link>
+        </Menu.Item>
+      ),
+      <Menu.Item key={pages.problems.index}>
+        <Link to={pages.problems.index} onClick={onLinkClick}>
+          Problems
+        </Link>
+      </Menu.Item>,
+      proMode && (
+        <Menu.Item key={pages.solutions.index}>
+          <Link to={pages.solutions.index} onClick={onLinkClick}>
+            Solutions
+          </Link>
+        </Menu.Item>
+      ),
+      <Menu.Item key={pages.contests.index}>
+        <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>
+          Contests
+        </Link>
+      </Menu.Item>,
+      <Menu.Item key={pages.competitions.index}>
+        <Link to={urlf(pages.competitions.index)} onClick={onLinkClick}>
+          Competitions
+        </Link>
+      </Menu.Item>,
+      <Menu.Item key={pages.sets.index}>
+        <Link to={pages.sets.index} onClick={onLinkClick}>
+          Sets
+        </Link>
+      </Menu.Item>,
+      <Menu.Item key={pages.groups.index}>
+        <Link
+          to={urlf(pages.groups.index, { query: { category: 'explore' } })}
+          onClick={onLinkClick}
+        >
+          Groups
+        </Link>
+      </Menu.Item>,
+      <Menu.Item key={pages.users.index}>
+        <Link to={pages.users.index} onClick={onLinkClick}>
+          Standings
+        </Link>
+      </Menu.Item>,
+      <Menu.Item key={pages.posts.index}>
+        <Link to={pages.posts.index} onClick={onLinkClick}>
+          Posts
+        </Link>
+      </Menu.Item>,
+    ].filter(Boolean);
+
+    const settingsItem = (
+      <Menu.Item key="settings">
+        <SettingsModal
+          onClickShowModal={(e) => {
+            if (mobileVersion && onLinkClick) {
+              onLinkClick(e);
+            }
+          }}
+        >
+          <Icon type="setting" />
+        </SettingsModal>
+      </Menu.Item>
+    );
+
+    const mobileMessagesItem = mobileVersion && session.loggedIn && (
+      <Menu.Item key={pages.messages.index}>
+        <Link
+          to={pages.messages.index}
+          onClick={(e) => {
+            onLinkClick?.(e);
+            tracker.event({
+              category: 'component.NavMenu',
+              action: 'toMessages',
+            });
+          }}
+        >
+          Notifications
+        </Link>
+      </Menu.Item>
+    );
+
+    const mobileAccountItems = loading ? (
+      <Menu.Item key="loading">
+        <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
+      </Menu.Item>
+    ) : session.loggedIn ? (
+      <Menu.ItemGroup
+        title={
+          <span>
+            {this.renderAvatar()}
+            <span style={{ marginLeft: '8px' }}>{session.user.nickname}{isTeam && <Icon type="team" className="ml-sm-md" />}</span>
+          </span>
+        }
       >
-        {!!(
-          from &&
-          activeLinkKey !== pages.sets.index &&
-          !activeLinkKey.startsWith(pages.contests.index)
-        ) && (
-          <Menu.Item key={from}>
-            <Link to={from} onClick={onLinkClick}>
-              <Icon type="left" /> Set
-            </Link>
-          </Menu.Item>
-        )}
-
-        <Menu.Item key={pages.problems.index}>
-          <Link to={pages.problems.index} onClick={onLinkClick}>
-            Problems
-          </Link>
-        </Menu.Item>
-
-        {proMode && (
-          <Menu.Item key={pages.solutions.index}>
-            <Link to={pages.solutions.index} onClick={onLinkClick}>
-              Solutions
-            </Link>
-          </Menu.Item>
-        )}
-
-        <Menu.Item key={pages.contests.index}>
-          <Link to={urlf(pages.contests.index, { query: { category: 0 } })} onClick={onLinkClick}>
-            Contests
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key={pages.competitions.index}>
-          <Link to={urlf(pages.competitions.index)} onClick={onLinkClick}>
-            Competitions
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key={pages.sets.index}>
-          <Link to={pages.sets.index} onClick={onLinkClick}>
-            Sets
-          </Link>
-        </Menu.Item>
-
-        <Menu.Item key={pages.groups.index}>
+        <Menu.Item key="profile">
           <Link
-            to={urlf(pages.groups.index, { query: { category: 'explore' } })}
+            to={urlf(pages.users.detail, {
+              param: { id: session.user.userId },
+            })}
             onClick={onLinkClick}
           >
-            Groups
+            Profile
           </Link>
         </Menu.Item>
-
-        <Menu.Item key={pages.users.index}>
-          <Link to={pages.users.index} onClick={onLinkClick}>
-            Standings
-          </Link>
-        </Menu.Item>
-
-        {/* <Menu.Item key={pages.topics.index}>
-          <Link to={pages.topics.index} onClick={onLinkClick}>
-            Topics
-          </Link>
-        </Menu.Item> */}
-
-        <Menu.Item key={pages.posts.index}>
-          <Link to={pages.posts.index} onClick={onLinkClick}>
-            Posts
-          </Link>
-        </Menu.Item>
-
-        {/* {mobileVersion && session.loggedIn && <Menu.Item key="/idea_note">
-          <Link to={pages.index} onClick={onLinkClick}>Idea Notes</Link>
-        </Menu.Item>} */}
-        {mobileVersion && session.loggedIn && (
-          <Menu.Item key={pages.messages.index}>
-            <Link
-              to={pages.messages.index}
-              onClick={(e) => {
-                onLinkClick?.(e);
-                tracker.event({
-                  category: 'component.NavMenu',
-                  action: 'toMessages',
-                });
-              }}
-            >
-              Notifications
+        {checkPerms(session, EPerm.AdminAccess) && (
+          <Menu.Item key="admin">
+            <Link to={urlf(pages.admin.index)} onClick={onLinkClick}>
+              Admin
             </Link>
           </Menu.Item>
         )}
+        <Menu.Item
+          key="logout"
+          onClick={(e) => {
+            onLinkClick?.(e.domEvent);
+            this.logout();
+          }}
+        >
+          Logout
+        </Menu.Item>
+      </Menu.ItemGroup>
+    ) : (
+      <Menu.Item key="join">
+        <JoinModal onShow={onLinkClick}>Join</JoinModal>
+      </Menu.Item>
+    );
 
-        {mobileVersion ? (
-          loading ? (
-            <Menu.Item key="loading">
-              <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
-            </Menu.Item>
-          ) : session.loggedIn ? (
-            <Menu.ItemGroup
-              title={
-                <span>
-                  {this.renderAvatar()}
-                  <span style={{ marginLeft: '8px' }}>{session.user.nickname}{isTeam && <Icon type="team" className="ml-sm-md" />}</span>
-                </span>
-              }
-            >
-              <Menu.Item key="profile">
-                <Link
-                  to={urlf(pages.users.detail, {
-                    param: { id: session.user.userId },
-                  })}
-                  onClick={onLinkClick}
-                >
-                  Profile
-                </Link>
-              </Menu.Item>
-              {/* <Menu.Item key="favorites"> */}
-              {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
-              {/* </Menu.Item> */}
-              {checkPerms(session, EPerm.AdminAccess) && (
-                <Menu.Item key="admin">
-                  <Link to={urlf(pages.admin.index)} onClick={onLinkClick}>
-                    Admin
-                  </Link>
-                </Menu.Item>
-              )}
-              <Menu.Item
-                key="logout"
-                onClick={(e) => {
-                  onLinkClick?.(e.domEvent);
-                  this.logout();
-                }}
-              >
-                Logout
-              </Menu.Item>
-            </Menu.ItemGroup>
-          ) : (
-            <Menu.Item key="join">
-              <JoinModal onShow={onLinkClick}>Join</JoinModal>
-            </Menu.Item>
-          )
-        ) : loading ? (
-          <Menu.Item key="loading" className="float-right">
-            <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
-          </Menu.Item>
-        ) : session.loggedIn ? (
-          <Menu.SubMenu
-            title={
-              <span>
-                {this.renderAvatar(true)}
-                <Icon type="down" className={gStyles.iconRight} />
-              </span>
-            }
-            onTitleClick={() =>
-              router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))
-            }
-            className="float-right"
-          >
-            <Menu.Item key="nickname" disabled>
-              <span>{session.user.nickname}{isTeam && <Icon type="team" className="ml-sm-md" />}</span>
-            </Menu.Item>
-            <Menu.Item key="profile">
-              <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>
-                Profile
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="achievements">
-              <AchievementsModal>
-                <span>
-                  Achievements
-                  {hasUnreadProfileMessages && <Badge status="error" className="ml-md" />}
-                </span>
-              </AchievementsModal>
-            </Menu.Item>
-            <Menu.Item key="favorites">
-              <Link to={urlf(pages.favorites.index)}>Favorites</Link>
-            </Menu.Item>
-            {checkPerms(session, EPerm.AdminAccess) && (
-              <Menu.Item key="admin">
-                <Link to={urlf(pages.admin.index)}>Admin</Link>
-              </Menu.Item>
-            )}
-            {/* <Menu.Item key="favorites"> */}
-            {/* <Link to={pages.favorites.index} onClick={onLinkClick}>Favorites</Link> */}
-            {/* </Menu.Item> */}
-            <Menu.Item key="logout" onClick={this.logout}>
-              Logout
-            </Menu.Item>
-          </Menu.SubMenu>
-        ) : (
-          <Menu.Item key="join" className="float-right">
-            <JoinModal>Join</JoinModal>
+    const desktopSessionItem = loading ? (
+      <Menu.Item key="loading">
+        <Spin spinning={loading} size="small" delay={constants.indicatorDisplayDelay} />
+      </Menu.Item>
+    ) : session.loggedIn ? (
+      <Menu.SubMenu
+        key="user"
+        title={
+          <span>
+            {this.renderAvatar(true)}
+            <Icon type="down" className={gStyles.iconRight} />
+          </span>
+        }
+        onTitleClick={() =>
+          router.push(urlf(pages.users.detail, { param: { id: session.user.userId } }))
+        }
+      >
+        <Menu.Item key="nickname" disabled>
+          <span>{session.user.nickname}{isTeam && <Icon type="team" className="ml-sm-md" />}</span>
+        </Menu.Item>
+        <Menu.Item key="profile">
+          <Link to={urlf(pages.users.detail, { param: { id: session.user.userId } })}>
+            Profile
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="achievements">
+          <AchievementsModal>
+            <span>
+              Achievements
+              {hasUnreadProfileMessages && <Badge status="error" className="ml-md" />}
+            </span>
+          </AchievementsModal>
+        </Menu.Item>
+        <Menu.Item key="favorites">
+          <Link to={urlf(pages.favorites.index)}>Favorites</Link>
+        </Menu.Item>
+        {checkPerms(session, EPerm.AdminAccess) && (
+          <Menu.Item key="admin">
+            <Link to={urlf(pages.admin.index)}>Admin</Link>
           </Menu.Item>
         )}
+        <Menu.Item key="logout" onClick={this.logout}>
+          Logout
+        </Menu.Item>
+      </Menu.SubMenu>
+    ) : (
+      <Menu.Item key="join">
+        <JoinModal>Join</JoinModal>
+      </Menu.Item>
+    );
 
-        {!mobileVersion && session.loggedIn && (
-          <Menu.Item key="unreadMessages" className="float-right">
-            <Popover
-              content={this.messagesComponent()}
-              title="Messages"
-              placement="bottom"
-              trigger="click"
-              overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
-              overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
-              visible={this.state.messagesVisible}
-              onVisibleChange={(messagesVisible) => {
-                this.setState({ messagesVisible });
-                if (messagesVisible) {
-                  tracker.event({
-                    category: 'component.NavMenu',
-                    action: 'showMessages',
-                  });
-                }
-              }}
-            >
-              <a>
-                <Badge count={unreadMessages.count}>
-                  <Icon type="bell" theme="outlined" />
-                </Badge>
-              </a>
-            </Popover>
-          </Menu.Item>
-        )}
-        {!mobileVersion && session.loggedIn && (
-          <Menu.Item key="/idea_note" className="float-right">
-            <Popover
-              content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
-              title="Idea Notes"
-              placement="bottom"
-              trigger="click"
-              overlayClassName="menu-popover inner-content-scroll-md"
-              visible={this.state.notesVisible}
-              onVisibleChange={(notesVisible) => {
-                this.setState({ notesVisible });
-                if (notesVisible) {
-                  tracker.event({
-                    category: 'component.NavMenu',
-                    action: 'showIdeaNotes',
-                  });
-                }
-              }}
-            >
-              <a style={{ left: '2px', position: 'relative' }}>
-                <Icon theme="outlined" component={NoteSvg} />
-              </a>
-            </Popover>
-          </Menu.Item>
-        )}
-        <Menu.Item key="settings" className="float-right">
-          <SettingsModal
-            onClickShowModal={(e) => {
-              if (mobileVersion && onLinkClick) {
-                onLinkClick(e);
+    const desktopActionItems = [
+      settingsItem,
+      session.loggedIn && (
+        <Menu.Item key="/idea_note">
+          <Popover
+            content={<IdeaNotes onLinkClick={() => this.setState({ notesVisible: false })} />}
+            title="Idea Notes"
+            placement="bottom"
+            trigger="click"
+            overlayClassName="menu-popover inner-content-scroll-md"
+            visible={this.state.notesVisible}
+            onVisibleChange={(notesVisible) => {
+              this.setState({ notesVisible });
+              if (notesVisible) {
+                tracker.event({
+                  category: 'component.NavMenu',
+                  action: 'showIdeaNotes',
+                });
               }
             }}
           >
-            <Icon type="setting" />
-          </SettingsModal>
+            <a style={{ left: '2px', position: 'relative' }}>
+              <Icon theme="outlined" component={NoteSvg} />
+            </a>
+          </Popover>
         </Menu.Item>
-      </Menu>
+      ),
+      session.loggedIn && (
+        <Menu.Item key="unreadMessages">
+          <Popover
+            content={this.messagesComponent()}
+            title="Messages"
+            placement="bottom"
+            trigger="click"
+            overlayClassName="menu-popover no-inner-vertical no-inner-horizontal inner-content-scroll-md"
+            overlayStyle={{ minWidth: '320px', maxWidth: '400px' }}
+            visible={this.state.messagesVisible}
+            onVisibleChange={(messagesVisible) => {
+              this.setState({ messagesVisible });
+              if (messagesVisible) {
+                tracker.event({
+                  category: 'component.NavMenu',
+                  action: 'showMessages',
+                });
+              }
+            }}
+          >
+            <a>
+              <Badge count={unreadMessages.count}>
+                <Icon type="bell" theme="outlined" />
+              </Badge>
+            </a>
+          </Popover>
+        </Menu.Item>
+      ),
+      desktopSessionItem,
+    ].filter(Boolean);
+
+    if (mobileVersion) {
+      return (
+        <Menu mode="vertical" selectedKeys={[`${activeLinkKey}`]} className={className}>
+          {mainMenuItems}
+          {mobileMessagesItem}
+          {mobileAccountItems}
+          {settingsItem}
+        </Menu>
+      );
+    }
+
+    return (
+      <div className={styles.navDesktop}>
+        <Menu
+          key={`main-${proMode ? 'pro' : 'basic'}-${hasBackToSetItem ? 'back' : 'root'}`}
+          mode="horizontal"
+          selectedKeys={[`${activeLinkKey}`]}
+          className={navClassName(styles.navMain)}
+        >
+          {mainMenuItems}
+        </Menu>
+        <Menu
+          key={`actions-${loading ? 'loading' : session.loggedIn ? 'auth' : 'guest'}`}
+          mode="horizontal"
+          selectable={false}
+          className={navClassName(styles.navActions)}
+        >
+          {desktopActionItems}
+        </Menu>
+      </div>
     );
   }
 }

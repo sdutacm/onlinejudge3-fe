@@ -2,8 +2,11 @@ import * as service from '../services/competitions';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
-import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/listQuery';
+import {
+  formatListQuery,
+  hasFreshListDataForQuery,
+  normalizeCompetitionListQuery,
+} from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 import {
   ICompetition,
@@ -167,12 +170,9 @@ export default {
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
-      const formattedQuery = {
-        ...formatListQuery(query),
-        order: [['competitionId', 'DESC']],
-      };
+      const formattedQuery = normalizeCompetitionListQuery(query);
       const savedState = yield select((state) => state.competitions.list);
-      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+      if (hasFreshListDataForQuery(savedState, formattedQuery)) {
         return;
       }
       const ret: IApiResponse<IList<ICompetition>> = yield call(service.getList, formattedQuery);

@@ -13,7 +13,7 @@ optional layer: `koa` + `koa-static` + `koa-mount` (prod server), `pm2`
 OJ3_SSR=1 pnpm build:ssr
 
 # run it (single process)
-SSR_API_BASE_URL=http://127.0.0.1:7001/onlinejudge3/api SSR_CACHE=memory pnpm serve:ssr
+SSR_API_BASE_URL=http://127.0.0.1:7001 SSR_CACHE=memory pnpm serve:ssr
 
 # or run the multi-worker cluster with pm2
 SSR_API_BASE_URL=... pnpm start:ssr        # pm2 start ecosystem.config.js
@@ -115,7 +115,7 @@ load-balances across workers on one port. Tune workers with `SSR_WORKERS`
 
 ```bash
 OJ3_SSR=1 pnpm build:ssr
-SSR_API_BASE_URL=http://127.0.0.1:7001/onlinejudge3/api SSR_CACHE=memory pnpm start:ssr
+SSR_API_BASE_URL=http://127.0.0.1:7001 SSR_CACHE=memory pnpm start:ssr
 pnpm reload:ssr   # after each rebuild, zero-downtime
 pnpm logs:ssr     # (pm2 logs oj3-ssr) structured [SSR] lines
 ```
@@ -132,11 +132,11 @@ and the `env_competition_side` block (`OJ3_BASE=/onlinejudge3_cs/`).
 | Var | Default | Meaning |
 |-----|---------|---------|
 | `OJ3_SSR` | – | set to `1` at **build** time to emit `umi.server.js` |
-| `SSR_PORT` / `PORT` | `7002` | listen port |
+| `SSR_PORT` / `PORT` | `8102` | listen port |
 | `SSR_HOST` | `0.0.0.0` | listen host |
 | `OJ3_BASE` | `/onlinejudge3/` | app base path |
 | `OJ3_OUTPUT_DIR` | `<base>` dir | built output dir (contains `umi.server.js`, `index.html`). **Must match umi's `outputPath`** — `.umirc.js` builds to `./onlinejudge3` (and `./onlinejudge3_cs`), and the default is derived from `OJ3_BASE`; set this explicitly if you customize the base/outputPath. |
-| `SSR_API_BASE_URL` | – | **absolute** upstream API base for server fetches, e.g. `http://127.0.0.1:7001/onlinejudge3/api`. Without it, prefetch can't reach the API. |
+| `SSR_API_BASE_URL` | – | **absolute** upstream API base for server fetches, e.g. `http://127.0.0.1:7001`. Without it, prefetch can't reach the API. |
 | `SSR_FORWARD_COOKIES` | `0` | forward the incoming `Cookie` header to upstream during prefetch. **Off by default so cacheable renders are anonymous** (see Caching). Turn on only if the backend needs cookies for public reads (CSRF); authenticated renders are then never cached. |
 | `SSR_SESSION_COOKIE_NAMES` | `EGG_SESS,koa.sess,connect.sid,ssid,sid,SESSION` | cookie names that mark a logged-in session; used (only when forwarding is on) to flag a render private and skip caching it. Set to your backend's actual session cookie name. |
 | `SSR_RENDER_TIMEOUT_MS` | `5000` | render timeout → CSR fallback |

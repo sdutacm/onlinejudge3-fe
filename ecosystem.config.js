@@ -27,7 +27,7 @@ module.exports = {
       error_file: 'logs/ssr-err.log',
       env: {
         NODE_ENV: 'production',
-        SSR_PORT: process.env.SSR_PORT || 7002,
+        SSR_PORT: process.env.SSR_PORT || 8102,
         OJ3_BASE: process.env.OJ3_BASE || '/onlinejudge3/',
         // Point at the real API origin so server-side prefetch can reach it:
         // SSR_API_BASE_URL: 'http://127.0.0.1:7001/onlinejudge3/api',
@@ -40,7 +40,7 @@ module.exports = {
       },
       env_competition_side: {
         NODE_ENV: 'production',
-        SSR_PORT: process.env.SSR_PORT || 7003,
+        SSR_PORT: process.env.SSR_PORT || 8103,
         OJ3_BASE: '/onlinejudge3_cs/',
         SSR_CACHE: process.env.SSR_CACHE || 'memory',
       },

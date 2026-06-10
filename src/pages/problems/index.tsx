@@ -21,6 +21,7 @@ import tracker from '@/utils/tracker';
 import ProblemDifficulty from '@/components/ProblemDifficulty';
 import ProblemTag, { ProblemTagPopover } from '@/components/ProblemTag';
 import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+import { normalizeProblemListQuery, shouldShowListLoadingForQuery } from '@/utils/listQuery';
 
 export interface Props extends ReduxProps, RouteProps {
   data: IList<IProblem>;
@@ -289,9 +290,15 @@ class ProblemList extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
+  const data = state.problems.list;
+  const expectedQuery = normalizeProblemListQuery(state.routing.location.query || {});
   return {
-    loading: !!state.loading.effects['problems/getList'],
-    data: state.problems.list,
+    loading: shouldShowListLoadingForQuery(
+      !!state.loading.effects['problems/getList'],
+      data,
+      expectedQuery,
+    ),
+    data,
     tagList: state.problems.tagList,
     problemResultStats: state.users.problemResultStats,
   };

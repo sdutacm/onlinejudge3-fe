@@ -15,6 +15,7 @@ import NotFound from '@/pages/404';
 import { genshinCharacters } from '@/configs/genshin';
 import markdownit from 'markdown-it';
 import PageTitle from '@/components/PageTitle';
+import { withSSRPrefetch } from '@/utils/ssr';
 
 const md = markdownit().disable('image');
 // Remember the old renderer if overridden, or proxy to the default renderer.
@@ -35,10 +36,12 @@ md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
 export interface Props extends ReduxProps, RouteProps {
   id: number;
   detail: ICompetition;
+  initialParticipants?: ICompetitionUser[];
 }
 
 interface State {
   participants: ICompetitionUser[];
+  participantsLoaded: boolean;
 }
 
 class CompetitionParticipants extends React.Component<Props, State> {
@@ -47,17 +50,31 @@ class CompetitionParticipants extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      participants: [],
+      participants: props.initialParticipants || [],
+      participantsLoaded: Array.isArray(props.initialParticipants),
     };
   }
 
   componentDidMount(): void {
-    this.fetch(this.props);
+    if (!this.state.participantsLoaded) {
+      this.fetch(this.props);
+    }
   }
 
   componentWillReceiveProps(np: Props) {
     if (this.props.id !== np.id && np.id) {
-      this.fetch(np);
+      const hasInitialParticipants = Array.isArray(np.initialParticipants);
+      this.setState(
+        {
+          participants: hasInitialParticipants ? np.initialParticipants : [],
+          participantsLoaded: hasInitialParticipants,
+        },
+        () => {
+          if (!hasInitialParticipants) {
+            this.fetch(np);
+          }
+        },
+      );
     }
   }
 
@@ -103,6 +120,7 @@ class CompetitionParticipants extends React.Component<Props, State> {
     if (res.success) {
       this.setState({
         participants: res.data.rows,
+        participantsLoaded: true,
       });
     }
   };
@@ -269,4 +287,22 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CompetitionParticipants);
+export default withSSRPrefetch(
+  connect(mapStateToProps)(CompetitionParticipants),
+  (ctx) =>
+    ctx.store.dispatch({
+      type: 'competitions/getDetail',
+      payload: { id: +ctx.match.params.id },
+    }),
+  {
+    getProps: async (ctx) => {
+      const ret = await ctx.store.dispatch({
+        type: 'competitions/getPublicCompetitionParticipants',
+        payload: { id: +ctx.match.params.id },
+      });
+      return {
+        initialParticipants: ret?.success ? ret.data.rows : undefined,
+      };
+    },
+  },
+);

@@ -113,14 +113,21 @@ class SetList extends React.Component<Props> {
 }
 
 function mapStateToProps(state) {
+  const data = state.sets.list;
+  const expectedQuery = normalizeSetListQuery(state.routing.location.query || {});
   return {
-    loading: !!state.loading.effects['sets/getList'],
-    data: state.sets.list,
+    loading: shouldShowListLoadingForQuery(
+      !!state.loading.effects['sets/getList'],
+      data,
+      expectedQuery,
+    ),
+    data,
     session: state.session,
   };
 }
 
 import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+import { normalizeSetListQuery, shouldShowListLoadingForQuery } from '@/utils/listQuery';
 
 // SSR: prefetch the public set list (honoring query).
 export default withSSRPrefetch(connect(mapStateToProps)(SetList), (ctx) =>

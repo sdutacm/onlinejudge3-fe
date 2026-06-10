@@ -2,8 +2,7 @@ import * as service from '../services/sets';
 import pages from '@/configs/pages';
 import { matchPath } from 'react-router';
 import { clearExpiredStateProperties, genTimeFlag, isStateExpired } from '@/utils/misc';
-import { isEqual } from 'lodash-es';
-import { formatListQuery } from '@/utils/listQuery';
+import { hasFreshListDataForQuery, normalizeSetListQuery } from '@/utils/listQuery';
 import { requestEffect } from '@/utils/effectInterceptor';
 
 function genInitialState() {
@@ -46,12 +45,9 @@ export default {
   },
   effects: {
     *getList({ payload: query }, { call, put, select }) {
-      const formattedQuery: IListQuery = {
-        ...formatListQuery(query),
-        order: [['setId', 'DESC']],
-      };
+      const formattedQuery = normalizeSetListQuery(query);
       const savedState = yield select((state) => state.sets.list);
-      if (!isStateExpired(savedState) && isEqual(savedState._query, formattedQuery)) {
+      if (hasFreshListDataForQuery(savedState, formattedQuery)) {
         return;
       }
       const ret: IApiResponse<IList<ISet>> = yield call(service.getList, formattedQuery);

@@ -22,14 +22,17 @@ var Koa = require('koa');
 var serve = require('koa-static');
 var mount = require('koa-mount');
 
+var apiProxy = require('./apiProxy');
 var log = require('./logger');
+var renderPath = require('./renderPath');
+var requestOrigin = require('./requestOrigin');
 var ssrCache = require('./ssrCache');
 var ssrPolicy = require('../src/configs/ssr');
 
 // ---------------------------------------------------------------------------
 // Config (all overridable via env)
 // ---------------------------------------------------------------------------
-var PORT = parseInt(process.env.SSR_PORT || process.env.PORT || '7002', 10);
+var PORT = parseInt(process.env.SSR_PORT || process.env.PORT || '8102', 10);
 var HOST = process.env.SSR_HOST || '0.0.0.0';
 var BASE = process.env.OJ3_BASE || '/onlinejudge3/';
 var OUTPUT_DIR = process.env.OJ3_OUTPUT_DIR
@@ -37,7 +40,7 @@ var OUTPUT_DIR = process.env.OJ3_OUTPUT_DIR
   : path.join(__dirname, '..', BASE.replace(/^\/|\/$/g, '') || 'onlinejudge3');
 
 // Absolute upstream API base for server-side fetches, e.g.
-//   http://127.0.0.1:7001/onlinejudge3/api
+//   http://127.0.0.1:7001
 var SSR_API_BASE_URL = process.env.SSR_API_BASE_URL || '';
 
 var RENDER_TIMEOUT_MS = parseInt(process.env.SSR_RENDER_TIMEOUT_MS || '5000', 10);
@@ -193,6 +196,29 @@ app.use(async function blockSensitiveStatic(ctx, next) {
   await next();
 });
 
+// In SSR dev mode this Koa process often replaces the old CSR dev server on the
+// same port. Preserve the old `/onlinejudge3/api/* -> backend /*` proxy shape so
+// browser-only state such as session can refresh after hydration.
+app.use(async function proxyAPI(ctx, next) {
+  var target = apiProxy.getAPIProxyTarget(ctx.originalUrl || ctx.url, BASE, SSR_API_BASE_URL);
+  if (!target) {
+    await next();
+    return;
+  }
+  try {
+    await apiProxy.proxyAPIRequest(ctx, target);
+  } catch (e) {
+    log.error('API proxy failed', {
+      url: ctx.originalUrl,
+      target: target,
+      err: e && e.message,
+      stack: e && e.stack,
+    });
+    ctx.status = 502;
+    ctx.body = 'Bad Gateway';
+  }
+});
+
 // Static assets (js/css/img/manifest...) under the app base. `index: false`
 // so directory requests fall through to the SSR/CSR handler below.
 app.use(
@@ -274,10 +300,12 @@ app.use(async function handler(ctx) {
 
   // Render via umi's server bundle.
   try {
+    var origin = requestOrigin.getRequestOrigin(ctx, PORT);
+    var path = renderPath.getSSRRenderPath(ctx);
     var result = await withTimeout(
       serverRender({
-        path: pathname,
-        origin: ctx.origin,
+        path: path,
+        origin: origin,
         htmlTemplate: htmlTemplate,
         mountElementId: 'root',
         // React Router v5's StaticRouter mishandles a trailing-slash basename
@@ -287,7 +315,7 @@ app.use(async function handler(ctx) {
         getInitialPropsCtx: {
           apiBaseURL: SSR_API_BASE_URL,
           cookie: FORWARD_COOKIES ? ctx.headers.cookie || '' : '',
-          origin: ctx.origin,
+          origin: origin,
         },
       }),
       RENDER_TIMEOUT_MS,

@@ -35,6 +35,7 @@ import AchievementToastContainer from '@/components/AchievementToastContainer';
 import 'react-toastify/dist/ReactToastify.css';
 import { initGeneralGlobalEvents } from '@/lib/socketHandlers/general/globalEvents';
 import { reduxEmitter, ReduxEvents, IReduxEvenData } from '@/events/redux';
+import { markInitialPageAnimationMounted } from '@/utils/pageAnimationHydration';
 
 const VIEWPORT_CHANGE_THROTTLE = 250;
 
@@ -123,6 +124,8 @@ class Index extends React.Component<Props, State> {
   };
 
   async componentDidMount() {
+    markInitialPageAnimationMounted();
+
     const settings = this.props.settings;
     document.body.classList.remove('auto');
     document.body.classList.remove('dark');
@@ -329,8 +332,8 @@ class Index extends React.Component<Props, State> {
         })}
       >
         <Header>
-          <Row style={{ display: 'flex' }}>
-            <Col>
+          <Row style={{ display: 'flex', minWidth: 0 }}>
+            <Col style={{ flex: '0 0 auto' }}>
               {!inAdminPage ? (
                 <Link
                   to={isCompetitionSide() ? pages.competitions.index : pages.index}
@@ -345,7 +348,9 @@ class Index extends React.Component<Props, State> {
               )}
             </Col>
             {!hideNav && (
-              <Col style={{ flex: 1 }}>{this.state.sessionLoaded && <NavContainer />}</Col>
+              <Col style={{ flex: 1, minWidth: 0 }}>
+                {this.state.sessionLoaded && <NavContainer />}
+              </Col>
             )}
           </Row>
         </Header>

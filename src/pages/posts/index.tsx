@@ -111,13 +111,20 @@ class PostList extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
+  const data = state.posts.list;
+  const expectedQuery = normalizePostListQuery(state.routing.location.query || {});
   return {
-    loading: !!state.loading.effects['posts/getList'],
-    data: state.posts.list,
+    loading: shouldShowListLoadingForQuery(
+      !!state.loading.effects['posts/getList'],
+      data,
+      expectedQuery,
+    ),
+    data,
   };
 }
 
 import { withSSRPrefetch, getSSRQuery } from '@/utils/ssr';
+import { normalizePostListQuery, shouldShowListLoadingForQuery } from '@/utils/listQuery';
 
 // SSR: prefetch the public post list (honoring query).
 export default withSSRPrefetch(connect(mapStateToProps)(PostList), (ctx) =>

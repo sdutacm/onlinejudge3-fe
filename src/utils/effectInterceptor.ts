@@ -32,7 +32,6 @@ export function startInterception() {
 
 export function requestEffect(dispatch: Dispatch<Action>, action: Action) {
   if (isServer) {
-    dispatch(action);
     return;
   }
   if (!(window as any)._pendingEffectsInited) {

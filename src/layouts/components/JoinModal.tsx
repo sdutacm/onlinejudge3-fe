@@ -160,8 +160,24 @@ class JoinModal extends React.Component<any, any> {
                     required: true,
                     message: 'Please input username',
                   },
+                  {
+                    min: 3,
+                    message: 'Username must be at least 3 characters',
+                  },
+                  {
+                    max: 20,
+                    message: 'Username must be at most 20 characters',
+                  },
+                  {
+                    pattern: /^[0-9A-Za-z_]+$/,
+                    message: 'Username can only contain letters, numbers and underscores',
+                  },
                 ],
               })(<Input />)}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Badge status="default" text="3-20 characters" />
+                <Badge status="default" text="only letters, numbers and underscores" />
+              </div>
             </Form.Item>
 
             <Form.Item label="Nickname">
@@ -171,8 +187,19 @@ class JoinModal extends React.Component<any, any> {
                     required: true,
                     message: 'Please input nickname',
                   },
+                  {
+                    min: 3,
+                    message: 'Nickname must be at least 3 characters',
+                  },
+                  {
+                    max: 20,
+                    message: 'Nickname must be at most 20 characters',
+                  },
                 ],
               })(<Input />)}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Badge status="default" text="3-20 characters" />
+              </div>
             </Form.Item>
 
             <Form.Item>

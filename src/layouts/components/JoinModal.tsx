@@ -59,6 +59,8 @@ class JoinModal extends React.Component<any, any> {
         const { getFieldDecorator } = this.props.form;
         const verificationCodeRetry = this.state.verificationCodeRetry;
         const passwordStatus = this.state.passwordStatus;
+        const usernameStatus = this.state.usernameStatus;
+        const nicknameStatus = this.state.nicknameStatus;
         return (
           <Form layout="vertical" hideRequiredMark={true} onSubmit={this.handleSubmit}>
             <Form.Item label="Account Type">
@@ -172,11 +174,12 @@ class JoinModal extends React.Component<any, any> {
                     pattern: /^[0-9A-Za-z_]+$/,
                     message: 'Username can only contain letters, numbers and underscores',
                   },
+                  { validator: this.updateUsernameStatus },
                 ],
               })(<Input />)}
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <Badge status="default" text="3-20 characters" />
-                <Badge status="default" text="only letters, numbers and underscores" />
+                <Badge status={usernameStatus.verifyLength} text="3-20 characters" />
+                <Badge status={usernameStatus.verifyCharacters} text="only letters, numbers and underscores" />
               </div>
             </Form.Item>
 
@@ -195,10 +198,11 @@ class JoinModal extends React.Component<any, any> {
                     max: 20,
                     message: 'Nickname must be at most 20 characters',
                   },
+                  { validator: this.updateNicknameStatus },
                 ],
               })(<Input />)}
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <Badge status="default" text="3-20 characters" />
+                <Badge status={nicknameStatus.verifyLength} text="3-20 characters" />
               </div>
             </Form.Item>
 
@@ -457,6 +461,13 @@ class JoinModal extends React.Component<any, any> {
         verifyNumberAndLetter: 'default',
         verifyCommonPassword: 'default',
       },
+      usernameStatus: {
+        verifyLength: 'default',
+        verifyCharacters: 'default',
+      },
+      nicknameStatus: {
+        verifyLength: 'default',
+      },
     };
   }
 
@@ -528,6 +539,25 @@ class JoinModal extends React.Component<any, any> {
     if (value && this.state.confirmDirty) {
       form.validateFields(['confirm'], { force: true });
     }
+    callback();
+  };
+
+  updateUsernameStatus = (rule, value, callback) => {
+    this.setState({
+      usernameStatus: {
+        verifyLength: value ? (value.length >= 3 && value.length <= 20 ? 'success' : 'error') : 'default',
+        verifyCharacters: value ? (/^[0-9A-Za-z_]+$/.test(value) ? 'success' : 'error') : 'default',
+      },
+    });
+    callback();
+  };
+
+  updateNicknameStatus = (rule, value, callback) => {
+    this.setState({
+      nicknameStatus: {
+        verifyLength: value ? (value.length >= 3 && value.length <= 20 ? 'success' : 'error') : 'default',
+      },
+    });
     callback();
   };
 
